@@ -1,3 +1,35 @@
 import { useEffect } from 'react'
 import { useSiteContent } from '../providers/SiteContentProvider'
-export function SeoSync(){const{content}=useSiteContent();useEffect(()=>{const s=content.seo;document.title=s.siteTitle;const set=(sel:string,val:string)=>{let el=document.querySelector(sel) as HTMLMetaElement|null;if(!el){el=document.createElement('meta');if(sel.includes('property='))el.setAttribute('property',sel.match(/"([^"]+)"/)?.[1]||'');else el.name=sel.match(/"([^"]+)"/)?.[1]||'';document.head.appendChild(el)}el.content=val};set('meta[name="description"]',s.metaDescription);set('meta[property="og:title"]',s.ogTitle);set('meta[property="og:description"]',s.ogDescription);if(s.ogImage)set('meta[property="og:image"]',s.ogImage)},[content.seo]);return null}
+
+const DEFAULT_TITLE = 'LCR - Solutions Architecture | IA + Quantum'
+
+export function SeoSync() {
+  const { content } = useSiteContent()
+
+  useEffect(() => {
+    const s = content.seo
+    document.title = s.siteTitle?.trim() || DEFAULT_TITLE
+
+    const setMeta = (selector: string, value?: string) => {
+      const safeValue = value?.trim()
+      if (!safeValue) return
+
+      let element = document.querySelector(selector) as HTMLMetaElement | null
+      if (!element) {
+        element = document.createElement('meta')
+        const name = selector.match(/"([^"]+)"/)?.[1] || ''
+        if (selector.includes('property=')) element.setAttribute('property', name)
+        else element.name = name
+        document.head.appendChild(element)
+      }
+      element.content = safeValue
+    }
+
+    setMeta('meta[name="description"]', s.metaDescription)
+    setMeta('meta[property="og:title"]', s.ogTitle)
+    setMeta('meta[property="og:description"]', s.ogDescription)
+    setMeta('meta[property="og:image"]', s.ogImage)
+  }, [content.seo])
+
+  return null
+}

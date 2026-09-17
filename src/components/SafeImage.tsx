@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
   fallbackLabel?: string
@@ -6,6 +6,26 @@ type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
 
 export function SafeImage({ fallbackLabel = 'Image unavailable', onError, ...props }: Props) {
   const [failed, setFailed] = useState(false)
-  if (failed || !props.src) return <div className="image-fallback" role="img" aria-label={fallbackLabel}>{fallbackLabel}</div>
-  return <img {...props} onError={(event) => { setFailed(true); onError?.(event) }} />
+
+  useEffect(() => {
+    setFailed(false)
+  }, [props.src])
+
+  if (failed || !props.src) {
+    return (
+      <div className="image-fallback" role="img" aria-label={fallbackLabel}>
+        {fallbackLabel}
+      </div>
+    )
+  }
+
+  return (
+    <img
+      {...props}
+      onError={(event) => {
+        setFailed(true)
+        onError?.(event)
+      }}
+    />
+  )
 }
