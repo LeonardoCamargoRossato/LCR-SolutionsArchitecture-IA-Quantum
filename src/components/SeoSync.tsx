@@ -1,0 +1,3 @@
+import { useEffect } from 'react'
+import { useSiteContent } from '../providers/SiteContentProvider'
+export function SeoSync(){const{content}=useSiteContent();useEffect(()=>{const s=content.seo;document.title=s.siteTitle;const set=(sel:string,val:string)=>{let el=document.querySelector(sel) as HTMLMetaElement|null;if(!el){el=document.createElement('meta');if(sel.includes('property='))el.setAttribute('property',sel.match(/"([^"]+)"/)?.[1]||'');else el.name=sel.match(/"([^"]+)"/)?.[1]||'';document.head.appendChild(el)}el.content=val};set('meta[name="description"]',s.metaDescription);set('meta[property="og:title"]',s.ogTitle);set('meta[property="og:description"]',s.ogDescription);if(s.ogImage)set('meta[property="og:image"]',s.ogImage)},[content.seo]);return null}

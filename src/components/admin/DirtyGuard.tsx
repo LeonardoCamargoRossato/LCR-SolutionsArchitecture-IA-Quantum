@@ -1,0 +1,2 @@
+type Props={open:boolean;onCancel:()=>void;onDiscard:()=>void}
+export function DirtyGuard({open,onCancel,onDiscard}:Props){if(!open)return null;return <div className="modal-backdrop"><div className="confirm-modal"><h3>You have unsaved changes.</h3><p>Discard changes?</p><div><button className="button button-secondary" onClick={onCancel}>Cancel</button><button className="button danger-button" onClick={onDiscard}>Discard</button></div></div></div>}

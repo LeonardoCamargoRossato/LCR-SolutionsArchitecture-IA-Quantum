@@ -1,0 +1,2 @@
+rules_version = '2';
+service firebase.storage { match /b/{bucket}/o { function admin(){ return request.auth != null && request.auth.token.email == 'leo.c.rossato@gmail.com'; } match /{allPaths=**} { allow read: if true; allow write: if admin(); } } }
