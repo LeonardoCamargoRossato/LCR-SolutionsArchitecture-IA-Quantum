@@ -334,6 +334,7 @@ export class SupabaseContentRepository implements IContentRepository {
       ogTitle: data.og_title ?? '',
       ogDescription: data.og_description ?? '',
       ogImage: data.og_image ?? undefined,
+      faviconUrl: data.favicon_url ?? undefined,
     }
   }
 
@@ -345,6 +346,7 @@ export class SupabaseContentRepository implements IContentRepository {
       og_title: value.ogTitle,
       og_description: value.ogDescription,
       og_image: value.ogImage ?? null,
+      favicon_url: value.faviconUrl ?? null,
       updated_at: new Date().toISOString(),
     })
     if (error) throw error

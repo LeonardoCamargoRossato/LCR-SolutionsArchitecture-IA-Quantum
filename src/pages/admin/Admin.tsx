@@ -168,7 +168,147 @@ function SettingsEditor({initial,done}:{initial:SiteSettingsContent;done:(v:Site
 
 function SocialEditor({initial,onDirty,done}:{initial:SocialLink[];onDirty:(v:boolean)=>void;done:(v:SocialLink[])=>Promise<void>}){const[v,setV]=useState(initial);const[busy,setBusy]=useState(false);const toast=useToast();useEffect(()=>setV(initial),[initial]);const change=(i:number,patch:Partial<SocialLink>)=>{setV(v.map((x,j)=>j===i?{...x,...patch}:x));onDirty(true)};return <div className="admin-form cms-form"><div className="social-editor-grid">{v.sort((a,b)=>a.order-b.order).map((x,i)=><article className="social-edit-card" key={x.id}><Field label="Platform" value={x.platform} onChange={y=>change(i,{platform:y})}/><Field label="Label" value={x.label} onChange={y=>change(i,{label:y})}/><Field label="URL" value={x.url} onChange={y=>change(i,{url:y})}/><label className="toggle-row"><input type="checkbox" checked={x.visible} onChange={e=>change(i,{visible:e.target.checked})}/> Visible</label></article>)}</div><SaveButton busy={busy} onClick={async()=>{setBusy(true);try{await done(v);onDirty(false);toast.success('Alterações salvas com sucesso.')}catch(e){toast.error('Erro ao salvar alterações.',humanizeError(e))}finally{setBusy(false)}}}/></div>}
 
-function SeoEditor({initial,onDirty,done}:{initial:SeoContent;onDirty:(v:boolean)=>void;done:(v:SeoContent)=>Promise<void>}){const[v,setV]=useState(initial);const[busy,setBusy]=useState(false);const toast=useToast();useEffect(()=>setV(initial),[initial]);const change=(x:SeoContent)=>{setV(x);onDirty(true)};return <div className="admin-form cms-form"><Field label="Site Title" value={v.siteTitle} onChange={x=>change({...v,siteTitle:x})}/><TextArea label="Meta Description" value={v.metaDescription} onChange={x=>change({...v,metaDescription:x})}/><Field label="OpenGraph Title" value={v.ogTitle} onChange={x=>change({...v,ogTitle:x})}/><TextArea label="OpenGraph Description" value={v.ogDescription} onChange={x=>change({...v,ogDescription:x})}/><Field label="OpenGraph Image URL" value={v.ogImage||''} onChange={x=>change({...v,ogImage:x})}/><SaveButton busy={busy} onClick={async()=>{setBusy(true);try{await done(v);onDirty(false);toast.success('Alterações salvas com sucesso.')}catch(e){toast.error('Erro ao salvar alterações.',humanizeError(e))}finally{setBusy(false)}}}/></div>}
+function faviconStoragePath(url?:string){
+ if(!url)return ''
+ try{
+  const marker='/storage/v1/object/public/'
+  const markerIndex=url.indexOf(marker)
+  if(markerIndex<0)return ''
+  const suffix=url.slice(markerIndex+marker.length).split('?')[0]
+  const parts=suffix.split('/')
+  parts.shift()
+  return decodeURIComponent(parts.join('/'))
+ }catch{return ''}
+}
+
+function SeoEditor({initial,onDirty,done}:{initial:SeoContent;onDirty:(v:boolean)=>void;done:(v:SeoContent)=>Promise<void>}){
+ const[v,setV]=useState(initial)
+ const[busy,setBusy]=useState(false)
+ const[iconBusy,setIconBusy]=useState(false)
+ const toast=useToast()
+ useEffect(()=>setV(initial),[initial])
+ const change=(x:SeoContent)=>{setV(x);onDirty(true)}
+
+ const defaultFavicon=`${import.meta.env.BASE_URL}projects/logo_LCR_PortifolioApps.png`
+ const faviconUrl=v.faviconUrl?.trim()||''
+ const faviconPreview=faviconUrl||defaultFavicon
+ const storagePath=faviconStoragePath(faviconUrl)
+ const storageDisplay=storagePath?`portfolio-media/${storagePath}`:'Local fallback: public/projects/logo_LCR_PortifolioApps.png'
+
+ const removeOldStorageIcon=async(url?:string)=>{
+  const path=faviconStoragePath(url)
+  if(!path||!path.startsWith('site-assets/favicon/'))return
+  await mediaService.delete({
+   id:path,
+   url:url||'',
+   path,
+   name:path.split('/').pop()||'favicon',
+   mimeType:'image/*',
+   category:'Icons',
+  }).catch(error=>console.warn('Could not remove previous favicon from Storage.',error))
+ }
+
+ const uploadIcon=async(file?:File)=>{
+  if(!file||iconBusy)return
+  setIconBusy(true)
+  let uploaded
+  try{
+   mediaService.validateImage(file)
+   uploaded=await mediaService.upload(file,'Icons','site-assets/favicon')
+   const previous=v.faviconUrl
+   const next={...v,faviconUrl:uploaded.url}
+   await done(next)
+   setV(next)
+   onDirty(false)
+   if(previous&&previous!==uploaded.url)await removeOldStorageIcon(previous)
+   toast.success('Favicon atualizado com sucesso.')
+  }catch(error){
+   if(uploaded)await mediaService.delete(uploaded).catch(()=>undefined)
+   toast.error('Não foi possível atualizar o favicon.',humanizeError(error))
+  }finally{
+   setIconBusy(false)
+  }
+ }
+
+ const useDefault=async()=>{
+  if(iconBusy)return
+  setIconBusy(true)
+  try{
+   const previous=v.faviconUrl
+   const next={...v,faviconUrl:undefined}
+   await done(next)
+   setV(next)
+   onDirty(false)
+   if(previous)await removeOldStorageIcon(previous)
+   toast.success('Favicon padrão restaurado.')
+  }catch(error){
+   toast.error('Não foi possível restaurar o favicon padrão.',humanizeError(error))
+  }finally{
+   setIconBusy(false)
+  }
+ }
+
+ return <div className="admin-form cms-form">
+  <Field label="Site Title" value={v.siteTitle} onChange={x=>change({...v,siteTitle:x})}/>
+  <TextArea label="Meta Description" value={v.metaDescription} onChange={x=>change({...v,metaDescription:x})}/>
+  <Field label="OpenGraph Title" value={v.ogTitle} onChange={x=>change({...v,ogTitle:x})}/>
+  <TextArea label="OpenGraph Description" value={v.ogDescription} onChange={x=>change({...v,ogDescription:x})}/>
+  <Field label="OpenGraph Image URL" value={v.ogImage||''} onChange={x=>change({...v,ogImage:x})}/>
+
+  <section className="admin-card">
+   <h2>Site Icon / Favicon</h2>
+   <p className="admin-note">PNG, JPG/JPEG, WEBP or SVG. A square image is recommended.</p>
+
+   <div className="upload-preview">
+    <img src={faviconPreview} alt="Current favicon preview"/>
+   </div>
+
+   <label className="form-field">
+    <span>Current favicon URL</span>
+    <input readOnly value={faviconUrl||defaultFavicon}/>
+   </label>
+
+   <div className="form-field">
+    <span>Storage path</span>
+    <code>{storageDisplay}</code>
+   </div>
+
+   <div className="cv-admin-actions">
+    <label className="button">
+     <Upload size={16}/> {iconBusy?'Uploading...':faviconUrl?'Replace icon':'Upload icon'}
+     <input
+      hidden
+      type="file"
+      accept="image/png,image/jpeg,image/webp,image/svg+xml"
+      disabled={iconBusy}
+      onChange={event=>void uploadIcon(event.target.files?.[0])}
+     />
+    </label>
+
+    {faviconUrl&&<a className="button button-secondary" href={faviconUrl} target="_blank" rel="noopener noreferrer">
+     <ExternalLink size={15}/> Open image
+    </a>}
+
+    <button className="button button-secondary" type="button" disabled={iconBusy||!faviconUrl} onClick={()=>void useDefault()}>
+     Use default icon
+    </button>
+   </div>
+  </section>
+
+  <SaveButton busy={busy} onClick={async()=>{
+   setBusy(true)
+   try{
+    await done(v)
+    onDirty(false)
+    toast.success('Alterações salvas com sucesso.')
+   }catch(e){
+    toast.error('Erro ao salvar alterações.',humanizeError(e))
+   }finally{
+    setBusy(false)
+   }
+  }}/>
+ </div>
+}
 
 function MediaLibrary(){const[items,setItems]=useState<any[]>([]);const[busy,setBusy]=useState(false);const toast=useToast();const load=()=>mediaService.getLibrary().then(setItems).catch(e=>toast.error('Não foi possível carregar a mídia.',humanizeError(e)));useEffect(()=>{load()},[]);const up=async(f:File)=>{setBusy(true);try{await mediaService.upload(f,'Other');await load();toast.success('Arquivo enviado com sucesso.')}catch(e){toast.error('Não foi possível enviar o arquivo.',humanizeError(e))}finally{setBusy(false)}};return <div className="admin-card"><label className="button"><Upload size={16}/> {busy?'Enviando...':'Upload'}<input hidden type="file" onChange={e=>e.target.files?.[0]&&up(e.target.files[0])}/></label><div className="media-library-grid">{items.map(x=><article key={x.id}>{x.mimeType?.startsWith('image/')&&<img src={x.url} alt=""/>}<strong>{x.name}</strong><small>{x.category}</small><div><button onClick={()=>navigator.clipboard.writeText(x.url)}>Copy URL</button><button onClick={async()=>{if(confirm('Delete this media? Referenced pages may break.')){try{await mediaService.delete(x);await load();toast.success('Mídia removida.')}catch(e){toast.error('Não foi possível remover.',humanizeError(e))}}}}><Trash2 size={13}/> Delete</button></div></article>)}</div></div>}
 

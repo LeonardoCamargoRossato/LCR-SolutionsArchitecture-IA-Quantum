@@ -21,6 +21,7 @@ function extension(file: File) {
   if (fromName) return fromName
   if (file.type === 'image/webp') return 'webp'
   if (file.type === 'image/png') return 'png'
+  if (file.type === 'image/svg+xml') return 'svg'
   if (file.type === 'application/pdf') return 'pdf'
   return 'jpg'
 }
@@ -158,7 +159,7 @@ export class SupabaseMediaRepository implements IMediaRepository {
   }
 
   async getLibrary() {
-    const folders = ['projects', 'profile', 'cv', 'icons', 'misc']
+    const folders = ['projects', 'profile', 'cv', 'icons', 'site-assets', 'misc']
     const groups = await Promise.all(
       folders.map((folder) =>
         this.listRecursive(folder).catch((error) => {

@@ -1,7 +1,7 @@
 import type { MediaCategory } from '../../domain/models/MediaAsset'
 import type { IMediaRepository } from '../../domain/repositories/IMediaRepository'
 
-const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp']
+const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml']
 const MAX_IMAGE = 8 * 1024 * 1024
 const MAX_DOCUMENT = 12 * 1024 * 1024
 
@@ -9,7 +9,7 @@ export class MediaService {
   constructor(private repo: IMediaRepository) {}
 
   validateImage(file: File) {
-    if (!IMAGE_TYPES.includes(file.type)) throw new Error('Formato não suportado. Use PNG, JPG, JPEG ou WEBP.')
+    if (!IMAGE_TYPES.includes(file.type)) throw new Error('Formato não suportado. Use PNG, JPG, JPEG, WEBP ou SVG.')
     if (file.size > MAX_IMAGE) throw new Error('Arquivo excede o limite permitido de 8 MB.')
   }
 

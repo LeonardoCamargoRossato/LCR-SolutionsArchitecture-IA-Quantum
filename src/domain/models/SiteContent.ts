@@ -65,6 +65,7 @@ export type SeoContent = {
   ogTitle: string
   ogDescription: string
   ogImage?: string
+  faviconUrl?: string
 }
 
 export type SocialLink = {
