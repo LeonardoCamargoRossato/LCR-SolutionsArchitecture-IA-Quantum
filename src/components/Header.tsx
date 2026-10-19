@@ -1,5 +1,5 @@
 
-import { LockKeyhole, Menu, Moon, Sun, UserRound, X } from 'lucide-react'
+import { Menu, Moon, Sun, UserRound, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { externalLinks } from '../config/externalLinks'
@@ -62,6 +62,7 @@ export function Header() {
 
         <nav className={`nav ${open ? 'nav-open' : ''}`} aria-label="Primary navigation">
           <button type="button" onClick={() => goToSection('projects')}>{t('projects')}</button>
+          <button type="button" onClick={() => goToSection('experience')}>{t('experienceNav')}</button>
           <button type="button" onClick={() => goToSection('about')}>{t('about')}</button>
           <a href={externalLinks.github} target="_blank" rel="noreferrer">GitHub</a>
           <a href={externalLinks.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
@@ -86,11 +87,6 @@ export function Header() {
           >
             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
-
-          <Link to="/admin" className="admin-nav">
-            <LockKeyhole size={13} />
-            {t('admin')}
-          </Link>
         </nav>
       </div>
     </header>

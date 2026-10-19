@@ -4914,3 +4914,102 @@ a.case-institution-logo:hover {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+
+/* Home professional portfolio refinement */
+.hero-positioning .hero-main {
+  max-width: var(--max-width);
+}
+
+.hero-positioning h1 {
+  max-width: 980px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.experience-section {
+  border-top: 1px solid var(--border);
+}
+
+.experience-list {
+  display: grid;
+  border-top: 1px solid var(--border);
+}
+
+.experience-item {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.28fr) minmax(0, 1fr);
+  gap: clamp(24px, 5vw, 64px);
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.experience-period {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.experience-main h3 {
+  margin: 0 0 5px;
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.experience-main > a,
+.experience-organization {
+  display: inline-block;
+  margin-bottom: 9px;
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.experience-main p {
+  max-width: 850px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.contact-contexts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.contact-contexts span {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+@media (max-width: 760px) {
+  .hero-actions {
+    align-items: stretch;
+  }
+
+  .hero-actions .button {
+    justify-content: center;
+  }
+
+  .experience-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 20px 0;
+  }
+}

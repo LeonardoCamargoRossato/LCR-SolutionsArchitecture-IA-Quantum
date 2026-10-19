@@ -11,7 +11,7 @@ export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
       <div className="site-container">
         <div className="section-title section-title-stacked">
           <div>
-            <div className="eyebrow">04 / {t('processEyebrow')}</div>
+            <div className="eyebrow">05 / {t('processEyebrow')}</div>
             <h2>{t('howIWork')}</h2>
           </div>
         </div>

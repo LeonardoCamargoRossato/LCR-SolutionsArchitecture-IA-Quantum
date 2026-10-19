@@ -1,10 +1,10 @@
 import { FileText, Mail } from 'lucide-react'
 import { useState, type CSSProperties } from 'react'
-import { ArchitectureTechnologySection } from '../components/ArchitectureTechnologySection'
 import { AboutGallery } from '../components/AboutGallery'
 import { CapabilitiesSection } from '../components/CapabilitiesSection'
 import { ContactForm } from '../components/ContactForm'
 import { CvViewer } from '../components/CvViewer'
+import { ExperienceSection } from '../components/ExperienceSection'
 import { MoreProjectCard } from '../components/MoreProjectCard'
 import { ProjectCard } from '../components/ProjectCard'
 import { SectionTitle } from '../components/SectionTitle'
@@ -59,10 +59,32 @@ export function Home() {
     <main style={portfolioScaleStyle}>
       <section className="hero hero-positioning">
         <div className="site-container hero-main">
-          <div className="eyebrow">{home.eyebrow || 'LEONARDO ROSSATO'}</div>
-          <h1>{professionalTitle}</h1>
-          {home.title && <p className="hero-statement">{home.title}</p>}
+          <div className="eyebrow">{home.eyebrow || 'LEONARDO CAMARGO ROSSATO'}</div>
+          <h1>{home.title || t('heroPrimaryTitle')}</h1>
+          {home.focus && <p className="hero-statement">{home.focus}</p>}
           {home.description && <p className="hero-description">{home.description}</p>}
+          <div className="hero-actions">
+            <a
+              className="button"
+              href="#projects"
+              onClick={(event) => {
+                event.preventDefault()
+                document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }}
+            >
+              {t('heroViewWork')}
+            </a>
+            <a
+              className="button button-secondary"
+              href="#contact"
+              onClick={(event) => {
+                event.preventDefault()
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }}
+            >
+              {t('heroContact')}
+            </a>
+          </div>
         </div>
       </section>
 
@@ -101,6 +123,8 @@ export function Home() {
         </div>
       </section>
 
+      <ExperienceSection experiences={about.experiences} />
+
       <WorkProcessSection steps={settings.workProcess} />
 
       <section className="section home-about" id="about">
@@ -130,7 +154,7 @@ export function Home() {
           </div>
 
           <div className="about-mini-copy">
-            <div className="eyebrow">05 / {t('about')}</div>
+            <div className="eyebrow">06 / {t('about')}</div>
             <h2>Leonardo Rossato</h2>
             <p className="about-headline">{professionalTitle}</p>
             {about.intro && <p className="about-intro">{about.intro}</p>}
@@ -148,7 +172,6 @@ export function Home() {
         </div>
       </section>
 
-      <ArchitectureTechnologySection capabilities={settings.capabilities} />
 
       <section className="section contact-section" id="contact">
         <div className="site-container contact-grid">
@@ -156,6 +179,12 @@ export function Home() {
             <div className="eyebrow">07 / {t('contactEyebrow')}</div>
             <h2>{t('contactTitle')}</h2>
             <p>{settings.contactIntro || t('contactDescription')}</p>
+            <div className="contact-contexts" aria-label={t('contactContextsLabel')}>
+              <span>{t('contactCareer')}</span>
+              <span>{t('contactProject')}</span>
+              <span>{t('contactResearch')}</span>
+              <span>{t('contactSpeaking')}</span>
+            </div>
             <a className="contact-email" href={externalLinks.email}>
               <Mail size={17} />
               leo.c.rossato@gmail.com
