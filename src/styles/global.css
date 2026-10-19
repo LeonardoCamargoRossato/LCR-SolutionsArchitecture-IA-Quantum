@@ -5013,3 +5013,32 @@ a.case-institution-logo:hover {
     padding: 20px 0;
   }
 }
+
+
+/* Hero professional title — always one line */
+.hero-positioning h1 {
+  max-width: none;
+  white-space: nowrap;
+  font-size: clamp(2rem, 4.1vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+@media (max-width: 900px) {
+  .hero-positioning h1 {
+    font-size: clamp(1.4rem, 4.25vw, 2.75rem);
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-positioning h1 {
+    font-size: clamp(0.95rem, 4.8vw, 1.7rem);
+    letter-spacing: -0.045em;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero-positioning h1 {
+    font-size: clamp(0.88rem, 4.65vw, 1rem);
+  }
+}
