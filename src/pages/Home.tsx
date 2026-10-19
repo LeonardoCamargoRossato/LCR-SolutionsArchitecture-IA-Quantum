@@ -52,8 +52,8 @@ export function Home() {
     about.professionalTitle ||
     about.headline ||
     (locale === 'pt-BR'
-      ? 'Arquiteto de Soluções · Engenharia de Software · IA & Quantum'
-      : 'Solution Architect · Software Engineer · AI & Quantum')
+      ? 'Soluções em IA, Dados e Computação Quantitativa | Desenvolvimento de Software & IA Aplicada'
+      : 'AI, Data & Quantitative Solutions | Software Development & Applied AI')
 
   return (
     <main style={portfolioScaleStyle}>

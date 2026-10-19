@@ -27,6 +27,10 @@ export type AboutTranslation = {
   location?: string
   email?: string
   areas?: string[]
+  experiences?: Experience[]
+  education?: Education[]
+  researchTimeline?: ResearchTimelineItem[]
+  publications?: Publication[]
   scienceCommunication?: string
 }
 
