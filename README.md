@@ -1,40 +1,46 @@
-# Portfólio Apps LCR — V1
+# Leonardo Rossato — Software & AI Portfolio
 
-Evolution of the approved V0. Public portfolio remains static/GitHub Pages compatible while Firebase is treated only as an infrastructure provider behind repository interfaces.
+Professional portfolio focused on **Software Engineering, Applied AI, AI Agents, Data & Optimization, and Quantum Technologies**.
 
-## Run
+## Professional focus
+
+- **Software Engineering & Applied AI** — AI-assisted development, LLM applications, AI agents, APIs, RAG, guardrails and enterprise integrations.
+- **Data & Quantitative Solutions** — data engineering, clustering, statistical modeling, graph-based methods, optimization and scientific computing.
+- **Microsoft Ecosystem** — SharePoint/SPFx, Power Apps, Power Automate and Dataverse.
+- **Quantum Technologies & Navigation** — PhD research at ITA on GNSS-denied navigation, quantum sensing, sensor fusion, state estimation and embedded systems.
+
+## Background
+
+**Physicist | MSc in Physics | PhD Researcher in Electronic Engineering and Computing at ITA**
+
+Currently working in **Software Development & Applied AI at ProNext** and serving as **President & Co-Founder | Technology & R&D Lead (Volunteer) at Instituto Foton**.
+
+## Portfolio
+
+The portfolio presents selected projects across enterprise software, applied AI, data platforms, quantitative analysis, scientific computing and technology R&D.
+
+Main case studies include **Foton Hub**, **Cities Comparing**, **Hamlet**, and other software/data/AI projects.
+
+## Technology stack
+
+React · TypeScript · JavaScript · Python · OpenAI API · Microsoft Copilot · SharePoint/SPFx · Power Apps · Power Automate · Dataverse · Supabase · PostgreSQL/SQL · Pandas · NumPy · SciPy · scikit-learn · Plotly · Streamlit · Qiskit · Git/GitHub · Docker
+
+## Run locally
+
 ```bash
 npm install
 cp .env.example .env
 npm run dev
 ```
-Firebase variables are optional for public fallback mode. They are required for Admin login, persistence and Storage uploads.
 
 ## Build
+
 ```bash
 npm run build
 ```
-HashRouter keeps GitHub Pages routes robust (`/#/about`, `/#/projects/...`, `/#/admin`).
 
-## Admin
-`/#/admin` — authorized account: `leo.c.rossato@gmail.com`.
-
-## Security
-Deploy `firestore.rules` and `storage.rules`. The React email check is UX only; server-side Firebase rules enforce writes.
+Hash-based routing keeps GitHub Pages routes robust.
 
 ## Architecture
-Read `docs/architecture.md` and `docs/firebase-setup.md`.
 
-## V2 functional corrections
-
-The current source includes the Admin UX and upload/persistence corrections described in `docs/v2-functional-fixes.md`.
-
-Important behavior:
-
-- Admin edits never expose JSON or Firestore document structure.
-- Project covers and the profile photo are uploaded through `MediaService` / `IMediaRepository`.
-- New media is persisted before old media is deleted.
-- `SiteContentProvider` exposes `refreshContent()` and `refreshProjects()` for immediate public-state refresh after saves.
-- Global toast messages report save/upload success and human-readable failures.
-- `/about` is retained only as a compatibility redirect to the About section on Home.
-- Enterprise Power Apps is excluded from the initial/public More Projects set.
+See the `docs/` directory for architecture and implementation documentation.
