@@ -56,7 +56,7 @@ export function Home() {
       : 'AI, Data & Quantitative Solutions | Software Development & Applied AI')
 
   return (
-    <main style={portfolioScaleStyle}>
+    <main className="portfolio-home" style={portfolioScaleStyle}>
       <section className="hero hero-positioning">
         <div className="site-container hero-main">
           <div className="eyebrow">{home.eyebrow || 'LEONARDO CAMARGO ROSSATO'}</div>
@@ -88,12 +88,10 @@ export function Home() {
         </div>
       </section>
 
-      <CapabilitiesSection capabilities={settings.capabilities} />
-
       <section className="section selected-section" id="projects">
         <div className="site-container">
           <SectionTitle
-            eyebrow="02 / Portfolio"
+            eyebrow="01 / Portfolio"
             title={t('selectedWork')}
             description={settings.projectsIntro || t('selectedDescription')}
           />
@@ -111,7 +109,7 @@ export function Home() {
       <section className="section section-soft">
         <div className="site-container">
           <SectionTitle
-            eyebrow="03 / Portfolio"
+            eyebrow="02 / Portfolio"
             title={t('moreProjects')}
             description={t('moreDescription')}
           />
@@ -122,6 +120,8 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      <CapabilitiesSection capabilities={settings.capabilities} />
 
       <ExperienceSection experiences={about.experiences} />
 

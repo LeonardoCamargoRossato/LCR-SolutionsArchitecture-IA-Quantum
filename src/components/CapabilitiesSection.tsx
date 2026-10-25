@@ -14,7 +14,7 @@ export function CapabilitiesSection({ capabilities }: { capabilities?: Capabilit
       <div className="site-container">
         <div className="section-title section-title-stacked">
           <div>
-            <div className="eyebrow">01 / {t('capabilitiesEyebrow')}</div>
+            <div className="eyebrow">03 / {t('capabilitiesEyebrow')}</div>
             <h2>{t('whatIBuild')}</h2>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { FileText, Github, GraduationCap, Maximize2 } from 'lucide-react'
+import { ExternalLink, FileText, Github, GraduationCap, Maximize2 } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { Project } from '../../domain/models/Project'
@@ -88,8 +88,8 @@ export function CaseHero({
           <CaseInstitutionLogos institutions={institutions} />
 
           <div className="case-actions">
-            {project.links.liveUrl && <a className="button" href={project.links.liveUrl} target="_blank" rel="noopener noreferrer">{primaryLabel} ↗</a>}
-            {project.links.researchUrl && <a className="button button-secondary" href={project.links.researchUrl} target="_blank" rel="noopener noreferrer">{researchLabel} ↗</a>}
+            {project.links.liveUrl && <a className="button" href={project.links.liveUrl} target="_blank" rel="noopener noreferrer">{primaryLabel}<ExternalLink size={14} aria-hidden="true" /></a>}
+            {project.links.researchUrl && <a className="button button-secondary" href={project.links.researchUrl} target="_blank" rel="noopener noreferrer">{researchLabel}<ExternalLink size={14} aria-hidden="true" /></a>}
           </div>
         </div>
 

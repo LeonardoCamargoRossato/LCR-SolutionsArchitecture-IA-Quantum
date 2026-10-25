@@ -126,8 +126,11 @@ export function ProjectCaseV1() {
   const narrative = normalizeCaseSections(project.sections)
   const technologies = Array.isArray(project.technologies) ? project.technologies : []
   const sourceGroup = project.source ?? (project.caseStudy ? 'main' : 'more')
+  const isCe235 = project.slug === 'ce235-real-time-systems'
   const isCitiesComparing = project.slug === 'cities-comparing'
-  const primaryLabel = isCitiesComparing
+  const primaryLabel = isCe235
+    ? locale === 'pt-BR' ? 'Abrir portal acadêmico' : 'Open academic portal'
+    : isCitiesComparing
     ? locale === 'pt-BR' ? 'Conheça mais a Plataforma' : 'Learn more about the Platform'
     : sourceGroup === 'more' && project.links.liveUrl
     ? t('openApplication')
@@ -136,7 +139,9 @@ export function ProjectCaseV1() {
       : project.slug === 'speaker-portfolio'
         ? t('visitWebsite')
         : t('live')
-  const researchLabel = isCitiesComparing
+  const researchLabel = isCe235
+    ? locale === 'pt-BR' ? 'Experimentar Telemetry Decoder' : 'Try Telemetry Decoder'
+    : isCitiesComparing
     ? locale === 'pt-BR'
       ? 'Abrir versão Alpha em Streamlit (2023 - original/antiga)'
       : 'Open Alpha version in Streamlit (2023 - original/legacy)'

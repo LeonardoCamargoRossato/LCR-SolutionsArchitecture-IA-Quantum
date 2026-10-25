@@ -17,6 +17,10 @@ export function ProjectCard({ project, variant = 'primary' }: Props) {
   const description = (current.description ?? '').replace(/<[^>]*>/g, ' ')
   const technologies = current.technologies ?? []
   const image = current.coverImage?.url
+  const category = `${current.category} ${current.slug}`.toLowerCase()
+  const accent = /academic|acadêm|scientific|científica|quantum|telemetry|ce235|cities/.test(category)
+    ? 'science'
+    : /ai|ia|knowledge|hamlet/.test(category) ? 'ai' : 'software'
   const ctaLabel = t('viewCase')
   const cardClassName = `project-card project-card-${variant} ${current.featured ? 'project-card-featured-accent' : ''}`
 
@@ -78,6 +82,7 @@ export function ProjectCard({ project, variant = 'primary' }: Props) {
     <Link
       to={`/projects/${current.slug}`}
       className={cardClassName}
+      data-accent={accent}
       aria-label={`${ctaLabel}: ${current.title ?? ''}`}
     >
       {content}

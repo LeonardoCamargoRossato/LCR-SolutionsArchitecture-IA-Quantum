@@ -2,6 +2,7 @@ import type { IProjectRepository } from '../../domain/repositories/IProjectRepos
 import type { Project, ProjectPlacement, ProjectSource } from '../../domain/models/Project'
 import { defaultMoreProjects, defaultProjects } from '../../data/defaultProjects'
 import { citiesComparingContent } from '../../data/citiesComparing'
+import { ce235Project } from '../../data/ce235Project'
 
 const defaults = [...defaultProjects, ...defaultMoreProjects]
 
@@ -125,7 +126,13 @@ export class ProjectService {
   async getAll() {
     try {
       const remote = await this.repo.getAll()
-      return sortEditorial(remote.filter((project) => project.slug !== 'power-platform' && project.visible !== false).map(enrich))
+      // This published academic case is code-managed until a matching CMS entry exists.
+      // Check the CMS explicitly because its public list already excludes hidden rows.
+      const hasCe235 = remote.some((project) => project.id === ce235Project.id || project.slug === ce235Project.slug)
+      const projects = hasCe235
+        ? remote
+        : [...remote, await this.repo.getBySlug(ce235Project.slug, true) ?? ce235Project]
+      return sortEditorial(projects.filter((project) => project.slug !== 'power-platform' && project.visible !== false).map(enrich))
     } catch {
       // Do not expose local defaults when the remote visibility query fails.
       return []
@@ -143,7 +150,11 @@ export class ProjectService {
     try {
       const all = includeHidden ? await this.repo.getAllForAdmin() : await this.repo.getAll()
       const found = all.find((project) => accepted.includes(project.slug) || (slug === 'cities-comparing' && project.id === 'city-comparing'))
-      return found ? enrich(found) : null
+      const project = found ?? (slug === ce235Project.slug
+        ? await this.repo.getBySlug(ce235Project.slug, true) ?? ce235Project
+        : null)
+      if (!includeHidden && project?.visible === false) return null
+      return project ? enrich(project) : null
     } catch {
       return null
     }

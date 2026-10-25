@@ -1,0 +1,158 @@
+/* Public portfolio rhythm: contrasting bands, shared by Home and case studies. */
+:root {
+  --section-base: #ffffff;
+  --section-tint: #edf3fc;
+  --accent-science: #087f8c;
+  --accent-ai: #7544cf;
+}
+
+[data-theme='dark'] {
+  --bg: #0b0f16;
+  --section-base: #0b0f16;
+  --section-tint: #101e35;
+  --surface: #172235;
+  --surface-alt: #1c2c43;
+  --border: #2f4059;
+  --text-muted: #b3c0d2;
+  --accent-science: #5dd8df;
+  --accent-ai: #b69aff;
+  --header-bg: rgba(11, 15, 22, .94);
+}
+
+.portfolio-home > section,
+.case-story-hero,
+.case-story-content > section {
+  background: var(--section-base);
+}
+
+.portfolio-home > section:nth-of-type(even),
+.case-story-content > section:nth-of-type(even) {
+  background: var(--section-tint);
+}
+
+.portfolio-home > section {
+  padding-block: clamp(56px, 7vw, 92px);
+  border-top: 1px solid color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+.portfolio-home .hero-positioning {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(64px, 9vw, 120px);
+  background: radial-gradient(ellipse at 85% 10%, var(--primary-soft), transparent 60%), var(--section-base);
+}
+
+.hero-positioning h1 {
+  max-width: 1000px;
+  white-space: normal;
+  text-wrap: balance;
+  font-size: clamp(2.5rem, 5.5vw, 4.8rem);
+  line-height: 1.08;
+  letter-spacing: -.045em;
+}
+
+.hero-positioning .hero-description {
+  max-width: 760px;
+  font-size: clamp(16px, 1.5vw, 18px);
+  line-height: 1.75;
+}
+
+.hero-statement {
+  color: var(--primary);
+}
+
+.section-title h2,
+.home-about h2,
+.contact-section h2 {
+  font-size: clamp(30px, 3.5vw, 46px);
+  line-height: 1.15;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+
+.section-title .eyebrow {
+  margin-bottom: 12px;
+}
+
+.project-card {
+  --card-accent: var(--primary);
+  border-color: color-mix(in srgb, var(--card-accent) 22%, var(--border));
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .06);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.project-card[data-accent='science'] { --card-accent: var(--accent-science); }
+.project-card[data-accent='ai'] { --card-accent: var(--accent-ai); }
+
+.project-card .project-category,
+.project-card .view-link {
+  color: var(--card-accent);
+}
+
+.project-card .project-image-wrap {
+  aspect-ratio: 16 / 10;
+  border-bottom: 3px solid color-mix(in srgb, var(--card-accent) 65%, var(--border));
+}
+
+.project-card .project-content { padding: clamp(20px, 2.2vw, 30px); }
+.project-card .project-description { line-height: 1.7; }
+.project-card .tech-list span { background: var(--primary-soft); border-color: transparent; }
+.project-status { font-weight: 650; }
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .project-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--card-accent);
+    box-shadow: 0 16px 42px color-mix(in srgb, var(--card-accent) 15%, transparent);
+  }
+}
+
+.capability-card {
+  border-top: 3px solid var(--primary);
+  background: var(--surface);
+}
+.capability-card:nth-child(2n) { border-top-color: var(--accent-ai); }
+.capability-card:nth-child(3n) { border-top-color: var(--accent-science); }
+.capability-card:nth-child(2n) .capability-icon { color: var(--accent-ai); }
+.capability-card:nth-child(3n) .capability-icon { color: var(--accent-science); }
+
+.work-process-step {
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.case-story-content > section { padding-block: clamp(40px, 5vw, 68px); }
+.case-story-content .case-story-body { font-size: 16px; line-height: 1.85; }
+.case-story-content .case-story-label { font-size: 13px; letter-spacing: .09em; }
+.case-story-content #solution .case-content-column,
+.case-story-content #role .case-content-column,
+.case-results-box {
+  padding: clamp(22px, 3vw, 36px);
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius);
+}
+.case-story-content #results .case-results-box { border-left-color: var(--accent-science); }
+.case-story-content #architecture .case-architecture-item { background: var(--surface); }
+.case-story-content #role .case-content-column::before,
+.case-story-content #solution .case-content-column::before { display: none; }
+.case-actions .button { padding-block: 10px; text-align: center; }
+.case-story-closing { background: var(--section-tint); }
+.site-footer { background: var(--section-base); }
+
+@media (max-width: 600px) {
+  .hero-positioning h1 { font-size: clamp(2.25rem, 9vw, 3.25rem); }
+  .project-card .project-image-wrap { aspect-ratio: 16 / 10; }
+  .project-meta-row { gap: 10px; }
+  .project-status { max-width: 42%; }
+  .case-actions { align-items: stretch; }
+  .case-actions .button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card { transition: none; }
+  .project-card:hover { transform: none; }
+}

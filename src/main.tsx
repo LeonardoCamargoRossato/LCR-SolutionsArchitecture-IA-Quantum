@@ -11,6 +11,7 @@ import { ToastProvider } from './providers/ToastProvider'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import './styles/theme.css'
 import './styles/global.css'
+import './styles/visual-refresh.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

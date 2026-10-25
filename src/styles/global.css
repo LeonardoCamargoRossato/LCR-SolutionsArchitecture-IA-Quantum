@@ -4319,7 +4319,6 @@ a.case-institution-logo:hover {
     grid-column: auto;
   }
 }
-\n\n/* Case Study refinement — wider editorial system, same visual identity */\n.case-story-content {\n  padding-top: 10px;\n}\n\n.case-content-column {\n  width: min(1180px, calc(100% - 48px));\n  margin: 0 auto;\n}\n\n.case-story-section {\n  padding: 50px 0;\n}\n\n.case-story-label {\n  margin-bottom: 18px;\n}\n\n.case-story-label-icon {\n  display: inline-flex;\n  align-items: center;\n  gap: 8px;\n}\n\n.case-story-label-icon svg {\n  flex: 0 0 auto;\n}\n\n/* Section heading is intentionally single-level: no repeated large black title. */\n.case-story-section h2,\n.case-results-box h2 {\n  display: none;\n}\n\n.case-story-body-grid {\n  max-width: 980px;\n}\n\n.case-story-body-grid.is-multi {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 18px 42px;\n  max-width: none;\n}\n\n.case-story-body-grid .case-story-body {\n  margin: 0;\n}\n\n.case-story-body {\n  max-width: 980px;\n  font-size: 15px;\n  line-height: 1.72;\n}\n\n.case-story-section-accent .case-content-column {\n  padding: 22px 24px 22px 28px;\n  border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));\n  border-radius: var(--radius);\n  background: color-mix(in srgb, var(--primary) 3%, var(--surface));\n}\n\n.case-story-section-accent .case-content-column::before {\n  top: 22px;\n  left: 0;\n  height: 34px;\n}\n\n/* Architecture uses the full case grid instead of a narrow centered strip. */\n.case-architecture-grid {\n  grid-template-columns: repeat(4, minmax(0, 1fr));\n  gap: 12px;\n  margin-top: 24px;\n}\n\n.case-architecture-item {\n  min-height: 88px;\n  align-content: center;\n  padding: 18px;\n}\n\n.case-results-box {\n  padding: 26px 28px;\n}\n\n.case-results-list {\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 10px 28px;\n}\n\n.case-feature-grid {\n  grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n\n.case-feature-item {\n  min-height: 72px;\n}\n\n.case-tag-cloud {\n  max-width: 1080px;\n}\n\n/* Quick facts — icon-led and denser, while keeping the existing visual system. */\n.case-fact {\n  padding-top: 20px;\n  padding-bottom: 20px;\n}\n\n.case-fact-heading {\n  display: flex;\n  align-items: center;\n  gap: 7px;\n  margin-bottom: 8px;\n  color: var(--primary);\n}\n\n.case-fact-heading span {\n  margin: 0;\n  color: inherit;\n}\n\n.case-fact-heading svg {\n  flex: 0 0 auto;\n}\n\n/* End-to-end architecture: wider, calmer cards with clear technical progression. */\n.case-system-flow {\n  gap: 14px;\n  margin-top: 18px;\n}\n\n.case-system-flow-stage {\n  min-height: 210px;\n  padding: 20px 18px;\n}\n\n.case-system-flow-title {\n  margin-bottom: 13px;\n}\n\n.case-system-flow-icon {\n  width: 36px;\n  height: 36px;\n}\n\n.case-system-flow-stage h3 {\n  font-size: 16px;\n  line-height: 1.35;\n}\n\n.case-system-flow-stage p {\n  font-size: 12.5px;\n  line-height: 1.6;\n}\n\n.case-system-flow-stage li {\n  font-size: 12px;\n  line-height: 1.5;\n}\n\n/* Role remains visually distinct but integrated into the same case grid. */\n#role .case-content-column {\n  padding: 20px 24px 20px 30px;\n  border: 1px solid color-mix(in srgb, var(--primary) 20%, var(--border));\n  border-radius: var(--radius);\n  background: color-mix(in srgb, var(--primary) 3%, var(--surface));\n}\n\n#role .case-content-column::before {\n  top: 20px;\n  bottom: 20px;\n  left: 0;\n}\n\n/* Keep hero compact and aligned; metadata/logos remain the academic context surface. */\n.case-story-hero-grid {\n  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);\n  gap: clamp(38px, 5vw, 68px);\n}\n\n.case-story-description {\n  max-width: 700px;\n}\n\n@media (max-width: 1100px) {\n  .case-architecture-grid,\n  .case-feature-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n\n  .case-system-flow {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n  }\n\n  .case-system-flow-stage:nth-child(2)::after {\n    display: none;\n  }\n}\n\n@media (max-width: 820px) {\n  .case-content-column {\n    width: min(100% - 28px, 1180px);\n  }\n\n  .case-story-body-grid.is-multi,\n  .case-results-list {\n    grid-template-columns: 1fr;\n  }\n}\n\n@media (max-width: 760px) {\n  .case-story-section {\n    padding: 42px 0;\n  }\n\n  .case-story-section-accent .case-content-column,\n  #role .case-content-column {\n    padding: 18px 16px 18px 20px;\n  }\n\n  .case-architecture-grid,\n  .case-feature-grid,\n  .case-system-flow {\n    grid-template-columns: 1fr;\n  }\n\n  .case-system-flow-stage {\n    min-height: 0;\n  }\n\n  .case-system-flow-stage:nth-child(2)::after {\n    display: grid;\n  }\n}\n
 
 /* =========================================================
    Case Study density refinement + shared image lightbox
@@ -5011,34 +5010,5 @@ a.case-institution-logo:hover {
     grid-template-columns: 1fr;
     gap: 8px;
     padding: 20px 0;
-  }
-}
-
-
-/* Hero professional title — always one line */
-.hero-positioning h1 {
-  max-width: none;
-  white-space: nowrap;
-  font-size: clamp(2rem, 4.1vw, 4rem);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-}
-
-@media (max-width: 900px) {
-  .hero-positioning h1 {
-    font-size: clamp(1.4rem, 4.25vw, 2.75rem);
-  }
-}
-
-@media (max-width: 600px) {
-  .hero-positioning h1 {
-    font-size: clamp(0.95rem, 4.8vw, 1.7rem);
-    letter-spacing: -0.045em;
-  }
-}
-
-@media (max-width: 360px) {
-  .hero-positioning h1 {
-    font-size: clamp(0.88rem, 4.65vw, 1rem);
   }
 }

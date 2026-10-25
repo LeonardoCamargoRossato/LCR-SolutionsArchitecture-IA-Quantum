@@ -1,5 +1,6 @@
 import type { Project } from '../domain/models/Project'
 import { citiesComparingContent } from './citiesComparing'
+import { ce235Project } from './ce235Project'
 
 const ph = (name: string, url: string) => ({
   id: `default-${name}`,
@@ -277,6 +278,7 @@ export const defaultProjects: Project[] = [
 ]
 
 export const defaultMoreProjects: Project[] = [
+  ce235Project,
   {
     id: 'esp32-control',
     slug: 'esp32-control',
