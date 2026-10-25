@@ -172,11 +172,11 @@
 }
 
 .portfolio-home .more-projects-grid .project-image-wrap {
-  aspect-ratio: auto;
-  min-height: 170px;
-  height: 100%;
-  border-bottom: 0;
-  border-right: 3px solid color-mix(in srgb, var(--card-accent) 65%, var(--border));
+  align-self: center;
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+  height: auto;
+  border: 0;
 }
 
 .portfolio-home .more-projects-grid .project-image,
@@ -191,19 +191,21 @@
 
 .portfolio-home .more-projects-grid .project-content {
   min-width: 0;
-  padding: 18px 24px;
+  padding: 12px 20px;
 }
 
-.portfolio-home .more-projects-grid h3 { margin-top: 8px; }
+.portfolio-home .more-projects-grid h3 { margin: 4px 0; }
+.portfolio-home .more-projects-grid .project-subtitle { margin-bottom: 4px; }
 
 .portfolio-home .more-projects-grid .project-description {
   display: block;
   overflow: visible;
   -webkit-line-clamp: unset;
+  line-height: 1.55;
 }
 
 .portfolio-home .more-projects-grid .project-footer-row {
-  margin-top: 12px;
+  margin-top: 8px;
   padding-top: 0;
 }
 
@@ -217,13 +219,13 @@
     width: calc(100% - 12px);
     height: auto;
     min-height: 0;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 9;
     margin: 14px 0 14px 12px;
     border: 0;
     border-radius: 8px;
   }
 
-  .portfolio-home .more-projects-grid .project-content { padding: 14px; }
+  .portfolio-home .more-projects-grid .project-content { padding: 12px; }
   .portfolio-home .more-projects-grid h3 { font-size: 18px; line-height: 1.25; }
   .portfolio-home .more-projects-grid .project-meta-row { flex-direction: column; gap: 4px; }
   .portfolio-home .more-projects-grid .project-status { max-width: none; text-align: left; }
