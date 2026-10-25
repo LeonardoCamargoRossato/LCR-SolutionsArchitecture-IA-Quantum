@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { projectInstitutionService, projectService } from '../bootstrap/services'
 import { CaseArchitecture } from '../components/case/CaseArchitecture'
@@ -21,6 +21,11 @@ import { hasCaseSection, normalizeCaseSections } from '../utils/caseSections'
 
 export function ProjectCaseV1() {
   const { slug } = useParams()
+  useLayoutEffect(() => {
+    // Reset only project navigation, preserving Home's section scrolling.
+    // Instant overrides the site's smooth scrolling when opening a new case.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [slug])
   const { projects } = useSiteContent()
   const { locale, t } = useI18n()
   const { isAdmin, loading: authLoading } = useAuth()
