@@ -107,14 +107,77 @@
   }
 }
 
-.capability-card {
-  border-top: 3px solid var(--primary);
+[data-capability='software'] { --capability-accent: var(--primary); }
+[data-capability='ai'] { --capability-accent: var(--accent-ai); }
+[data-capability='data'] { --capability-accent: var(--accent-science); }
+[data-capability='science'] { --capability-accent: #4f46e5; }
+[data-capability='enterprise'] { --capability-accent: #956000; }
+[data-theme='dark'] [data-capability='science'] { --capability-accent: #9aaeff; }
+[data-theme='dark'] [data-capability='enterprise'] { --capability-accent: #f6c56b; }
+
+.capabilities-section .capabilities-grid { gap: 20px; }
+.capabilities-section .capability-card {
+  display: flex;
+  padding: 0;
+  border-top: 4px solid var(--capability-accent);
   background: var(--surface);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
-.capability-card:nth-child(2n) { border-top-color: var(--accent-ai); }
-.capability-card:nth-child(3n) { border-top-color: var(--accent-science); }
-.capability-card:nth-child(2n) .capability-icon { color: var(--accent-ai); }
-.capability-card:nth-child(3n) .capability-icon { color: var(--accent-science); }
+.capabilities-section .capability-card[data-expanded='true'] {
+  border-color: var(--capability-accent);
+  box-shadow: 0 0 0 1px var(--capability-accent);
+}
+.capability-trigger {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+  padding: 24px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.capability-trigger:focus-visible { outline: 3px solid var(--capability-accent); outline-offset: 3px; }
+.capabilities-section .capability-card .capability-icon { color: var(--capability-accent); }
+.capability-title { margin: 18px 0 10px; color: var(--capability-accent); font-size: 20px; font-weight: 750; line-height: 1.3; }
+.capability-description { margin-bottom: 20px; color: var(--text-muted); font-size: 14px; line-height: 1.7; }
+.capability-preview { margin-bottom: 20px; }
+.capability-cta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: auto; color: var(--capability-accent); font-size: 12px; font-weight: 750; }
+.capability-count { display: inline-flex; align-items: center; justify-content: center; min-width: 25px; min-height: 25px; padding-inline: 6px; border-radius: 999px; background: color-mix(in srgb, var(--capability-accent) 12%, transparent); }
+.capability-card[data-expanded='true'] .capability-cta svg { transform: rotate(180deg); }
+
+.capability-details { margin-top: 28px; padding: clamp(24px, 3vw, 36px); border: 1px solid var(--border); border-left: 4px solid var(--capability-accent); border-radius: var(--radius); background: var(--surface); scroll-margin-block: 100px; }
+.capability-details-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.capability-category-label { color: var(--capability-accent); font-size: 12px; font-weight: 750; letter-spacing: .04em; }
+.capability-details h3 { margin: 10px 0 0; font-size: clamp(21px, 2.4vw, 28px); line-height: 1.3; }
+.capability-close { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; min-height: 40px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-alt); color: var(--text); font: inherit; font-size: 13px; cursor: pointer; }
+.capability-details-description { max-width: 80ch; margin: 20px 0 24px; color: var(--text-muted); line-height: 1.75; }
+.capability-details h4 { margin: 0 0 14px; font-size: 15px; }
+.capability-all-items { gap: 8px; }
+.capability-all-items span { padding-block: 5px; }
+.capability-projects { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border); }
+.capability-project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.capability-project-link { display: flex; flex-direction: column; gap: 10px; padding: 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-alt); }
+.capability-project-link strong { color: var(--capability-accent); font-size: 15px; line-height: 1.4; }
+.capability-project-link > span { color: var(--text-muted); font-size: 13px; line-height: 1.65; }
+.capability-project-link:hover { border-color: var(--capability-accent); }
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .capabilities-section .capability-card:hover { transform: translateY(-5px); border-color: var(--capability-accent); box-shadow: 0 14px 32px color-mix(in srgb, var(--capability-accent) 16%, transparent); }
+}
+@media (max-width: 760px) {
+  .capability-project-grid { grid-template-columns: minmax(0, 1fr); }
+  .capability-details-header { gap: 12px; }
+  .capability-close { padding-inline: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .capabilities-section .capability-card { transition: none; }
+}
 
 .portfolio-home .work-process-grid {
   gap: 20px;

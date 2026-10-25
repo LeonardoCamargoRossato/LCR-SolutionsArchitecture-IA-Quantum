@@ -120,7 +120,7 @@ export function Home() {
         </div>
       </section>
 
-      <CapabilitiesSection capabilities={settings.capabilities} />
+      <CapabilitiesSection capabilities={settings.capabilities} projects={projects} />
 
       <ExperienceSection experiences={about.experiences} />
 
