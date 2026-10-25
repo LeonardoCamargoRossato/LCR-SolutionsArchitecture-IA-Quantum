@@ -21,6 +21,8 @@ The portfolio presents selected projects across enterprise software, applied AI,
 
 Main case studies include **Foton Hub**, **Cities Comparing**, **Hamlet**, and other software/data/AI projects.
 
+**Live Personal Technical Portfolio:** https://leonardocamargorossato.github.io/LCR-SolutionsArchitecture-IA-Quantum/#/
+
 ## Technology stack
 
 React · TypeScript · JavaScript · Python · OpenAI API · Microsoft Copilot · SharePoint/SPFx · Power Apps · Power Automate · Dataverse · Supabase · PostgreSQL/SQL · Pandas · NumPy · SciPy · scikit-learn · Plotly · Streamlit · Qiskit · Git/GitHub · Docker
