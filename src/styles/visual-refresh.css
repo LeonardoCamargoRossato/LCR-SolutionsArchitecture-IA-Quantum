@@ -157,7 +157,37 @@
   .project-card:hover { transform: none; }
 }
 
-/* Additional Work: compact horizontal entries; selected projects keep their grid. */
+/* Three featured projects share a row with standard widescreen covers. */
+.portfolio-home .selected-grid {
+  width: 100%;
+  left: auto;
+  transform: none;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.portfolio-home .selected-grid .project-image-wrap {
+  aspect-ratio: 16 / 9;
+  border-bottom: 0;
+}
+
+.portfolio-home .selected-grid .project-content {
+  padding: 20px;
+  border-top: 3px solid color-mix(in srgb, var(--card-accent) 65%, var(--border));
+}
+
+.portfolio-home .selected-grid h3 { font-size: 23px; }
+.portfolio-home .selected-grid .project-footer-row { flex-wrap: wrap; gap: 12px; }
+
+@media (max-width: 960px) {
+  .portfolio-home .selected-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  .portfolio-home .selected-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Additional Work: compact horizontal entries. */
 .portfolio-home .more-projects-grid {
   width: 100%;
   left: auto;

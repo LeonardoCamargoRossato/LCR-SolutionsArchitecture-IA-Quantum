@@ -240,7 +240,7 @@ export const defaultProjects: Project[] = [
     gallery: [],
     order: 4,
     sortOrder: 4,
-    placement: 'main',
+    placement: 'more',
     source: 'main',
     visible: true,
     caseStudy: true,

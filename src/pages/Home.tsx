@@ -30,23 +30,22 @@ export function Home() {
     '--more-card-scale': String(moreCardScale / 100),
   } as CSSProperties
 
-  const projectPlacement = (project: typeof projects[number]) =>
-    project.placement ?? (project.caseStudy ? 'main' : 'more')
-
+  const featuredSlugs = ['foton-hub', 'cities-comparing', 'hamlet']
+  const visibleProjects = projects.filter((project) => project.visible !== false)
   const projectOrder = (project: typeof projects[number]) =>
     project.sortOrder ?? project.order ?? 999
 
-  const mainProjects = projects
-    .filter((project) => project.visible !== false && projectPlacement(project) === 'main')
-    .sort((a, b) => projectOrder(a) - projectOrder(b))
+  const mainProjects = visibleProjects
+    .filter((project) => featuredSlugs.includes(project.slug))
+    .sort((a, b) => featuredSlugs.indexOf(a.slug) - featuredSlugs.indexOf(b.slug))
 
-  const moreProjects = projects
-    .filter((project) =>
-      project.visible !== false &&
-      projectPlacement(project) === 'more' &&
-      project.slug !== 'power-platform',
-    )
-    .sort((a, b) => projectOrder(a) - projectOrder(b))
+  const moreProjects = visibleProjects
+    .filter((project) => !featuredSlugs.includes(project.slug) && project.slug !== 'power-platform')
+    .sort((a, b) => {
+      if (a.slug === 'speaker-portfolio') return -1
+      if (b.slug === 'speaker-portfolio') return 1
+      return projectOrder(a) - projectOrder(b)
+    })
 
   const professionalTitle =
     about.professionalTitle ||
