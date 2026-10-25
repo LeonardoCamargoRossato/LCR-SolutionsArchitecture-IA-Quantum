@@ -1,9 +1,11 @@
 import { useEffect, useId, useState, type KeyboardEvent } from 'react'
+import { ExternalLink } from 'lucide-react'
+import { resourcesForExperience } from '../data/experienceResources'
 import type { Experience } from '../domain/models/About'
 import { useI18n } from '../i18n/I18nProvider'
 
 export function ExperienceSection({ experiences }: { experiences?: Experience[] }) {
-  const { t } = useI18n()
+  const { t, locale } = useI18n()
   const prefix = useId()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [horizontal, setHorizontal] = useState(() => window.matchMedia('(max-width: 760px)').matches)
@@ -20,6 +22,8 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
   }, [])
 
   if (!selected) return null
+
+  const resources = resourcesForExperience(selected, locale)
 
   const tabId = (id: string) => `${prefix}-experience-${id}`
   const panelId = `${prefix}-experience-panel`
@@ -90,6 +94,15 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
               <div className="experience-panel-organization">{selected.organization}</div>
             )}
             <p className="experience-panel-description">{selected.description}</p>
+            {resources.length > 0 && (
+              <div className="experience-panel-resources" aria-label={locale === 'pt-BR' ? 'Links da experiência' : 'Experience resources'}>
+                {resources.map(({ url, label }) => (
+                  <a className="button button-secondary" key={url} href={url} target="_blank" rel="noopener noreferrer">
+                    {label}<ExternalLink size={14} aria-hidden="true" />
+                  </a>
+                ))}
+              </div>
+            )}
           </article>
         </div>
       </div>
