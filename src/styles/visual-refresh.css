@@ -147,6 +147,68 @@
 .portfolio-home .work-process-step h3 { margin-bottom: 12px; line-height: 1.35; }
 .portfolio-home .work-process-step p { font-size: 14px; line-height: 1.75; }
 
+/* Experience: select a title and period to read its full details. */
+.experience-browser {
+  display: grid;
+  grid-template-columns: minmax(260px, .85fr) minmax(0, 1.7fr);
+  align-items: start;
+  gap: clamp(24px, 4vw, 56px);
+}
+
+.experience-tabs {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-left: 2px solid var(--border);
+}
+
+.experience-tab {
+  width: 100%;
+  min-width: 0;
+  padding: 18px 22px;
+  border: 0;
+  border-left: 3px solid transparent;
+  margin-left: -2px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.experience-tab:hover,
+.experience-tab[aria-selected='true'] {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.experience-tab[aria-selected='true'] { border-left-color: var(--primary); }
+.experience-tab-title { display: block; font-size: 14px; line-height: 1.5; font-weight: 700; }
+.experience-tab-period { display: block; margin-top: 7px; font-size: 12px; line-height: 1.5; }
+
+.experience-panel {
+  min-width: 0;
+  padding: clamp(24px, 3vw, 36px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.experience-panel-period { color: var(--text-muted); font-size: 12px; font-weight: 650; letter-spacing: .04em; }
+.experience-panel h3 { margin: 14px 0 10px; font-size: clamp(21px, 2.2vw, 28px); line-height: 1.3; text-wrap: balance; }
+.experience-panel-organization { display: inline-block; color: var(--primary); font-size: 14px; font-weight: 650; line-height: 1.6; }
+.experience-panel-description { margin: 24px 0 0; color: var(--text-muted); font-size: 15px; line-height: 1.85; white-space: pre-line; overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .experience-browser { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .experience-tabs { flex-direction: row; overflow-x: auto; border-left: 0; border-bottom: 2px solid var(--border); padding-bottom: 2px; }
+  .experience-tab { flex: 0 0 240px; width: 240px; padding: 16px 18px; margin: 0; border-left: 0; border-bottom: 3px solid transparent; }
+  .experience-tab[aria-selected='true'] { border-bottom-color: var(--primary); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .experience-tab { transition: none; }
+}
+
 @media (max-width: 600px) {
   .portfolio-home .work-process-step,
   .portfolio-home .work-process-step:first-child,
