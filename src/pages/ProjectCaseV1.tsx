@@ -126,13 +126,21 @@ export function ProjectCaseV1() {
   const narrative = normalizeCaseSections(project.sections)
   const technologies = Array.isArray(project.technologies) ? project.technologies : []
   const sourceGroup = project.source ?? (project.caseStudy ? 'main' : 'more')
-  const primaryLabel = sourceGroup === 'more' && project.links.liveUrl
+  const isCitiesComparing = project.slug === 'cities-comparing'
+  const primaryLabel = isCitiesComparing
+    ? locale === 'pt-BR' ? 'Conheça mais a Plataforma' : 'Learn more about the Platform'
+    : sourceGroup === 'more' && project.links.liveUrl
     ? t('openApplication')
     : project.slug === 'hamlet'
       ? t('explore')
       : project.slug === 'speaker-portfolio'
         ? t('visitWebsite')
         : t('live')
+  const researchLabel = isCitiesComparing
+    ? locale === 'pt-BR'
+      ? 'Abrir versão Alpha em Streamlit (2023 - original/antiga)'
+      : 'Open Alpha version in Streamlit (2023 - original/legacy)'
+    : t('research')
 
   const isEmbeddedControl = project.id === 'embedded-control-platform' || project.slug === 'embedded-control-platform'
 
@@ -171,7 +179,7 @@ export function ProjectCaseV1() {
       statusLabel={t('status')}
       privatePlatformLabel={t('privatePlatform')}
       primaryLabel={primaryLabel}
-      researchLabel={t('research')}
+      researchLabel={researchLabel}
       githubLabel={labels.githubMeta}
       reportDownloadLabel={labels.reportMeta}
       institutions={institutions}

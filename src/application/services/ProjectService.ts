@@ -1,6 +1,7 @@
 import type { IProjectRepository } from '../../domain/repositories/IProjectRepository'
 import type { Project, ProjectPlacement, ProjectSource } from '../../domain/models/Project'
 import { defaultMoreProjects, defaultProjects } from '../../data/defaultProjects'
+import { citiesComparingContent } from '../../data/citiesComparing'
 
 const defaults = [...defaultProjects, ...defaultMoreProjects]
 
@@ -61,7 +62,7 @@ function enrich(project: Project): Project {
     hasSectionValue(project.sections?.results),
   )
 
-  return withEditorialDefaults({
+  const enriched = withEditorialDefaults({
     ...base,
     ...project,
     slug: canonicalSlug(project),
@@ -81,6 +82,28 @@ function enrich(project: Project): Project {
       },
     },
   })
+
+  if (base.slug !== 'cities-comparing') return enriched
+
+  // Keep the approved platform narrative current even when Supabase has legacy
+  // Streamlit-only copy, while retaining its visibility, cover and institution ID.
+  return {
+    ...enriched,
+    ...citiesComparingContent,
+    links: { ...enriched.links, ...citiesComparingContent.links },
+    sections: { ...enriched.sections, ...citiesComparingContent.sections },
+    translations: {
+      ...enriched.translations,
+      'pt-BR': {
+        ...enriched.translations?.['pt-BR'],
+        ...citiesComparingContent.translations['pt-BR'],
+        sections: {
+          ...enriched.translations?.['pt-BR']?.sections,
+          ...citiesComparingContent.translations['pt-BR'].sections,
+        },
+      },
+    },
+  }
 }
 
 function sortEditorial(items: Project[]) {

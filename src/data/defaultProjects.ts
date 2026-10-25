@@ -1,4 +1,5 @@
 import type { Project } from '../domain/models/Project'
+import { citiesComparingContent } from './citiesComparing'
 
 const ph = (name: string, url: string) => ({
   id: `default-${name}`,
@@ -112,49 +113,10 @@ export const defaultProjects: Project[] = [
     id: 'city-comparing',
     slug: 'cities-comparing',
     title: 'Cities Comparing',
-    subtitle: 'Quantitative & Data Platform',
-    category: 'Data Engineering / Quantitative Analysis',
+    ...citiesComparingContent,
     status: 'Live',
-    description: 'Full-stack quantitative and data platform derived from MSc research for socioeconomic analysis, combining data engineering, PostgreSQL/SQL and CRUD, clustering, quantitative methods, statistical analysis and interactive visualization.',
-    technologies: ['Python', 'PostgreSQL', 'SQL', 'CRUD', 'Pandas', 'Streamlit', 'Jupyter', 'scikit-learn', 'Clustering', 'Graph Algorithms', 'Statistical Analysis', 'Plotly', 'Data Engineering'],
     coverImage: ph('city-comparing', './projects/city-comparing.svg'),
     imageType: 'illustrative-placeholder',
-    sections: {
-      overview: [
-        'Cities Comparing is a quantitative and data platform derived from MSc research at UFRGS for socioeconomic analysis across heterogeneous datasets from Brazil, the United States and Latin America.',
-        'It combines data engineering, quantitative methods, clustering, statistical analysis and interactive visualization in a browser-accessible analytical environment.',
-      ],
-      challenge: [
-        'Socioeconomic datasets from different countries use different structures, scales and conventions, which makes direct comparison difficult without substantial cleaning, standardization, integration and validation.',
-      ],
-      approach: [
-        'The research workflow covered ETL, cleaning, standardization, integration, validation/QA, statistical modeling and reproducible analysis pipelines.',
-        'Analytical methods included clustering, graph-based clustering, statistical inference and visual analytics.',
-      ],
-      architecture: {
-        body: 'The project connects Python/Jupyter research workflows to data processing, PostgreSQL/SQL and CRUD where implemented, and an interactive Streamlit interface for exploration and comparison.',
-        items: ['ETL / preprocessing', 'PostgreSQL / SQL', 'CRUD', 'Clustering', 'Graph-based methods', 'Statistical analysis', 'Streamlit / Plotly'],
-      },
-      features: [
-        'Cross-country socioeconomic comparison',
-        'Heterogeneous dataset integration',
-        'Scatter and distribution analysis',
-        'Clustering and graph-based methods',
-        'Interactive visual analytics',
-        'Reproducible research workflows',
-      ],
-      role: [
-        'End-to-end research software development covering data preparation, quantitative analysis, algorithm development, validation and interactive visualization.',
-      ],
-      results: [
-        'A reusable analytical platform that transforms heterogeneous socioeconomic data into comparable, inspectable and reproducible quantitative workflows.',
-      ],
-      technologies: ['Python', 'PostgreSQL', 'SQL', 'CRUD', 'Pandas', 'Streamlit', 'Jupyter', 'scikit-learn', 'Clustering', 'Graph Algorithms', 'Statistical Analysis', 'Plotly', 'Data Engineering'],
-    },
-    links: {
-      liveUrl: 'https://analysis-socioeconomic-indicators.streamlit.app/',
-      githubUrl: 'https://github.com/LeonardoCamargoRossato/Analysis_SocioEconomic_Indicator',
-    },
     gallery: [],
     order: 2,
     sortOrder: 2,
@@ -163,46 +125,6 @@ export const defaultProjects: Project[] = [
     visible: true,
     caseStudy: true,
     caseEnabled: true,
-    translations: {
-      'pt-BR': {
-        title: 'Cities Comparing',
-        subtitle: 'Plataforma Quantitativa & de Dados',
-        category: 'Engenharia de Dados / Análise Quantitativa',
-        description: 'Plataforma full-stack quantitativa e de dados derivada da pesquisa de mestrado para análise socioeconômica, combinando engenharia de dados, PostgreSQL/SQL e CRUD, clustering, métodos quantitativos, análise estatística e visualização interativa.',
-        sections: {
-          overview: [
-            'O Cities Comparing é uma plataforma quantitativa e de dados derivada da pesquisa de mestrado na UFRGS para análise socioeconômica de bases heterogêneas do Brasil, Estados Unidos e América Latina.',
-            'Combina engenharia de dados, métodos quantitativos, clustering, análise estatística e visualização interativa em um ambiente analítico acessível pelo navegador.',
-          ],
-          challenge: [
-            'Bases socioeconômicas de diferentes países usam estruturas, escalas e convenções distintas, dificultando comparações diretas sem limpeza, padronização, integração e validação.',
-          ],
-          approach: [
-            'O fluxo de pesquisa envolveu ETL, limpeza, padronização, integração, validação/QA, modelagem estatística e pipelines reprodutíveis de análise.',
-            'Os métodos analíticos incluem clustering, clustering baseado em grafos, inferência estatística e análise visual.',
-          ],
-          architecture: {
-            body: 'O projeto conecta fluxos de pesquisa em Python/Jupyter ao processamento de dados, PostgreSQL/SQL e CRUD onde implementados, além de uma interface Streamlit interativa para exploração e comparação.',
-            items: ['ETL / pré-processamento', 'PostgreSQL / SQL', 'CRUD', 'Clustering', 'Métodos baseados em grafos', 'Análise estatística', 'Streamlit / Plotly'],
-          },
-          features: [
-            'Comparação socioeconômica entre países',
-            'Integração de bases heterogêneas',
-            'Análises de dispersão e distribuição',
-            'Clustering e métodos baseados em grafos',
-            'Análise visual interativa',
-            'Fluxos reprodutíveis de pesquisa',
-          ],
-          role: [
-            'Desenvolvimento end-to-end do software de pesquisa, cobrindo preparação de dados, análise quantitativa, desenvolvimento de algoritmos, validação e visualização interativa.',
-          ],
-          results: [
-            'Uma plataforma analítica reutilizável que transforma dados socioeconômicos heterogêneos em fluxos quantitativos comparáveis, inspecionáveis e reprodutíveis.',
-          ],
-          technologies: ['Python', 'PostgreSQL', 'SQL', 'CRUD', 'Pandas', 'Streamlit', 'Jupyter', 'scikit-learn', 'Clustering', 'Algoritmos em Grafos', 'Análise Estatística', 'Plotly', 'Engenharia de Dados'],
-        },
-      },
-    },
   },
 
   {
