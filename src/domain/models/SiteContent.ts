@@ -33,6 +33,8 @@ export type Capability = {
 }
 
 export type WorkProcessStep = {
+  /** Optional authored detail text; absent content is explicitly marked as a placeholder. */
+  details?: string
   step: string
   title: string
   description: string
