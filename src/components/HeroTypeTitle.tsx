@@ -15,7 +15,7 @@ export function HeroTypeTitle({ text }: { text: string }) {
       if (index >= letters.length) return
       index += 1
       setTyped(letters.slice(0, index).join(''))
-      timer = window.setTimeout(type, 34)
+      timer = window.setTimeout(type, 48)
     }
     if (!motion.matches) timer = window.setTimeout(type, 180)
     const update = () => {
