@@ -72,7 +72,7 @@ export function AboutGallery() {
   }
 
   return (
-    <div className="about-gallery-section">
+    <div className="about-gallery-section" data-reveal="fade">
       <div className="about-gallery-heading">
         <div>
           <div className="eyebrow">05.1 / Gallery</div>

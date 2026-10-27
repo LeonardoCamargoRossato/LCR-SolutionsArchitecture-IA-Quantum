@@ -9,9 +9,11 @@ type ProjectCardVariant = 'primary' | 'compact'
 type Props = {
   project: Project
   variant?: ProjectCardVariant
+  reveal?: 'left' | 'right'
+  revealDelay?: number
 }
 
-export function ProjectCard({ project, variant = 'primary' }: Props) {
+export function ProjectCard({ project, variant = 'primary', reveal, revealDelay = 0 }: Props) {
   const { locale, t } = useI18n()
   const current = localizedProject(project, locale)
   const description = (current.description ?? '').replace(/<[^>]*>/g, ' ')
@@ -83,6 +85,8 @@ export function ProjectCard({ project, variant = 'primary' }: Props) {
       to={`/projects/${current.slug}`}
       className={cardClassName}
       data-accent={accent}
+      data-reveal={reveal}
+      style={reveal ? { '--reveal-delay': `${revealDelay}ms` } as React.CSSProperties : undefined}
       aria-label={`${ctaLabel}: ${current.title ?? ''}`}
     >
       {content}

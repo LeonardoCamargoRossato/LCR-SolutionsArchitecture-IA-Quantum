@@ -1,4 +1,4 @@
-import { ChevronDown, GripVertical, RotateCcw, X } from 'lucide-react'
+import { ChevronDown, GripVertical, X } from 'lucide-react'
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react'
 import type { WorkProcessStep } from '../domain/models/SiteContent'
 import { useI18n } from '../i18n/I18nProvider'
@@ -16,6 +16,7 @@ export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
   const prefix = useId()
   const safe = Array.isArray(steps) ? steps : []
   const stageRef = useRef<HTMLDivElement>(null)
+  const sectionRef = useRef<HTMLElement>(null)
   const nodeRefs = useRef<(HTMLElement | null)[]>([])
   const pathRefs = useRef<(SVGPathElement | null)[]>([])
   const offsets = useRef<Point[]>([])
@@ -87,12 +88,6 @@ export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
     frame.current = requestAnimationFrame(() => { frame.current = null; draw() })
   }, [draw])
 
-  const resetPositions = () => {
-    offsets.current = []
-    draw()
-    setAnnouncement(pt ? 'Posições originais restauradas.' : 'Original positions restored.')
-  }
-
   useLayoutEffect(() => {
     const stage = stageRef.current
     if (!stage) return
@@ -143,14 +138,25 @@ export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
 
   useEffect(() => {
     const stage = stageRef.current
-    if (!stage || entered) return
+    const section = sectionRef.current
+    if (!stage || !section) return
     if (reducedMotion || typeof IntersectionObserver === 'undefined') { setEntered(true); return }
     const observer = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) { setEntered(true); observer.disconnect() }
+      entries.forEach((entry) => {
+        if (entry.target === stage && entry.isIntersecting) setEntered(true)
+        if (entry.target === section && !entry.isIntersecting && !drag.current) {
+          setEntered(false)
+          setIntroComplete(false)
+          setSelectedIndex(null)
+          offsets.current = []
+          draw()
+        }
+      })
     }, { threshold: .12, rootMargin: '0px 0px -48px 0px' })
     observer.observe(stage)
+    observer.observe(section)
     return () => observer.disconnect()
-  }, [entered, reducedMotion, safe.length])
+  }, [reducedMotion, safe.length, draw])
 
   if (!safe.length) return null
 
@@ -200,7 +206,7 @@ export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
   }
 
   return (
-    <section className="section section-soft work-process-section work-process-animated" id="how-i-work">
+    <section className="section section-soft work-process-section work-process-animated" id="how-i-work" ref={sectionRef}>
       <div className="site-container">
         <div className="section-title section-title-stacked">
           <div>
@@ -210,7 +216,6 @@ export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
         </div>
         <div className="process-toolbar">
           <p id={hintId}>{pt ? 'Clique em uma etapa para explorar os detalhes.' : 'Select a step to explore its details.'} {dragEnabled && (pt ? 'Reposicione os cards pela alça ou use as setas do teclado com a alça em foco.' : 'Reposition cards using the handle, or use arrow keys while the handle is focused.')}</p>
-          {dragEnabled && <button className="process-reset" type="button" onClick={resetPositions}><RotateCcw size={15} aria-hidden="true" />{pt ? 'Restaurar posições' : 'Reset positions'}</button>}
         </div>
         <div className="process-stage" ref={stageRef} data-entered={entered} data-intro-complete={introComplete} data-reduced={reducedMotion} data-draggable={dragEnabled}>
           <svg className="process-wires" aria-hidden="true" focusable="false">
@@ -219,7 +224,7 @@ export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
           </svg>
           <div className="work-process-grid">
             {safe.map((item, index) => (
-              <article className="process-node" ref={(node) => { nodeRefs.current[index] = node }} key={`${item.step}-${index}`} data-dragging={dragging === index} style={{ '--process-index': index } as CSSProperties}>
+              <article className="process-node" ref={(node) => { nodeRefs.current[index] = node }} key={`${item.step}-${index}`} data-stage-index={index} data-dragging={dragging === index} style={{ '--process-index': index } as CSSProperties}>
                 <div className="process-card" data-selected={selectedIndex === index} onAnimationEnd={(event) => { if (index === safe.length - 1 && event.animationName === 'process-card-enter') setIntroComplete(true) }}>
                   <button className="process-card-trigger" type="button" id={`${prefix}-process-${index}`} aria-labelledby={`${prefix}-process-title-${index}`} aria-expanded={selectedIndex === index} aria-controls={panelId} onClick={() => chooseStep(index)} onFocus={completeIntro}>
                     <span className="work-process-number">{item.step || String(index + 1).padStart(2, '0')}</span>

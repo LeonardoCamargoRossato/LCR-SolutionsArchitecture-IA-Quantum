@@ -44,14 +44,14 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
   return (
     <section className="section experience-section" id="experience">
       <div className="site-container">
-        <div className="section-title section-title-stacked">
+        <div className="section-title section-title-stacked" data-reveal="scale">
           <div>
             <div className="eyebrow">04 / {t('experienceEyebrow')}</div>
             <h2 id={headingId}>{t('experienceTitle')}</h2>
           </div>
         </div>
 
-        <div className="experience-browser">
+        <div className="experience-browser" data-reveal="scale" style={{ '--reveal-delay': '100ms' } as React.CSSProperties}>
           <div
             className="experience-tabs"
             role="tablist"

@@ -45,7 +45,7 @@ export function CapabilitiesSection({ capabilities, projects }: { capabilities?:
   return (
     <section className="section capabilities-section">
       <div className="site-container">
-        <div className="section-title section-title-stacked">
+        <div className="section-title section-title-stacked" data-reveal="right">
           <div>
             <div className="eyebrow">03 / {t('capabilitiesEyebrow')}</div>
             <h2>{t('whatIBuild')}</h2>
@@ -59,7 +59,7 @@ export function CapabilitiesSection({ capabilities, projects }: { capabilities?:
             const items = Array.isArray(capability.items) ? capability.items : []
             const expanded = selectedIndex === index
             return (
-              <article className="capability-card" data-capability={group.id} data-expanded={expanded} key={`${group.id}-${index}`}>
+              <article className="capability-card" data-capability={group.id} data-expanded={expanded} data-reveal="right" style={{ '--reveal-delay': `${Math.min(index * 55, 220)}ms` } as React.CSSProperties} key={`${group.id}-${index}`}>
                 <button
                   className="capability-trigger"
                   id={`${prefix}-capability-${index}`}
