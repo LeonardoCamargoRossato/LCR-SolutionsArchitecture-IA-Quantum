@@ -5012,3 +5012,31 @@ a.case-institution-logo:hover {
     padding: 20px 0;
   }
 }
+
+
+/* HOTFIX: Hero title mobile no-overlap */
+.hero-positioning h1 {
+  max-width: none;
+  white-space: nowrap;
+  font-size: clamp(1.75rem, 3.8vw, 3.35rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+@media (max-width: 900px) {
+  .hero-positioning h1 {
+    font-size: 4vw;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-positioning h1 {
+    font-size: 4vw;
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+  }
+
+  .hero-positioning .hero-statement {
+    margin-top: 18px;
+  }
+}
