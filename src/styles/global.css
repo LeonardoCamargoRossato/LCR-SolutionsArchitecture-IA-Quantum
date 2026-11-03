@@ -5674,3 +5674,76 @@ a.case-institution-logo:hover {
     color: #10243b;
   }
 }
+
+
+/* HOTFIX V4: Experience hierarchy + softer cards + pager below */
+@media (max-width: 760px) {
+  .experience-mobile-select {
+    margin-bottom: 10px;
+  }
+
+  .experience-mobile-trigger.experience-tone-0 {
+    background: linear-gradient(180deg, #183159, #10203a) !important;
+    border-color: #4a84d8 !important;
+  }
+
+  .experience-mobile-trigger.experience-tone-1 {
+    background: linear-gradient(180deg, #f4f9ff, #dbeaff) !important;
+    border-color: #7fb2ec !important;
+  }
+
+  .experience-mobile-trigger.experience-tone-0 strong,
+  .experience-mobile-trigger.experience-tone-0 small {
+    color: #eef5ff !important;
+  }
+
+  .experience-mobile-trigger.experience-tone-1 strong {
+    color: #18304d !important;
+  }
+
+  .experience-mobile-trigger.experience-tone-1 small {
+    color: #57708e !important;
+  }
+
+  /* Card keeps the same hue family, but visually ~50% softer than the selector. */
+  .experience-panel.experience-tone-0 {
+    background: linear-gradient(180deg, #1f3554, #1a2c45) !important;
+    border-color: #355d91 !important;
+  }
+
+  .experience-panel.experience-tone-1 {
+    background: linear-gradient(180deg, #f8fbff, #edf5ff) !important;
+    border-color: #a8c8ea !important;
+  }
+
+  .experience-panel.experience-tone-0 h3,
+  .experience-panel.experience-tone-0 .experience-panel-period,
+  .experience-panel.experience-tone-0 .experience-panel-description {
+    color: #d8e2f0 !important;
+  }
+
+  .experience-panel.experience-tone-0 .experience-panel-organization {
+    color: #7daaff !important;
+  }
+
+  .experience-panel.experience-tone-1 h3 {
+    color: #21354e !important;
+  }
+
+  .experience-panel.experience-tone-1 .experience-panel-period,
+  .experience-panel.experience-tone-1 .experience-panel-description {
+    color: #60758d !important;
+  }
+
+  .experience-panel.experience-tone-1 .experience-panel-organization {
+    color: #356cad !important;
+  }
+
+  .experience-panel {
+    margin-top: 0 !important;
+  }
+
+  .experience-mobile-pager {
+    margin: 14px 0 0;
+  }
+}
