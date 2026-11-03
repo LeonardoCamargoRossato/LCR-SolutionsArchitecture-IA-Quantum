@@ -1,5 +1,5 @@
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
-import { ChevronRight, ExternalLink } from 'lucide-react'
+import { useEffect, useId, useState, type KeyboardEvent } from 'react'
+import { Check, ChevronDown, ExternalLink } from 'lucide-react'
 import { resourcesForExperience } from '../data/experienceResources'
 import type { Experience } from '../domain/models/About'
 import { useI18n } from '../i18n/I18nProvider'
@@ -9,15 +9,20 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
   const prefix = useId()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [horizontal, setHorizontal] = useState(() => window.matchMedia('(max-width: 760px)').matches)
-  const tabsRef = useRef<HTMLDivElement>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   const items = Array.isArray(experiences)
     ? [...experiences].sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
     : []
+
   const selected = items.find((item) => item.id === selectedId) ?? items[0]
 
   useEffect(() => {
     const media = window.matchMedia('(max-width: 760px)')
-    const update = () => setHorizontal(media.matches)
+    const update = () => {
+      setHorizontal(media.matches)
+      if (!media.matches) setMobileMenuOpen(false)
+    }
     media.addEventListener('change', update)
     return () => media.removeEventListener('change', update)
   }, [])
@@ -29,6 +34,7 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
   const tabId = (id: string) => `${prefix}-experience-${id}`
   const panelId = `${prefix}-experience-panel`
   const headingId = `${prefix}-experience-heading`
+  const mobileMenuId = `${prefix}-experience-mobile-menu`
 
   const navigateTabs = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
     let next: number
@@ -37,9 +43,15 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
     else if (event.key === (horizontal ? 'ArrowRight' : 'ArrowDown')) next = (index + 1) % items.length
     else if (event.key === (horizontal ? 'ArrowLeft' : 'ArrowUp')) next = (index - 1 + items.length) % items.length
     else return
+
     event.preventDefault()
     setSelectedId(items[next].id)
     document.getElementById(tabId(items[next].id))?.focus()
+  }
+
+  const selectExperience = (id: string) => {
+    setSelectedId(id)
+    setMobileMenuOpen(false)
   }
 
   return (
@@ -53,9 +65,51 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
         </div>
 
         <div className="experience-browser" data-reveal="scale" style={{ '--reveal-delay': '100ms' } as React.CSSProperties}>
+          <div className="experience-mobile-select">
+            <button
+              className="experience-mobile-trigger"
+              type="button"
+              aria-expanded={mobileMenuOpen}
+              aria-controls={mobileMenuId}
+              onClick={() => setMobileMenuOpen((open) => !open)}
+            >
+              <span>
+                <strong>{selected.title}</strong>
+                <small>{selected.period}</small>
+              </span>
+              <ChevronDown
+                className={mobileMenuOpen ? 'is-open' : ''}
+                size={20}
+                aria-hidden="true"
+              />
+            </button>
+
+            {mobileMenuOpen && (
+              <div className="experience-mobile-menu" id={mobileMenuId} role="menu">
+                {items.map((item) => {
+                  const active = selected.id === item.id
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      role="menuitem"
+                      className={active ? 'is-active' : ''}
+                      onClick={() => selectExperience(item.id)}
+                    >
+                      <span>
+                        <strong>{item.title}</strong>
+                        <small>{item.period}</small>
+                      </span>
+                      {active && <Check size={17} aria-hidden="true" />}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
           <div className="experience-tabs-shell">
             <div
-              ref={tabsRef}
               className="experience-tabs"
               role="tablist"
               aria-labelledby={headingId}
@@ -79,22 +133,6 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
                 </button>
               ))}
             </div>
-
-            {items.length > 2 && (
-              <button
-                className="experience-tabs-next"
-                type="button"
-                aria-label={locale === 'pt-BR' ? 'Ver mais experiências' : 'View more experiences'}
-                onClick={() => {
-                  tabsRef.current?.scrollBy({
-                    left: tabsRef.current.clientWidth * 0.72,
-                    behavior: 'smooth',
-                  })
-                }}
-              >
-                <ChevronRight size={22} aria-hidden="true" />
-              </button>
-            )}
           </div>
 
           <article
@@ -106,19 +144,37 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
           >
             <div className="experience-panel-period">{selected.period}</div>
             <h3>{selected.title}</h3>
+
             {selected.organizationUrl ? (
-              <a className="experience-panel-organization" href={selected.organizationUrl} target="_blank" rel="noopener noreferrer">
+              <a
+                className="experience-panel-organization"
+                href={selected.organizationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {selected.organization} <span aria-hidden="true">↗</span>
               </a>
             ) : (
               <div className="experience-panel-organization">{selected.organization}</div>
             )}
+
             <p className="experience-panel-description">{selected.description}</p>
+
             {resources.length > 0 && (
-              <div className="experience-panel-resources" aria-label={locale === 'pt-BR' ? 'Links da experiência' : 'Experience resources'}>
+              <div
+                className="experience-panel-resources"
+                aria-label={locale === 'pt-BR' ? 'Links da experiência' : 'Experience resources'}
+              >
                 {resources.map(({ url, label }) => (
-                  <a className="button button-secondary" key={url} href={url} target="_blank" rel="noopener noreferrer">
-                    {label}<ExternalLink size={14} aria-hidden="true" />
+                  <a
+                    className="button button-secondary"
+                    key={url}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {label}
+                    <ExternalLink size={14} aria-hidden="true" />
                   </a>
                 ))}
               </div>
