@@ -16,6 +16,8 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
     : []
 
   const selected = items.find((item) => item.id === selectedId) ?? items[0]
+  const selectedIndex = Math.max(0, items.findIndex((item) => item.id === selected.id))
+  const selectedTone = `experience-tone-${selectedIndex % 5}`
 
   useEffect(() => {
     const media = window.matchMedia('(max-width: 760px)')
@@ -67,7 +69,7 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
         <div className="experience-browser" data-reveal="scale" style={{ '--reveal-delay': '100ms' } as React.CSSProperties}>
           <div className="experience-mobile-select">
             <button
-              className="experience-mobile-trigger"
+              className={`experience-mobile-trigger ${selectedTone}`}
               type="button"
               aria-expanded={mobileMenuOpen}
               aria-controls={mobileMenuId}
@@ -86,14 +88,15 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
 
             {mobileMenuOpen && (
               <div className="experience-mobile-menu" id={mobileMenuId} role="menu">
-                {items.map((item) => {
+                {items.map((item, index) => {
                   const active = selected.id === item.id
+                  const toneClass = `experience-tone-${index % 5}`
                   return (
                     <button
                       key={item.id}
                       type="button"
                       role="menuitem"
-                      className={active ? 'is-active' : ''}
+                      className={`${toneClass}${active ? ' is-active' : ''}`}
                       onClick={() => selectExperience(item.id)}
                     >
                       <span>
@@ -136,7 +139,7 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
           </div>
 
           <article
-            className="experience-panel"
+            className={`experience-panel ${selectedTone}`}
             id={panelId}
             role="tabpanel"
             aria-labelledby={tabId(selected.id)}
