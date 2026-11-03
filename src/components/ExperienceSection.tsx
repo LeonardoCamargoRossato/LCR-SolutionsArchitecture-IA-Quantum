@@ -121,24 +121,6 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
             )}
           </div>
 
-          <div className="experience-mobile-pager" aria-label={locale === 'pt-BR' ? 'Navegar pelas experiências' : 'Navigate experiences'}>
-            <button
-              type="button"
-              onClick={selectPrevious}
-              aria-label={locale === 'pt-BR' ? 'Experiência anterior' : 'Previous experience'}
-            >
-              <ChevronLeft size={20} aria-hidden="true" />
-            </button>
-            <span aria-live="polite">{selectedIndex + 1}</span>
-            <button
-              type="button"
-              onClick={selectNext}
-              aria-label={locale === 'pt-BR' ? 'Próxima experiência' : 'Next experience'}
-            >
-              <ChevronRight size={20} aria-hidden="true" />
-            </button>
-          </div>
-
           <div className="experience-tabs-shell">
             <div
               className="experience-tabs"
@@ -224,6 +206,24 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
               </div>
             )}
           </article>
+
+          <div className="experience-mobile-pager" aria-label={locale === 'pt-BR' ? 'Navegar pelas experiências' : 'Navigate experiences'}>
+            <button
+              type="button"
+              onClick={selectPrevious}
+              aria-label={locale === 'pt-BR' ? 'Experiência anterior' : 'Previous experience'}
+            >
+              <ChevronLeft size={20} aria-hidden="true" />
+            </button>
+            <span aria-live="polite">{selectedIndex + 1}</span>
+            <button
+              type="button"
+              onClick={selectNext}
+              aria-label={locale === 'pt-BR' ? 'Próxima experiência' : 'Next experience'}
+            >
+              <ChevronRight size={20} aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </div>
     </section>
