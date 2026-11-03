@@ -5116,3 +5116,84 @@ a.case-institution-logo:hover {
     padding: 18px !important;
   }
 }
+
+
+/* HOTFIX: Mobile experience tabs show 2.5 items + navigation cue */
+.experience-tabs-shell {
+  position: relative;
+}
+
+.experience-tabs-next {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .experience-browser {
+    display: block;
+  }
+
+  .experience-tabs-shell {
+    position: relative;
+    margin-bottom: 18px;
+  }
+
+  .experience-tabs {
+    display: grid !important;
+    grid-auto-flow: column;
+    grid-auto-columns: 40%;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 46px 8px 0;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .experience-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .experience-tab {
+    min-width: 0;
+    min-height: 118px;
+    padding: 14px 12px !important;
+    scroll-snap-align: start;
+  }
+
+  .experience-tab-title {
+    display: block;
+    font-size: 13px !important;
+    line-height: 1.28 !important;
+    font-weight: 800;
+  }
+
+  .experience-tab-period {
+    display: block;
+    margin-top: 10px;
+    font-size: 11px !important;
+    line-height: 1.25;
+  }
+
+  .experience-tabs-next {
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    z-index: 5;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    transform: translateY(-50%);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    color: var(--primary);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.16);
+    cursor: pointer;
+  }
+
+  .experience-tabs-next:active {
+    transform: translateY(-50%) scale(0.96);
+  }
+}
