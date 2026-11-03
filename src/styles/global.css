@@ -5069,3 +5069,50 @@ a.case-institution-logo:hover {
     width: 100%;
   }
 }
+
+
+/* HOTFIX V2: Additional Work mobile covers full-width above content */
+@media (max-width: 760px) {
+  .more-projects-grid .project-card.project-card-compact {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    align-items: stretch !important;
+  }
+
+  .more-projects-grid .project-card.project-card-compact > .project-image-wrap {
+    grid-column: 1 / -1 !important;
+    grid-row: 1 !important;
+    order: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+    margin: 0 !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+
+  .more-projects-grid .project-card.project-card-compact > .project-image-wrap > .project-image,
+  .more-projects-grid .project-card.project-card-compact > .project-image-wrap > .project-image-placeholder,
+  .more-projects-grid .project-card.project-card-compact > .project-image-wrap > .image-fallback {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    object-fit: cover !important;
+  }
+
+  .more-projects-grid .project-card.project-card-compact > .project-content {
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    order: 1 !important;
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 18px !important;
+  }
+}
