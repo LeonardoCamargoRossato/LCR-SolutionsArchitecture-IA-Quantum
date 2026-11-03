@@ -5537,3 +5537,140 @@ a.case-institution-logo:hover {
     border-color: color-mix(in srgb, var(--experience-tone-border) 68%, var(--border)) !important;
   }
 }
+
+
+/* HOTFIX V3: Two-tone mobile experiences + pager */
+.experience-mobile-pager {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  /* Exactly two fixed visual patterns: dark blue / very light blue. */
+  .experience-tone-0 {
+    --experience-tone-bg: #0f1b2e;
+    --experience-tone-bg-strong: #152844;
+    --experience-tone-border: #3e73c7;
+    --experience-tone-text: #f5f8ff;
+    --experience-tone-muted: #b8c4d9;
+    --experience-tone-accent: #69a3ff;
+  }
+
+  .experience-tone-1 {
+    --experience-tone-bg: #dcecff;
+    --experience-tone-bg-strong: #edf6ff;
+    --experience-tone-border: #79aeea;
+    --experience-tone-text: #122238;
+    --experience-tone-muted: #49627e;
+    --experience-tone-accent: #245fae;
+  }
+
+  .experience-mobile-trigger.experience-tone-0,
+  .experience-mobile-trigger.experience-tone-1,
+  .experience-mobile-menu > button.experience-tone-0,
+  .experience-mobile-menu > button.experience-tone-1,
+  .experience-panel.experience-tone-0,
+  .experience-panel.experience-tone-1 {
+    background: linear-gradient(180deg, var(--experience-tone-bg-strong), var(--experience-tone-bg)) !important;
+    border-color: var(--experience-tone-border) !important;
+    color: var(--experience-tone-text) !important;
+  }
+
+  .experience-mobile-trigger.experience-tone-0 strong,
+  .experience-mobile-trigger.experience-tone-1 strong,
+  .experience-mobile-menu > button.experience-tone-0 strong,
+  .experience-mobile-menu > button.experience-tone-1 strong,
+  .experience-panel.experience-tone-0 h3,
+  .experience-panel.experience-tone-1 h3 {
+    color: var(--experience-tone-text) !important;
+  }
+
+  .experience-mobile-trigger.experience-tone-0 small,
+  .experience-mobile-trigger.experience-tone-1 small,
+  .experience-mobile-menu > button.experience-tone-0 small,
+  .experience-mobile-menu > button.experience-tone-1 small,
+  .experience-panel.experience-tone-0 .experience-panel-period,
+  .experience-panel.experience-tone-1 .experience-panel-period,
+  .experience-panel.experience-tone-0 .experience-panel-description,
+  .experience-panel.experience-tone-1 .experience-panel-description {
+    color: var(--experience-tone-muted) !important;
+  }
+
+  .experience-panel.experience-tone-0 .experience-panel-organization,
+  .experience-panel.experience-tone-1 .experience-panel-organization {
+    color: var(--experience-tone-accent) !important;
+  }
+
+  .experience-mobile-menu > button.experience-tone-0 svg,
+  .experience-mobile-menu > button.experience-tone-1 svg,
+  .experience-mobile-trigger.experience-tone-0 svg,
+  .experience-mobile-trigger.experience-tone-1 svg {
+    color: var(--experience-tone-accent) !important;
+  }
+
+  /* Selection only adds glow/border; it does not alter the item's base color. */
+  .experience-mobile-menu > button.is-active {
+    background: linear-gradient(180deg, var(--experience-tone-bg-strong), var(--experience-tone-bg)) !important;
+    border-color: var(--experience-tone-accent) !important;
+    box-shadow:
+      inset 4px 0 0 var(--experience-tone-accent),
+      0 0 20px color-mix(in srgb, var(--experience-tone-accent) 38%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--experience-tone-accent) 35%, transparent) !important;
+  }
+
+  .experience-mobile-pager {
+    display: grid;
+    grid-template-columns: 42px minmax(42px, auto) 42px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: -2px 0 18px;
+  }
+
+  .experience-mobile-pager button {
+    width: 42px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid color-mix(in srgb, var(--primary) 68%, var(--border));
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 90%, var(--primary) 10%);
+    color: var(--primary);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--primary) 10%, transparent);
+    cursor: pointer;
+  }
+
+  .experience-mobile-pager button:active {
+    transform: scale(.95);
+  }
+
+  .experience-mobile-pager > span {
+    min-width: 44px;
+    display: grid;
+    place-items: center;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 850;
+    letter-spacing: .04em;
+  }
+
+  .experience-panel {
+    touch-action: pan-y;
+    transition:
+      background 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .experience-panel.experience-tone-1 .button-secondary {
+    border-color: #8fb6df;
+    background: rgba(255,255,255,.58);
+    color: #18304c;
+  }
+
+  .experience-panel.experience-tone-1 .button-secondary:hover {
+    border-color: #5d91c9;
+    background: rgba(255,255,255,.78);
+    color: #10243b;
+  }
+}
