@@ -1,5 +1,5 @@
-import { useEffect, useId, useState, type KeyboardEvent } from 'react'
-import { ExternalLink } from 'lucide-react'
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
+import { ChevronRight, ExternalLink } from 'lucide-react'
 import { resourcesForExperience } from '../data/experienceResources'
 import type { Experience } from '../domain/models/About'
 import { useI18n } from '../i18n/I18nProvider'
@@ -9,6 +9,7 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
   const prefix = useId()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [horizontal, setHorizontal] = useState(() => window.matchMedia('(max-width: 760px)').matches)
+  const tabsRef = useRef<HTMLDivElement>(null)
   const items = Array.isArray(experiences)
     ? [...experiences].sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
     : []
@@ -52,29 +53,48 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
         </div>
 
         <div className="experience-browser" data-reveal="scale" style={{ '--reveal-delay': '100ms' } as React.CSSProperties}>
-          <div
-            className="experience-tabs"
-            role="tablist"
-            aria-labelledby={headingId}
-            aria-orientation={horizontal ? 'horizontal' : 'vertical'}
-          >
-            {items.map((item, index) => (
+          <div className="experience-tabs-shell">
+            <div
+              ref={tabsRef}
+              className="experience-tabs"
+              role="tablist"
+              aria-labelledby={headingId}
+              aria-orientation={horizontal ? 'horizontal' : 'vertical'}
+            >
+              {items.map((item, index) => (
+                <button
+                  className="experience-tab"
+                  key={item.id}
+                  id={tabId(item.id)}
+                  type="button"
+                  role="tab"
+                  aria-selected={selected.id === item.id}
+                  aria-controls={panelId}
+                  tabIndex={selected.id === item.id ? 0 : -1}
+                  onClick={() => setSelectedId(item.id)}
+                  onKeyDown={(event) => navigateTabs(event, index)}
+                >
+                  <span className="experience-tab-title">{item.title}</span>
+                  <span className="experience-tab-period">{item.period}</span>
+                </button>
+              ))}
+            </div>
+
+            {items.length > 2 && (
               <button
-                className="experience-tab"
-                key={item.id}
-                id={tabId(item.id)}
+                className="experience-tabs-next"
                 type="button"
-                role="tab"
-                aria-selected={selected.id === item.id}
-                aria-controls={panelId}
-                tabIndex={selected.id === item.id ? 0 : -1}
-                onClick={() => setSelectedId(item.id)}
-                onKeyDown={(event) => navigateTabs(event, index)}
+                aria-label={locale === 'pt-BR' ? 'Ver mais experiências' : 'View more experiences'}
+                onClick={() => {
+                  tabsRef.current?.scrollBy({
+                    left: tabsRef.current.clientWidth * 0.72,
+                    behavior: 'smooth',
+                  })
+                }}
               >
-                <span className="experience-tab-title">{item.title}</span>
-                <span className="experience-tab-period">{item.period}</span>
+                <ChevronRight size={22} aria-hidden="true" />
               </button>
-            ))}
+            )}
           </div>
 
           <article
