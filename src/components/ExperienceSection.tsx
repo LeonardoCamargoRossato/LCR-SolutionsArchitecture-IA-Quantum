@@ -1,5 +1,5 @@
-import { useEffect, useId, useState, type KeyboardEvent } from 'react'
-import { Check, ChevronDown, ExternalLink } from 'lucide-react'
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
+import { Check, ChevronDown, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react'
 import { resourcesForExperience } from '../data/experienceResources'
 import type { Experience } from '../domain/models/About'
 import { useI18n } from '../i18n/I18nProvider'
@@ -10,6 +10,7 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [horizontal, setHorizontal] = useState(() => window.matchMedia('(max-width: 760px)').matches)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const swipeStartX = useRef<number | null>(null)
 
   const items = Array.isArray(experiences)
     ? [...experiences].sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
@@ -17,7 +18,7 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
 
   const selected = items.find((item) => item.id === selectedId) ?? items[0]
   const selectedIndex = Math.max(0, items.findIndex((item) => item.id === selected.id))
-  const selectedTone = `experience-tone-${selectedIndex % 5}`
+  const selectedTone = `experience-tone-${selectedIndex % 2}`
 
   useEffect(() => {
     const media = window.matchMedia('(max-width: 760px)')
@@ -56,6 +57,15 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
     setMobileMenuOpen(false)
   }
 
+  const selectByIndex = (index: number) => {
+    if (!items.length) return
+    const normalized = (index + items.length) % items.length
+    selectExperience(items[normalized].id)
+  }
+
+  const selectPrevious = () => selectByIndex(selectedIndex - 1)
+  const selectNext = () => selectByIndex(selectedIndex + 1)
+
   return (
     <section className="section experience-section" id="experience">
       <div className="site-container">
@@ -90,7 +100,7 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
               <div className="experience-mobile-menu" id={mobileMenuId} role="menu">
                 {items.map((item, index) => {
                   const active = selected.id === item.id
-                  const toneClass = `experience-tone-${index % 5}`
+                  const toneClass = `experience-tone-${index % 2}`
                   return (
                     <button
                       key={item.id}
@@ -109,6 +119,24 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
                 })}
               </div>
             )}
+          </div>
+
+          <div className="experience-mobile-pager" aria-label={locale === 'pt-BR' ? 'Navegar pelas experiências' : 'Navigate experiences'}>
+            <button
+              type="button"
+              onClick={selectPrevious}
+              aria-label={locale === 'pt-BR' ? 'Experiência anterior' : 'Previous experience'}
+            >
+              <ChevronLeft size={20} aria-hidden="true" />
+            </button>
+            <span aria-live="polite">{selectedIndex + 1}</span>
+            <button
+              type="button"
+              onClick={selectNext}
+              aria-label={locale === 'pt-BR' ? 'Próxima experiência' : 'Next experience'}
+            >
+              <ChevronRight size={20} aria-hidden="true" />
+            </button>
           </div>
 
           <div className="experience-tabs-shell">
@@ -144,6 +172,19 @@ export function ExperienceSection({ experiences }: { experiences?: Experience[] 
             role="tabpanel"
             aria-labelledby={tabId(selected.id)}
             tabIndex={0}
+            onTouchStart={(event) => {
+              swipeStartX.current = event.touches[0]?.clientX ?? null
+            }}
+            onTouchEnd={(event) => {
+              const startX = swipeStartX.current
+              const endX = event.changedTouches[0]?.clientX
+              swipeStartX.current = null
+              if (startX == null || endX == null) return
+              const delta = endX - startX
+              if (Math.abs(delta) < 48) return
+              if (delta < 0) selectNext()
+              else selectPrevious()
+            }}
           >
             <div className="experience-panel-period">{selected.period}</div>
             <h3>{selected.title}</h3>
