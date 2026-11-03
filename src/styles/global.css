@@ -5454,3 +5454,86 @@ a.case-institution-logo:hover {
     border-color: color-mix(in srgb, var(--experience-tone-border) 54%, var(--border));
   }
 }
+
+
+/* HOTFIX V2: High-contrast fixed tones for mobile experiences */
+@media (max-width: 760px) {
+  .experience-tone-0 {
+    --experience-tone-bg: #0f1b2e;
+    --experience-tone-bg-strong: #142540;
+    --experience-tone-border: #2d5b9d;
+  }
+
+  .experience-tone-1 {
+    --experience-tone-bg: #20395a;
+    --experience-tone-bg-strong: #29486f;
+    --experience-tone-border: #4c82c8;
+  }
+
+  .experience-tone-2 {
+    --experience-tone-bg: #142640;
+    --experience-tone-bg-strong: #1b3150;
+    --experience-tone-border: #376bab;
+  }
+
+  .experience-tone-3 {
+    --experience-tone-bg: #2b476b;
+    --experience-tone-bg-strong: #35577f;
+    --experience-tone-border: #5a91d3;
+  }
+
+  .experience-tone-4 {
+    --experience-tone-bg: #182d49;
+    --experience-tone-bg-strong: #213b5d;
+    --experience-tone-border: #4277b8;
+  }
+
+  .experience-mobile-trigger.experience-tone-0,
+  .experience-mobile-trigger.experience-tone-1,
+  .experience-mobile-trigger.experience-tone-2,
+  .experience-mobile-trigger.experience-tone-3,
+  .experience-mobile-trigger.experience-tone-4 {
+    background: linear-gradient(180deg, var(--experience-tone-bg-strong), var(--experience-tone-bg)) !important;
+    border-color: color-mix(in srgb, var(--experience-tone-border) 88%, #7ee7ff 12%) !important;
+  }
+
+  .experience-mobile-menu > button.experience-tone-0,
+  .experience-mobile-menu > button.experience-tone-1,
+  .experience-mobile-menu > button.experience-tone-2,
+  .experience-mobile-menu > button.experience-tone-3,
+  .experience-mobile-menu > button.experience-tone-4 {
+    background: linear-gradient(180deg, var(--experience-tone-bg-strong), var(--experience-tone-bg)) !important;
+    border-color: color-mix(in srgb, var(--experience-tone-border) 64%, transparent) !important;
+  }
+
+  .experience-mobile-menu > button.experience-tone-0:hover,
+  .experience-mobile-menu > button.experience-tone-1:hover,
+  .experience-mobile-menu > button.experience-tone-2:hover,
+  .experience-mobile-menu > button.experience-tone-3:hover,
+  .experience-mobile-menu > button.experience-tone-4:hover,
+  .experience-mobile-menu > button.experience-tone-0:focus-visible,
+  .experience-mobile-menu > button.experience-tone-1:focus-visible,
+  .experience-mobile-menu > button.experience-tone-2:focus-visible,
+  .experience-mobile-menu > button.experience-tone-3:focus-visible,
+  .experience-mobile-menu > button.experience-tone-4:focus-visible {
+    filter: brightness(1.08);
+  }
+
+  .experience-mobile-menu > button.is-active {
+    background: linear-gradient(180deg, var(--experience-tone-bg-strong), var(--experience-tone-bg)) !important;
+    border-color: color-mix(in srgb, var(--experience-tone-border) 92%, #8df0ff 8%) !important;
+    box-shadow:
+      inset 4px 0 0 color-mix(in srgb, var(--experience-tone-border) 90%, #83efff 10%),
+      0 0 22px color-mix(in srgb, var(--experience-tone-border) 42%, transparent),
+      0 0 0 1px color-mix(in srgb, var(--experience-tone-border) 28%, transparent) !important;
+  }
+
+  .experience-panel.experience-tone-0,
+  .experience-panel.experience-tone-1,
+  .experience-panel.experience-tone-2,
+  .experience-panel.experience-tone-3,
+  .experience-panel.experience-tone-4 {
+    background: linear-gradient(180deg, var(--experience-tone-bg-strong), var(--experience-tone-bg)) !important;
+    border-color: color-mix(in srgb, var(--experience-tone-border) 68%, var(--border)) !important;
+  }
+}
