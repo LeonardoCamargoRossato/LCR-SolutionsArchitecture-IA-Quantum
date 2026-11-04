@@ -133,10 +133,13 @@ export function ProjectCaseV1() {
   const sourceGroup = project.source ?? (project.caseStudy ? 'main' : 'more')
   const isCe235 = project.slug === 'ce235-real-time-systems'
   const isCitiesComparing = project.slug === 'cities-comparing'
+  const isWebSeer = project.slug === 'webseer'
   const primaryLabel = isCe235
     ? locale === 'pt-BR' ? 'Abrir portal acadêmico' : 'Open academic portal'
     : isCitiesComparing
     ? locale === 'pt-BR' ? 'Conheça mais a Plataforma' : 'Learn more about the Platform'
+    : isWebSeer
+    ? locale === 'pt-BR' ? 'Acessar WebSeer' : 'Visit WebSeer'
     : sourceGroup === 'more' && project.links.liveUrl
     ? t('openApplication')
     : project.slug === 'hamlet'

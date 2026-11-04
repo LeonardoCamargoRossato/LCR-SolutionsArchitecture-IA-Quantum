@@ -368,7 +368,7 @@ export const defaultMoreProjects: Project[] = [
     coverImage: ph('webseer', './projects/webseer.png'),
     imageType: 'illustrative-placeholder',
     sections: {},
-    links: {},
+    links: { liveUrl: 'https://leonardocamargorossato.github.io/WebSeer/#publishing-schedule' },
     gallery: [],
     order: 13,
     sortOrder: 13,
