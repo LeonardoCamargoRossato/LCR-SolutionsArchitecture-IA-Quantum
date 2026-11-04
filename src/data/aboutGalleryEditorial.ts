@@ -4,9 +4,9 @@ const titles: Record<number, string> = {
   1: 'Natal - RN | Congresso Internacional de Matéria Condensada 2023',
   2: 'Curitiba - Paraná | Congresso de Econofísica e Sistemas Complexos 2023',
   3: 'São Paulo - SP | MVComp 2025',
-  4: 'Porto Alegre - RS | Inauguração da Liga de Computação Quântica, PUC - TecnopUC',
-  5: 'Porto Alegre - RS | Primeira Semana de Computação Quântica da UFRGS',
-  6: 'Foz do Iguaçu - PR',
+  4: 'Porto Alegre - RS | Inauguração da LACEQUI na PUC - TecnoPUC 2025',
+  5: 'Porto Alegre - RS | Primeira Semana de Computação Quântica da UFRGS 2025',
+  6: 'Foz do Iguaçu - PR | Latinoware 2025',
   8: 'São Paulo - SP | ALESP (Assembleia Legislativa do Estado de São Paulo)',
   9: 'Porto Alegre - RS | Tech Now 2025',
   11: 'Porto Alegre - RS | South Summit 2026',
@@ -46,7 +46,7 @@ export function normalizeAboutGallery(items: AboutGalleryItem[]) {
         captionEn: undefined,
         locationPt: undefined,
         locationEn: undefined,
-        editorialOrder: number === 9 ? 0 : number === 11 ? 1 : number === 12 ? 2 : number + 3,
+        editorialOrder: number === 9 ? 0 : number === 11 ? 1 : number === 8 ? 2 : number === 12 ? 3 : number + 4,
       }
     })
     .sort((a, b) => a.editorialOrder - b.editorialOrder)
