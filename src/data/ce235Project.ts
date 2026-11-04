@@ -19,9 +19,9 @@ export const ce235Project: Project = {
   },
   imageType: 'illustrative-placeholder',
   links: {
-    liveUrl: 'https://leonardocamargorossato.github.io/CE235-Sistemas-Tempo-Real/#/',
+    liveUrl: 'https://leonardocamargorossato.github.io/ITA-CE235-EmbeddedSystems-RealTime/#/',
     researchUrl: 'https://leonardocamargorossato.github.io/US123-Telemetry-Decoder/',
-    githubUrl: 'https://github.com/LeonardoCamargoRossato/CE235-Sistemas-Tempo-Real',
+    githubUrl: 'https://github.com/LeonardoCamargoRossato/ITA-CE235-EmbeddedSystems-RealTime',
   },
   sections: {
     overview: [

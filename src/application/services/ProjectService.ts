@@ -100,6 +100,13 @@ function enrich(project: Project): Project {
     }
   }
 
+  if (base.slug === 'ce235-real-time-systems') {
+    return {
+      ...enriched,
+      links: { ...enriched.links, ...base.links },
+    }
+  }
+
   if (base.slug === 'webseer') {
     return {
       ...enriched,
