@@ -70,6 +70,26 @@ export function ProjectCaseV1() {
     const projectSource = source.source === 'more' ? 'more_projects' : 'projects'
     void projectInstitutionService
       .getPublic(source.id, projectSource)
+      .then(async (values) => {
+        if (source.slug !== 'metcompb-landing-page') return values
+
+        // MetCompB shares the UFRGS and Institute of Physics affiliations
+        // already registered for the Cities Comparing research case.
+        const cities = projects.find((item) => item.slug === 'cities-comparing')
+        if (!cities) return values
+        const citiesSource = cities.source === 'more' ? 'more_projects' : 'projects'
+        const related = await projectInstitutionService.getPublic(cities.id, citiesSource)
+        const academicLogos = related.filter((institution) =>
+          /ufrgs|universidade federal do rio grande do sul|instituto de f[ií]sica/i.test(institution.institutionName),
+        )
+        const merged = [...values, ...academicLogos]
+        return merged.filter((institution, index) =>
+          merged.findIndex((candidate) =>
+            candidate.institutionName === institution.institutionName ||
+            (candidate.institutionLogoUrl && candidate.institutionLogoUrl === institution.institutionLogoUrl),
+          ) === index,
+        )
+      })
       .then((values) => {
         if (active) setInstitutions(values)
       })
@@ -79,7 +99,7 @@ export function ProjectCaseV1() {
       })
 
     return () => { active = false }
-  }, [source?.id, source?.source])
+  }, [source?.id, source?.source, source?.slug, projects])
 
 
   const labels = locale === 'pt-BR'

@@ -3,11 +3,11 @@ import type { Project } from '../domain/models/Project'
 export const metCompBProject: Project = {
   id: 'metcompb-landing-page',
   slug: 'metcompb-landing-page',
-  title: 'MetCompB Landing Page',
-  subtitle: 'Scientific Computing Educational Archive',
-  category: 'Educational Software / Scientific Computing',
+  title: 'MetCompB — Scientific Computing Archive',
+  subtitle: 'Video Lessons & Jupyter Notebooks Archive',
+  category: 'Academic Archive / Scientific Computing',
   status: 'Academic Project',
-  description: 'Multilingual educational portal that organizes video lessons, notebooks, exercises, simulations and academic files from Computational Methods B into a clear, navigable learning experience.',
+  description: 'Landing page organizing video lessons and Jupyter notebooks produced for the Computational Methods B course taught at the UFRGS Institute of Physics during my master’s studies. The materials demonstrate advanced computational methods for solving and analyzing dynamical systems.',
   technologies: ['React', 'TypeScript', 'Vite', 'React Router', 'Python', 'Jupyter', 'Scientific Computing'],
   coverImage: {
     id: 'default-metcompb-landing-page',
@@ -21,16 +21,16 @@ export const metCompBProject: Project = {
   imageType: 'real-screenshot',
   sections: {
     overview: [
-      'MetCompB Landing Page is the modern presentation layer for an academic archive focused on Scientific Computing, Numerical Methods, Python and Jupyter.',
-      'It transforms notebooks, exercises, exams, simulations and video lessons into an organized educational portal while keeping the original MetCompB repository as the source of truth.',
+      'MetCompB is a landing page that organizes video lessons and Jupyter notebooks produced for the Computational Methods B course taught at the Institute of Physics of the Federal University of Rio Grande do Sul (UFRGS) during my master’s studies.',
+      'The materials demonstrate advanced computational methods used to solve and analyze dynamical systems with Python and Jupyter.',
     ],
     challenge: [
-      'The academic material was distributed across repository folders, notebooks, figures and external videos. Although technically rich, it was difficult to explore as a coherent learning path.',
-      'The project needed to preserve direct access to the original sources while making the collection understandable to students and visitors.',
+      'The course materials were distributed across repository folders, Jupyter notebooks, figures and video lessons.',
+      'The goal was simply to create a clear index that preserved the original materials and made them easier to find and access.',
     ],
     solution: [
-      'A responsive static application was created with dedicated areas for video lessons, thematic content, files and project context.',
-      'Curated metadata connects each lesson to related computational material, allowing users to move from explanation to notebook, simulation or source file.',
+      'A static landing page was created with sections for video lessons, notebooks, computational examples and source files.',
+      'Each page points back to the original academic repository or related video, without replacing or presenting the archive as a separate course.',
     ],
     architecture: {
       body: 'The portal is a client-side React application deployed on GitHub Pages. Curated TypeScript datasets describe lessons, content and files, while HashRouter provides reliable navigation in a static hosting environment.',
@@ -46,12 +46,12 @@ export const metCompBProject: Project = {
       'Direct links to the original academic repository and YouTube channel',
     ],
     role: [
-      'Product conception, information architecture, content curation, interface design and full front-end implementation.',
-      'Organization of the original scientific computing material into a reusable and accessible educational experience.',
+      'Preparation and delivery of the video lessons, organization of the Jupyter notebooks and curation of the computational examples used in the course.',
+      'Information architecture, interface design and front-end implementation of the landing page that indexes the archive.',
     ],
     results: [
-      'A public educational archive that makes the MetCompB material easier to discover, study and reuse without duplicating or disconnecting it from its original academic sources.',
-      'A maintainable static platform with no backend, database, API key or paid service dependency.',
+      'A public and organized index for the MetCompB video lessons, notebooks and codes, preserving their connection to the original UFRGS academic context.',
+      'A maintainable static landing page with no backend, database, API key or paid service dependency.',
     ],
     technologies: ['React', 'TypeScript', 'Vite', 'React Router', 'GitHub Pages', 'Python', 'Jupyter', 'Numerical Methods'],
   },
@@ -67,29 +67,30 @@ export const metCompBProject: Project = {
   source: 'more',
   visible: true,
   isAcademic: true,
-  institutionName: 'UFRGS',
-  academicContext: 'Computational Methods B educational archive',
+  institutionName: 'Universidade Federal do Rio Grande do Sul — UFRGS',
+  academicContext: 'Computational Methods B — Institute of Physics, UFRGS',
   caseStudy: true,
   caseEnabled: true,
   translations: {
     'pt-BR': {
-      subtitle: 'Acervo Educacional de Computação Científica',
-      category: 'Software Educacional / Computação Científica',
+      title: 'MetCompB — Acervo de Computação Científica',
+      subtitle: 'Acervo de Videoaulas e Notebooks Jupyter',
+      category: 'Acervo Acadêmico / Computação Científica',
       status: 'Projeto Acadêmico',
-      description: 'Portal educacional multilíngue que organiza videoaulas, notebooks, exercícios, simulações e arquivos acadêmicos de Métodos Computacionais B em uma experiência de aprendizagem clara e navegável.',
-      academicContext: 'Acervo educacional de Métodos Computacionais B',
+      description: 'Landing page que organiza videoaulas e notebooks Jupyter produzidos para a disciplina de Métodos Computacionais B, ministrada no Instituto de Física da UFRGS durante o meu mestrado. Os materiais demonstram métodos computacionais avançados aplicados à resolução e à análise de sistemas dinâmicos.',
+      academicContext: 'Métodos Computacionais B — Instituto de Física, UFRGS',
       sections: {
         overview: [
-          'O MetCompB Landing Page é a camada moderna de apresentação de um acervo acadêmico voltado a Computação Científica, Métodos Numéricos, Python e Jupyter.',
-          'Transforma notebooks, exercícios, provas, simulações e videoaulas em um portal educacional organizado, mantendo o repositório MetCompB original como fonte oficial dos materiais.',
+          'O MetCompB é uma landing page que organiza videoaulas e notebooks Jupyter produzidos para a disciplina de Métodos Computacionais B, ministrada no Instituto de Física da Universidade Federal do Rio Grande do Sul (UFRGS) durante o meu mestrado.',
+          'Os materiais demonstram métodos computacionais avançados utilizados na resolução e na análise de sistemas dinâmicos com Python e Jupyter.',
         ],
         challenge: [
-          'O material acadêmico estava distribuído entre pastas do repositório, notebooks, figuras e vídeos externos. Apesar da riqueza técnica, era difícil explorá-lo como uma trilha de aprendizagem coerente.',
-          'O projeto precisava preservar o acesso direto às fontes originais e, ao mesmo tempo, tornar a coleção compreensível para estudantes e visitantes.',
+          'Os materiais da disciplina estavam distribuídos entre pastas do repositório, notebooks Jupyter, figuras e videoaulas.',
+          'O objetivo era simplesmente criar um índice claro, preservar os materiais originais e facilitar sua localização e seu acesso.',
         ],
         solution: [
-          'Foi criada uma aplicação estática e responsiva com áreas dedicadas a videoaulas, conteúdos temáticos, arquivos e contexto do projeto.',
-          'Metadados curados conectam cada aula aos materiais computacionais relacionados, permitindo avançar da explicação para o notebook, a simulação ou o arquivo-fonte.',
+          'Foi criada uma landing page estática com seções para videoaulas, notebooks, exemplos computacionais e arquivos-fonte.',
+          'Cada página direciona ao repositório acadêmico original ou ao vídeo relacionado, sem substituir ou apresentar o acervo como um curso independente.',
         ],
         architecture: {
           body: 'O portal é uma aplicação React executada no cliente e publicada no GitHub Pages. Conjuntos de dados em TypeScript descrevem aulas, conteúdos e arquivos, enquanto o HashRouter garante navegação confiável na hospedagem estática.',
@@ -105,12 +106,12 @@ export const metCompBProject: Project = {
           'Links diretos para o repositório acadêmico original e o canal no YouTube',
         ],
         role: [
-          'Concepção do produto, arquitetura da informação, curadoria de conteúdo, design da interface e implementação completa do front-end.',
-          'Organização dos materiais originais de computação científica em uma experiência educacional acessível e reutilizável.',
+          'Preparação e apresentação das videoaulas, organização dos notebooks Jupyter e curadoria dos exemplos computacionais utilizados na disciplina.',
+          'Arquitetura da informação, design da interface e implementação do front-end da landing page que indexa o acervo.',
         ],
         results: [
-          'Um acervo educacional público que facilita descobrir, estudar e reutilizar os materiais do MetCompB sem duplicá-los ou desconectá-los das fontes acadêmicas originais.',
-          'Uma plataforma estática de fácil manutenção, sem dependência de backend, banco de dados, chaves de API ou serviços pagos.',
+          'Um índice público e organizado para as videoaulas, notebooks e códigos do MetCompB, preservando sua ligação com o contexto acadêmico original da UFRGS.',
+          'Uma landing page estática de fácil manutenção, sem dependência de backend, banco de dados, chaves de API ou serviços pagos.',
         ],
         technologies: ['React', 'TypeScript', 'Vite', 'React Router', 'GitHub Pages', 'Python', 'Jupyter', 'Métodos Numéricos'],
       },
