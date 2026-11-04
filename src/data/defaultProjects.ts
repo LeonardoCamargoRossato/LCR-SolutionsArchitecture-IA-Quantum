@@ -237,7 +237,7 @@ export const defaultProjects: Project[] = [
       ],
       technologies: ['React', 'Responsive Web', 'Media Galleries', 'Content Management', 'Professional Portfolio'],
     },
-    links: { liveUrl: 'https://leonardo-camargo-rossato.lovable.app/' },
+    links: { liveUrl: 'https://leonardocamargorossato.github.io/LCR-Speaking-Portfolio/' },
     gallery: [],
     order: 4,
     sortOrder: 4,

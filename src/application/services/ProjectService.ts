@@ -86,10 +86,9 @@ function enrich(project: Project): Project {
     },
   })
 
-  // WebSeer's public URL is code-managed. Supabase currently returns an empty
-  // liveUrl for this project, which must not hide the published-site action
-  // after the remote project replaces the initial local render.
-  if (base.slug === 'webseer') {
+  // These public URLs are code-managed so stale CMS values cannot replace the
+  // current published-site actions after remote content hydration.
+  if (base.slug === 'webseer' || base.slug === 'speaker-portfolio') {
     return {
       ...enriched,
       links: { ...enriched.links, liveUrl: base.links.liveUrl },

@@ -2,9 +2,10 @@ import { ExternalLink } from 'lucide-react'
 import { useMemo } from 'react'
 import type { AboutGalleryItem } from '../domain/models/AboutGallery'
 import type { Locale } from '../i18n/types'
+import { externalLinks } from '../config/externalLinks'
 import { ImageLightbox } from './ImageLightbox'
 
-const SPEAKER_PORTFOLIO = 'https://leonardo-camargo-rossato.lovable.app/'
+const SPEAKER_PORTFOLIO = externalLinks.speaker
 const INSTITUTO_PENSE_MAIS = 'https://institutopensemais.com/'
 
 function localized(item: AboutGalleryItem, locale: Locale) {

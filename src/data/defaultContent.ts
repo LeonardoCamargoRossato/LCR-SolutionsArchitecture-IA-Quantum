@@ -132,7 +132,7 @@ export const defaultContent: SiteContent = {
       { id: 'physica-2023', order: 2, year: 2023, title: 'The Ising bilayer honeycomb lattice: A cluster mean-field study.', venue: 'Physica A, 621, 128778.', authors: ['L. C. Rossato', 'F. M. Zimmer', 'C. V. Morais', 'M. Schmidt'] },
     ],
     scienceCommunication: 'Co-Founder of the Brazilian Quantum Computing Academic League movement; founded and supported 10+ academic leagues across Brazil (2024–2026/1). Delivered 50+ in-person talks (2023–2026) across Brazil’s five macro-regions on real-world quantum applications, AI and emerging technologies, security/PQC, decision-making and innovation ecosystem development. Organized, coordinated or curated 15+ events and technical tracks. Selected through the Young Scholars Initiative as the only Brazilian among seven internationally sponsored researchers for the 2023 Conference on Complex Systems (CCS).',
-    speakerPortfolioUrl: 'https://leonardo-camargo-rossato.lovable.app/',
+    speakerPortfolioUrl: 'https://leonardocamargorossato.github.io/LCR-Speaking-Portfolio/',
     translations: {
       'pt-BR': {
         title: 'Sobre',
@@ -317,7 +317,7 @@ export const defaultContent: SiteContent = {
     { id: 'linkedin', platform: 'LinkedIn', label: '@leonardo.camargo.rossato', url: 'https://www.linkedin.com/in/leonardocamargorossato/?locale=en', icon: 'linkedin', visible: true, order: 1 },
     { id: 'github', platform: 'GitHub', label: 'LeonardoCamargoRossato', url: 'https://github.com/LeonardoCamargoRossato/', icon: 'github', visible: true, order: 2 },
     { id: 'instagram', platform: 'Instagram', label: '@leonardo.camargo.rossato', url: 'https://www.instagram.com/leonardo.camargo.rossato/', icon: 'instagram', visible: true, order: 3 },
-    { id: 'speaker', platform: 'Speaker Portfolio', label: 'Speaker Portfolio', url: 'https://leonardo-camargo-rossato.lovable.app/', icon: 'globe', visible: true, order: 4 },
+    { id: 'speaker', platform: 'Speaker Portfolio', label: 'Speaker Portfolio', url: 'https://leonardocamargorossato.github.io/LCR-Speaking-Portfolio/', icon: 'globe', visible: true, order: 4 },
     { id: 'foton', platform: 'Instituto Foton', label: 'Instituto Foton', url: 'https://institutofoton.com.br/', icon: 'building', visible: true, order: 5 },
     { id: 'email', platform: 'Email', label: 'leo.c.rossato@gmail.com', url: 'mailto:leo.c.rossato@gmail.com', icon: 'mail', visible: true, order: 6 },
   ],

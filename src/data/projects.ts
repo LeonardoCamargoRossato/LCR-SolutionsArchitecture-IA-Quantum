@@ -214,7 +214,7 @@ export const projects: Project[] = [
     links: [
       {
         label: 'Visit Website',
-        url: 'https://leonardo-camargo-rossato.lovable.app/',
+        url: 'https://leonardocamargorossato.github.io/LCR-Speaking-Portfolio/',
         kind: 'primary',
       },
     ],

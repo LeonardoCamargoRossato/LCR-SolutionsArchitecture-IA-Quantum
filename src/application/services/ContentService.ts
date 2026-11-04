@@ -1,5 +1,6 @@
 import type { IContentRepository } from '../../domain/repositories/IContentRepository'
 import { defaultContent } from '../../data/defaultContent'
+import { externalLinks } from '../../config/externalLinks'
 
 export class ContentService {
   constructor(private repo: IContentRepository) {}
@@ -12,7 +13,10 @@ export class ContentService {
   saveHome(v: typeof defaultContent.home) { return this.repo.saveHome(v) }
 
   async getAbout() {
-    try { return (await this.repo.getAbout()) ?? defaultContent.about }
+    try {
+      const about = (await this.repo.getAbout()) ?? defaultContent.about
+      return { ...about, speakerPortfolioUrl: externalLinks.speaker }
+    }
     catch { return defaultContent.about }
   }
 
@@ -33,7 +37,12 @@ export class ContentService {
   saveSiteSettings(v: typeof defaultContent.siteSettings) { return this.repo.saveSiteSettings(v) }
 
   async getSocialLinks() {
-    try { return (await this.repo.getSocialLinks()) ?? defaultContent.socialLinks }
+    try {
+      const links = (await this.repo.getSocialLinks()) ?? defaultContent.socialLinks
+      return links.map((link) => link.id === 'speaker' || link.platform === 'Speaker Portfolio'
+        ? { ...link, url: externalLinks.speaker }
+        : link)
+    }
     catch { return defaultContent.socialLinks }
   }
 
