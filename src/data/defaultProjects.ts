@@ -3,6 +3,7 @@ import { citiesComparingContent } from './citiesComparing'
 import { ce235Project } from './ce235Project'
 import { metCompBProject } from './metCompBProject'
 import { embeddedControlProject } from './embeddedControlProject'
+import { webSeerProject } from './webSeerProject'
 
 const ph = (name: string, url: string) => ({
   id: `default-${name}`,
@@ -303,26 +304,6 @@ export const defaultMoreProjects: Project[] = [
     caseStudy: false,
     caseEnabled: true,
   },
-  {
-    id: 'webseer',
-    slug: 'webseer',
-    title: 'WebSeer',
-    category: 'Research Software / Decision Support',
-    status: 'Case Study in Progress',
-    description: 'Research-oriented software tool for structured data/text analysis, visualization and decision-support workflows.',
-    technologies: ['React', 'Text Analysis', 'Data Visualization'],
-    coverImage: ph('webseer', './projects/webseer.png'),
-    imageType: 'illustrative-placeholder',
-    sections: {},
-    links: { liveUrl: 'https://leonardocamargorossato.github.io/WebSeer/#publishing-schedule' },
-    gallery: [],
-    order: 13,
-    sortOrder: 13,
-    placement: 'more',
-    source: 'more',
-    visible: true,
-    caseStudy: false,
-    caseEnabled: true,
-  },
+  webSeerProject,
   metCompBProject,
 ]

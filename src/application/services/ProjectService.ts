@@ -93,10 +93,42 @@ function enrich(project: Project): Project {
 
   // These public URLs are code-managed so stale CMS values cannot replace the
   // current published-site actions after remote content hydration.
-  if (base.slug === 'webseer' || base.slug === 'speaker-portfolio') {
+  if (base.slug === 'speaker-portfolio') {
     return {
       ...enriched,
       links: { ...enriched.links, liveUrl: base.links.liveUrl },
+    }
+  }
+
+  if (base.slug === 'webseer') {
+    return {
+      ...enriched,
+      title: base.title,
+      subtitle: base.subtitle,
+      category: base.category,
+      status: base.status,
+      description: base.description,
+      technologies: base.technologies,
+      coverImage: base.coverImage,
+      imageType: base.imageType,
+      gallery: base.gallery,
+      isAcademic: base.isAcademic,
+      academicContext: base.academicContext,
+      caseStudy: base.caseStudy,
+      caseEnabled: base.caseEnabled,
+      links: { ...enriched.links, ...base.links },
+      sections: { ...enriched.sections, ...base.sections },
+      translations: {
+        ...enriched.translations,
+        'pt-BR': {
+          ...enriched.translations?.['pt-BR'],
+          ...base.translations?.['pt-BR'],
+          sections: {
+            ...enriched.translations?.['pt-BR']?.sections,
+            ...base.translations?.['pt-BR']?.sections,
+          },
+        },
+      },
     }
   }
 
