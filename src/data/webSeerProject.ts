@@ -1,13 +1,15 @@
 import type { Project, ProjectGalleryItem } from '../domain/models/Project'
 
 const screenshots = [
-  ['home', '01-home.png', 'WebSeer home page and visual language map', 'Página inicial do WebSeer e mapa visual da linguagem'],
-  ['dashboard', '02-dashboard.png', 'Document corpus dashboard with initial metrics', 'Dashboard do corpus documental com métricas iniciais'],
-  ['compare', '03-compare.png', 'Visual comparison between word continuations', 'Comparação visual entre continuações de palavras'],
-  ['word-tree', '04-word-tree.png', 'Word tree generated from the research corpus', 'Árvore de palavras gerada a partir do corpus de pesquisa'],
-  ['phrase-net', '05-phrase-net.png', 'Phrase network based on explicit textual patterns', 'Rede de frases baseada em padrões textuais explícitos'],
-  ['frequencies', '06-frequencies.png', 'Word-frequency visualization', 'Visualização de frequência de palavras'],
-  ['animated-histogram', '07-animated-histogram.png', 'Animated histogram preparation workspace', 'Ambiente de preparação de histogramas animados'],
+  ['home', 'capa1.png', 'WebSeer home page and visual language map', 'Página inicial do WebSeer e mapa visual da linguagem'],
+  ['word-tree-disse', 'capa2.png', 'Word tree for “disse” with contextual occurrences', 'Árvore de palavras de “disse” com ocorrências contextuais'],
+  ['video-studio', 'capa3.png', 'Animated histogram video and YouTube publishing workspace', 'Ambiente de vídeo do histograma animado e publicação no YouTube'],
+  ['video-library', 'capa4.png', 'Local video library and publishing history', 'Biblioteca local de vídeos e histórico de publicações'],
+  ['phrase-net', 'capa6.png', 'Phrase network based on explicit textual patterns', 'Rede de frases baseada em padrões textuais explícitos'],
+  ['word-tree-disse-context', 'capa7.png', 'Word tree for “disse” with a broader context selection', 'Árvore de palavras de “disse” com seleção ampliada de contextos'],
+  ['word-tree-deus', 'capa8.png', 'Word tree for “Deus” across the Genesis corpus', 'Árvore de palavras de “Deus” no corpus de Gênesis'],
+  ['word-cloud', 'capa9.png', 'Configurable word cloud generated from the Genesis corpus', 'Nuvem de palavras configurável gerada a partir do corpus de Gênesis'],
+  ['document-corpus', 'capa10.png', 'Local document corpus preparation workspace', 'Ambiente de preparação do corpus documental local'],
 ] as const
 
 const gallery: ProjectGalleryItem[] = screenshots.map(([id, file, caption, altText], index) => ({
