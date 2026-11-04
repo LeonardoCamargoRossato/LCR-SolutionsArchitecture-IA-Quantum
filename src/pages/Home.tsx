@@ -44,10 +44,18 @@ export function Home() {
     .sort((a, b) => featuredSlugs.indexOf(a.slug) - featuredSlugs.indexOf(b.slug))
 
   const moreProjects = visibleProjects
-    .filter((project) => !featuredSlugs.includes(project.slug) && project.slug !== 'power-platform')
+    .filter((project) => !featuredSlugs.includes(project.slug) && !['power-platform', 'scientific-analysis'].includes(project.slug))
     .sort((a, b) => {
       if (a.slug === 'speaker-portfolio') return -1
       if (b.slug === 'speaker-portfolio') return 1
+      const priority = ['webseer', 'metcompb-landing-page']
+      const priorityA = priority.indexOf(a.slug)
+      const priorityB = priority.indexOf(b.slug)
+      if (priorityA !== -1 || priorityB !== -1) {
+        if (priorityA === -1) return 1
+        if (priorityB === -1) return -1
+        return priorityA - priorityB
+      }
       return projectOrder(a) - projectOrder(b)
     })
 

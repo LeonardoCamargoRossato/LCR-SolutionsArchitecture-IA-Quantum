@@ -1,6 +1,7 @@
 import type { Project } from '../domain/models/Project'
 import { citiesComparingContent } from './citiesComparing'
 import { ce235Project } from './ce235Project'
+import { metCompBProject } from './metCompBProject'
 
 const ph = (name: string, url: string) => ({
   id: `default-${name}`,
@@ -301,42 +302,6 @@ export const defaultMoreProjects: Project[] = [
     caseEnabled: true,
   },
   {
-    id: 'scientific-analysis',
-    slug: 'scientific-analysis',
-    title: 'Scientific Analysis Toolkit',
-    category: 'Scientific Computing / Quantitative Analysis',
-    status: 'Case Study in Progress',
-    description: 'Scientific and quantitative analysis toolkit based on Python/Jupyter workflows for socioeconomic data analysis, statistical modeling, clustering, visual analytics and reproducible research pipelines.',
-    technologies: ['Python', 'Jupyter', 'Pandas', 'NumPy', 'SciPy', 'Plotly', 'scikit-learn', 'Clustering', 'Graph Algorithms'],
-    coverImage: ph('scientific-analysis', './projects/scientific-analysis.png'),
-    imageType: 'illustrative-placeholder',
-    sections: {
-      overview: ['Research notebooks and analysis workflows developed around UFRGS work in econophysics, data science and complex systems.'],
-      approach: ['ETL and preprocessing, clustering, graph algorithms, statistical inference, visual analytics and reproducible pipelines.'],
-      role: ['Research software and analytical workflow development, complementing the product-oriented Cities Comparing platform.'],
-    },
-    links: {},
-    gallery: [],
-    order: 11,
-    sortOrder: 11,
-    placement: 'more',
-    source: 'more',
-    visible: true,
-    caseStudy: false,
-    caseEnabled: true,
-    translations: {
-      'pt-BR': {
-        category: 'Computação Científica / Análise Quantitativa',
-        description: 'Toolkit de análise científica e quantitativa baseado em fluxos Python/Jupyter para análise de dados socioeconômicos, modelagem estatística, clustering, análise visual e pipelines reprodutíveis de pesquisa.',
-        sections: {
-          overview: ['Notebooks de pesquisa e fluxos analíticos desenvolvidos a partir do trabalho na UFRGS em econofísica, ciência de dados e sistemas complexos.'],
-          approach: ['ETL e pré-processamento, clustering, algoritmos em grafos, inferência estatística, análise visual e pipelines reprodutíveis.'],
-          role: ['Desenvolvimento de software de pesquisa e fluxos analíticos, complementando a plataforma orientada a produto Cities Comparing.'],
-        },
-      },
-    },
-  },
-  {
     id: 'streamlit-tools',
     slug: 'streamlit-tools',
     title: 'Streamlit Tools',
@@ -378,4 +343,5 @@ export const defaultMoreProjects: Project[] = [
     caseStudy: false,
     caseEnabled: true,
   },
+  metCompBProject,
 ]

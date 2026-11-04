@@ -3,8 +3,10 @@ import type { Project, ProjectPlacement, ProjectSource } from '../../domain/mode
 import { defaultMoreProjects, defaultProjects } from '../../data/defaultProjects'
 import { citiesComparingContent } from '../../data/citiesComparing'
 import { ce235Project } from '../../data/ce235Project'
+import { metCompBProject } from '../../data/metCompBProject'
 
 const defaults = [...defaultProjects, ...defaultMoreProjects]
+const retiredSlugs = new Set(['power-platform', 'scientific-analysis'])
 
 function canonicalSlug(project: Project) {
   if (project.id === 'city-comparing' || project.slug === 'city-comparing') return 'cities-comparing'
@@ -139,10 +141,12 @@ export class ProjectService {
       // This published academic case is code-managed until a matching CMS entry exists.
       // Check the CMS explicitly because its public list already excludes hidden rows.
       const hasCe235 = remote.some((project) => project.id === ce235Project.id || project.slug === ce235Project.slug)
-      const projects = hasCe235
+      const withCe235 = hasCe235
         ? remote
         : [...remote, await this.repo.getBySlug(ce235Project.slug, true) ?? ce235Project]
-      return sortEditorial(projects.filter((project) => project.slug !== 'power-platform' && project.visible !== false).map(enrich))
+      const hasMetCompB = withCe235.some((project) => project.id === metCompBProject.id || project.slug === metCompBProject.slug)
+      const projects = hasMetCompB ? withCe235 : [...withCe235, metCompBProject]
+      return sortEditorial(projects.filter((project) => !retiredSlugs.has(project.slug) && project.visible !== false).map(enrich))
     } catch {
       // Do not expose local defaults when the remote visibility query fails.
       return []
@@ -151,18 +155,18 @@ export class ProjectService {
 
   async getAllForAdmin() {
     const remote = await this.repo.getAllForAdmin()
-    return sortEditorial(remote.filter((project) => project.slug !== 'power-platform').map(enrich))
+    return sortEditorial(remote.filter((project) => !retiredSlugs.has(project.slug)).map(enrich))
   }
 
   async getBySlug(slug: string, includeHidden = false) {
-    if (slug === 'power-platform') return null
+    if (retiredSlugs.has(slug)) return null
     const accepted = slug === 'cities-comparing' ? ['cities-comparing', 'city-comparing'] : [slug]
     try {
       const all = includeHidden ? await this.repo.getAllForAdmin() : await this.repo.getAll()
       const found = all.find((project) => accepted.includes(project.slug) || (slug === 'cities-comparing' && project.id === 'city-comparing'))
       const project = found ?? (slug === ce235Project.slug
         ? await this.repo.getBySlug(ce235Project.slug, true) ?? ce235Project
-        : null)
+        : slug === metCompBProject.slug ? metCompBProject : null)
       if (!includeHidden && project?.visible === false) return null
       return project ? enrich(project) : null
     } catch {
