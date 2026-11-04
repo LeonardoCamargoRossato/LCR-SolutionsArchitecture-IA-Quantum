@@ -44,7 +44,12 @@ export function Home() {
     .sort((a, b) => featuredSlugs.indexOf(a.slug) - featuredSlugs.indexOf(b.slug))
 
   const moreProjects = visibleProjects
-    .filter((project) => !featuredSlugs.includes(project.slug) && !['power-platform', 'scientific-analysis'].includes(project.slug))
+    .filter((project) => !featuredSlugs.includes(project.slug) && ![
+      'power-platform',
+      'scientific-analysis',
+      'scientific-analysis-toolkit',
+      'pdf-frequency-analyzer',
+    ].includes(project.slug))
     .sort((a, b) => {
       if (a.slug === 'speaker-portfolio') return -1
       if (b.slug === 'speaker-portfolio') return 1

@@ -6,7 +6,12 @@ import { ce235Project } from '../../data/ce235Project'
 import { metCompBProject } from '../../data/metCompBProject'
 
 const defaults = [...defaultProjects, ...defaultMoreProjects]
-const retiredSlugs = new Set(['power-platform', 'scientific-analysis'])
+const retiredSlugs = new Set([
+  'power-platform',
+  'scientific-analysis',
+  'scientific-analysis-toolkit',
+  'pdf-frequency-analyzer',
+])
 
 function canonicalSlug(project: Project) {
   if (project.id === 'city-comparing' || project.slug === 'city-comparing') return 'cities-comparing'
