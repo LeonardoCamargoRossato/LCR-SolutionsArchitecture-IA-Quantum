@@ -49,10 +49,9 @@ export function Home() {
       'scientific-analysis',
       'scientific-analysis-toolkit',
       'pdf-frequency-analyzer',
+      'speaker-portfolio',
     ].includes(project.slug))
     .sort((a, b) => {
-      if (a.slug === 'speaker-portfolio') return -1
-      if (b.slug === 'speaker-portfolio') return 1
       const priority = ['webseer', 'metcompb-landing-page']
       const priorityA = priority.indexOf(a.slug)
       const priorityB = priority.indexOf(b.slug)
