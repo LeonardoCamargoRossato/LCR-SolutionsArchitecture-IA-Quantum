@@ -20,7 +20,7 @@ export const ce235Project: Project = {
   imageType: 'illustrative-placeholder',
   links: {
     liveUrl: 'https://leonardocamargorossato.github.io/ITA-CE235-EmbeddedSystems-RealTime/#/',
-    researchUrl: 'https://leonardocamargorossato.github.io/US123-Telemetry-Decoder/',
+    researchUrl: 'https://leonardocamargorossato.github.io/ITA-US123-Telemetry-Decoder/',
     githubUrl: 'https://github.com/LeonardoCamargoRossato/ITA-CE235-EmbeddedSystems-RealTime',
   },
   sections: {
