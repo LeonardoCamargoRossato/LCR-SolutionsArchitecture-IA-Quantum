@@ -1,15 +1,14 @@
 import type { AboutGalleryItem } from '../domain/models/AboutGallery'
 
-const locations: Record<number, string> = {
-  1: 'Natal - RN',
-  2: 'Curitiba - Paraná',
-  3: 'São Paulo - SP',
-  4: 'Porto Alegre - Rio Grande do Sul',
-  5: 'Porto Alegre - Rio Grande do Sul',
+const titles: Record<number, string> = {
+  1: 'Natal - RN | Congresso Internacional de Matéria Condensada 2023',
+  2: 'Curitiba - Paraná | Congresso de Econofísica e Sistemas Complexos 2023',
+  3: 'São Paulo - SP | MVComp 2025',
+  4: 'Porto Alegre - RS | Inauguração da Liga de Computação Quântica, PUC - TecnopUC',
+  5: 'Porto Alegre - RS | Primeira Semana de Computação Quântica da UFRGS',
   6: 'Foz do Iguaçu - PR',
   8: 'São Paulo - SP | ALESP (Assembleia Legislativa do Estado de São Paulo)',
-  9: 'Porto Alegre - Rio Grande do Sul',
-  10: 'Porto Alegre - RS',
+  9: 'Porto Alegre - RS | Tech Now 2025',
   11: 'Porto Alegre - RS | South Summit 2026',
   12: 'São Paulo - SP | AUTOCOM Summit 2026',
 }
@@ -36,14 +35,18 @@ function speakingPhotoNumber(item: AboutGalleryItem) {
 export function normalizeAboutGallery(items: AboutGalleryItem[]) {
   return items
     .map((item) => ({ item, number: speakingPhotoNumber(item) }))
-    .filter(({ number }) => number !== 7)
+    .filter(({ number }) => number !== 7 && number !== 10)
     .map(({ item, number }) => {
-      if (!number || !locations[number]) return { ...item, editorialOrder: 1000 + item.sortOrder }
+      if (!number || !titles[number]) return { ...item, editorialOrder: 1000 + item.sortOrder }
       return {
         ...item,
-        locationPt: locations[number],
-        locationEn: locations[number],
-        editorialOrder: number === 11 ? 0 : number === 12 ? 1 : number + 2,
+        titlePt: titles[number],
+        titleEn: titles[number],
+        captionPt: undefined,
+        captionEn: undefined,
+        locationPt: undefined,
+        locationEn: undefined,
+        editorialOrder: number === 9 ? 0 : number === 11 ? 1 : number === 12 ? 2 : number + 3,
       }
     })
     .sort((a, b) => a.editorialOrder - b.editorialOrder)
