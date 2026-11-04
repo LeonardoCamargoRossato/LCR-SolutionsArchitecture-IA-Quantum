@@ -12,7 +12,7 @@ const resourceGroups = [
   {
     match: /\bufrgs\b/i,
     links: [
-      { url: 'https://leonardocamargorossato.github.io/CitiesComparing_ResearchPlatform/', pt: 'Abrir Cities Comparing', en: 'Open Cities Comparing' },
+      { url: 'https://leonardocamargorossato.github.io/CitiesComparing-ResearchPlatform/', pt: 'Abrir Cities Comparing', en: 'Open Cities Comparing' },
       { url: 'https://doi.org/10.1140/epjb/s10051-024-00766-5', pt: 'Artigo de Econofísica', en: 'Econophysics paper' },
       { url: 'https://github.com/LeonardoCamargoRossato/Papers_Supplementary_Info_SI/tree/main/Econophysics/Analysis_SocioEconomic_Indicators_Brazil_and_Americas', pt: 'Econofísica no GitHub', en: 'Econophysics on GitHub' },
     ],

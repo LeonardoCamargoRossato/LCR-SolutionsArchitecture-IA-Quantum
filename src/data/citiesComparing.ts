@@ -7,9 +7,9 @@ export const citiesComparingContent = {
   description: 'Research platform derived from MSc research at UFRGS, bringing together Econophysics, Visual Analytics and Data Science to explore and compare socioeconomic indicators across cities, regions and countries.',
   technologies: ['React', 'Vite', 'Python', 'Jupyter', 'Pandas', 'Plotly', 'Streamlit', 'Econophysics', 'Visual Analytics', 'Binscatter', 'B-GCA', 'Data Engineering'],
   links: {
-    liveUrl: 'https://leonardocamargorossato.github.io/CitiesComparing_ResearchPlatform/',
+    liveUrl: 'https://leonardocamargorossato.github.io/CitiesComparing-ResearchPlatform/',
     researchUrl: 'https://analysis-socioeconomic-indicators.streamlit.app/',
-    githubUrl: 'https://github.com/LeonardoCamargoRossato/CitiesComparing_ResearchPlatform',
+    githubUrl: 'https://github.com/LeonardoCamargoRossato/CitiesComparing-ResearchPlatform',
   },
   sections: {
     overview: [
