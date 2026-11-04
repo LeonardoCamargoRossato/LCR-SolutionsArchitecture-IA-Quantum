@@ -61,6 +61,14 @@ export function Home() {
         if (priorityB === -1) return -1
         return priorityA - priorityB
       }
+      const finalProjects = ['ce235-real-time-systems', 'embedded-control-platform', 'esp32-control']
+      const finalA = finalProjects.indexOf(a.slug)
+      const finalB = finalProjects.indexOf(b.slug)
+      if (finalA !== -1 || finalB !== -1) {
+        if (finalA === -1) return -1
+        if (finalB === -1) return 1
+        return finalA - finalB
+      }
       return projectOrder(a) - projectOrder(b)
     })
 

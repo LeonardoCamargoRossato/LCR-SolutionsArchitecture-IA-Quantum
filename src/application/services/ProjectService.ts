@@ -100,6 +100,33 @@ function enrich(project: Project): Project {
     }
   }
 
+  if (base.slug === 'embedded-control-platform') {
+    return {
+      ...enriched,
+      title: base.title,
+      subtitle: base.subtitle,
+      category: base.category,
+      status: base.status,
+      description: base.description,
+      technologies: base.technologies,
+      isAcademic: base.isAcademic,
+      institutionName: base.institutionName,
+      academicContext: base.academicContext,
+      sections: { ...enriched.sections, ...base.sections },
+      translations: {
+        ...enriched.translations,
+        'pt-BR': {
+          ...enriched.translations?.['pt-BR'],
+          ...base.translations?.['pt-BR'],
+          sections: {
+            ...enriched.translations?.['pt-BR']?.sections,
+            ...base.translations?.['pt-BR']?.sections,
+          },
+        },
+      },
+    }
+  }
+
   if (base.slug !== 'cities-comparing') return enriched
 
   // Keep the approved platform narrative current even when Supabase has legacy

@@ -2,6 +2,7 @@ import type { Project } from '../domain/models/Project'
 import { citiesComparingContent } from './citiesComparing'
 import { ce235Project } from './ce235Project'
 import { metCompBProject } from './metCompBProject'
+import { embeddedControlProject } from './embeddedControlProject'
 
 const ph = (name: string, url: string) => ({
   id: `default-${name}`,
@@ -280,27 +281,7 @@ export const defaultProjects: Project[] = [
 
 export const defaultMoreProjects: Project[] = [
   ce235Project,
-  {
-    id: 'esp32-control',
-    slug: 'esp32-control',
-    title: 'Embedded Control Platform',
-    category: 'Embedded Systems / End-to-End Engineering',
-    status: 'Case Study in Progress',
-    description: 'End-to-end engineering project integrating hardware, embedded logic, networking, software and a web interface for direct user control.',
-    technologies: ['ESP32', 'HTML', 'CSS', 'JavaScript', 'Embedded Systems'],
-    coverImage: ph('esp32-control', './projects/embedded-control.png'),
-    imageType: 'illustrative-placeholder',
-    sections: {},
-    links: {},
-    gallery: [],
-    order: 10,
-    sortOrder: 10,
-    placement: 'more',
-    source: 'more',
-    visible: true,
-    caseStudy: false,
-    caseEnabled: true,
-  },
+  embeddedControlProject,
   {
     id: 'streamlit-tools',
     slug: 'streamlit-tools',
