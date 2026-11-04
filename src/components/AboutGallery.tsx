@@ -9,6 +9,7 @@ import { aboutGalleryService } from '../bootstrap/services'
 import type { AboutGalleryItem } from '../domain/models/AboutGallery'
 import { useI18n } from '../i18n/I18nProvider'
 import { AboutGalleryLightbox } from './AboutGalleryLightbox'
+import { normalizeAboutGallery } from '../data/aboutGalleryEditorial'
 
 function localized(item: AboutGalleryItem, locale: 'en-US' | 'pt-BR') {
   const pt = locale === 'pt-BR'
@@ -36,7 +37,7 @@ export function AboutGallery() {
     aboutGalleryService
       .getPublicAboutGallery()
       .then((next) => {
-        if (!cancelled) setItems(next)
+        if (!cancelled) setItems(normalizeAboutGallery(next))
       })
       .catch((error) => {
         console.error('Supabase about gallery query failed.', error)
