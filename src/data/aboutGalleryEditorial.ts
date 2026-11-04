@@ -7,7 +7,7 @@ const titles: Record<number, string> = {
   4: 'Porto Alegre - RS | Inauguração da LACEQUI na PUC - TecnoPUC 2025',
   5: 'Porto Alegre - RS | Primeira Semana de Computação Quântica da UFRGS 2025',
   6: 'Foz do Iguaçu - PR | Latinoware 2025',
-  8: 'São Paulo - SP | ALESP (Assembleia Legislativa do Estado de São Paulo)',
+  8: 'São Paulo - SP | ALESP - 2025 (Assembleia Legislativa do Estado de São Paulo)',
   9: 'Porto Alegre - RS | Tech Now 2025',
   11: 'Porto Alegre - RS | South Summit 2026',
   12: 'São Paulo - SP | AUTOCOM Summit 2026',
