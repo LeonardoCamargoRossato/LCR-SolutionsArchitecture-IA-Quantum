@@ -16,6 +16,10 @@ const Admin = lazy(() =>
   import('./pages/admin/Admin').then((module) => ({ default: module.Admin })),
 )
 
+const Workflow = lazy(() =>
+  import('./pages/Workflow').then((module) => ({ default: module.Workflow })),
+)
+
 export default function App() {
   return (
     <>
@@ -26,6 +30,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutRedirect />} />
           <Route path="/projects/:slug" element={<ProjectCase />} />
+          <Route path="/workflow" element={<Workflow />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

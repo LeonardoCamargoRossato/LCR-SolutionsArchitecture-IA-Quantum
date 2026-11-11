@@ -150,7 +150,7 @@ export function Home() {
 
       <ExperienceSection experiences={about.experiences} />
 
-      <WorkProcessSection steps={settings.workProcess} />
+      <WorkProcessSection steps={settings.workProcess} compact />
 
       <section className="section home-about" id="about">
         <div className="site-container home-about-grid">

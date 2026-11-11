@@ -79,12 +79,6 @@
 .work-process-animated .process-detail-matrix div { padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-alt); }
 .work-process-animated .process-detail-matrix dt { color: var(--primary); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .work-process-animated .process-detail-matrix dd { margin: 8px 0 0; color: var(--text); font-size: 14px; line-height: 1.6; }
-.work-process-animated .decision-record { min-width: 0; margin-top: 32px; padding: clamp(24px, 3vw, 36px); overflow: hidden; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); }
-.work-process-animated .decision-record h3 { margin: 10px 0 0; color: var(--text); font-size: clamp(22px, 3vw, 30px); }
-.work-process-animated .decision-record-tabs { display: flex; gap: 8px; margin-top: 24px; overflow-x: auto; padding-bottom: 4px; }
-.work-process-animated .decision-record-tabs button { flex: 0 0 auto; min-height: 40px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface-alt); color: var(--text-muted); font: inherit; font-size: 12px; cursor: pointer; }
-.work-process-animated .decision-record-tabs button[aria-selected='true'] { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 12%, var(--surface)); color: var(--primary); }
-.work-process-animated .decision-record > p { margin: 20px 0 0; padding: 20px; border-left: 3px solid var(--primary); background: var(--surface-alt); color: var(--text-muted); line-height: 1.7; }
 .work-process-animated .process-placeholder { margin-top: 24px; padding: 20px; border: 1px dashed var(--border); border-radius: 12px; background: var(--surface-alt); }
 .work-process-animated .process-placeholder > span { color: var(--text); font-size: 12px; font-weight: 750; }
 .work-process-animated .process-placeholder p { margin: 10px 0 0; color: var(--text-muted); font-size: 14px; line-height: 1.7; }
@@ -94,6 +88,34 @@
 @media (max-width: 980px) {
   .portfolio-home .work-process-animated .work-process-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .work-process-animated .process-stage { padding: 28px 20px; }
+}
+
+.workflow-compact { overflow: hidden; }
+.workflow-compact-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 36px; }
+.workflow-compact-heading h2 { margin: 10px 0 0; font-size: clamp(32px, 4.4vw, 56px); letter-spacing: -.045em; }
+.workflow-compact-heading p { max-width: 680px; margin: 14px 0 0; color: var(--text-muted); line-height: 1.75; }
+.workflow-compact-heading .button { flex: 0 0 auto; }
+.workflow-compact-rail { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 0; padding: 0; list-style: none; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; background: var(--surface); box-shadow: 0 18px 45px rgba(22, 46, 80, .06); }
+.workflow-compact-rail::before { content: ''; position: absolute; top: 35px; left: 12.5%; right: 12.5%; height: 1px; background: linear-gradient(90deg, transparent, var(--primary), transparent); opacity: .42; }
+.workflow-compact-rail li { position: relative; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; min-width: 0; padding: 26px 24px; border-right: 1px solid var(--border); background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 96%, var(--primary) 4%), var(--surface)); }
+.workflow-compact-rail li:last-child { border-right: 0; }
+.workflow-compact-rail li > span { position: relative; z-index: 1; display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border)); border-radius: 50%; background: var(--surface); color: var(--primary); font-size: 11px; font-weight: 800; }
+.workflow-compact-rail strong { display: block; margin-top: 8px; color: var(--text); font-size: 15px; line-height: 1.35; }
+.workflow-compact-rail p { margin: 8px 0 0; color: var(--text-muted); font-size: 13px; line-height: 1.6; }
+.workflow-page .work-process-section { padding-top: clamp(70px, 8vw, 112px); }
+@media (max-width: 900px) {
+  .workflow-compact-heading { align-items: flex-start; flex-direction: column; }
+  .workflow-compact-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .workflow-compact-rail::before { display: none; }
+  .workflow-compact-rail li:nth-child(2) { border-right: 0; }
+  .workflow-compact-rail li:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+}
+@media (max-width: 560px) {
+  .workflow-compact-heading { margin-bottom: 24px; }
+  .workflow-compact-heading .button { width: 100%; justify-content: center; }
+  .workflow-compact-rail { grid-template-columns: 1fr; }
+  .workflow-compact-rail li { border-right: 0; border-bottom: 1px solid var(--border); }
+  .workflow-compact-rail li:last-child { border-bottom: 0; }
 }
 @media (max-width: 680px) {
   .portfolio-home .work-process-animated .work-process-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }

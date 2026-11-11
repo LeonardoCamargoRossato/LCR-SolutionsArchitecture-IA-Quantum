@@ -1,5 +1,6 @@
 import { ChevronDown, GripVertical, X } from 'lucide-react'
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react'
+import { Link } from 'react-router-dom'
 import type { WorkProcessStep } from '../domain/models/SiteContent'
 import { isLegacyWorkflow, lcrWorkflow } from '../data/lcrWorkflow'
 import { useI18n } from '../i18n/I18nProvider'
@@ -11,7 +12,7 @@ type Drag = { index: number; pointerId: number; start: Point; origin: Point; han
 const desktopQuery = '(min-width: 1024px) and (hover: hover) and (pointer: fine)'
 const motionQuery = '(prefers-reduced-motion: reduce)'
 
-export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
+export function WorkProcessSection({ steps, compact = false }: { steps?: WorkProcessStep[]; compact?: boolean }) {
   const { t, locale } = useI18n()
   const pt = locale === 'pt-BR'
   const prefix = useId()
@@ -162,6 +163,8 @@ export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
 
   if (!safe.length) return null
 
+  if (compact) return <CompactWorkflow pt={pt} />
+
   const chooseStep = (index: number) => {
     setDetailIndex(index)
     setSelectedIndex(selectedIndex === index ? null : index)
@@ -257,30 +260,30 @@ export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
           </div>
         </div>
         <span className="process-announcement" role="status" aria-live="polite">{announcement}</span>
-        <DecisionRecord pt={pt} />
       </div>
     </section>
   )
 }
 
-function DecisionRecord({ pt }: { pt: boolean }) {
-  const [selected, setSelected] = useState(0)
-  const items = pt ? [
-    ['Contexto', 'Screenshots grandes tornavam a abertura dos cases mais lenta.'],
-    ['Decisão', 'Gerar variantes WebP e carregar prévia, card e original conforme o uso.'],
-    ['Alternativas', 'Serviço pago de transformação do Storage ou carregar apenas os originais.'],
-    ['Riscos', 'Mais arquivos gerados e necessidade de manter referências consistentes.'],
-    ['Verificação', 'Build, teste do carrossel e comparação dos bytes transferidos por variante.'],
+function CompactWorkflow({ pt }: { pt: boolean }) {
+  const phases = pt ? [
+    ['01', 'Planejar', 'Contexto, requisitos e alternativas.'],
+    ['02', 'Decidir', 'Aprovação humana das escolhas relevantes.'],
+    ['03', 'Construir e verificar', 'Implementação, testes e auditoria independente.'],
+    ['04', 'Publicar e registrar', 'Aprovação final, entrega e rastreabilidade.'],
   ] : [
-    ['Context', 'Large screenshots made case-study loading slower.'],
-    ['Decision', 'Generate WebP variants and load preview, card and original according to use.'],
-    ['Alternatives', 'A paid Storage transformation service or loading originals only.'],
-    ['Risks', 'More generated files and the need to keep references consistent.'],
-    ['Verification', 'Build, carousel testing and transferred-byte comparison by variant.'],
+    ['01', 'Plan', 'Context, requirements and alternatives.'],
+    ['02', 'Decide', 'Human approval for material choices.'],
+    ['03', 'Build and verify', 'Implementation, tests and independent audit.'],
+    ['04', 'Publish and record', 'Final approval, delivery and traceability.'],
   ]
-  return <section className="decision-record" aria-labelledby="decision-record-title">
-    <div><span className="eyebrow">{pt ? 'Registro de decisão · exemplo da implementação' : 'Decision record · implementation example'}</span><h3 id="decision-record-title">{pt ? 'Imagens progressivas do portfólio' : 'Progressive portfolio images'}</h3></div>
-    <div className="decision-record-tabs" role="tablist">{items.map(([label], index) => <button key={label} type="button" role="tab" aria-selected={selected === index} onClick={() => setSelected(index)}>{index + 1}. {label}</button>)}</div>
-    <p role="tabpanel"><strong>{items[selected][0]}:</strong> {items[selected][1]}</p>
+  return <section className="section section-soft workflow-compact" id="how-i-work">
+    <div className="site-container">
+      <div className="workflow-compact-heading">
+        <div><div className="eyebrow">05 / {pt ? 'Sistema de trabalho' : 'Working system'}</div><h2>LCR Workflow</h2><p>{pt ? 'Um processo com decisões humanas explícitas, implementação verificável e registro do resultado.' : 'A process with explicit human decisions, verifiable implementation and a recorded outcome.'}</p></div>
+        <Link className="button button-secondary" to="/workflow">{pt ? 'Conhecer o LCR Workflow' : 'Explore the LCR Workflow'} →</Link>
+      </div>
+      <ol className="workflow-compact-rail">{phases.map(([number, title, description]) => <li key={number}><span>{number}</span><div><strong>{title}</strong><p>{description}</p></div></li>)}</ol>
+    </div>
   </section>
 }
