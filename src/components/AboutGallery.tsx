@@ -9,6 +9,7 @@ import { aboutGalleryService } from '../bootstrap/services'
 import type { AboutGalleryItem } from '../domain/models/AboutGallery'
 import { useI18n } from '../i18n/I18nProvider'
 import { AboutGalleryLightbox } from './AboutGalleryLightbox'
+import { SafeImage } from './SafeImage'
 import { normalizeAboutGallery } from '../data/aboutGalleryEditorial'
 
 function localized(item: AboutGalleryItem, locale: 'en-US' | 'pt-BR') {
@@ -106,7 +107,7 @@ export function AboutGallery() {
               onClick={() => setLightboxIndex(index)}
               aria-label={localizedItem.title || alt}
             >
-              <img src={item.imageUrl} alt={alt} loading="lazy" />
+              <SafeImage src={item.imageUrl} alt={alt} loading="lazy" sizes="(max-width: 680px) 86vw, 380px" />
               <span className="about-gallery-card-copy">
                 {localizedItem.title && <strong>{localizedItem.title}</strong>}
                 {(localizedItem.location || localizedItem.caption) && (

@@ -28,6 +28,11 @@ export function localizedProject(project: Project, locale: Locale): Project {
   return {
     ...project,
     ...translation,
+    gallery: project.gallery.map((item) => ({
+      ...item,
+      caption: item.captionPt ?? item.caption,
+      altText: item.altTextPt ?? item.altText,
+    })),
     sections: {
       ...project.sections,
       ...(translation.sections ?? {}),

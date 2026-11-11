@@ -1,6 +1,7 @@
 import { ChevronDown, GripVertical, X } from 'lucide-react'
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react'
 import type { WorkProcessStep } from '../domain/models/SiteContent'
+import { isLegacyWorkflow, lcrWorkflow } from '../data/lcrWorkflow'
 import { useI18n } from '../i18n/I18nProvider'
 import './WorkProcessSection.css'
 
@@ -14,7 +15,8 @@ export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
   const { t, locale } = useI18n()
   const pt = locale === 'pt-BR'
   const prefix = useId()
-  const safe = Array.isArray(steps) ? steps : []
+  const authored = Array.isArray(steps) ? steps : []
+  const safe = !authored.length || isLegacyWorkflow(authored) ? lcrWorkflow(locale) : authored
   const stageRef = useRef<HTMLDivElement>(null)
   const sectionRef = useRef<HTMLElement>(null)
   const nodeRefs = useRef<(HTMLElement | null)[]>([])
@@ -211,7 +213,7 @@ export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
         <div className="section-title section-title-stacked">
           <div>
             <div className="eyebrow">05 / {t('processEyebrow')}</div>
-            <h2>{t('howIWork')}</h2>
+            <h2>LCR Workflow</h2>
           </div>
         </div>
         <div className="process-toolbar">
@@ -243,12 +245,42 @@ export function WorkProcessSection({ steps }: { steps?: WorkProcessStep[] }) {
             {detail && <section className="process-details" id={panelId} role="region" aria-labelledby={`${prefix}-process-detail-title`} onKeyDown={(event) => { if (event.key === 'Escape') { event.preventDefault(); closeDetails() } }}>
               <div className="process-details-header"><div><span className="process-detail-label">{pt ? 'Etapa' : 'Step'} {detail.step || (detailIndex ?? 0) + 1}</span><h3 id={`${prefix}-process-detail-title`}>{detail.title}</h3></div><button className="process-close" type="button" onClick={closeDetails}><X size={16} aria-hidden="true" />{pt ? 'Fechar' : 'Close'}</button></div>
               <p className="process-details-lead">{detail.description}</p>
-              {typeof detail.details === 'string' && detail.details.trim() ? <p className="process-details-body">{detail.details}</p> : <div className="process-placeholder"><span>{pt ? 'Conteúdo em preparação' : 'Content in preparation'}</span><p>{pt ? 'Espaço reservado para documentação, exemplos e materiais adicionais desta etapa. Esses detalhes ainda não foram cadastrados.' : 'Placeholder for documentation, examples and additional materials for this step. These details have not been added yet.'}</p></div>}
+              {typeof detail.details === 'string' && detail.details.trim() && <p className="process-details-body">{detail.details}</p>}
+              {(detail.owner || detail.inputs || detail.outputs || detail.verification || detail.transition) && <dl className="process-detail-matrix">
+                {detail.owner && <div><dt>{pt ? 'Responsável' : 'Owner'}</dt><dd>{detail.owner}</dd></div>}
+                {detail.inputs && <div><dt>{pt ? 'Entradas' : 'Inputs'}</dt><dd>{detail.inputs}</dd></div>}
+                {detail.outputs && <div><dt>{pt ? 'Artefatos produzidos' : 'Produced artifacts'}</dt><dd>{detail.outputs}</dd></div>}
+                {detail.verification && <div><dt>{pt ? 'Verificação' : 'Verification'}</dt><dd>{detail.verification}</dd></div>}
+                {detail.transition && <div><dt>{pt ? 'Avançar ou retornar' : 'Advance or return'}</dt><dd>{detail.transition}</dd></div>}
+              </dl>}
             </section>}
           </div>
         </div>
         <span className="process-announcement" role="status" aria-live="polite">{announcement}</span>
+        <DecisionRecord pt={pt} />
       </div>
     </section>
   )
+}
+
+function DecisionRecord({ pt }: { pt: boolean }) {
+  const [selected, setSelected] = useState(0)
+  const items = pt ? [
+    ['Contexto', 'Screenshots grandes tornavam a abertura dos cases mais lenta.'],
+    ['Decisão', 'Gerar variantes WebP e carregar prévia, card e original conforme o uso.'],
+    ['Alternativas', 'Serviço pago de transformação do Storage ou carregar apenas os originais.'],
+    ['Riscos', 'Mais arquivos gerados e necessidade de manter referências consistentes.'],
+    ['Verificação', 'Build, teste do carrossel e comparação dos bytes transferidos por variante.'],
+  ] : [
+    ['Context', 'Large screenshots made case-study loading slower.'],
+    ['Decision', 'Generate WebP variants and load preview, card and original according to use.'],
+    ['Alternatives', 'A paid Storage transformation service or loading originals only.'],
+    ['Risks', 'More generated files and the need to keep references consistent.'],
+    ['Verification', 'Build, carousel testing and transferred-byte comparison by variant.'],
+  ]
+  return <section className="decision-record" aria-labelledby="decision-record-title">
+    <div><span className="eyebrow">{pt ? 'Registro de decisão · exemplo da implementação' : 'Decision record · implementation example'}</span><h3 id="decision-record-title">{pt ? 'Imagens progressivas do portfólio' : 'Progressive portfolio images'}</h3></div>
+    <div className="decision-record-tabs" role="tablist">{items.map(([label], index) => <button key={label} type="button" role="tab" aria-selected={selected === index} onClick={() => setSelected(index)}>{index + 1}. {label}</button>)}</div>
+    <p role="tabpanel"><strong>{items[selected][0]}:</strong> {items[selected][1]}</p>
+  </section>
 }

@@ -1,11 +1,12 @@
 import { ChevronLeft, ChevronRight, ExternalLink, FileText, Github, GraduationCap, Maximize2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { Project } from '../../domain/models/Project'
 import type { ProjectInstitution } from '../../domain/models/ProjectInstitution'
 import { SafeImage } from '../SafeImage'
-import { ImageLightbox } from '../ImageLightbox'
 import { CaseInstitutionLogos } from './CaseInstitutionLogos'
+
+const ImageLightbox = lazy(() => import('../ImageLightbox').then((module) => ({ default: module.ImageLightbox })))
 
 export function CaseHero({
   project,
@@ -29,27 +30,52 @@ export function CaseHero({
   institutions: ProjectInstitution[]
 }) {
   const cover = project.coverImage?.url || './projects/foton-hub.svg'
+  const coverItem = {
+    src: cover,
+    fullSrc: cover,
+    previewSrc: undefined as string | undefined,
+    thumbnailSrc: cover,
+    alt: project.coverImage?.altText || `${project.title} project cover`,
+    caption: project.title,
+    downloadName: `${project.slug}-cover`,
+  }
   const galleryItems = (project.gallery ?? [])
     .filter((item) => item.visible !== false && item.image?.url)
     .sort((a, b) => (a.sortOrder ?? a.order) - (b.sortOrder ?? b.order))
     .map((item) => ({
-      src: item.image!.url,
+      src: item.cardUrl || item.image!.url,
+      fullSrc: item.fullUrl || item.image!.url,
+      previewSrc: item.previewUrl,
+      thumbnailSrc: item.thumbnailUrl || item.cardUrl || item.image!.url,
       alt: item.altText || item.image!.altText || item.caption || `${project.title} project image`,
+      caption: item.caption,
       downloadName: `${project.slug}-${item.id}`,
     }))
-  const heroItems = galleryItems.length > 0
-    ? galleryItems
-    : [{ src: cover, alt: `${project.title} project cover`, downloadName: `${project.slug}-cover` }]
+  const normalizedCover = cover.replace(/^\.\//, '/')
+  const heroItems = [coverItem, ...galleryItems.filter((item) => item.fullSrc.replace(/^\.\//, '/') !== normalizedCover)]
   const technologies = Array.isArray(project.technologies) ? project.technologies : []
   const description = (project.description ?? '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
   const [heroIndex, setHeroIndex] = useState(0)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const pointerStart = useRef<number | null>(null)
   const hasCarousel = heroItems.length > 1
 
   useEffect(() => {
     setHeroIndex(0)
     setLightboxIndex(null)
   }, [project.slug])
+
+  useEffect(() => {
+    if (heroItems.length < 2) return
+    const adjacent = [
+      heroItems[(heroIndex - 1 + heroItems.length) % heroItems.length],
+      heroItems[(heroIndex + 1) % heroItems.length],
+    ]
+    adjacent.forEach((item) => {
+      const image = new Image()
+      image.src = item.src
+    })
+  }, [heroIndex, heroItems])
 
   const changeSlide = (index: number) => {
     setHeroIndex((index + heroItems.length) % heroItems.length)
@@ -121,12 +147,26 @@ export function CaseHero({
             className="case-story-cover case-cover-zoom"
             onClick={() => setLightboxIndex(heroIndex)}
             aria-label={`Open ${project.title} image ${heroIndex + 1}`}
+            onPointerDown={(event) => { pointerStart.current = event.clientX }}
+            onPointerUp={(event) => {
+              if (pointerStart.current === null) return
+              const distance = event.clientX - pointerStart.current
+              pointerStart.current = null
+              if (Math.abs(distance) > 48) changeSlide(heroIndex + (distance < 0 ? 1 : -1))
+            }}
           >
-            <SafeImage src={heroItems[heroIndex].src} alt={heroItems[heroIndex].alt} />
+            <SafeImage
+              src={heroItems[heroIndex].src}
+              previewSrc={heroItems[heroIndex].previewSrc}
+              alt={heroItems[heroIndex].alt}
+              eager={heroIndex === 0}
+              sizes="(max-width: 980px) 100vw, 48vw"
+            />
             <span className="image-zoom-indicator" aria-hidden="true">
               <Maximize2 size={17} />
             </span>
           </button>
+          {heroItems[heroIndex].caption && <p className="case-hero-caption">{heroItems[heroIndex].caption}</p>}
 
           {hasCarousel && (
             <div className="case-hero-carousel-controls" aria-label={`${project.title} image carousel`}>
@@ -151,19 +191,32 @@ export function CaseHero({
               </button>
             </div>
           )}
+          {hasCarousel && (
+            <div className="case-hero-thumbnails" aria-label={`${project.title} thumbnails`}>
+              {heroItems.map((item, index) => (
+                <button key={`${item.src}-thumb`} type="button" className={index === heroIndex ? 'is-active' : ''} onClick={() => changeSlide(index)} aria-label={`Show project image ${index + 1}`}>
+                  <SafeImage src={item.thumbnailSrc} previewSrc={item.previewSrc} alt="" loading="lazy" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        <ImageLightbox
-          items={heroItems}
-          index={lightboxIndex}
-          onClose={() => setLightboxIndex(null)}
-          onChange={hasCarousel ? (index) => {
-            setHeroIndex(index)
-            setLightboxIndex(index)
-          } : undefined}
-          allowDownload={false}
-          ariaLabel={`${project.title} project images`}
-        />
+        {lightboxIndex !== null && (
+          <Suspense fallback={null}>
+            <ImageLightbox
+              items={heroItems.map((item) => ({ src: item.fullSrc, alt: item.alt, downloadName: item.downloadName }))}
+              index={lightboxIndex}
+              onClose={() => setLightboxIndex(null)}
+              onChange={hasCarousel ? (index) => {
+                setHeroIndex(index)
+                setLightboxIndex(index)
+              } : undefined}
+              allowDownload={false}
+              ariaLabel={`${project.title} project images`}
+            />
+          </Suspense>
+        )}
       </div>
     </section>
   )

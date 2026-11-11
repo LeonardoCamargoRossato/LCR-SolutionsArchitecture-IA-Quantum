@@ -1,5 +1,39 @@
 import type { Project } from '../domain/models/Project'
 
+const ceGallery = (
+  id: string,
+  caption: string,
+  captionPt: string,
+  altText: string,
+  altTextPt: string,
+  order: number,
+  evidence: string,
+) => ({
+  id,
+  image: {
+    id,
+    url: `./projects/ce235-gallery/${id}-full.webp`,
+    path: `./projects/ce235-gallery/${id}-full.webp`,
+    name: caption,
+    mimeType: 'image/webp',
+    category: 'Projects' as const,
+    imageType: 'real-screenshot' as const,
+  },
+  caption,
+  captionPt,
+  altText,
+  altTextPt,
+  previewUrl: `./projects/ce235-gallery/${id}-preview.webp`,
+  thumbnailUrl: `./projects/ce235-gallery/${id}-thumb.webp`,
+  cardUrl: `./projects/ce235-gallery/${id}-card.webp`,
+  fullUrl: `./projects/ce235-gallery/${id}-full.webp`,
+  evidence,
+  imageClassification: 'real-screenshot' as const,
+  order,
+  sortOrder: order,
+  visible: true,
+})
+
 export const ce235Project: Project = {
   id: 'ce235-real-time-systems',
   slug: 'ce235-real-time-systems',
@@ -76,6 +110,13 @@ export const ce235Project: Project = {
       },
     },
   },
-  gallery: [], order: 9, sortOrder: 9, placement: 'more', source: 'more',
+  gallery: [
+    ceGallery('us123-interface', 'US123 Telemetry Decoder — real application interface', 'US123 Telemetry Decoder — interface real da aplicação', 'US123 telemetry decoder initial interface', 'Interface inicial do decodificador de telemetria US123', 1, 'Captured from the locally executed public ITA-US123-Telemetry-Decoder repository.'),
+    ceGallery('us123-telemetry-processing', 'Simulated packet reception, parsing and validation', 'Recepção, parsing e validação de pacotes simulados', 'Telemetry monitor showing simulated packets and validation results', 'Monitor de telemetria exibindo pacotes simulados e resultados de validação', 2, 'Captured after running the simulator in the public ITA-US123-Telemetry-Decoder application.'),
+    ceGallery('us123-c-algorithms', 'Independent C reference implementation', 'Implementação C independente de referência', 'C algorithms browser in the US123 application', 'Navegador dos algoritmos C na aplicação US123', 3, 'Captured from the Algorithms page of the public ITA-US123-Telemetry-Decoder repository.'),
+    ceGallery('us123-c-pipeline', 'Telemetry pipeline C module', 'Módulo C do pipeline de telemetria', 'Telemetry pipeline C source displayed by the application', 'Código-fonte C do pipeline de telemetria exibido pela aplicação', 4, 'Captured from the telemetry_pipeline.c view in the public application.'),
+    ceGallery('ce235-repository', 'CE-235 project repository evidence', 'Evidência do repositório do projeto CE-235', 'GitHub repository overview documented by the CE-235 portal', 'Visão geral do repositório GitHub documentada pelo portal CE-235', 5, 'Existing screenshot from public/images/sprint1/github in ITA-CE235-EmbeddedSystems-RealTime.'),
+    ceGallery('ce235-documentation', 'CE-235 sprint documentation', 'Documentação da sprint CE-235', 'Project documentation overview from the CE-235 portal', 'Visão geral da documentação do projeto no portal CE-235', 6, 'Existing screenshot from public/images/sprint1/github in ITA-CE235-EmbeddedSystems-RealTime.'),
+  ], order: 9, sortOrder: 9, placement: 'more', source: 'more',
   visible: true, caseStudy: false, caseEnabled: true,
 }

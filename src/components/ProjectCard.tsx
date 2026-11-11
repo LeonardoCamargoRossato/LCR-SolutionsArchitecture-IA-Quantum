@@ -37,6 +37,7 @@ export function ProjectCard({ project, variant = 'primary', reveal, revealDelay 
             alt={`${current.title ?? 'Project'} project cover`}
             fallbackLabel={current.title || 'Project image unavailable'}
             loading="lazy"
+            sizes={variant === 'compact' ? '(max-width: 680px) 100vw, 32vw' : '(max-width: 900px) 100vw, 45vw'}
           />
         ) : (
           <div

@@ -38,6 +38,11 @@ export type WorkProcessStep = {
   step: string
   title: string
   description: string
+  owner?: string
+  inputs?: string
+  outputs?: string
+  verification?: string
+  transition?: string
 }
 
 export type SiteSettingsTranslation = {

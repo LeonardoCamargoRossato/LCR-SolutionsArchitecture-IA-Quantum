@@ -103,6 +103,7 @@ function enrich(project: Project): Project {
   if (base.slug === 'ce235-real-time-systems') {
     return {
       ...enriched,
+      gallery: enriched.gallery.length ? enriched.gallery : base.gallery,
       links: { ...enriched.links, ...base.links },
     }
   }

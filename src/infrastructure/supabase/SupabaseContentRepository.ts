@@ -36,6 +36,12 @@ function normalizeCapabilities(value: unknown): Capability[] {
     .map((item) => ({
       title: stringValue(item.title),
       description: stringValue(item.description),
+      details: stringValue(item.details) || undefined,
+      owner: stringValue(item.owner) || undefined,
+      inputs: stringValue(item.inputs) || undefined,
+      outputs: stringValue(item.outputs) || undefined,
+      verification: stringValue(item.verification) || undefined,
+      transition: stringValue(item.transition) || undefined,
       items: normalizeItems(item.items),
     }))
     .filter((item) => item.title || item.description || item.items.length)

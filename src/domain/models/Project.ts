@@ -55,6 +55,14 @@ export type ProjectGalleryItem = {
   image?: MediaAsset
   caption: string
   altText: string
+  captionPt?: string
+  altTextPt?: string
+  previewUrl?: string
+  thumbnailUrl?: string
+  cardUrl?: string
+  fullUrl?: string
+  evidence?: string
+  imageClassification?: 'real-screenshot' | 'photograph' | 'technical-diagram' | 'illustration'
   /** Legacy order alias kept for compatibility with older components/data. */
   order: number
   sortOrder?: number
