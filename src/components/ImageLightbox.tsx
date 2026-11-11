@@ -42,6 +42,7 @@ export function ImageLightbox({
 
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
+  const [dragging, setDragging] = useState(false)
   const dragRef = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null)
 
   const hasNavigation = items.length > 1 && Boolean(onChange)
@@ -50,6 +51,7 @@ export function ImageLightbox({
     if (!current) return
     setZoom(1)
     setPan({ x: 0, y: 0 })
+    setDragging(false)
     previousFocus.current = document.activeElement as HTMLElement | null
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -178,7 +180,7 @@ export function ImageLightbox({
           )}
 
           <div
-            className={`image-lightbox-viewport${zoom > 1 ? ' is-pannable' : ''}`}
+            className={`image-lightbox-viewport${zoom > 1 ? ' is-pannable' : ''}${dragging ? ' is-dragging' : ''}`}
             onWheel={(event) => {
               event.preventDefault()
               const delta = event.deltaY < 0 ? 0.1 : -0.1
@@ -186,24 +188,38 @@ export function ImageLightbox({
             }}
             onPointerDown={(event) => {
               if (zoom <= 1) return
+              event.preventDefault()
               dragRef.current = {
                 x: event.clientX,
                 y: event.clientY,
                 panX: pan.x,
                 panY: pan.y,
               }
+              setDragging(true)
               event.currentTarget.setPointerCapture(event.pointerId)
             }}
             onPointerMove={(event) => {
               const drag = dragRef.current
               if (!drag || zoom <= 1) return
+              event.preventDefault()
               setPan({
                 x: drag.panX + event.clientX - drag.x,
                 y: drag.panY + event.clientY - drag.y,
               })
             }}
-            onPointerUp={() => {
+            onPointerUp={(event) => {
               dragRef.current = null
+              setDragging(false)
+              if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                event.currentTarget.releasePointerCapture(event.pointerId)
+              }
+            }}
+            onPointerCancel={(event) => {
+              dragRef.current = null
+              setDragging(false)
+              if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+                event.currentTarget.releasePointerCapture(event.pointerId)
+              }
             }}
           >
             <img
