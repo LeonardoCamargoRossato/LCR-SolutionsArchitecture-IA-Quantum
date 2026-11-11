@@ -43,14 +43,21 @@ export function WorkflowDocuments({ markdown, locale }: { markdown: string; loca
                 onClick={() => setOpenIndex(index)}
                 aria-label={pt ? `Abrir diagrama: ${text.title}` : `Open diagram: ${text.title}`}
               >
-                <img
-                  src={`${import.meta.env.BASE_URL}${item.publicPath}`}
-                  alt=""
-                  width={item.width}
-                  height={item.height}
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <source
+                    media="(min-width: 700px)"
+                    srcSet={`${import.meta.env.BASE_URL}${item.previewPath}`}
+                    type="image/svg+xml"
+                  />
+                  <img
+                    src={`${import.meta.env.BASE_URL}${item.thumbnailPath}`}
+                    alt=""
+                    width={item.width}
+                    height={item.height}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
                 <span><Maximize2 size={18} /> {pt ? 'Ampliar' : 'Enlarge'}</span>
               </button>
               <div className="workflow-diagram-copy">
