@@ -1,13 +1,13 @@
-import { ExternalLink, Maximize2 } from 'lucide-react'
+import { Maximize2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import type { Locale } from '../i18n/types'
 import { localizedWorkflowDiagram, workflowDiagrams } from '../data/workflowResources'
 import { ImageLightbox } from './ImageLightbox'
-import { WorkflowManual } from './WorkflowManual'
 
-export function WorkflowDocuments({ markdown, locale }: { markdown: string; locale: Locale }) {
+export function WorkflowDocuments({ locale }: { locale: Locale }) {
   const pt = locale === 'pt-BR'
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+
   const localized = useMemo(
     () => workflowDiagrams.map((item) => ({ item, text: localizedWorkflowDiagram(item, locale) })),
     [locale],
@@ -20,17 +20,17 @@ export function WorkflowDocuments({ markdown, locale }: { markdown: string; loca
   }))
 
   return (
-    <section className="workflow-documents-section" aria-labelledby="workflow-documents-title">
+    <section className="workflow-documents-section workflow-documents-first" aria-labelledby="workflow-documents-title">
       <div className="site-container workflow-page-resources">
         <header className="workflow-documents-heading">
-          <div className="eyebrow">{pt ? 'Documentação visual' : 'Visual documentation'}</div>
+          <div className="eyebrow">{pt ? 'Visão geral' : 'Overview'}</div>
           <h2 id="workflow-documents-title">
-            {pt ? 'Documentos e diagramas do LCR Framework' : 'LCR Framework documents and diagrams'}
+            {pt ? 'Diagrama do LCR Framework' : 'LCR Framework diagram'}
           </h2>
           <p>
             {pt
-              ? 'Estes materiais documentam como o método organiza papéis, agentes, orquestração, decisões, verificação e publicação.'
-              : 'These materials document how the method organizes roles, agents, orchestration, decisions, verification and publication.'}
+              ? 'O diagrama resume a estrutura do método: objetivo, papéis especializados, integrações, organização do repositório, documentação e registros de decisão.'
+              : 'The diagram summarizes the method structure: objective, specialized roles, integrations, repository organization, documentation and decision records.'}
           </p>
         </header>
 
@@ -43,48 +43,34 @@ export function WorkflowDocuments({ markdown, locale }: { markdown: string; loca
                 onClick={() => setOpenIndex(index)}
                 aria-label={pt ? `Abrir diagrama: ${text.title}` : `Open diagram: ${text.title}`}
               >
-                <picture>
-                  <source
-                    media="(min-width: 700px)"
-                    srcSet={`${import.meta.env.BASE_URL}${item.previewPath}`}
-                    type="image/svg+xml"
-                  />
-                  <img
-                    src={`${import.meta.env.BASE_URL}${item.thumbnailPath}`}
-                    alt=""
-                    width={item.width}
-                    height={item.height}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </picture>
+                <img
+                  src={`${import.meta.env.BASE_URL}${item.publicPath}`}
+                  alt={text.title}
+                  width={item.width}
+                  height={item.height}
+                  loading="lazy"
+                  decoding="async"
+                />
                 <span><Maximize2 size={18} /> {pt ? 'Ampliar' : 'Enlarge'}</span>
               </button>
+
               <div className="workflow-diagram-copy">
                 <span>{text.category}</span>
                 <h3>{text.title}</h3>
-                <p>{text.description}</p>
+                <p>
+                  {pt
+                    ? 'Mostra, em uma única visão, quem participa do fluxo, como as ferramentas se conectam e como o projeto é organizado para planejamento, desenvolvimento, auditoria e evolução.'
+                    : 'Shows in one view who participates in the flow, how the tools connect, and how the project is organized for planning, development, audit and evolution.'}
+                </p>
+
                 <div className="workflow-diagram-actions">
                   <button type="button" className="button" onClick={() => setOpenIndex(index)}>
                     {pt ? 'Abrir diagrama' : 'Open diagram'}
                   </button>
-                  <a
-                    className="button button-secondary"
-                    href={`${import.meta.env.BASE_URL}${item.publicPath}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {pt ? 'Abrir original' : 'Open original'} <ExternalLink size={14} />
-                  </a>
                 </div>
-                <small>{item.originalName} · {(item.sizeBytes / 1024 / 1024).toFixed(2)} MB</small>
               </div>
             </article>
           ))}
-        </div>
-
-        <div className="workflow-documents-manual">
-          <WorkflowManual markdown={markdown} locale={locale} />
         </div>
       </div>
 
@@ -93,8 +79,8 @@ export function WorkflowDocuments({ markdown, locale }: { markdown: string; loca
         index={openIndex}
         onClose={() => setOpenIndex(null)}
         onChange={setOpenIndex}
-        allowDownload
-        ariaLabel={pt ? 'Visualizador de diagramas do LCR Workflow' : 'LCR Workflow diagram viewer'}
+        allowDownload={false}
+        ariaLabel={pt ? 'Visualizador do diagrama do LCR Workflow' : 'LCR Workflow diagram viewer'}
       />
     </section>
   )
