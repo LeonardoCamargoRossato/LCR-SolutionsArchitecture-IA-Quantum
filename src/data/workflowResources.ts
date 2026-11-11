@@ -4,6 +4,8 @@ export type WorkflowDiagramResource = {
   id: string
   originalName: string
   publicPath: string
+  thumbnailPath: string
+  previewPath: string
   category: { en: string; pt: string }
   title: { en: string; pt: string }
   description: { en: string; pt: string }
@@ -18,6 +20,8 @@ export const workflowDiagrams: WorkflowDiagramResource[] = [
     id: 'lcr-workflow-structure',
     originalName: 'LcrWorkflowEstrutura.png',
     publicPath: 'workflow/LcrWorkflowEstrutura.png',
+    thumbnailPath: 'workflow/lcr-workflow-structure-thumb.svg',
+    previewPath: 'workflow/lcr-workflow-structure-preview.svg',
     category: { en: 'Overview', pt: 'Visão geral' },
     title: { en: 'LCR Workflow structure', pt: 'Estrutura do LCR Workflow' },
     description: {
