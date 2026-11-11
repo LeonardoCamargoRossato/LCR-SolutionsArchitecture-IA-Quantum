@@ -85,7 +85,7 @@ export function ImageLightbox({
   }, [current?.src, hasNavigation, index, items.length, onChange, onClose])
 
   useEffect(() => {
-    if (zoom <= 1) setPan({ x: 0, y: 0 })
+    if (zoom < 1) setPan({ x: 0, y: 0 })
   }, [zoom])
 
   if (!current || index === null) return null
@@ -180,14 +180,14 @@ export function ImageLightbox({
           )}
 
           <div
-            className={`image-lightbox-viewport${zoom > 1 ? ' is-pannable' : ''}${dragging ? ' is-dragging' : ''}`}
+            className={`image-lightbox-viewport${zoom >= 1 ? ' is-pannable' : ''}${dragging ? ' is-dragging' : ''}`}
             onWheel={(event) => {
               event.preventDefault()
               const delta = event.deltaY < 0 ? 0.1 : -0.1
               setZoom((value) => Math.max(0.5, Math.min(4, Number((value + delta).toFixed(2)))))
             }}
             onPointerDown={(event) => {
-              if (zoom <= 1) return
+              if (zoom < 1) return
               event.preventDefault()
               dragRef.current = {
                 x: event.clientX,
@@ -200,7 +200,7 @@ export function ImageLightbox({
             }}
             onPointerMove={(event) => {
               const drag = dragRef.current
-              if (!drag || zoom <= 1) return
+              if (!drag || zoom < 1) return
               event.preventDefault()
               setPan({
                 x: drag.panX + event.clientX - drag.x,
