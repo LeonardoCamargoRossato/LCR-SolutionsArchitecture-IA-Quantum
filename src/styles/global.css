@@ -6101,3 +6101,48 @@ a.case-institution-logo:hover {
     max-height: none;
   }
 }
+
+
+/* HOTFIX: LCR Workflow balanced two-column layout */
+.workflow-process-browser {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+}
+
+.workflow-process-detail {
+  padding: clamp(24px, 3vw, 34px);
+}
+
+.workflow-process-detail-grid {
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.workflow-process-detail-grid > div,
+.workflow-process-detail-grid > div.is-wide {
+  grid-column: auto;
+  padding: 14px 15px;
+}
+
+.workflow-process-detail-grid dd {
+  margin-top: 6px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.workflow-process-detail-lead {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.workflow-process-tabs > button {
+  padding: 13px 14px;
+}
+
+@media (max-width: 900px) {
+  .workflow-process-browser {
+    grid-template-columns: 1fr;
+  }
+}
