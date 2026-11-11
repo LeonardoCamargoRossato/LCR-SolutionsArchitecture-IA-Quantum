@@ -102,7 +102,43 @@
 .workflow-compact-rail li > span { position: relative; z-index: 1; display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border)); border-radius: 50%; background: var(--surface); color: var(--primary); font-size: 11px; font-weight: 800; }
 .workflow-compact-rail strong { display: block; margin-top: 8px; color: var(--text); font-size: 15px; line-height: 1.35; }
 .workflow-compact-rail p { margin: 8px 0 0; color: var(--text-muted); font-size: 13px; line-height: 1.6; }
-.workflow-page .work-process-section { padding-top: clamp(70px, 8vw, 112px); }
+.workflow-page-hero { padding: clamp(72px, 9vw, 124px) 0 clamp(48px, 6vw, 76px); }
+.workflow-page-hero .case-back-link { display: inline-flex; margin-bottom: 52px; }
+.workflow-page-hero h1 { max-width: 900px; margin: 14px 0 0; color: var(--text); font-size: clamp(42px, 6vw, 78px); line-height: 1.03; letter-spacing: -.055em; }
+.workflow-page-hero p { max-width: 760px; margin: 24px 0 0; color: var(--text-muted); font-size: clamp(17px, 2vw, 21px); line-height: 1.75; }
+.agent-orchestration { padding: clamp(28px, 4vw, 52px); border: 1px solid var(--border); border-radius: 24px; background: var(--surface); box-shadow: 0 22px 60px rgba(22, 46, 80, .07); }
+.agent-orchestration-heading h2 { max-width: 800px; margin: 12px 0 0; color: var(--text); font-size: clamp(30px, 4vw, 48px); line-height: 1.12; letter-spacing: -.04em; }
+.agent-orchestration-heading p { max-width: 720px; margin: 18px 0 0; color: var(--text-muted); line-height: 1.75; }
+.agent-flow-scroll { margin-top: 38px; padding: 6px 2px 16px; overflow-x: auto; scrollbar-width: thin; }
+.agent-flow { display: flex; align-items: stretch; width: max-content; min-width: 100%; }
+.agent-flow-segment { display: flex; align-items: center; }
+.agent-flow-segment > button { width: 172px; min-height: 176px; display: flex; flex-direction: column; align-items: flex-start; padding: 20px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface-alt); color: var(--text); font: inherit; text-align: left; cursor: pointer; transition: border-color 160ms ease, background 160ms ease, transform 160ms ease; }
+.agent-flow-segment > button:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--primary) 52%, var(--border)); }
+.agent-flow-segment > button.is-active { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 9%, var(--surface)); }
+.agent-flow-segment button > span { display: grid; place-items: center; width: 34px; height: 28px; border-radius: 8px; background: color-mix(in srgb, var(--primary) 10%, var(--surface)); color: var(--primary); font-size: 10px; font-weight: 800; }
+.agent-flow-segment button strong { margin-top: 24px; font-size: 15px; line-height: 1.35; }
+.agent-flow-segment button small { display: -webkit-box; margin-top: 9px; overflow: hidden; color: var(--text-muted); font-size: 11px; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.agent-flow-arrow { width: 30px; flex: 0 0 30px; color: var(--primary); font-size: 18px; text-align: center; opacity: .7; }
+.agent-focus { display: grid; grid-template-columns: minmax(220px, .8fr) minmax(0, 2fr); gap: 32px; margin-top: 22px; padding: clamp(24px, 3vw, 34px); border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border)); border-radius: 18px; background: color-mix(in srgb, var(--primary) 4%, var(--surface)); }
+.agent-focus-intro > span { color: var(--primary); font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.agent-focus-intro h3 { margin: 10px 0 0; color: var(--text); font-size: 26px; }
+.agent-focus-intro p { margin: 12px 0 0; color: var(--text-muted); line-height: 1.7; }
+.agent-focus dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; }
+.agent-focus dl div { padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.agent-focus dt { color: var(--primary); font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.agent-focus dd { margin: 8px 0 0; color: var(--text); font-size: 13px; line-height: 1.6; }
+.agent-library { margin-top: 36px; }
+.agent-library-title { margin-bottom: 16px; }
+.agent-library-title h3 { margin: 0; color: var(--text); font-size: 22px; }
+.agent-library-title p { margin: 7px 0 0; color: var(--text-muted); font-size: 13px; }
+.agent-library details { border-top: 1px solid var(--border); }
+.agent-library details:last-child { border-bottom: 1px solid var(--border); }
+.agent-library summary { display: grid; grid-template-columns: minmax(160px, .45fr) minmax(0, 1fr); gap: 24px; padding: 18px 4px; cursor: pointer; }
+.agent-library summary span { color: var(--text); font-weight: 750; }
+.agent-library summary small { color: var(--text-muted); line-height: 1.55; }
+.agent-library details > div { padding: 0 4px 20px; color: var(--text-muted); }
+.agent-library details p { margin: 9px 0; line-height: 1.65; }
+.workflow-page .work-process-section { margin-top: clamp(54px, 7vw, 92px); padding-top: clamp(70px, 8vw, 112px); }
 @media (max-width: 900px) {
   .workflow-compact-heading { align-items: flex-start; flex-direction: column; }
   .workflow-compact-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -116,6 +152,14 @@
   .workflow-compact-rail { grid-template-columns: 1fr; }
   .workflow-compact-rail li { border-right: 0; border-bottom: 1px solid var(--border); }
   .workflow-compact-rail li:last-child { border-bottom: 0; }
+}
+@media (max-width: 720px) {
+  .workflow-page-hero .case-back-link { margin-bottom: 36px; }
+  .agent-orchestration { padding: 24px 18px; border-radius: 18px; }
+  .agent-flow-segment > button { width: 156px; min-height: 164px; }
+  .agent-focus { grid-template-columns: 1fr; }
+  .agent-focus dl { grid-template-columns: 1fr; }
+  .agent-library summary { grid-template-columns: 1fr; gap: 6px; }
 }
 @media (max-width: 680px) {
   .portfolio-home .work-process-animated .work-process-grid { grid-template-columns: minmax(0, 1fr); gap: 36px; }
