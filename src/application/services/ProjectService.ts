@@ -174,6 +174,8 @@ function enrich(project: Project): Project {
   return {
     ...enriched,
     ...citiesComparingContent,
+    coverImage: base.coverImage,
+    imageType: base.imageType,
     links: { ...enriched.links, ...citiesComparingContent.links },
     sections: { ...enriched.sections, ...citiesComparingContent.sections },
     translations: {

@@ -29,12 +29,12 @@ export function CaseHero({
   reportDownloadLabel: string
   institutions: ProjectInstitution[]
 }) {
-  const cover = project.coverImage?.url || './projects/foton-hub.svg'
+  const cover = project.coverImage?.cardUrl || project.coverImage?.url || './projects/foton-hub.svg'
   const coverItem = {
     src: cover,
-    fullSrc: cover,
-    previewSrc: undefined as string | undefined,
-    thumbnailSrc: cover,
+    fullSrc: project.coverImage?.fullUrl || project.coverImage?.url || cover,
+    previewSrc: project.coverImage?.previewUrl,
+    thumbnailSrc: project.coverImage?.thumbnailUrl || cover,
     alt: project.coverImage?.altText || `${project.title} project cover`,
     caption: project.title,
     downloadName: `${project.slug}-cover`,

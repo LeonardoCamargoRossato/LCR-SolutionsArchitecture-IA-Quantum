@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
   fallbackLabel?: string
@@ -20,12 +20,21 @@ export function SafeImage({
   const [visible, setVisible] = useState(eager)
   const [attempt, setAttempt] = useState(0)
   const rootRef = useRef<HTMLSpanElement>(null)
+  const imageRef = useRef<HTMLImageElement>(null)
+  const previousSrc = useRef(props.src)
 
   useEffect(() => {
+    if (previousSrc.current === props.src) return
+    previousSrc.current = props.src
     setFailed(false)
     setLoaded(false)
     setAttempt(0)
   }, [props.src])
+
+  useLayoutEffect(() => {
+    const image = imageRef.current
+    if (image?.complete && image.naturalWidth > 0) setLoaded(true)
+  }, [props.src, attempt, visible])
 
   useEffect(() => {
     if (eager || visible || typeof IntersectionObserver === 'undefined') {
@@ -57,6 +66,7 @@ export function SafeImage({
       {previewSrc && <img className="progressive-image-preview" src={previewSrc} alt="" aria-hidden="true" />}
       {visible && (
         <img
+          ref={imageRef}
           key={`${props.src}-${attempt}`}
           {...props}
           className="progressive-image-main"

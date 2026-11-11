@@ -1894,10 +1894,10 @@ select:focus-visible,
 .progressive-image-preview,
 .progressive-image-main,
 .progressive-image-skeleton { position: absolute; inset: 0; }
-.progressive-image-preview { filter: blur(12px); transform: scale(1.08); opacity: 1; }
-.progressive-image-main { opacity: 0; transition: opacity 240ms ease; }
-.progressive-image.is-loaded .progressive-image-main { opacity: 1; }
-.progressive-image.is-loaded .progressive-image-preview { opacity: 0; }
+.progressive-image-main { opacity: 1; }
+.progressive-image-preview { z-index: 1; filter: blur(12px); transform: scale(1.08); opacity: 1; transition: opacity 180ms ease; }
+.progressive-image-skeleton { z-index: 1; }
+.progressive-image.is-loaded .progressive-image-preview { opacity: 0; pointer-events: none; }
 .progressive-image-skeleton {
   background: linear-gradient(100deg, var(--surface-alt) 25%, color-mix(in srgb, var(--surface) 78%, var(--primary) 22%) 45%, var(--surface-alt) 65%);
   background-size: 220% 100%;

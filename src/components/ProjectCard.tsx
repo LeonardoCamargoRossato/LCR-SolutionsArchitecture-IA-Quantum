@@ -18,7 +18,7 @@ export function ProjectCard({ project, variant = 'primary', reveal, revealDelay 
   const current = localizedProject(project, locale)
   const description = (current.description ?? '').replace(/<[^>]*>/g, ' ')
   const technologies = current.technologies ?? []
-  const image = current.coverImage?.url
+  const image = current.coverImage?.cardUrl || current.coverImage?.url
   const category = `${current.category} ${current.slug}`.toLowerCase()
   const accent = /academic|acadêm|scientific|científica|quantum|telemetry|ce235|cities/.test(category)
     ? 'science'
@@ -34,6 +34,7 @@ export function ProjectCard({ project, variant = 'primary', reveal, revealDelay 
           <SafeImage
             className="project-image"
             src={image}
+            previewSrc={current.coverImage?.previewUrl}
             alt={`${current.title ?? 'Project'} project cover`}
             fallbackLabel={current.title || 'Project image unavailable'}
             loading="lazy"

@@ -14,6 +14,22 @@ import './styles/global.css'
 import './styles/visual-refresh.css'
 import './styles/home-motion.css'
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+if (supabaseUrl) {
+  try {
+    const origin = new URL(supabaseUrl).origin
+    for (const rel of ['preconnect', 'dns-prefetch']) {
+      const link = document.createElement('link')
+      link.rel = rel
+      link.href = origin
+      if (rel === 'preconnect') link.crossOrigin = 'anonymous'
+      document.head.appendChild(link)
+    }
+  } catch {
+    // Invalid optional configuration is handled by the repository layer.
+  }
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HashRouter>

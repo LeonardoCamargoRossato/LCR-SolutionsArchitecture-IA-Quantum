@@ -8,7 +8,6 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { authService } from '../bootstrap/services'
 import type {
   AuthSession,
   AuthUser,
@@ -34,9 +33,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let mounted = true
+    let unsubscribe = () => {}
 
-    void authService
-      .getCurrentSession()
+    void import('../bootstrap/services').then(({ authService }) => {
+      unsubscribe = authService.onAuthStateChanged(
+        (nextUser, nextSession) => {
+          if (!mounted) return
+          setUser(nextUser)
+          setSession(nextSession)
+          setLoading(false)
+        },
+      )
+      return authService.getCurrentSession()
+    })
       .then((current) => {
         if (!mounted) return
         setSession(current)
@@ -52,15 +61,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (mounted) setLoading(false)
       })
 
-    const unsubscribe = authService.onAuthStateChanged(
-      (nextUser, nextSession) => {
-        if (!mounted) return
-        setUser(nextUser)
-        setSession(nextSession)
-        setLoading(false)
-      },
-    )
-
     return () => {
       mounted = false
       unsubscribe()
@@ -68,12 +68,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signIn = useCallback(async (email: string, password: string) => {
+    const { authService } = await import('../bootstrap/services')
     const nextSession = await authService.signIn(email, password)
     setSession(nextSession)
     setUser(nextSession.user)
   }, [])
 
   const signOut = useCallback(async () => {
+    const { authService } = await import('../bootstrap/services')
     await authService.signOut()
     setSession(null)
     setUser(null)
