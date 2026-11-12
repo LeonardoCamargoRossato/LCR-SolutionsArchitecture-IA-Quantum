@@ -60,7 +60,7 @@ export function WorkflowDocuments({ locale }: { locale: Locale }) {
         <header className="workflow-documents-heading">
           <div className="eyebrow">{pt ? 'Como eu trabalho' : 'How I work'}</div>
           <h2 id="workflow-documents-title">
-            {pt ? 'LCR Workflow em visão visual' : 'LCR Workflow at a glance'}
+            {pt ? 'LCR Workflow - Arquitetura' : 'LCR Workflow at a glance'}
           </h2>
           <p>
             {pt
