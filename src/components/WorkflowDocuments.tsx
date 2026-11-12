@@ -55,19 +55,8 @@ export function WorkflowDocuments({ locale }: { locale: Locale }) {
   }))
 
   return (
-    <section className="workflow-documents-section workflow-documents-first" aria-labelledby="workflow-documents-title">
+    <section className="workflow-documents-section workflow-documents-first" aria-label={pt ? 'Arquitetura do LCR Workflow' : 'LCR Workflow architecture'}>
       <div className="site-container workflow-page-resources">
-        <header className="workflow-documents-heading">
-          <div className="eyebrow">{pt ? 'Como eu trabalho' : 'How I work'}</div>
-          <h2 id="workflow-documents-title">
-            {pt ? 'LCR Workflow - Arquitetura' : 'LCR Workflow at a glance'}
-          </h2>
-          <p>
-            {pt
-              ? 'Comece pelo diagrama real dos agentes e funções. Deslize para ver o documento A4 completo do LCR Workflow.'
-              : 'Start with the original diagram of agents and roles. Swipe to see the complete A4 LCR Workflow document.'}
-          </p>
-        </header>
 
         <div className="workflow-visual-gallery" aria-label={pt ? 'Galeria dos diagramas LCR' : 'LCR diagrams gallery'}>
           <div className="workflow-visual-hint" aria-hidden="true">
