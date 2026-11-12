@@ -19,9 +19,9 @@ export const workflowDiagrams: WorkflowDiagramResource[] = [
   {
     id: 'lcr-agents-roles-functions',
     originalName: 'LCR_Workflow_Agentes_Papeis_Funcoes.png',
-    publicPath: 'workflow/LCR_Workflow_Agentes_Papeis_Funcoes.png',
-    thumbnailPath: 'workflow/LCR_Workflow_Agentes_Papeis_Funcoes.png',
-    previewPath: 'workflow/LCR_Workflow_Agentes_Papeis_Funcoes.png',
+    publicPath: 'workflow/LCR_Workflow_Agentes_Papeis_Funcoes.webp',
+    thumbnailPath: 'workflow/LCR_Workflow_Agentes_Papeis_Funcoes.webp',
+    previewPath: 'workflow/LCR_Workflow_Agentes_Papeis_Funcoes.webp',
     category: { en: 'Agents & Roles', pt: 'Agentes e Funções' },
     title: { en: 'LCR Workflow — Agents, Roles and Functions', pt: 'LCR Workflow — Agentes, Papéis e Funções' },
     description: {
