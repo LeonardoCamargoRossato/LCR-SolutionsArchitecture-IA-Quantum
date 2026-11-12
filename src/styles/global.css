@@ -5868,8 +5868,15 @@ a.case-institution-logo:hover {
   pointer-events: none;
 }
 
+/* Keep the workflow diagrams directly below the page introduction. */
+.workflow-page-hero {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
 .workflow-documents-first {
-  padding-top: clamp(36px, 5vw, 64px);
+  padding-top: clamp(12px, 2vw, 24px);
+  margin-top: 0;
   border-top: 0;
 }
 
