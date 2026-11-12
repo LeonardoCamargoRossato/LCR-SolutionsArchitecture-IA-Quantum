@@ -6147,85 +6147,66 @@ a.case-institution-logo:hover {
   }
 }
 
-
-/* HOTFIX: Workflow visual carousel with swipe hint */
-@keyframes workflow-swipe-arrow {
+/* Workflow visual gallery — one full section per slide, no horizontal scrollbar */
+@keyframes workflow-hint-nudge {
   0%, 100% { transform: translateX(0); opacity: .7; }
-  50% { transform: translateX(9px); opacity: 1; }
+  50% { transform: translateX(7px); opacity: 1; }
+}
+@keyframes workflow-slide-enter {
+  from { opacity: .55; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
-.workflow-carousel-shell {
-  position: relative;
-}
-
-.workflow-swipe-hint {
-  display: inline-flex;
+.workflow-visual-gallery { width: 100%; }
+.workflow-visual-hint {
+  display: flex;
   align-items: center;
-  gap: 7px;
-  margin: 0 0 12px;
+  gap: 9px;
+  width: fit-content;
+  margin: 0 0 14px;
   color: var(--primary);
   font-size: 12px;
   font-weight: 800;
-  letter-spacing: .02em;
 }
-
-.workflow-swipe-hint svg {
-  animation: workflow-swipe-arrow 1.45s ease-in-out infinite;
-}
-
-.workflow-document-carousel {
-  display: flex;
-  gap: 18px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 2px 2px 12px;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
-  cursor: grab;
-  user-select: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-.workflow-document-carousel:active {
-  cursor: grabbing;
-}
-
-.workflow-document-slide {
-  flex: 0 0 100%;
-  min-width: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(280px, .8fr);
+.workflow-visual-hint-arrow { animation: workflow-hint-nudge 1.5s ease-in-out infinite; }
+.workflow-visual-stage {
+  width: 100%;
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 18px;
   background: var(--surface);
-  scroll-snap-align: start;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
 }
-
-.workflow-document-image {
+.workflow-visual-stage:active { cursor: grabbing; }
+.workflow-visual-stage:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.workflow-visual-slide { min-width: 0; animation: workflow-slide-enter 240ms ease both; }
+.workflow-visual-image-button {
   position: relative;
-  min-width: 0;
-  min-height: 520px;
-  display: grid;
-  place-items: center;
-  padding: 18px;
+  display: flex;
+  width: 100%;
+  min-height: 300px;
+  height: min(690px, 61vw);
+  max-height: 690px;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(14px, 2.4vw, 28px);
   border: 0;
-  border-right: 1px solid var(--border);
-  background: color-mix(in srgb, var(--surface-alt) 78%, #eaf4ff 22%);
+  background: color-mix(in srgb, var(--surface-alt) 77%, #e5f2ff 23%);
   cursor: zoom-in;
 }
-
-.workflow-document-image img {
+.workflow-visual-image-button img {
   display: block;
-  max-width: 100%;
-  max-height: 560px;
   width: auto;
   height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   pointer-events: none;
+  -webkit-user-drag: none;
 }
-
-.workflow-document-image > span {
+.workflow-visual-enlarge {
   position: absolute;
   right: 16px;
   bottom: 16px;
@@ -6235,83 +6216,88 @@ a.case-institution-logo:hover {
   padding: 9px 12px;
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
   color: var(--text);
   font-size: 12px;
   font-weight: 800;
 }
-
-.workflow-document-copy {
+.workflow-visual-caption {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: clamp(26px, 4vw, 48px);
+  align-items: center;
+  min-height: 126px;
+  padding: clamp(20px, 3vw, 32px);
+  border-top: 1px solid var(--border);
 }
-
-.workflow-document-copy > span {
+.workflow-visual-category {
   color: var(--primary);
   font-size: 11px;
   font-weight: 850;
   letter-spacing: .07em;
   text-transform: uppercase;
 }
-
-.workflow-document-copy h3 {
-  margin: 12px 0 0;
+.workflow-visual-caption h3 {
+  margin: 6px 0 0;
   color: var(--text);
-  font-size: clamp(28px, 3.2vw, 42px);
-  line-height: 1.12;
-  letter-spacing: -.035em;
+  font-size: clamp(19px, 2.2vw, 27px);
+  line-height: 1.22;
 }
-
-.workflow-document-copy p {
-  margin: 16px 0 0;
+.workflow-visual-caption p {
+  margin: 8px 0 0;
   color: var(--text-muted);
-  line-height: 1.7;
+  font-size: 13px;
+  line-height: 1.6;
 }
-
-.workflow-carousel-dots {
+.workflow-visual-navigation {
   display: flex;
   justify-content: center;
-  gap: 7px;
-  margin-top: 10px;
+  align-items: center;
+  gap: 22px;
+  margin-top: 16px;
 }
-
-.workflow-carousel-dots span {
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
+.workflow-visual-arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--primary);
+  cursor: pointer;
+}
+.workflow-visual-arrow:hover { border-color: var(--primary); }
+.workflow-visual-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+.workflow-visual-pagination button {
+  width: 11px;
+  height: 11px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
   background: color-mix(in srgb, var(--text-muted) 35%, transparent);
+  cursor: pointer;
 }
-
-.workflow-carousel-dots span.is-active {
-  width: 22px;
+.workflow-visual-pagination button.is-active {
+  width: 25px;
+  border-radius: 999px;
   background: var(--primary);
 }
-
-@media (max-width: 850px) {
-  .workflow-document-slide {
-    grid-template-columns: 1fr;
-  }
-
-  .workflow-document-image {
-    min-height: 0;
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .workflow-document-image img {
-    max-height: none;
-    width: 100%;
-  }
-
-  .workflow-document-copy {
-    padding: 22px 18px 24px;
-  }
+.workflow-visual-pagination span {
+  margin-left: 6px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
 }
-
+@media (max-width: 760px) {
+  .workflow-visual-image-button { min-height: 230px; height: 65vw; max-height: 520px; padding: 10px; }
+  .workflow-visual-caption { padding: 18px; min-height: 0; }
+  .workflow-visual-enlarge { right: 9px; bottom: 9px; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .workflow-swipe-hint svg {
-    animation: none;
-  }
+  .workflow-visual-hint-arrow,
+  .workflow-visual-slide { animation: none !important; }
 }

@@ -18,10 +18,10 @@ export type WorkflowDiagramResource = {
 export const workflowDiagrams: WorkflowDiagramResource[] = [
   {
     id: 'lcr-agents-roles-functions',
-    originalName: 'lcr-agents-roles-functions.svg',
-    publicPath: 'workflow/lcr-agents-roles-functions.svg',
-    thumbnailPath: 'workflow/lcr-agents-roles-functions.svg',
-    previewPath: 'workflow/lcr-agents-roles-functions.svg',
+    originalName: 'LCR_Workflow_Agentes_Papeis_Funcoes.png',
+    publicPath: 'workflow/LCR_Workflow_Agentes_Papeis_Funcoes.png',
+    thumbnailPath: 'workflow/LCR_Workflow_Agentes_Papeis_Funcoes.png',
+    previewPath: 'workflow/LCR_Workflow_Agentes_Papeis_Funcoes.png',
     category: { en: 'Agents & Roles', pt: 'Agentes e Funções' },
     title: { en: 'LCR Workflow — Agents, Roles and Functions', pt: 'LCR Workflow — Agentes, Papéis e Funções' },
     description: {
@@ -30,8 +30,8 @@ export const workflowDiagrams: WorkflowDiagramResource[] = [
     },
     width: 1536,
     height: 1024,
-    sizeBytes: 0,
-    source: 'LCR Workflow · generated diagram',
+    sizeBytes: 1793986,
+    source: 'Original LCR agent diagram · Google Drive / conversation',
   },
   {
     id: 'lcr-workflow-structure',
