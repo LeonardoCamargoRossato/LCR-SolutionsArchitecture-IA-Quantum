@@ -17,6 +17,23 @@ export type WorkflowDiagramResource = {
 
 export const workflowDiagrams: WorkflowDiagramResource[] = [
   {
+    id: 'lcr-agents-roles-functions',
+    originalName: 'lcr-agents-roles-functions.svg',
+    publicPath: 'workflow/lcr-agents-roles-functions.svg',
+    thumbnailPath: 'workflow/lcr-agents-roles-functions.svg',
+    previewPath: 'workflow/lcr-agents-roles-functions.svg',
+    category: { en: 'Agents & Roles', pt: 'Agentes e Funções' },
+    title: { en: 'LCR Workflow — Agents, Roles and Functions', pt: 'LCR Workflow — Agentes, Papéis e Funções' },
+    description: {
+      en: 'A visual map of the specialized agents used in the workflow, their responsibilities, human approval gates and the overall delivery cycle.',
+      pt: 'Mapa visual dos agentes especializados usados no workflow, suas responsabilidades, gates de aprovação humana e o ciclo geral de entrega.',
+    },
+    width: 1536,
+    height: 1024,
+    sizeBytes: 0,
+    source: 'LCR Workflow · generated diagram',
+  },
+  {
     id: 'lcr-workflow-structure',
     originalName: 'LcrWorkflowEstrutura.png',
     publicPath: 'workflow/LcrWorkflowEstrutura.png',
