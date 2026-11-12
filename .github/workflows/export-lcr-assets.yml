@@ -1,0 +1,57 @@
+name: Export LCR portfolio PNG assets
+
+on:
+  push:
+    paths:
+      - .github/workflows/export-lcr-assets.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image converters
+        run: python3 -m pip install --break-system-packages Pillow cairosvg
+      - name: Export all portfolio images as PNG
+        run: |
+          python3 - <<'PY'
+          import csv
+          import shutil
+          from pathlib import Path
+          import cairosvg
+          from PIL import Image
+
+          base = Path("public")
+          dst = Path("lcr-assets-png")
+          dst.mkdir(exist_ok=True)
+          sources = sorted(p for p in base.rglob("*") if p.suffix.lower() in {".png", ".webp", ".svg"})
+          records = []
+          for p in sources:
+              name = p.with_suffix(".png").relative_to(base)
+              target = dst / name
+              if p.suffix.lower() != ".png" and (base/name).is_file():
+                  target = dst / name.with_name(name.stem + "__" + p.suffix[1:].lower() + ".png")
+              target.parent.mkdir(parents=True, exist_ok=True)
+              if p.suffix.lower() == ".png":
+                  shutil.copy2(p, target)
+              elif p.suffix.lower() == ".webp":
+                  with Image.open(p) as im:
+                      im.save(target, "PNG", optimize=True)
+              else:
+                  cairosvg.svg2png(url=str(p), write_to=str(target))
+              records.append((str(p), str(target), target.stat().st_size))
+          with (dst / "MANIFEST.csv").open("w", newline="", encoding="utf-8") as f:
+              writer = csv.writer(f)
+              writer.writerow(["original_path", "exported_png", "size_bytes"])
+              writer.writerows(records)
+          print(f"Exported {len(records)} images as PNG")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LCR-Portfolio-Assets-PNG
+          path: lcr-assets-png/
+          retention-days: 7
