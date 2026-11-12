@@ -20,6 +20,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import csv
+          import re
           import shutil
           from pathlib import Path
           import cairosvg
@@ -42,7 +43,10 @@ jobs:
                   with Image.open(p) as im:
                       im.save(target, "PNG", optimize=True)
               else:
-                  cairosvg.svg2png(url=str(p), write_to=str(target))
+                  svg = p.read_text(encoding="utf-8")
+                  # Some legacy decorative SVGs contain a bare ampersand.
+                  svg = re.sub(r'&(?!amp;|lt;|gt;|quot;|apos;|#\\d+;|#x[0-9a-fA-F]+;)', '&amp;', svg)
+                  cairosvg.svg2png(bytestring=svg.encode("utf-8"), write_to=str(target))
               records.append((str(p), str(target), target.stat().st_size))
           with (dst / "MANIFEST.csv").open("w", newline="", encoding="utf-8") as f:
               writer = csv.writer(f)
