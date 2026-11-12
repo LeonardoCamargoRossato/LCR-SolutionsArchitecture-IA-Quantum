@@ -24,6 +24,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Optimize LCR Workflow diagram as WebP
+        run: |
+          python3 -m venv /tmp/lcr-webp
+          /tmp/lcr-webp/bin/pip install --disable-pip-version-check Pillow
+          /tmp/lcr-webp/bin/python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+
+          source = Path("public/workflow/LCR_Workflow_Agentes_Papeis_Funcoes.png")
+          target = source.with_suffix(".webp")
+          with Image.open(source) as image:
+              image.save(target, "WEBP", quality=92, method=6)
+          print(f"Workflow diagram: {source.stat().st_size:,} -> {target.stat().st_size:,} bytes")
+          # Retain the original PNG in Git history, but publish only the WebP.
+          source.unlink()
+          PY
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
