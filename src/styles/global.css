@@ -6146,3 +6146,172 @@ a.case-institution-logo:hover {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* HOTFIX: Workflow visual carousel with swipe hint */
+@keyframes workflow-swipe-arrow {
+  0%, 100% { transform: translateX(0); opacity: .7; }
+  50% { transform: translateX(9px); opacity: 1; }
+}
+
+.workflow-carousel-shell {
+  position: relative;
+}
+
+.workflow-swipe-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 12px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+.workflow-swipe-hint svg {
+  animation: workflow-swipe-arrow 1.45s ease-in-out infinite;
+}
+
+.workflow-document-carousel {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 2px 12px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  cursor: grab;
+  user-select: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.workflow-document-carousel:active {
+  cursor: grabbing;
+}
+
+.workflow-document-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, .8fr);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  scroll-snap-align: start;
+}
+
+.workflow-document-image {
+  position: relative;
+  min-width: 0;
+  min-height: 520px;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  border: 0;
+  border-right: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface-alt) 78%, #eaf4ff 22%);
+  cursor: zoom-in;
+}
+
+.workflow-document-image img {
+  display: block;
+  max-width: 100%;
+  max-height: 560px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.workflow-document-image > span {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.workflow-document-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(26px, 4vw, 48px);
+}
+
+.workflow-document-copy > span {
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.workflow-document-copy h3 {
+  margin: 12px 0 0;
+  color: var(--text);
+  font-size: clamp(28px, 3.2vw, 42px);
+  line-height: 1.12;
+  letter-spacing: -.035em;
+}
+
+.workflow-document-copy p {
+  margin: 16px 0 0;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.workflow-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.workflow-carousel-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-muted) 35%, transparent);
+}
+
+.workflow-carousel-dots span.is-active {
+  width: 22px;
+  background: var(--primary);
+}
+
+@media (max-width: 850px) {
+  .workflow-document-slide {
+    grid-template-columns: 1fr;
+  }
+
+  .workflow-document-image {
+    min-height: 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .workflow-document-image img {
+    max-height: none;
+    width: 100%;
+  }
+
+  .workflow-document-copy {
+    padding: 22px 18px 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workflow-swipe-hint svg {
+    animation: none;
+  }
+}
