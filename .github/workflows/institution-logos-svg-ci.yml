@@ -1,0 +1,46 @@
+name: LCR institution logos - true SVG conversion
+
+on:
+  push:
+    branches:
+      - feat/institution-logos-svg-20261117
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Verify vector integrity, SHA-256 and transparency
+        run: node tests/institution-logos-integrity.test.mjs
+      - name: TypeScript and production build
+        run: npm run build
+      - name: Install Playwright
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Desktop/mobile all institution marks and raster fallback
+        run: node tests/institution-logos-browser-smoke.mjs
+      - name: Preserve screenshots and JSON audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: institution-logo-regression-evidence
+          retention-days: 30
+          if-no-files-found: warn
+          path: test-results/
