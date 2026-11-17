@@ -1,0 +1,55 @@
+name: Portfolio - retired PDF analyzer regression
+
+on:
+  push:
+    branches:
+      - fix/remove-pdf-frequency-analyzer-20261117
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-retirement:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned project dependencies
+        run: npm ci
+      - name: Build TypeScript and Vite
+        run: npm run build
+      - name: Confirm active source excludes retired project
+        run: |
+          if grep -Rq "pdf-frequency-analyzer" src/data/; then
+            echo "::error::Retired analyzer is still present in active source data."
+            exit 1
+          fi
+          if grep -q "pdf-frequency-analyzer" scripts/migrate_portfolio_covers.py; then
+            echo "::error::Retired analyzer is still included in active cover migration."
+            exit 1
+          fi
+      - name: Install browser tooling
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify eight retained projects and retired route - desktop and mobile
+        run: node tests/portfolio-covers-smoke.mjs
+      - name: Save test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-analyzer-retirement-regression-evidence
+          retention-days: 30
+          if-no-files-found: warn
+          path: test-results/

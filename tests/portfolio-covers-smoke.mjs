@@ -4,12 +4,13 @@ import fs from 'node:fs/promises'
 import { chromium } from 'playwright'
 
 // Test-only browser harness. No privileged keys are used by the browser.
-const BASE = 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
+const PUBLIC_BASE = process.env.PORTFOLIO_TEST_BASE_URL?.trim()
+const BASE = PUBLIC_BASE ? (PUBLIC_BASE.endsWith('/') ? PUBLIC_BASE : PUBLIC_BASE + '/') : 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
 const SLUGS = ['cities-comparing','embedded-control-platform','foton-hub','hamlet',
-  'pdf-frequency-analyzer','quantum-education-apps','scientific-analysis-toolkit',
+  'quantum-education-apps','scientific-analysis-toolkit',
   'speaker-portfolio','webseer']
 const report = { results: [], admin: {}, error: null }
-const server = spawn('npm',['run','dev','--','--host','127.0.0.1','--port','5173','--strictPort'],
+const server = PUBLIC_BASE ? null : spawn('npm',['run','dev','--','--host','127.0.0.1','--port','5173','--strictPort'],
   { stdio: 'ignore', env: process.env, detached: true })
 let browser
 
@@ -86,6 +87,16 @@ async function testViewport(label,width,height) {
     console.log('BROWSER',label,slug,'PASS')
     report.results.push({viewport:label,project:slug,webp:true,png:true})
   }
+  // Retired projects must be absent from the public carousel and direct route.
+  await page.goto(BASE + '#/', { waitUntil: 'domcontentloaded' })
+  await page.locator('a.project-card').first().waitFor({ timeout: 30000 })
+  assert.equal(await page.locator('a[href*="pdf-frequency-analyzer"]').count(), 0,
+    'Retired project card unexpectedly present on Home')
+  await page.goto(BASE + '#/projects/pdf-frequency-analyzer', { waitUntil: 'domcontentloaded' })
+  await page.getByRole('heading', { name: 'Case study not found.' }).waitFor({ timeout: 30000 })
+  assert.equal(await page.locator('.case-story-cover').count(), 0,
+    'Retired project case unexpectedly loaded')
+  console.log('BROWSER',label,'retired PDF Frequency Analyzer absent: PASS')
   assert.equal(bad.length,0,'Broken PNG/WebP network responses')
   if(label==='desktop') {
     await page.goto(BASE+'#/admin',{waitUntil:'domcontentloaded'})
@@ -123,15 +134,15 @@ try {
   browser=await chromium.launch({headless:true,args:['--no-sandbox']})
   await testViewport('desktop',1440,900)
   await testViewport('mobile',390,844)
-  await testAdminUploader()
-  console.log('PASS: 9 cases x 2 viewports, original PNG zoom/download and isolated admin uploader')
+  if (!PUBLIC_BASE) await testAdminUploader()
+  console.log('PASS: '+(PUBLIC_BASE ? 'PUBLISHED SITE' : 'BRANCH')+' 8 cases x 2 viewports, original PNG zoom/download and retired card/route check')
 } catch(error) {
   report.error=String(error)
   console.error('FAIL browser smoke:',String(error))
   process.exitCode=1
 } finally {
   if(browser) await browser.close()
-  try { process.kill(-server.pid,'SIGTERM') } catch {}
+  if (server) { try { process.kill(-server.pid,'SIGTERM') } catch {} }
   await fs.mkdir('test-results',{recursive:true})
   await fs.writeFile('test-results/portfolio-browser-report.json',JSON.stringify(report,null,2))
 }
