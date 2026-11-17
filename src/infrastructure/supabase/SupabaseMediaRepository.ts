@@ -97,6 +97,110 @@ export class SupabaseMediaRepository implements IMediaRepository {
     }
   }
 
+  /** Save a photo + full-size PNG + optimized WebP as one logical gallery asset.
+   *  Editorial imageUrl keeps the uploaded photographic original for rollback;
+   *  readers resolve matching derived variants from storagePath.
+   */
+  async uploadAboutGalleryPhoto(file: File): Promise<MediaAsset> {
+    const mime = file.type
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(mime)) {
+      throw new Error('Galeria: somente arquivos JPG, PNG ou WebP são aceitos.')
+    }
+
+    const bitmap = await createImageBitmap(file)
+    const canvas = document.createElement('canvas')
+    canvas.width = bitmap.width
+    canvas.height = bitmap.height
+    const context = canvas.getContext('2d')
+    if (!context) {
+      bitmap.close()
+      throw new Error('Conversão PNG/WebP indisponível neste navegador.')
+    }
+    context.drawImage(bitmap, 0, 0)
+    bitmap.close()
+
+    const convert = (type: 'image/png' | 'image/webp') =>
+      new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((result) => {
+          if (!result || result.type !== type) {
+            reject(new Error('Não foi possível gerar a versão ' + type))
+          } else {
+            resolve(result)
+          }
+        }, type, type === 'image/webp' ? 0.82 : undefined)
+      })
+
+    // Never overwrite or delete previously uploaded gallery photographs.
+    const pngBlob = mime === 'image/png' ? file : await convert('image/png')
+    const webpBlob = await convert('image/webp')
+    const stem = Date.now() + '-' + crypto.randomUUID() + '-' + safeBaseName(file.name)
+    const originalExtension = mime === 'image/jpeg' ? 'jpg' : mime === 'image/png' ? 'png' : 'webp'
+    const originalPath = 'about/gallery/' + stem + '.' + originalExtension
+    const pngPath = 'about/gallery/PNG/' + stem + '.png'
+    const webpPath = 'about/gallery/WebP/' + stem + '.webp'
+    const uploaded: string[] = []
+
+    try {
+      for (const [path, blob, type] of [
+        [originalPath, file, mime],
+        [pngPath, pngBlob, 'image/png'],
+        [webpPath, webpBlob, 'image/webp'],
+      ] as Array<[string, Blob, string]>) {
+        const { error } = await this.storage.upload(path, blob, {
+          contentType: type, cacheControl: '3600', upsert: false,
+        })
+        if (error) throw error
+        uploaded.push(path)
+      }
+
+      const [originalRead, pngRead, webpRead] = await Promise.all(
+        [originalPath, pngPath, webpPath].map(async (path) => {
+          const { data, error } = await this.storage.download(path)
+          if (error || !data) throw error || new Error('Storage read-back missing: ' + path)
+          return data
+        }),
+      )
+      const hash = async (data: ArrayBuffer) =>
+        Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', data))).join(',')
+      if (await hash(await file.arrayBuffer()) !== await hash(await originalRead.arrayBuffer())) {
+        throw new Error('A fotografia original foi alterada durante o envio.')
+      }
+      if (await hash(await pngBlob.arrayBuffer()) !== await hash(await pngRead.arrayBuffer())) {
+        throw new Error('A cópia PNG não corresponde à versão enviada.')
+      }
+      if (await hash(await webpBlob.arrayBuffer()) !== await hash(await webpRead.arrayBuffer())) {
+        throw new Error('A versão WebP não corresponde à versão enviada.')
+      }
+
+      const pngImage = await createImageBitmap(pngRead)
+      const webpImage = await createImageBitmap(webpRead)
+      try {
+        if (
+          pngImage.width !== canvas.width || pngImage.height !== canvas.height ||
+          webpImage.width !== canvas.width || webpImage.height !== canvas.height
+        ) {
+          throw new Error('As dimensões das fotografias não foram preservadas.')
+        }
+      } finally {
+        pngImage.close()
+        webpImage.close()
+      }
+      const url = this.getPublicUrl(originalPath)
+      return {
+        id: originalPath, path: originalPath, url,
+        cardUrl: this.getPublicUrl(webpPath),
+        fullUrl: this.getPublicUrl(pngPath),
+        name: file.name, mimeType: mime, category: 'About',
+        imageType: 'real-screenshot', createdAt: new Date().toISOString(),
+      }
+    } catch (error) {
+      // Roll back only uniquely named paths created by THIS incomplete upload.
+      // Never touch files from earlier requests or the 12 migrated originals.
+      if (uploaded.length) await this.storage.remove(uploaded).catch(() => undefined)
+      throw error
+    }
+  }
+
   // Each cover is an immutable PNG original and its optimized WebP pair.
   // Only new paths created by a failed upload may be cleaned up.
   async uploadProjectCover(file: File, slug: string): Promise<MediaAsset> {
@@ -204,7 +308,8 @@ export class SupabaseMediaRepository implements IMediaRepository {
     // Files are only retired through an explicitly audited migration/cleanup.
     if (
       /^projects\/[^/]+\/(?:PNG|WebP)\/[^/]+\.(?:png|webp)$/i.test(path) ||
-      /^projects\/[^/]+\/[^/]+\.png$/i.test(path)
+      /^projects\/[^/]+\/[^/]+\.png$/i.test(path) ||
+      /^about\/gallery\/(?:PNG\/[^/]+\.png|WebP\/[^/]+\.webp|[^/]+\.(?:jpe?g|png|webp))$/i.test(path)
     ) {
       throw new Error('Capa protegida: primeiro audite todas as referências antes de excluir.')
     }

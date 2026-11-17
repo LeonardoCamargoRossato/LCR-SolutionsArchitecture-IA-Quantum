@@ -3,12 +3,14 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
   fallbackLabel?: string
   previewSrc?: string
+  fallbackSrc?: string
   eager?: boolean
 }
 
 export function SafeImage({
   fallbackLabel = 'Image unavailable',
   previewSrc,
+  fallbackSrc,
   eager = false,
   onError,
   className,
@@ -69,6 +71,7 @@ export function SafeImage({
           ref={imageRef}
           key={`${props.src}-${attempt}`}
           {...props}
+          src={attempt > 0 && fallbackSrc ? fallbackSrc : props.src}
           className="progressive-image-main"
           alt={alt}
           loading={eager ? 'eager' : (props.loading ?? 'lazy')}

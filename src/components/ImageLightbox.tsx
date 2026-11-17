@@ -14,6 +14,7 @@ export type ImageLightboxItem = {
   src: string
   alt: string
   downloadName?: string
+  fallbackSrc?: string
 }
 
 type Props = {
@@ -40,6 +41,7 @@ export function ImageLightbox({
   const closeRef = useRef<HTMLButtonElement>(null)
   const previousFocus = useRef<HTMLElement | null>(null)
 
+  const [showFallback, setShowFallback] = useState(false)
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [dragging, setDragging] = useState(false)
@@ -50,6 +52,7 @@ export function ImageLightbox({
   useEffect(() => {
     if (!current) return
     setZoom(1)
+    setShowFallback(false)
     setPan({ x: 0, y: 0 })
     setDragging(false)
     previousFocus.current = document.activeElement as HTMLElement | null
@@ -98,20 +101,30 @@ export function ImageLightbox({
 
   const download = async () => {
     const filename = current.downloadName || current.alt || 'image'
+    let chosenUrl = current.src
     try {
-      const response = await fetch(current.src)
+      let response = await fetch(chosenUrl)
+      if (!response.ok && current.fallbackSrc) {
+        // Existing legacy gallery items remain viewable while variants settle.
+        chosenUrl = current.fallbackSrc
+        response = await fetch(chosenUrl)
+      }
       if (!response.ok) throw new Error('Download failed')
       const blob = await response.blob()
       const objectUrl = URL.createObjectURL(blob)
       const anchor = document.createElement('a')
       anchor.href = objectUrl
-      anchor.download = filename.replace(/[^a-zA-Z0-9._-]+/g, '-')
+      const fallbackExtension = chosenUrl.split(/[?#]/)[0].split('.').pop()?.toLowerCase() || 'jpg'
+      anchor.download = (chosenUrl === current.src
+        ? filename
+        : filename.replace(/\.[^.]+$/, '') + '.' + fallbackExtension
+      ).replace(/[^a-zA-Z0-9._-]+/g, '-')
       document.body.appendChild(anchor)
       anchor.click()
       anchor.remove()
       URL.revokeObjectURL(objectUrl)
     } catch {
-      window.open(current.src, '_blank', 'noopener,noreferrer')
+      window.open(chosenUrl, '_blank', 'noopener,noreferrer')
     }
   }
 
@@ -223,7 +236,9 @@ export function ImageLightbox({
             }}
           >
             <img
-              src={current.src}
+              key={current.src}
+              src={showFallback && current.fallbackSrc ? current.fallbackSrc : current.src}
+              onError={() => { if (current.fallbackSrc && !showFallback) setShowFallback(true) }}
               alt={current.alt}
               draggable={false}
               style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}
