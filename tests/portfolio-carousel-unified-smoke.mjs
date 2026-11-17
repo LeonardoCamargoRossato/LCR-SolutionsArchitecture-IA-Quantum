@@ -37,16 +37,36 @@ async function listProjectSlugs(page) {
 
 // Wait for the rail's smooth motion to settle; assert alignment in visual pixels.
 async function assertThumbnailCentered(page, slug, device, action) {
-  await page.waitForFunction(() => {
-    const rail = document.querySelector('.case-hero-thumbnails')
-    const active = rail?.querySelector('button.is-active')
-    if (!rail || !active) return false
-    const railRect = rail.getBoundingClientRect()
-    const activeRect = active.getBoundingClientRect()
-    const thumbCenter = activeRect.left + activeRect.width / 2
-    const viewportCenter = railRect.left + rail.clientWidth / 2
-    return Math.abs(thumbCenter - viewportCenter) < 4
-  }, null, { timeout: 8000 })
+  try {
+    await page.waitForFunction(() => {
+      const rail = document.querySelector('.case-hero-thumbnails')
+      const active = rail?.querySelector('button.is-active')
+      if (!rail || !active) return false
+      const railRect = rail.getBoundingClientRect()
+      const activeRect = active.getBoundingClientRect()
+      const thumbCenter = activeRect.left + activeRect.width / 2
+      const viewportCenter = railRect.left + rail.clientWidth / 2
+      return Math.abs(thumbCenter - viewportCenter) < 4
+    }, null, { timeout: 8000 })
+  } catch (error) {
+    const metrics = await page.locator('.case-hero-thumbnails').evaluate((rail) => {
+      const active = rail.querySelector('button.is-active')
+      const selectedRect = active?.getBoundingClientRect()
+      const railRect = rail.getBoundingClientRect()
+      return {
+        activeIndex: [...rail.querySelectorAll('button')].findIndex((button) => button.classList.contains('is-active')),
+        scrollLeft: rail.scrollLeft,
+        scrollWidth: rail.scrollWidth,
+        clientWidth: rail.clientWidth,
+        thumbWidth: selectedRect?.width,
+        thumbLeft: selectedRect?.left,
+        railLeft: railRect.left,
+        centerDelta: selectedRect ? selectedRect.left + selectedRect.width / 2 - railRect.left - rail.clientWidth / 2 : null,
+        edgeSpace: getComputedStyle(rail).paddingLeft,
+      }
+    })
+    throw new Error(`Center timeout [${device}/${slug}/${action}]: ${JSON.stringify(metrics)}; ${error}`)
+  }
   const details = await page.locator('.case-hero-thumbnails').evaluate((rail) => ({
     selected: [...rail.querySelectorAll('button')].findIndex((button) => button.classList.contains('is-active')),
     scrollLeft: rail.scrollLeft,
