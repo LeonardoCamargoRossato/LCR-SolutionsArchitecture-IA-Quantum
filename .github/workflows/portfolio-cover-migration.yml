@@ -48,6 +48,7 @@ jobs:
           assert len(images) == 9
           for image in images:
               print(f"{image['project']}: {image['original_bytes']} PNG -> {image['webp_bytes']} WebP, saving {image['reduction_percent']}%")
+              print(f"SHA256 {image['project']} {image['sha256_original']}")
           before = sum(x['original_bytes'] for x in images)
           after = sum(x['webp_bytes'] for x in images)
           print(f"TOTAL {before} PNG -> {after} WebP; saved {100*(before-after)/before:.2f}%")
