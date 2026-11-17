@@ -33,9 +33,10 @@ jobs:
         run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
-      - name: Run browser checks against live public CMS and Storage
+      - name: Run read-only browser checks against published GitHub Pages
         run: node tests/portfolio-covers-smoke.mjs
         env:
+          PORTFOLIO_TEST_BASE_URL: https://leonardocamargorossato.github.io/LCR-SolutionsArchitecture-IA-Quantum/
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
           VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
