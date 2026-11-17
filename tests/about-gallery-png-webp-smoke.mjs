@@ -100,11 +100,58 @@ async function viewportTest(type, viewport) {
   await context.close()
 }
 
+
+async function mockedAdminUploadTest() {
+  const context = await browser.newContext({ viewport: { width: 1000, height: 700 } })
+  const page = await context.newPage()
+  const objects = new Map()
+
+  await page.route(/\/storage\/v1\/object\/portfolio-media\/about\/gallery\//, async route => {
+    const req = route.request()
+    const url = new URL(req.url())
+    const path = decodeURIComponent(url.pathname.split('/object/portfolio-media/')[1] || '')
+    if (!path) throw Error('Bad mock Storage path')
+    if (req.method() === 'POST') {
+      const bytes = req.postDataBuffer()
+      if (!bytes || objects.has(path)) throw Error('Upload is empty or overwrote a prior object: ' + path)
+      objects.set(path, bytes)
+      await route.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ Key: path, Id: 'mock-upload' }) })
+    } else if (req.method() === 'GET') {
+      const bytes = objects.get(path)
+      if (!bytes) await route.fulfill({ status: 404, body: '{}' })
+      else await route.fulfill({ status: 200,
+        contentType: path.endsWith('.jpg') ? 'image/jpeg' : path.endsWith('.png') ? 'image/png' : 'image/webp',
+        body: bytes })
+    } else {
+      throw Error('Unexpected mock Storage verb: ' + req.method())
+    }
+  })
+
+  await page.goto(BASE + 'tests/gallery-admin-upload-harness.html', { waitUntil: 'domcontentloaded' })
+  await page.waitForFunction(() => document.querySelector('#result')?.textContent?.startsWith('PASS:'), null, { timeout: 25000 })
+  const paths = [...objects.keys()]
+  assert.equal(paths.length, 3)
+  const original = paths.find(path => /^about\/gallery\/[^/]+\.jpg$/.test(path))
+  const png = paths.find(path => /^about\/gallery\/PNG\/[^/]+\.png$/.test(path))
+  const webp = paths.find(path => /^about\/gallery\/WebP\/[^/]+\.webp$/.test(path))
+  assert(original && png && webp, 'Admin upload must produce original + PNG + WebP')
+  assert.equal(objects.get(original)[0], 0xff)
+  assert.equal(objects.get(original)[1], 0xd8)
+  assert.equal(objects.get(png).subarray(1, 4).toString('ascii'), 'PNG')
+  assert.equal(objects.get(webp).subarray(8, 12).toString('ascii'), 'WEBP')
+  output.admin = { simulatedUpload: 'PASS', sources: 1, png: 1, webp: 1 }
+  console.log('GALLERY ADMIN: mocked authenticated Storage upload produces and verifies all three formats')
+  await page.screenshot({ path: 'test-results/gallery-admin-mock.png' })
+  await context.close()
+}
+
 try {
   await waitReady()
   browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] })
   await viewportTest('desktop', { width: 1440, height: 900 })
   await viewportTest('mobile', { width: 390, height: 844 })
+  await mockedAdminUploadTest()
   console.log('GALLERY PASS: 10 visible photos × 2 devices; WebP carousel, PNG lightbox and PNG download.')
 } catch (error) {
   output.errors.push(String(error))
