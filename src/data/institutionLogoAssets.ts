@@ -34,7 +34,13 @@ export function resolveInstitutionLogo(source?: string): ResolvedInstitutionLogo
   const fromEditorialStorage = pathname.includes('/storage/v1/object/public/portfolio-media/')
   if (!fromEditorialStorage) return { src: source, layout: 'wide', vectorized: false }
 
-  const logo = catalog.find(({ suffix }) => pathname.toLowerCase().endsWith('/' + suffix.toLowerCase()))
+  // Supabase prefixes uploaded filenames with a timestamp/UUID. Match the
+  // actual original name after that prefix, not only a slash-separated basename.
+  const filename = pathname.split('/').pop()?.toLowerCase() ?? ''
+  const logo = catalog.find(({ suffix }) => {
+    const expected = suffix.toLowerCase()
+    return filename === expected || filename.endsWith('-' + expected)
+  })
   if (!logo) return { src: source, layout: 'wide', vectorized: false }
 
   const base = import.meta.env.BASE_URL.replace(/\/?$/, '/')
