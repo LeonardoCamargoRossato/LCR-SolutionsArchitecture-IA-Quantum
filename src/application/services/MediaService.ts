@@ -32,6 +32,14 @@ export class MediaService {
     return this.repo.uploadProjectCover(file, slug)
   }
 
+  async uploadAboutGalleryPhoto(file: File) {
+    this.validateImage(file)
+    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+      throw new Error('Galeria: envie uma fotografia PNG, JPG ou WebP.')
+    }
+    return this.repo.uploadAboutGalleryPhoto(file)
+  }
+
   async replace(current: Parameters<IMediaRepository['replace']>[0], file: File, category: MediaCategory, pathPrefix?: string) {
     if (category === 'Documents') this.validatePdf(file)
     else this.validateImage(file)
