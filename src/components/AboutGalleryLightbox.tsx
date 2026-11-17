@@ -4,6 +4,7 @@ import type { AboutGalleryItem } from '../domain/models/AboutGallery'
 import type { Locale } from '../i18n/types'
 import { externalLinks } from '../config/externalLinks'
 import { ImageLightbox } from './ImageLightbox'
+import { resolveAboutGalleryMedia } from '../infrastructure/supabase/aboutGalleryMedia'
 
 const SPEAKER_PORTFOLIO = externalLinks.speaker
 const INSTITUTO_PENSE_MAIS = 'https://institutopensemais.com/'
@@ -69,10 +70,12 @@ export function AboutGalleryLightbox({
 
   const viewerItems = items.map((item) => {
     const localizedItem = localized(item, locale)
+    const media = resolveAboutGalleryMedia(item.imageUrl, item.storagePath)
     return {
-      src: item.imageUrl,
+      src: media.full,
+      fallbackSrc: media.hasVariants ? media.original : undefined,
       alt: [localizedItem.title, localizedItem.caption, localizedItem.location].filter(Boolean).join(' — ') || 'About gallery image',
-      downloadName: localizedItem.title || 'about-gallery-image',
+      downloadName: `about-gallery-${item.id}.${media.hasVariants ? 'png' : item.imageUrl.split(/[?#]/)[0].split('.').pop()?.toLowerCase() || 'jpg'}`,
     }
   })
 
