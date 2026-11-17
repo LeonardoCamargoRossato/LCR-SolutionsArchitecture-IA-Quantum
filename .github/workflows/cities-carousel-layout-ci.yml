@@ -1,0 +1,43 @@
+name: Cities Comparing visual alignment - PR #7
+
+on:
+  push:
+    branches:
+      - fix/cities-carousel-scrollbar-alignment-20261117
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-layout:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install exact dependencies
+        run: npm ci
+      - name: Verify TypeScript and production build
+        run: npm run build
+      - name: Install browser tooling
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Validate mobile and desktop layout
+        run: node tests/cities-carousel-alignment-smoke.mjs
+      - name: Retain evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cities-carousel-layout-pr7
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: warn
