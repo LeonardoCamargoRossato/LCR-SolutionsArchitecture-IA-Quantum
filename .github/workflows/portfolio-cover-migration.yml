@@ -1,0 +1,77 @@
+name: Portfolio covers PNG/WebP - gated migration
+
+on:
+  push:
+    branches:
+      - feat/portfolio-cover-webp-20261117
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: TypeScript build and migration syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: npm ci
+        run: npm ci
+      - name: TypeScript and Vite build
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
+      - name: Compile migration script
+        run: python3 -m py_compile scripts/migrate_portfolio_covers.py
+
+  migrate:
+    name: Upload, verify and update editorial URLs
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_URL: https://wdjffhfnzydudmhhekmk.supabase.co
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - name: Check protected credentials
+        run: |
+          if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "::error::SUPABASE_SERVICE_ROLE_KEY secret is not configured. No migration performed."
+            exit 1
+          fi
+      - name: Checkout branch
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned Pillow
+        run: python -m pip install --disable-pip-version-check -r scripts/requirements-migration.txt
+      - name: Execute audited migration (no deletions)
+        run: |
+          python scripts/migrate_portfolio_covers.py --apply \
+            --backup portfolio-cover-editorial-backup.json \
+            --report portfolio-cover-migration-report.json
+      - name: Independent read-back (18 objects + 9 CMS URLs)
+        run: |
+          python scripts/migrate_portfolio_covers.py --verify \
+            --report portfolio-cover-verification-report.json
+      - name: Retain evidence and rollback backup
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-cover-migration-evidence
+          if-no-files-found: warn
+          retention-days: 30
+          path: |
+            portfolio-cover-editorial-backup.json
+            portfolio-cover-migration-report.json
+            portfolio-cover-verification-report.json
