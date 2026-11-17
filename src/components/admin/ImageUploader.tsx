@@ -39,8 +39,8 @@ export function ImageUploader({
     setLocalError('')
     if (!next) return clearSelection()
 
-    if (!['image/png', 'image/jpeg', 'image/webp'].includes(next.type)) {
-      setLocalError('Formato não suportado. Use PNG, JPG, JPEG ou WEBP.')
+    if (next.type !== 'image/png') {
+      setLocalError('Para capas de projetos, envie o PNG original. O WebP será gerado automaticamente.')
       return
     }
 
@@ -104,7 +104,7 @@ export function ImageUploader({
         <span>Drag & drop image here or select an image</span>
         <input
           type="file"
-          accept="image/png,image/jpeg,image/webp"
+          accept="image/png"
           disabled={saving}
           onChange={(event) => select(event.target.files?.[0])}
         />
