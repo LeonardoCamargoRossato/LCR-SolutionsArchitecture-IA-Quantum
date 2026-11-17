@@ -6,7 +6,7 @@ import { chromium } from 'playwright'
 // Test-only browser harness. No privileged keys are used by the browser.
 const BASE = 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
 const SLUGS = ['cities-comparing','embedded-control-platform','foton-hub','hamlet',
-  'pdf-frequency-analyzer','quantum-education-apps','scientific-analysis-toolkit',
+  'quantum-education-apps','scientific-analysis-toolkit',
   'speaker-portfolio','webseer']
 const report = { results: [], admin: {}, error: null }
 const server = spawn('npm',['run','dev','--','--host','127.0.0.1','--port','5173','--strictPort'],
@@ -86,6 +86,16 @@ async function testViewport(label,width,height) {
     console.log('BROWSER',label,slug,'PASS')
     report.results.push({viewport:label,project:slug,webp:true,png:true})
   }
+  // Retired projects must be absent from the public carousel and direct route.
+  await page.goto(BASE + '#/', { waitUntil: 'domcontentloaded' })
+  await page.locator('a.project-card').first().waitFor({ timeout: 30000 })
+  assert.equal(await page.locator('a[href*="pdf-frequency-analyzer"]').count(), 0,
+    'Retired project card unexpectedly present on Home')
+  await page.goto(BASE + '#/projects/pdf-frequency-analyzer', { waitUntil: 'domcontentloaded' })
+  await page.getByRole('heading', { name: 'Case study not found.' }).waitFor({ timeout: 30000 })
+  assert.equal(await page.locator('.case-story-cover').count(), 0,
+    'Retired project case unexpectedly loaded')
+  console.log('BROWSER',label,'retired PDF Frequency Analyzer absent: PASS')
   assert.equal(bad.length,0,'Broken PNG/WebP network responses')
   if(label==='desktop') {
     await page.goto(BASE+'#/admin',{waitUntil:'domcontentloaded'})
@@ -124,7 +134,7 @@ try {
   await testViewport('desktop',1440,900)
   await testViewport('mobile',390,844)
   await testAdminUploader()
-  console.log('PASS: 9 cases x 2 viewports, original PNG zoom/download and isolated admin uploader')
+  console.log('PASS: 8 cases x 2 viewports, original PNG zoom/download and isolated admin uploader')
 } catch(error) {
   report.error=String(error)
   console.error('FAIL browser smoke:',String(error))
