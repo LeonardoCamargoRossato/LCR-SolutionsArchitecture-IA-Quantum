@@ -145,7 +145,7 @@ export const ce235Project: Project = {
       order: 1,
       sortOrder: 1,
       visible: true,
-      imageClassification: 'illustrative-placeholder' as const,
+      imageClassification: 'illustration' as const,
     },
     ceGallery('us123-interface', 'US123 Telemetry Decoder — real application interface', 'US123 Telemetry Decoder — interface real da aplicação', 'US123 telemetry decoder initial interface', 'Interface inicial do decodificador de telemetria US123', 2, 'Captured from the locally executed public ITA-US123-Telemetry-Decoder repository.'),
     ceGallery('us123-telemetry-processing', 'Simulated packet reception, parsing and validation', 'Recepção, parsing e validação de pacotes simulados', 'Telemetry monitor showing simulated packets and validation results', 'Monitor de telemetria exibindo pacotes simulados e resultados de validação', 3, 'Captured after running the simulator in the public ITA-US123-Telemetry-Decoder application.'),
