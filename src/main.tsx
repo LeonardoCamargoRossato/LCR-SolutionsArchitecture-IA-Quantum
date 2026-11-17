@@ -13,6 +13,7 @@ import './styles/theme.css'
 import './styles/global.css'
 import './styles/visual-refresh.css'
 import './styles/home-motion.css'
+import './estruturas-padroes/carrossel-projetos/carrossel-projetos.css'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 if (supabaseUrl) {
