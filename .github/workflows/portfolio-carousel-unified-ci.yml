@@ -1,13 +1,17 @@
-name: Portfolio project carousel - unified alignment and scrollbar
+name: LCR Standard Structures - shared project carousel and aligned hero
 
 on:
   push:
     branches:
-      - fix/portfolio-unified-carousel-scrollbar-20261117
+      - feat/lcr-standard-project-carousel-layout-20261117
   pull_request:
     branches:
       - main
     paths:
+      - src/components/case/CaseHero.tsx
+      - src/estruturas-padroes/**
+      - src/main.tsx
+      - docs/adr/**
       - src/styles/global.css
       - tests/cities-carousel-alignment-smoke.mjs
       - tests/portfolio-carousel-unified-smoke.mjs
@@ -47,7 +51,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: portfolio-carousel-unified
+          name: lcr-standard-project-carousel
           path: test-results/
           retention-days: 30
           if-no-files-found: warn

@@ -69,13 +69,21 @@ async function checkDevice(device, viewport, slugs, storageState) {
       const rail = hero?.querySelector('.case-hero-thumbnails')
       if (!hero || !copy || !media) throw Error('Project hero missing')
       const thumb = rail?.querySelector('button')
+      const cover = hero.querySelector('.case-story-cover .progressive-image')
+      const actions = copy.querySelector('.case-actions')
       const style = rail ? getComputedStyle(rail) : null
       const thumbRect = thumb?.getBoundingClientRect()
+      const coverRect = cover?.getBoundingClientRect()
       return {
         hasCarousel: Boolean(rail),
         imageCount: rail?.querySelectorAll('button').length ?? 0,
         thumbWidth: thumbRect?.width,
         thumbHeight: thumbRect?.height,
+        coverRatio: coverRect ? coverRect.width / coverRect.height : 0,
+        topCopy: copy.getBoundingClientRect().top,
+        topMedia: media.getBoundingClientRect().top,
+        railBottom: rail?.getBoundingClientRect().bottom ?? null,
+        actionsBottom: actions?.getBoundingClientRect().bottom ?? null,
         scrollbarColor: style?.scrollbarColor ?? '',
         overflowX: style?.overflowX ?? '',
         scrollWidth: rail?.scrollWidth ?? 0,
@@ -97,13 +105,23 @@ async function checkDevice(device, viewport, slugs, storageState) {
         slug + ' is not using neutral gray scrollbar: ' + data.scrollbarColor)
       assert(!data.scrollbarColor.includes('37, 99, 235'),
         slug + ' still has the old blue scrollbar')
-      assert(Math.abs(data.thumbWidth - (device === 'desktop' ? 96 : 80)) <= 2,
-        slug + ' has inconsistent thumbnail width: ' + JSON.stringify(data))
-      assert(Math.abs(data.thumbHeight - (device === 'desktop' ? 62 : 52)) <= 2,
-        slug + ' has inconsistent thumbnail height: ' + JSON.stringify(data))
+      assert(data.thumbWidth >= (device === 'desktop' ? 94 : 78),
+        slug + ' thumbnail too narrow: ' + JSON.stringify(data))
+      assert(data.thumbHeight >= (device === 'desktop' ? 60 : 50),
+        slug + ' thumbnail too short: ' + JSON.stringify(data))
+      assert(Math.abs(data.thumbWidth / data.thumbHeight - 96 / 62) < 0.12,
+        slug + ' thumbnail lost landscape proportions: ' + JSON.stringify(data))
+      assert(Math.abs(data.coverRatio - 16 / 9) < 0.03,
+        slug + ' main preview must remain 16:9: ' + JSON.stringify(data))
       if (device === 'desktop') {
+        assert(Math.abs(data.topCopy - data.topMedia) < 4,
+          slug + ' carousel does not start at the project category: ' + JSON.stringify(data))
         assert(Math.abs(data.leftBottom - data.rightBottom) < 4,
-          slug + ' scrollbar not bottom-aligned with CTA area: ' + JSON.stringify(data))
+          slug + ' carousel does not end at copy baseline: ' + JSON.stringify(data))
+        if (data.actionsBottom !== null) {
+          assert(Math.abs(data.actionsBottom - data.railBottom) < 4,
+            slug + ' scrollbar not aligned with project buttons: ' + JSON.stringify(data))
+        }
       }
       // Do not silently leave slide navigation broken while changing gallery styles.
       const activeCount = await page.locator('.case-hero-carousel-count').innerText()
@@ -117,6 +135,11 @@ async function checkDevice(device, viewport, slugs, storageState) {
         const offset = await page.locator('.case-hero-thumbnails').evaluate((rail) => rail.scrollLeft)
         assert(offset > 0, slug + ' thumbnail rail cannot be scrolled')
       }
+      // Opening the full-resolution lightbox must stay available after refactoring.
+      await page.locator('.case-story-cover').click()
+      await page.locator('.image-lightbox-backdrop').waitFor({ state: 'visible', timeout: 12000 })
+      await page.getByRole('button', { name: 'Close', exact: true }).click()
+      await page.locator('.image-lightbox-backdrop').waitFor({ state: 'hidden' })
       await mkdir('test-results', { recursive: true })
       await page.screenshot({ path: `test-results/portfolio-carousel-${slug}-${device}.png`, fullPage: false })
     }
@@ -142,7 +165,7 @@ try {
   console.log('Discovered projects:', slugs.join(', '))
   await checkDevice('desktop', { width: 1440, height: 900 }, slugs, storageState)
   await checkDevice('mobile', { width: 390, height: 844 }, slugs, storageState)
-  console.log('PASS: unified carousel style and alignment across all visible portfolio projects')
+  console.log('PASS: reusable project carousel, both hero baselines, fixed 16:9 image, adaptable thumbnail rail and zoom')
 } catch (error) {
   report.failures.push(String(error))
   console.error('PORTFOLIO CAROUSEL SMOKE FAILED:', error)

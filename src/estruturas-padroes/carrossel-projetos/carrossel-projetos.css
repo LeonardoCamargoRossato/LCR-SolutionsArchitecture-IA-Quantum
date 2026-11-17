@@ -1,0 +1,178 @@
+/* Estruturas Padrões / Carrossel de Projetos
+ * Shared by all portfolio cases. Keep case-specific images in data/catalogues.
+ * The hero preview is always 16:9. Only the miniature rail is flexible.
+ */
+.case-hero-media {
+  min-width: 0;
+  min-height: 0;
+}
+
+.case-hero-media .case-story-cover {
+  display: block;
+  width: 100%;
+}
+
+/* Never stretch the main screenshot: 16:9 landscape in every project. */
+.case-hero-media .case-story-cover .progressive-image,
+.case-hero-media .case-story-cover img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.case-hero-media.has-carousel {
+  display: grid;
+  grid-template-rows: max-content max-content max-content minmax(91px, 1fr);
+  align-content: stretch;
+  align-self: stretch;
+}
+
+.case-hero-caption {
+  margin: 10px 2px 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.case-hero-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.case-hero-carousel-controls > button {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.case-hero-carousel-controls > button:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.case-hero-carousel-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+.case-hero-carousel-dots button {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--border-strong, var(--border));
+  cursor: pointer;
+  transition: width 160ms ease, background 160ms ease;
+}
+
+.case-hero-carousel-dots button.is-active {
+  width: 22px;
+  background: var(--primary);
+}
+
+.case-hero-carousel-count {
+  min-width: 34px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 750;
+  text-align: center;
+}
+
+/* Grid's final row absorbs the difference between the copy and media heights.
+ * Thumbnail width scales with height, keeping the small images landscape.
+ */
+.case-hero-thumbnails {
+  --case-rail-thumb: rgba(107, 114, 128, 0.18);
+  --case-rail-thumb-hover: rgba(107, 114, 128, 0.34);
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+  margin-top: 12px;
+  padding: 3px 2px 9px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--case-rail-thumb) transparent;
+}
+
+[data-theme='dark'] .case-hero-thumbnails {
+  --case-rail-thumb: rgba(170, 180, 192, 0.22);
+  --case-rail-thumb-hover: rgba(170, 180, 192, 0.38);
+}
+
+.case-hero-thumbnails:hover {
+  scrollbar-color: var(--case-rail-thumb-hover) transparent;
+}
+
+.case-hero-thumbnails::-webkit-scrollbar { height: 5px; }
+.case-hero-thumbnails::-webkit-scrollbar-track { background: transparent; }
+.case-hero-thumbnails::-webkit-scrollbar-thumb {
+  background: var(--case-rail-thumb);
+  border-radius: 999px;
+}
+.case-hero-thumbnails::-webkit-scrollbar-thumb:hover {
+  background: var(--case-rail-thumb-hover);
+}
+
+.case-hero-thumbnails > button {
+  height: 100%;
+  width: auto;
+  min-width: 96px;
+  aspect-ratio: 96 / 62;
+  flex: 0 0 auto;
+  overflow: hidden;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: var(--surface-alt);
+  cursor: pointer;
+  opacity: 0.66;
+}
+
+.case-hero-thumbnails > button.is-active {
+  border-color: var(--primary);
+  opacity: 1;
+}
+
+.case-hero-thumbnails .progressive-image { height: 100%; }
+.case-hero-thumbnails .progressive-image-main { object-fit: cover; }
+
+@media (max-width: 760px) {
+  /* On narrow screens, copy and carousel stack; do not force desktop height. */
+  .case-hero-media.has-carousel { display: block; }
+  .case-hero-thumbnails {
+    height: auto;
+    min-height: 0;
+  }
+  .case-hero-thumbnails > button {
+    width: 80px;
+    min-width: 80px;
+    height: 52px;
+    aspect-ratio: auto;
+    flex-basis: 80px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-hero-carousel-controls > button,
+  .case-hero-carousel-dots button { transition: none; }
+}
