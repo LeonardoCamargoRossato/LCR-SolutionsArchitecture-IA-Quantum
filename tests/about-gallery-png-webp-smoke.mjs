@@ -27,22 +27,24 @@ async function waitReady() {
 
 async function loadedImage(page, locator, requiredPath) {
   await locator.waitFor({ state: 'visible', timeout: 25000 })
-  await page.waitForFunction(
-    ({ css, requiredPath }) => {
-      const img = document.querySelector(css)
-      return img instanceof HTMLImageElement &&
-        img.currentSrc.includes(requiredPath) && img.complete && img.naturalWidth > 0
-    },
-    { css: await locator.evaluate(element => {
-      if (!(element instanceof HTMLImageElement)) throw Error('not IMG')
-      element.setAttribute('data-gallery-check', 'selected')
-      return 'img[data-gallery-check="selected"]'
-    }), requiredPath },
-    { timeout: 25000 },
-  )
-  const url = await locator.evaluate(img => img.currentSrc)
-  assert(url.includes(requiredPath), url)
-  return url
+  const marker = 'gallery-check-' + Math.random().toString(36).slice(2)
+  await locator.evaluate((img, marker) => img.setAttribute('data-gallery-check', marker), marker)
+  try {
+    await page.waitForFunction(
+      ({ marker, requiredPath }) => {
+        const img = document.querySelector('img[data-gallery-check="' + marker + '"]')
+        return img instanceof HTMLImageElement &&
+          img.currentSrc.includes(requiredPath) && img.complete && img.naturalWidth > 0
+      },
+      { marker, requiredPath },
+      { timeout: 25000 },
+    )
+    const url = await locator.evaluate(img => img.currentSrc)
+    assert(url.includes(requiredPath), url)
+    return url
+  } finally {
+    await locator.evaluate(img => img.removeAttribute('data-gallery-check')).catch(() => undefined)
+  }
 }
 
 async function viewportTest(type, viewport) {
@@ -67,7 +69,7 @@ async function viewportTest(type, viewport) {
     const webp = await loadedImage(page, image, '/about/gallery/WebP/')
     assert(webp.endsWith('.webp'), 'Gallery initial photo was not WebP: ' + webp)
     await card.click()
-    const dialog = page.getByRole('dialog', { name: /gallery|palestrando|Porto|Natal|São|Curitiba|Foz/i })
+    const dialog = page.locator('.image-lightbox[role="dialog"]')
     await dialog.waitFor({ state: 'visible', timeout: 10000 })
     const full = dialog.locator('.image-lightbox-viewport img')
     const png = await loadedImage(page, full, '/about/gallery/PNG/')
