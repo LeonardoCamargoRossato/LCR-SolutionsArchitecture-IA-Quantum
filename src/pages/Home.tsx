@@ -47,9 +47,6 @@ export function Home() {
     .filter((project) => !featuredSlugs.includes(project.slug) && ![
       'power-platform',
       'scientific-analysis',
-      'scientific-analysis-toolkit',
-      'pdf-frequency-analyzer',
-      'speaker-portfolio',
     ].includes(project.slug))
     .sort((a, b) => {
       const priority = ['webseer', 'metcompb-landing-page']

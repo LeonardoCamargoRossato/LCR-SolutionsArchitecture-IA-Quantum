@@ -24,6 +24,14 @@ export class MediaService {
     return this.repo.upload(file, category, pathPrefix)
   }
 
+  async uploadProjectCover(file: File, slug: string) {
+    this.validateImage(file)
+    if (file.type !== 'image/png') {
+      throw new Error('Para preservar o original da capa, selecione um arquivo PNG.')
+    }
+    return this.repo.uploadProjectCover(file, slug)
+  }
+
   async replace(current: Parameters<IMediaRepository['replace']>[0], file: File, category: MediaCategory, pathPrefix?: string) {
     if (category === 'Documents') this.validatePdf(file)
     else this.validateImage(file)

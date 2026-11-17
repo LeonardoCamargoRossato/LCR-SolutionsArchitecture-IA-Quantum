@@ -37,7 +37,7 @@ export function CaseHero({
     thumbnailSrc: project.coverImage?.thumbnailUrl || cover,
     alt: project.coverImage?.altText || `${project.title} project cover`,
     caption: project.title,
-    downloadName: `${project.slug}-cover`,
+    downloadName: `${project.slug}-cover.png`,
   }
   const galleryItems = (project.gallery ?? [])
     .filter((item) => item.visible !== false && item.image?.url)
@@ -212,7 +212,7 @@ export function CaseHero({
                 setHeroIndex(index)
                 setLightboxIndex(index)
               } : undefined}
-              allowDownload={false}
+              allowDownload
               ariaLabel={`${project.title} project images`}
             />
           </Suspense>

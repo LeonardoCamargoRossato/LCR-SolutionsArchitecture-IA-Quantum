@@ -7,6 +7,7 @@ type Props = {
   label: string
   busy?: boolean
   onSave: (file: File) => Promise<void>
+  pngOnly?: boolean
   onRemove?: () => Promise<void>
 }
 
@@ -16,6 +17,7 @@ export function ImageUploader({
   busy,
   onSave,
   onRemove,
+  pngOnly = false,
 }: Props) {
   const [file, setFile] = useState<File>()
   const [preview, setPreview] = useState<string>()
@@ -39,8 +41,8 @@ export function ImageUploader({
     setLocalError('')
     if (!next) return clearSelection()
 
-    if (!['image/png', 'image/jpeg', 'image/webp'].includes(next.type)) {
-      setLocalError('Formato não suportado. Use PNG, JPG, JPEG ou WEBP.')
+    if (pngOnly ? next.type !== 'image/png' : !['image/png', 'image/jpeg', 'image/webp'].includes(next.type)) {
+      setLocalError(pngOnly ? 'Para capas de projetos, envie o PNG original. O WebP será gerado automaticamente.' : 'Formato não suportado. Use PNG, JPG, JPEG ou WEBP.')
       return
     }
 
@@ -104,7 +106,7 @@ export function ImageUploader({
         <span>Drag & drop image here or select an image</span>
         <input
           type="file"
-          accept="image/png,image/jpeg,image/webp"
+          accept={pngOnly ? "image/png" : "image/png,image/jpeg,image/webp"}
           disabled={saving}
           onChange={(event) => select(event.target.files?.[0])}
         />
