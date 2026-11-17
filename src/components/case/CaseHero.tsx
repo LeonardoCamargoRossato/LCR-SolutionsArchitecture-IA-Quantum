@@ -39,58 +39,58 @@ export function CaseHero({
         <div className="case-story-hero-grid">
           <div className="case-story-hero-copy">
             <div className="eyebrow">{project.category}</div>
-          <h1>{project.title}</h1>
-          {project.subtitle && <p className="case-story-subtitle">{project.subtitle}</p>}
-          {description && <p className="case-story-description">{description}</p>}
+            <h1>{project.title}</h1>
+            {project.subtitle && <p className="case-story-subtitle">{project.subtitle}</p>}
+            {description && <p className="case-story-description">{description}</p>}
 
-          {technologies.length > 0 && (
-            <div className="tech-list case-story-tech">
-              {technologies.map((technology) => <span key={technology}>{technology}</span>)}
+            {technologies.length > 0 && (
+              <div className="tech-list case-story-tech">
+                {technologies.map((technology) => <span key={technology}>{technology}</span>)}
+              </div>
+            )}
+
+            <div className="case-story-status">
+              <span>{statusLabel}</span>
+              <strong>{project.status === 'Private Platform' ? privatePlatformLabel : project.status}</strong>
             </div>
-          )}
 
-          <div className="case-story-status">
-            <span>{statusLabel}</span>
-            <strong>{project.status === 'Private Platform' ? privatePlatformLabel : project.status}</strong>
-          </div>
+            {(project.links.githubUrl || project.reportPdfUrl || (project.isAcademic && project.academicContext)) && (
+              <div className="case-hero-metadata" aria-label="Project links and context">
+                {project.links.githubUrl && (
+                  <a href={project.links.githubUrl} target="_blank" rel="noopener noreferrer">
+                    <Github size={15} />
+                    <span>{githubLabel}</span>
+                  </a>
+                )}
 
-          {(project.links.githubUrl || project.reportPdfUrl || (project.isAcademic && project.academicContext)) && (
-            <div className="case-hero-metadata" aria-label="Project links and context">
-              {project.links.githubUrl && (
-                <a href={project.links.githubUrl} target="_blank" rel="noopener noreferrer">
-                  <Github size={15} />
-                  <span>{githubLabel}</span>
-                </a>
-              )}
+                {project.reportPdfUrl && (
+                  <a
+                    href={project.reportPdfUrl}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FileText size={15} />
+                    <span>{reportDownloadLabel}</span>
+                  </a>
+                )}
 
-              {project.reportPdfUrl && (
-                <a
-                  href={project.reportPdfUrl}
-                  download
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FileText size={15} />
-                  <span>{reportDownloadLabel}</span>
-                </a>
-              )}
+                {project.isAcademic && project.academicContext && (
+                  <span className="case-hero-context">
+                    <GraduationCap size={15} />
+                    <span>{project.academicContext}</span>
+                  </span>
+                )}
+              </div>
+            )}
 
-              {project.isAcademic && project.academicContext && (
-                <span className="case-hero-context">
-                  <GraduationCap size={15} />
-                  <span>{project.academicContext}</span>
-                </span>
-              )}
+            <CaseInstitutionLogos institutions={institutions} />
+
+            <div className="case-actions">
+              {project.links.liveUrl && <a className="button" href={project.links.liveUrl} target="_blank" rel="noopener noreferrer">{primaryLabel}<ExternalLink size={14} aria-hidden="true" /></a>}
+              {project.links.researchUrl && <a className="button button-secondary" href={project.links.researchUrl} target="_blank" rel="noopener noreferrer">{researchLabel}<ExternalLink size={14} aria-hidden="true" /></a>}
             </div>
-          )}
-
-          <CaseInstitutionLogos institutions={institutions} />
-
-          <div className="case-actions">
-            {project.links.liveUrl && <a className="button" href={project.links.liveUrl} target="_blank" rel="noopener noreferrer">{primaryLabel}<ExternalLink size={14} aria-hidden="true" /></a>}
-            {project.links.researchUrl && <a className="button button-secondary" href={project.links.researchUrl} target="_blank" rel="noopener noreferrer">{researchLabel}<ExternalLink size={14} aria-hidden="true" /></a>}
           </div>
-        </div>
 
           <ProjectCarousel key={project.slug} projectTitle={project.title} images={carouselImages} />
         </div>
