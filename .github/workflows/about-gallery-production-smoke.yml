@@ -1,0 +1,48 @@
+name: LCR Gallery - published Pages smoke
+
+on:
+  workflow_run:
+    workflows:
+      - Deploy to GitHub Pages
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+jobs:
+  published-gallery:
+    # Run only after a successful production deployment on main.
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      GALLERY_SMOKE_BASE_URL: https://leonardocamargorossato.github.io/LCR-SolutionsArchitecture-IA-Quantum/
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
+    steps:
+      - name: Checkout published source
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install test dependencies
+        run: |
+          npm ci
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify published carousel WebP and PNG images
+        run: node tests/about-gallery-png-webp-smoke.mjs
+      - name: Preserve production browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gallery-production-browser-evidence
+          retention-days: 30
+          if-no-files-found: warn
+          path: test-results/
