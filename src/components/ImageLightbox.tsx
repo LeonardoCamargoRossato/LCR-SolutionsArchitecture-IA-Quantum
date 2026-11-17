@@ -114,9 +114,11 @@ export function ImageLightbox({
       const objectUrl = URL.createObjectURL(blob)
       const anchor = document.createElement('a')
       anchor.href = objectUrl
+      const fallbackExtension = chosenUrl.split(/[?#]/)[0].split('.').pop()?.toLowerCase() || 'jpg'
       anchor.download = (chosenUrl === current.src
         ? filename
-        : filename.replace(/\.png$/i, '.jpg')).replace(/[^a-zA-Z0-9._-]+/g, '-')
+        : filename.replace(/\.[^.]+$/, '') + '.' + fallbackExtension
+      ).replace(/[^a-zA-Z0-9._-]+/g, '-')
       document.body.appendChild(anchor)
       anchor.click()
       anchor.remove()
