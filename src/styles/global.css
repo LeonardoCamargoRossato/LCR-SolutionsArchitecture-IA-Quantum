@@ -2171,16 +2171,25 @@ select:focus-visible,
   display: grid;
   grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
   gap: 56px;
-  /* Align the thumbnail rail with the bottom of the project CTA buttons. */
-  align-items: end;
+  /* Both columns start at the category and end at the same baseline. */
+  align-items: stretch;
 }
 
 .case-story-hero-copy {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Keep CTAs on the common bottom edge when a project has shorter copy. */
+.case-story-hero-copy .case-actions {
+  margin-top: auto;
+  padding-top: 20px;
 }
 
 .case-back-link {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
   margin-bottom: 34px;
   color: var(--text-muted);
   font-size: 13px;
@@ -2246,123 +2255,9 @@ select:focus-visible,
   object-fit: cover;
 }
 
-.case-hero-media {
-  min-width: 0;
-}
-
-.case-hero-media.has-carousel .case-story-cover img {
-  aspect-ratio: 16 / 9;
-}
-
-.case-hero-carousel-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.case-hero-carousel-controls > button {
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  background: var(--surface);
-  color: var(--text);
-  cursor: pointer;
-  transition: border-color 160ms ease, color 160ms ease, transform 160ms ease;
-}
-
-.case-hero-carousel-controls > button:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-  transform: translateY(-1px);
-}
-
-.case-hero-carousel-dots {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.case-hero-carousel-dots button {
-  width: 7px;
-  height: 7px;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: var(--border-strong, var(--border));
-  cursor: pointer;
-  transition: width 160ms ease, background 160ms ease;
-}
-
-.case-hero-carousel-dots button.is-active {
-  width: 22px;
-  background: var(--primary);
-}
-
-.case-hero-carousel-count {
-  min-width: 34px;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 750;
-  text-align: center;
-}
-.case-hero-caption { margin: 10px 2px 0; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
-/* Shared gallery rail: one neutral scrollbar and consistent thumbnail geometry for every case. */
-.case-hero-thumbnails {
-  --case-rail-thumb: rgba(107, 114, 128, 0.18);
-  --case-rail-thumb-hover: rgba(107, 114, 128, 0.34);
-  display: flex;
-  gap: 10px;
-  margin-top: 12px;
-  padding: 3px 2px 9px;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--case-rail-thumb) transparent;
-}
-
-[data-theme='dark'] .case-hero-thumbnails {
-  --case-rail-thumb: rgba(170, 180, 192, 0.22);
-  --case-rail-thumb-hover: rgba(170, 180, 192, 0.38);
-}
-
-.case-hero-thumbnails:hover {
-  scrollbar-color: var(--case-rail-thumb-hover) transparent;
-}
-
-.case-hero-thumbnails::-webkit-scrollbar { height: 5px; }
-.case-hero-thumbnails::-webkit-scrollbar-track { background: transparent; }
-.case-hero-thumbnails::-webkit-scrollbar-thumb {
-  background: var(--case-rail-thumb);
-  border-radius: 999px;
-}
-.case-hero-thumbnails::-webkit-scrollbar-thumb:hover {
-  background: var(--case-rail-thumb-hover);
-}
-
-.case-hero-thumbnails > button {
-  width: 96px;
-  height: 62px;
-  flex: 0 0 96px;
-  overflow: hidden;
-  padding: 0;
-  border: 2px solid transparent;
-  border-radius: 8px;
-  background: var(--surface-alt);
-  cursor: pointer;
-  opacity: .66;
-}
-.case-hero-thumbnails > button.is-active { border-color: var(--primary); opacity: 1; }
-.case-hero-thumbnails .progressive-image { height: 100%; }
-.case-hero-thumbnails .progressive-image-main { object-fit: cover; }
-.case-story-cover .progressive-image { aspect-ratio: 16 / 9; }
-.case-story-cover .progressive-image-main { object-fit: cover; }
+/* Shared project carousel styles now live in
+ * src/estruturas-padroes/carrossel-projetos/carrossel-projetos.css
+ */
 
 .case-facts-wrap {
   border-top: 1px solid var(--border);
