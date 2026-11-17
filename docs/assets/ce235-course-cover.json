@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "asset_id": "ce235-course-site-cover",
+  "project_slug": "ce235-real-time-systems",
+  "origin": "User-provided screenshot of public ITA CE-235 course homepage",
+  "origin_file": "image(20261117-192219).png",
+  "provenance": "Original user screenshot copied byte for byte, without AI or retouching",
+  "source_sha256": "89e2a5504d41fc817c5f1ac4261e82758b45b42e5eaf54fd2e567e81735b0bc9",
+  "editorial_role": "Additional Projects card + first image of CE-235 case carousel",
+  "transformation": "Pillow crop (0,0,1920,810) removing unrelated lower white-page content; LANCZOS sizes; WebP quality 88",
+  "original_site_illustration": "public/projects/ce235-telemetry.webp (retained as second slide; not deleted)",
+  "supabase_changes": "none (CE-235 uses code-managed fallback and is not stored in more_projects)",
+  "drive_acervo": "LCR Apps/LCR-SolutionsArchitecture-IA-Quantum/ce235-course-cover/{PNG,WebP}",
+  "git_root": "public/projects/ce235/cover",
+  "zoom_format": "PNG unmodified original",
+  "first_render": "WebP",
+  "files": [
+    {
+      "relative_path": "PNG/ce235-course-site-original.png",
+      "path": "public/projects/ce235/cover/PNG/ce235-course-site-original.png",
+      "role": "original source; zoom/download",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 2020877,
+      "sha256": "89e2a5504d41fc817c5f1ac4261e82758b45b42e5eaf54fd2e567e81735b0bc9"
+    },
+    {
+      "relative_path": "PNG/ce235-course-site-cover.png",
+      "path": "public/projects/ce235/cover/PNG/ce235-course-site-cover.png",
+      "role": "lossless crop source; whole course hero",
+      "width": 1920,
+      "height": 810,
+      "bytes": 1303336,
+      "sha256": "f7e698256a9e3cfd7293f85ba61db60d742f7a834b3bb0bdb87f07cf58f3c843"
+    },
+    {
+      "relative_path": "WebP/ce235-course-site-cover.webp",
+      "path": "public/projects/ce235/cover/WebP/ce235-course-site-cover.webp",
+      "role": "full-sized optimized cover",
+      "width": 1920,
+      "height": 810,
+      "bytes": 165936,
+      "sha256": "f8de51b80d4f2712992703f3ed416eeba645504fcac7a488a826268fc6e69eaf"
+    },
+    {
+      "relative_path": "WebP/ce235-course-site-preview.webp",
+      "path": "public/projects/ce235/cover/WebP/ce235-course-site-preview.webp",
+      "role": "intermediate progressive preview",
+      "width": 1440,
+      "height": 608,
+      "bytes": 114180,
+      "sha256": "f408eea9ee5b6010998922d41b427ae187450320fcbe74ca059420f76adfe53b"
+    },
+    {
+      "relative_path": "WebP/ce235-course-site-card.webp",
+      "path": "public/projects/ce235/cover/WebP/ce235-course-site-card.webp",
+      "role": "project card and hero first paint",
+      "width": 960,
+      "height": 405,
+      "bytes": 65342,
+      "sha256": "642e93a806c101d932cf20d9636c240a7a1b00703a4dc097c28b02ed9e512efc"
+    },
+    {
+      "relative_path": "WebP/ce235-course-site-thumb.webp",
+      "path": "public/projects/ce235/cover/WebP/ce235-course-site-thumb.webp",
+      "role": "carousel thumbnail",
+      "width": 480,
+      "height": 202,
+      "bytes": 21418,
+      "sha256": "d1a25f14e5b2e74784faeb4b48b0b2c5c14bf7867946e868cd145d60ae95874b"
+    }
+  ]
+}
