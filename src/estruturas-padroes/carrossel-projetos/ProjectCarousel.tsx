@@ -12,6 +12,28 @@ type Props = {
   images: readonly ProjectCarouselImage[]
 }
 
+/** Keep all centering calculations in one place for interaction and resizing. */
+function centerSelectedThumbnail(
+  rail: HTMLDivElement,
+  active: HTMLButtonElement,
+  behavior: ScrollBehavior,
+) {
+  // The gutter is intentionally large enough to center the edge images too.
+  rail.style.setProperty(
+    '--carousel-edge-space',
+    `${Math.max(2, (rail.clientWidth - active.offsetWidth) / 2)}px`,
+  )
+  const railBounds = rail.getBoundingClientRect()
+  const activeBounds = active.getBoundingClientRect()
+  const target = rail.scrollLeft
+    + activeBounds.left + activeBounds.width / 2
+    - railBounds.left - rail.clientWidth / 2
+  rail.scrollTo({
+    left: Math.max(0, Math.min(rail.scrollWidth - rail.clientWidth, target)),
+    behavior,
+  })
+}
+
 /**
  * One reusable view for main and additional portfolio projects.
  * Only the data changes: image paths, file names, captions, and alt text.
@@ -48,64 +70,45 @@ export function ProjectCarousel({ projectTitle, images }: Props) {
     const active = rail?.querySelector<HTMLButtonElement>('button.is-active')
     if (!rail || !active) return
 
-    const centerActive = (behavior: ScrollBehavior) => {
-      // Equal edge gutters allow the first and last thumbnails to center too.
-      const edgeSpace = Math.max(2, (rail.clientWidth - active.offsetWidth) / 2)
-      rail.style.setProperty('--carousel-edge-space', `${edgeSpace}px`)
-
-      const railBounds = rail.getBoundingClientRect()
-      const activeBounds = active.getBoundingClientRect()
-      const desired = rail.scrollLeft
-        + activeBounds.left + activeBounds.width / 2
-        - railBounds.left - rail.clientWidth / 2
-      const maxScroll = Math.max(0, rail.scrollWidth - rail.clientWidth)
-      rail.scrollTo({ left: Math.max(0, Math.min(maxScroll, desired)), behavior })
-    }
-
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const behavior: ScrollBehavior = previousIndexRef.current === null || reducedMotion
       ? 'auto'
       : 'smooth'
-    centerActive(behavior)
+    centerSelectedThumbnail(rail, active, behavior)
     previousIndexRef.current = index
   }, [index, hasCarousel, images])
 
   useEffect(() => {
     if (!hasCarousel || typeof ResizeObserver === 'undefined') return
     const rail = thumbnailRailRef.current
-    if (!rail) return
+    const active = rail?.querySelector<HTMLButtonElement>('button.is-active')
+    if (!rail || !active) return
+
     let frame = 0
-    let previousWidth = rail.clientWidth
+    let lastRailWidth = rail.clientWidth
+    let lastThumbWidth = active.offsetWidth
     const observer = new ResizeObserver(() => {
-      // Re-center after responsive width changes; avoid cancelling a smooth
-      // navigation animation on mere thumbnail-size/height changes.
-      const width = rail.clientWidth
-      if (Math.abs(width - previousWidth) < 1) return
-      previousWidth = width
+      const railWidth = rail.clientWidth
+      const thumbWidth = active.offsetWidth
+      // Images and fonts can alter thumbnail widths without altering the rail.
+      // Re-center when either measurement changes after initial render.
+      if (Math.abs(railWidth - lastRailWidth) < 1
+        && Math.abs(thumbWidth - lastThumbWidth) < 1) return
+      lastRailWidth = railWidth
+      lastThumbWidth = thumbWidth
       cancelAnimationFrame(frame)
       frame = requestAnimationFrame(() => {
-        const active = rail.querySelector<HTMLButtonElement>('button.is-active')
-        if (!active) return
-        rail.style.setProperty(
-          '--carousel-edge-space',
-          `${Math.max(2, (width - active.offsetWidth) / 2)}px`,
-        )
-        const railBounds = rail.getBoundingClientRect()
-        const activeBounds = active.getBoundingClientRect()
-        const target = rail.scrollLeft + activeBounds.left + activeBounds.width / 2
-          - railBounds.left - rail.clientWidth / 2
-        rail.scrollTo({
-          left: Math.max(0, Math.min(rail.scrollWidth - rail.clientWidth, target)),
-          behavior: 'auto',
-        })
+        if (!rail.isConnected || !active.isConnected) return
+        centerSelectedThumbnail(rail, active, 'auto')
       })
     })
     observer.observe(rail)
+    observer.observe(active)
     return () => {
       observer.disconnect()
       cancelAnimationFrame(frame)
     }
-  }, [hasCarousel])
+  }, [hasCarousel, index, images])
 
   if (!current) return null
 
