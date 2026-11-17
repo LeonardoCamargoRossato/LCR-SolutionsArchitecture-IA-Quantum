@@ -1,0 +1,48 @@
+name: Cities Comparing - Series Compare carousel
+
+on:
+  push:
+    branches:
+      - feat/cities-comparing-series-carousel-20261117
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Build, binary integrity and nine-slide browser smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 22
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install repository dependencies
+        run: npm ci
+      - name: Verify seven paired PNGs and WebPs
+        run: node tests/cities-comparing-series-assets.test.mjs
+      - name: TypeScript + production build
+        run: npm run build
+      - name: Set up Chromium in CI
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Check nine-slide gallery, zoom and mobile responsiveness
+        run: node tests/cities-comparing-series-carousel-smoke.mjs
+      - name: Retain browser screenshots and audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cities-comparing-series-carousel-evidence
+          retention-days: 30
+          if-no-files-found: warn
+          path: test-results/
