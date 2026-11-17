@@ -64,6 +64,7 @@ jobs:
 
   migrate:
     name: Upload, verify and update editorial URLs
+    if: github.event_name == 'workflow_dispatch'
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 20
