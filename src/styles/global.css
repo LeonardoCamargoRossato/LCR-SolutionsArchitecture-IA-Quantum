@@ -6322,3 +6322,43 @@ a.case-institution-logo:hover {
   .workflow-visual-hint-arrow,
   .workflow-visual-slide { animation: none !important; }
 }
+
+
+/* Cities Comparing — subtle blue thumbnail rail and balanced hero baseline. */
+.case-story-hero--cities .case-story-hero-grid {
+  align-items: end;
+}
+.case-story-hero--cities .case-hero-thumbnails {
+  gap: 10px;
+  padding: 3px 2px 9px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(37, 99, 235, .26) transparent;
+}
+.case-story-hero--cities .case-hero-thumbnails::-webkit-scrollbar {
+  height: 5px;
+}
+.case-story-hero--cities .case-hero-thumbnails::-webkit-scrollbar-track {
+  background: transparent;
+}
+.case-story-hero--cities .case-hero-thumbnails::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, .26);
+  border-radius: 999px;
+}
+.case-story-hero--cities .case-hero-thumbnails::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 99, 235, .48);
+}
+.case-story-hero--cities .case-hero-thumbnails > button {
+  width: 96px;
+  height: 62px;
+  flex-basis: 96px;
+}
+@media (max-width: 760px) {
+  .case-story-hero--cities .case-story-hero-grid {
+    align-items: stretch;
+  }
+  .case-story-hero--cities .case-hero-thumbnails > button {
+    width: 80px;
+    height: 52px;
+    flex-basis: 80px;
+  }
+}
