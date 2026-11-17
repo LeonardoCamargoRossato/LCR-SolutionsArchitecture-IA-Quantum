@@ -212,7 +212,7 @@ export function CaseHero({
                 setHeroIndex(index)
                 setLightboxIndex(index)
               } : undefined}
-              allowDownload={false}
+              allowDownload
               ariaLabel={`${project.title} project images`}
             />
           </Suspense>
