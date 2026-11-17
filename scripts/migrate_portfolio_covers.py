@@ -91,13 +91,28 @@ def make_webp(png: bytes, expected_size: tuple[int, int]) -> bytes:
     return data
 
 
+def object_exists(base: str, key: str, path: str) -> bool:
+    """List with privileged Storage API instead of probing a nonexistent public URL.
+
+    Supabase may return HTTP 400 (not only 404) for absent public Storage
+    objects. Listing the exact parent prefix avoids mistaking that status for
+    an upload failure. Refuse to assume absence if listing cannot be verified.
+    """
+    folder, filename = path.rsplit("/", 1)
+    endpoint = f"{base}/storage/v1/object/list/{BUCKET}"
+    data = json.dumps({"prefix": folder + "/", "limit": 1000, "offset": 0,
+                       "search": filename}).encode("utf-8")
+    objects = json.loads(request("POST", endpoint, key, data, "application/json"))
+    if not isinstance(objects, list):
+        raise RuntimeError("Unexpected Storage list response; aborting")
+    if len(objects) >= 1000:
+        raise RuntimeError("Storage list may be truncated; aborting")
+    return any(obj.get("name") == filename for obj in objects)
+
+
 def put_verified(base: str, key: str, path: str, data: bytes, mime: str) -> str:
-    try:
+    if object_exists(base, key, path):
         existing = download(base, path)
-    except RuntimeError as error:
-        if "HTTP 404" not in str(error):
-            raise
-    else:
         if sha256(existing) != sha256(data):
             raise RuntimeError(f"Existing destination differs; refusing overwrite: {path}")
         return "already-matches"
