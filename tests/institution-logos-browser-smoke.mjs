@@ -13,12 +13,12 @@ const server = publicUrl ? null : spawn('npm',
 
 // Every public institution reference in the Supabase project_institutions table.
 const cases = [
-  ['cities-comparing', 3],
-  ['foton-hub', 1],
-  ['quantum-education-apps', 2],
-  ['scientific-analysis-toolkit', 2],
-  ['embedded-control-platform', 1],
-  ['webseer', 2],
+  ['cities-comparing', ['instituto-pense-mais', 'instituto-fisica-ufrgs', 'ufrgs']],
+  ['foton-hub', ['instituto-foton']],
+  ['quantum-education-apps', ['instituto-pense-mais', 'instituto-foton']],
+  ['scientific-analysis-toolkit', ['instituto-fisica-ufrgs', 'ufrgs']],
+  ['embedded-control-platform', ['ita']],
+  ['webseer', ['ita', 'instituto-foton']],
 ]
 const report = { source: publicUrl ? 'published' : 'branch', desktop: [], mobile: [] }
 let browser
@@ -43,7 +43,8 @@ async function viewportTest(mode, dimensions) {
   })
   let total = 0
   let priorTitle = ''
-  for (const [slug, expected] of cases) {
+  for (const [slug, expectedNames] of cases) {
+    const expected = expectedNames.length
     await page.goto(base + '#/projects/' + slug, { waitUntil: 'domcontentloaded' })
     // React Router updates after navigation: wait for the *new* case, not the
     // previous case's still-mounted DOM. Counts alone can be equal on two cases.
@@ -53,6 +54,13 @@ async function viewportTest(mode, dimensions) {
     }, priorTitle, { timeout: 30000 })
     priorTitle = (await page.locator('.case-story-hero h1').innerText()).trim()
     const logos = page.locator('.case-institution-logos img')
+    // Institution data arrives in a separate async Supabase request after the
+    // project title. Wait for this case's exact SVG set, not the previous list.
+    await page.waitForFunction(names => {
+      const current = [...document.querySelectorAll('.case-institution-logos img')]
+      return current.length === names.length && names.every(name =>
+        current.some(image => image.getAttribute('src')?.endsWith('/' + name + '.svg')))
+    }, expectedNames, { timeout: 30000 })
     await logos.first().waitFor({ state: 'visible', timeout: 30000 })
     assert.equal(await logos.count(), expected, 'Institution count mismatch for ' + slug)
     await page.waitForFunction(() => {
