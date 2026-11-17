@@ -1,0 +1,53 @@
+name: Portfolio project carousel - unified alignment and scrollbar
+
+on:
+  push:
+    branches:
+      - fix/portfolio-unified-carousel-scrollbar-20261117
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/styles/global.css
+      - tests/cities-carousel-alignment-smoke.mjs
+      - tests/portfolio-carousel-unified-smoke.mjs
+      - .github/workflows/portfolio-carousel-unified-ci.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-all-projects:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install exact project dependencies
+        run: npm ci
+      - name: TypeScript and production build
+        run: npm run build
+      - name: Install browser testing tools
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Regression - Cities Comparing
+        run: node tests/cities-carousel-alignment-smoke.mjs
+      - name: All published portfolio project carousels - desktop and mobile
+        run: node tests/portfolio-carousel-unified-smoke.mjs
+      - name: Save screenshots and project-by-project JSON evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-carousel-unified
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: warn
