@@ -42,8 +42,16 @@ async function viewportTest(mode, dimensions) {
     }
   })
   let total = 0
+  let priorTitle = ''
   for (const [slug, expected] of cases) {
     await page.goto(base + '#/projects/' + slug, { waitUntil: 'domcontentloaded' })
+    // React Router updates after navigation: wait for the *new* case, not the
+    // previous case's still-mounted DOM. Counts alone can be equal on two cases.
+    await page.waitForFunction(previous => {
+      const current = document.querySelector('.case-story-hero h1')?.textContent?.trim()
+      return Boolean(current && current !== previous)
+    }, priorTitle, { timeout: 30000 })
+    priorTitle = (await page.locator('.case-story-hero h1').innerText()).trim()
     const logos = page.locator('.case-institution-logos img')
     await logos.first().waitFor({ state: 'visible', timeout: 30000 })
     assert.equal(await logos.count(), expected, 'Institution count mismatch for ' + slug)
