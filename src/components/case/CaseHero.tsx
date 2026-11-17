@@ -82,7 +82,7 @@ export function CaseHero({
   }
 
   return (
-    <section className="case-story-hero">
+    <section className={`case-story-hero${project.slug === 'cities-comparing' || project.slug === 'city-comparing' ? ' case-story-hero--cities' : ''}`}>
       <div className="site-container case-story-hero-grid">
         <div className="case-story-hero-copy">
           <Link className="case-back-link" to="/">← {backLabel}</Link>
