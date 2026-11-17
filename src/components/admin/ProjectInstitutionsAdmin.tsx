@@ -16,6 +16,7 @@ import type {
   ProjectInstitutionSource,
 } from '../../domain/models/ProjectInstitution'
 import { humanizeError } from '../../utils/errors'
+import { resolveInstitutionLogo } from '../../data/institutionLogoAssets'
 import { useToast } from '../../providers/ToastProvider'
 
 export function ProjectInstitutionsAdmin({
@@ -198,7 +199,16 @@ export function ProjectInstitutionsAdmin({
           >
             <div className="project-institution-admin-logo">
               {item.institutionLogoUrl
-                ? <img src={item.institutionLogoUrl} alt="" />
+                ? <img
+                    src={resolveInstitutionLogo(item.institutionLogoUrl).src}
+                    alt=""
+                    onError={(event) => {
+                      const fallback = item.institutionLogoUrl
+                      if (fallback && event.currentTarget.src !== fallback) {
+                        event.currentTarget.src = fallback
+                      }
+                    }}
+                  />
                 : <span>{item.institutionName.slice(0, 2).toUpperCase()}</span>}
             </div>
             <div className="project-institution-admin-copy">
