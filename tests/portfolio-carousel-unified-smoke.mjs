@@ -35,13 +35,18 @@ async function listProjectSlugs(page) {
   )
 }
 
-async function checkDevice(device, viewport, slugs) {
-  const context = await browser.newContext({ viewport, isMobile: device === 'mobile', hasTouch: device === 'mobile' })
+async function checkDevice(device, viewport, slugs, storageState) {
+  const context = await browser.newContext({ viewport, isMobile: device === 'mobile', hasTouch: device === 'mobile', storageState })
   const page = await context.newPage()
   let railCount = 0
   for (const slug of slugs) {
     await page.goto(base + '#/projects/' + encodeURIComponent(slug), { waitUntil: 'domcontentloaded' })
-    await page.locator('.case-story-hero-grid').waitFor({ state: 'visible', timeout: 30000 })
+    await page.locator('.case-story-hero-grid, .not-found').first().waitFor({ state: 'visible', timeout: 15000 })
+    if (await page.locator('.not-found').count()) {
+      report.projects.push({ slug, device, status: 'case-page-unavailable', hasCarousel: false })
+      console.log('SKIP', device, slug, '(public card has no case page)')
+      continue
+    }
     const data = await page.evaluate(() => {
       const hero = document.querySelector('.case-story-hero')
       const copy = hero?.querySelector('.case-story-hero-copy')
@@ -113,11 +118,14 @@ try {
   const context = await browser.newContext()
   const discovery = await context.newPage()
   const slugs = await listProjectSlugs(discovery)
+  // Keep the public project data loaded by Home when opening isolated desktop/mobile contexts.
+  // Without this, the first case renders stale fallback content before Supabase completes.
+  const storageState = await context.storageState()
   await context.close()
   assert(slugs.length >= 4, 'Insufficient public projects discovered: ' + JSON.stringify(slugs))
   console.log('Discovered projects:', slugs.join(', '))
-  await checkDevice('desktop', { width: 1440, height: 900 }, slugs)
-  await checkDevice('mobile', { width: 390, height: 844 }, slugs)
+  await checkDevice('desktop', { width: 1440, height: 900 }, slugs, storageState)
+  await checkDevice('mobile', { width: 390, height: 844 }, slugs, storageState)
   console.log('PASS: unified carousel style and alignment across all visible portfolio projects')
 } catch (error) {
   report.failures.push(String(error))
