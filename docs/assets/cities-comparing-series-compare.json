@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "project": "Cities Comparing",
+  "asset_group": "Research Platform Series Compare",
+  "source_drive": "LCR Apps/LCR-SolutionsArchitecture-IA-Quantum/cities-comparing-series-compare",
+  "published_via": "GitHub Pages static public assets",
+  "existing_slides_preserved": 2,
+  "webp_first_render": true,
+  "png_zoom": true,
+  "items": [
+    {
+      "id": "cities-comparing-series-compare-01",
+      "position": 3,
+      "description": "Intro Streamlit Alpha",
+      "width": 1920,
+      "height": 1080,
+      "source": "captura de tela original fornecida pelo usuário",
+      "png": {
+        "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_01.png",
+        "bytes": 324585,
+        "sha256": "61f6fda3fdb28c3b75ffe6ade604e0567f34599c2fad2a94fbd578c827a6ba90"
+      },
+      "webp": {
+        "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_01.webp",
+        "bytes": 95132,
+        "sha256": "9a344c6963fac8d078363f78ca144115605920dc1f4430e398f5972748a87e4d"
+      }
+    },
+    {
+      "id": "cities-comparing-series-compare-02",
+      "position": 4,
+      "description": "Escalas de comparação",
+      "width": 1920,
+      "height": 1080,
+      "source": "captura de tela original fornecida pelo usuário",
+      "png": {
+        "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_02.png",
+        "bytes": 421942,
+        "sha256": "b2f8c1b652a594394635974293633102e81f7a8f8e5057def4615b9dc3e564a4"
+      },
+      "webp": {
+        "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_02.webp",
+        "bytes": 111014,
+        "sha256": "1d04279dba915d6b1f290b9d37f88f1ef98cf6db92ba44dcf6e9514f05ac7860"
+      }
+    },
+    {
+      "id": "cities-comparing-series-compare-03",
+      "position": 5,
+      "description": "Comparação de duas cidades",
+      "width": 1920,
+      "height": 1080,
+      "source": "captura de tela original fornecida pelo usuário",
+      "png": {
+        "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_03.png",
+        "bytes": 372852,
+        "sha256": "2897ab27938847b7687b837738cf1ecaeab5fe2fc4d94f77b96e0e76809bac8b"
+      },
+      "webp": {
+        "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_03.webp",
+        "bytes": 106642,
+        "sha256": "c2787cc874d6acc3239aada87009169c569a88e7996114bd72a37c5105d3153b"
+      }
+    },
+    {
+      "id": "cities-comparing-series-compare-04",
+      "position": 6,
+      "description": "Normal Scatter",
+      "width": 1920,
+      "height": 1080,
+      "source": "captura de tela original fornecida pelo usuário",
+      "png": {
+        "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_04.png",
+        "bytes": 351214,
+        "sha256": "49863d1c91d07cebfaff6f704390d507b73722109f46e53bb24e2e7548a23f38"
+      },
+      "webp": {
+        "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_04.webp",
+        "bytes": 97824,
+        "sha256": "215a581278af6ec19e3c29fe121617d3b7badc267fa24037b130786611e4f18b"
+      }
+    },
+    {
+      "id": "cities-comparing-series-compare-05",
+      "position": 7,
+      "description": "Binscatter",
+      "width": 1920,
+      "height": 1080,
+      "source": "captura de tela original fornecida pelo usuário",
+      "png": {
+        "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_05.png",
+        "bytes": 288623,
+        "sha256": "e2a2085ad269ba50f32f2b749ddeaf7255ab5c54b8009bbfac3081bc9869b868"
+      },
+      "webp": {
+        "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_05.webp",
+        "bytes": 104476,
+        "sha256": "87c3eb1d4f541ec899f309ea0c171cb834f8a7052b3165ada815cfb1afd8a594"
+      }
+    },
+    {
+      "id": "cities-comparing-series-compare-06",
+      "position": 8,
+      "description": "ScatterGraph e B-GCA",
+      "width": 1920,
+      "height": 1080,
+      "source": "captura de tela original fornecida pelo usuário",
+      "png": {
+        "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_06.png",
+        "bytes": 327490,
+        "sha256": "c257d3f2f0014eaa9e4c07868386d6abed821314992b1b094896809a0792ff3a"
+      },
+      "webp": {
+        "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_06.webp",
+        "bytes": 164012,
+        "sha256": "00ee31caa8c7fad72bbc03f8e2526af0d078e5ce5fd1dccb13c10d352c3a83be"
+      }
+    },
+    {
+      "id": "cities-comparing-series-compare-07",
+      "position": 9,
+      "description": "Notebooks e resultados",
+      "width": 1920,
+      "height": 1080,
+      "source": "captura de tela original fornecida pelo usuário",
+      "png": {
+        "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_07.png",
+        "bytes": 294473,
+        "sha256": "0e1e80ea3891724c971056e95a2ffc5902890bc451a2977fadd28ed9992baa21"
+      },
+      "webp": {
+        "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_07.webp",
+        "bytes": 122754,
+        "sha256": "d26cbb458d35f28bea76fdcdc6b8bda34f721e5fe62d0b4a9a929abe2da788af"
+      }
+    }
+  ]
+}
