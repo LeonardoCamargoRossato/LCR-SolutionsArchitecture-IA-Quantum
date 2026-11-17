@@ -97,21 +97,99 @@ export class SupabaseMediaRepository implements IMediaRepository {
     }
   }
 
+  // Each cover is an immutable PNG original and its optimized WebP pair.
+  // Only new paths created by a failed upload may be cleaned up.
+  async uploadProjectCover(file: File, slug: string): Promise<MediaAsset> {
+    if (file.type !== 'image/png') {
+      throw new Error('Project cover must be a PNG original.')
+    }
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+      throw new Error('Invalid project slug for cover upload.')
+    }
+
+    const bitmap = await createImageBitmap(file)
+    const canvas = document.createElement('canvas')
+    canvas.width = bitmap.width
+    canvas.height = bitmap.height
+    const context = canvas.getContext('2d')
+    if (!context) {
+      bitmap.close()
+      throw new Error('Canvas conversion is unavailable.')
+    }
+    context.drawImage(bitmap, 0, 0)
+    bitmap.close()
+    const webpBlob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (blob?.type === 'image/webp') resolve(blob)
+        else reject(new Error('WebP conversion is unavailable.'))
+      }, 'image/webp', 0.82)
+    })
+
+    const name = Date.now() + '-' + crypto.randomUUID() + '-' + safeBaseName(file.name)
+    const pngPath = 'projects/' + slug + '/PNG/' + name + '.png'
+    const webpPath = 'projects/' + slug + '/WebP/' + name + '.webp'
+    const uploaded: string[] = []
+    try {
+      const { error: pngError } = await this.storage.upload(pngPath, file, {
+        contentType: 'image/png', cacheControl: '3600', upsert: false,
+      })
+      if (pngError) throw pngError
+      uploaded.push(pngPath)
+
+      const { error: webpError } = await this.storage.upload(webpPath, webpBlob, {
+        contentType: 'image/webp', cacheControl: '3600', upsert: false,
+      })
+      if (webpError) throw webpError
+      uploaded.push(webpPath)
+
+      const { data: pngRead, error: pngReadError } = await this.storage.download(pngPath)
+      if (pngReadError || !pngRead) throw pngReadError || new Error('PNG verification failed')
+      const [sourceHash, uploadedHash] = await Promise.all([
+        crypto.subtle.digest('SHA-256', await file.arrayBuffer()),
+        crypto.subtle.digest('SHA-256', await pngRead.arrayBuffer()),
+      ])
+      const sourceBytes = new Uint8Array(sourceHash)
+      const uploadedBytes = new Uint8Array(uploadedHash)
+      if (!sourceBytes.every((byte, index) => byte === uploadedBytes[index])) {
+        throw new Error('PNG checksum verification failed.')
+      }
+
+      const { data: webpRead, error: webpReadError } = await this.storage.download(webpPath)
+      if (webpReadError || !webpRead) throw webpReadError || new Error('WebP verification failed')
+      const webpBytes = new Uint8Array(await webpRead.arrayBuffer())
+      if (
+        String.fromCharCode(...webpBytes.slice(0, 4)) !== 'RIFF' ||
+        String.fromCharCode(...webpBytes.slice(8, 12)) !== 'WEBP'
+      ) throw new Error('Invalid WebP signature.')
+      const webpImage = await createImageBitmap(webpRead)
+      const validDimensions = webpImage.width === canvas.width && webpImage.height === canvas.height
+      webpImage.close()
+      if (!validDimensions) throw new Error('WebP dimensions mismatch.')
+
+      const url = this.getPublicUrl(pngPath)
+      const cardUrl = this.getPublicUrl(webpPath)
+      return {
+        id: pngPath,
+        url, path: pngPath, cardUrl, thumbnailUrl: cardUrl, fullUrl: url,
+        name: file.name, mimeType: 'image/png', category: 'Projects',
+        imageType: 'real-screenshot', createdAt: new Date().toISOString(),
+      }
+    } catch (error) {
+      // Never touch old or shared assets.
+      if (uploaded.length) await this.storage.remove(uploaded).catch(() => undefined)
+      throw error
+    }
+  }
+
   async replace(
     current: MediaAsset | undefined,
     file: File,
     category: MediaCategory,
     pathPrefix?: string,
   ) {
-    const next = await this.upload(file, category, pathPrefix)
-
-    if (current) {
-      this.delete(current).catch((error) => {
-        console.warn('Não foi possível remover a mídia anterior.', error)
-      })
-    }
-
-    return next
+    // Do not automatically delete previous media; it may still be referenced.
+    void current
+    return this.upload(file, category, pathPrefix)
   }
 
   async delete(asset: MediaAsset) {
