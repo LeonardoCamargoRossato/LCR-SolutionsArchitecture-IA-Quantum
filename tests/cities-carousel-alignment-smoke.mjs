@@ -48,7 +48,7 @@ async function check(name, width, height, expectedWidth, expectedHeight) {
   assert.equal(data.buttons, 9, 'Existing nine-slide gallery must be preserved')
   assert(Math.abs(data.thumbWidth-expectedWidth)<=2, 'Thumbnail width mismatch: '+JSON.stringify(data))
   assert(Math.abs(data.thumbHeight-expectedHeight)<=2, 'Thumbnail height mismatch: '+JSON.stringify(data))
-  assert(data.scrollbar.includes('37, 99, 235'), 'Blue scrollbar style missing: '+data.scrollbar)
+  assert(data.scrollbar.includes('107, 114, 128'), 'Shared neutral scrollbar style missing: '+data.scrollbar)
   assert.equal(data.overflowX,'auto')
   assert(data.railScrollWidth > data.railClientWidth, 'Carousel scrollbar not necessary')
   assert(data.docWidth<=data.viewport+2, 'Page overflows horizontally: '+JSON.stringify(data))
@@ -69,7 +69,7 @@ try {
   browser=await chromium.launch({headless:true,args:['--no-sandbox']})
   await check('desktop',1440,900,96,62)
   await check('mobile',390,844,80,52)
-  console.log('PASS: Cities Comparing scrollbar, thumbnails and desktop alignment; mobile layout safe')
+  console.log('PASS: Cities Comparing neutral scrollbar, shared thumbnails and desktop alignment; mobile layout safe')
 } catch(error) {
   report.failures.push(String(error))
   console.error('LAYOUT SMOKE FAILED:',error)
