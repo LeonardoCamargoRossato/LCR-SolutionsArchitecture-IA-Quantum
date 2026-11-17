@@ -8,9 +8,10 @@ import { spawn } from 'node:child_process'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { chromium } from 'playwright'
 
-const BASE = 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
+const PUBLIC_BASE = process.env.GALLERY_SMOKE_BASE_URL?.trim()
+const BASE = PUBLIC_BASE ? (PUBLIC_BASE.endsWith('/') ? PUBLIC_BASE : PUBLIC_BASE + '/') : 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
 const output = { date: new Date().toISOString(), scenarios: [], errors: [] }
-const server = spawn('npm', ['run', 'dev', '--', '--host', '127.0.0.1', '--port', '5173', '--strictPort'], {
+const server = PUBLIC_BASE ? null : spawn('npm', ['run', 'dev', '--', '--host', '127.0.0.1', '--port', '5173', '--strictPort'], {
   env: process.env, detached: true, stdio: 'ignore',
 })
 let browser
@@ -174,15 +175,15 @@ try {
   browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] })
   await viewportTest('desktop', { width: 1440, height: 900 })
   await viewportTest('mobile', { width: 390, height: 844 })
-  await mockedAdminUploadTest()
-  console.log('GALLERY PASS: 10 visible photos × 2 devices; WebP carousel, PNG lightbox and PNG download.')
+  if (!PUBLIC_BASE) await mockedAdminUploadTest()
+  console.log('GALLERY PASS: ' + (PUBLIC_BASE ? 'PUBLISHED SITE' : 'BRANCH') + ' 10 visible photos × 2 devices; WebP carousel, PNG lightbox and PNG download.')
 } catch (error) {
   output.errors.push(String(error))
   console.error('GALLERY SMOKE FAILED:', String(error))
   process.exitCode = 1
 } finally {
   if (browser) await browser.close()
-  try { process.kill(-server.pid, 'SIGTERM') } catch {}
+  if (server) { try { process.kill(-server.pid, 'SIGTERM') } catch {} }
   await mkdir('test-results', { recursive: true })
   await writeFile('test-results/gallery-smoke.json', JSON.stringify(output, null, 2))
 }
