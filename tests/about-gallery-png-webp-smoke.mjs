@@ -129,7 +129,12 @@ async function mockedAdminUploadTest() {
   })
 
   await page.goto(BASE + 'tests/gallery-admin-upload-harness.html', { waitUntil: 'domcontentloaded' })
-  await page.waitForFunction(() => document.querySelector('#result')?.textContent?.startsWith('PASS:'), null, { timeout: 25000 })
+  await page.waitForFunction(() => {
+    const value = document.querySelector('#result')?.textContent || ''
+    return value.startsWith('PASS:') || value.startsWith('FAIL:')
+  }, null, { timeout: 25000 })
+  const resultText = await page.locator('#result').textContent()
+  assert(resultText?.startsWith('PASS:'), 'Admin harness failed: ' + resultText)
   const paths = [...objects.keys()]
   assert.equal(paths.length, 3)
   const original = paths.find(path => /^about\/gallery\/[^/]+\.jpg$/.test(path))
