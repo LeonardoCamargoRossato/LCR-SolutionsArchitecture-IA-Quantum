@@ -20,6 +20,8 @@ import type {
 import { useToast } from '../../providers/ToastProvider'
 import { humanizeError } from '../../utils/errors'
 import { AboutGalleryLightbox } from '../AboutGalleryLightbox'
+import { SafeImage } from '../SafeImage'
+import { resolveAboutGalleryMedia } from '../../infrastructure/supabase/aboutGalleryMedia'
 
 const STORAGE_DASHBOARD_URL =
   'https://supabase.com/dashboard/project/wdjffhfnzydudmhhekmk/storage/files/buckets/portfolio-media'
@@ -117,7 +119,7 @@ export function AboutGalleryAdmin() {
     let asset
     try {
       mediaService.validateImage(file)
-      asset = await mediaService.upload(file, 'About', 'about/gallery')
+      asset = await mediaService.uploadAboutGalleryPhoto(file)
       const nextOrder =
         Math.max(0, ...items.map((item) => Number(item.sortOrder) || 0)) + 1
       const fallbackTitle = file.name.replace(/\.[^.]+$/, '')
@@ -133,7 +135,7 @@ export function AboutGalleryAdmin() {
       setEditing(created)
       toast.success('Photo uploaded to About Gallery.')
     } catch (error) {
-      if (asset) await mediaService.delete(asset).catch(() => undefined)
+      // Preserve all three uploaded objects for audited recovery if CMS persistence fails.
       toast.error('Could not upload gallery photo.', humanizeError(error))
     } finally {
       setUploading(false)
@@ -230,23 +232,7 @@ export function AboutGalleryAdmin() {
     setBusyId(item.id)
     try {
       await aboutGalleryService.deleteAboutGalleryItem(item.id)
-      if (item.storagePath) {
-        await mediaService
-          .delete({
-            id: item.storagePath,
-            url: item.imageUrl,
-            path: item.storagePath,
-            name: item.titleEn || item.titlePt || 'about-gallery-image',
-            mimeType: 'image/*',
-            category: 'About',
-          })
-          .catch((error) =>
-            console.warn(
-              'Gallery record deleted, but Storage cleanup failed.',
-              error,
-            ),
-          )
-      }
+      // Delete the editorial reference only; preserve originals and derivatives for audit.
       const remaining = items.filter(
         (candidate) => candidate.id !== item.id,
       )
@@ -331,8 +317,9 @@ export function AboutGalleryAdmin() {
               onClick={() => setPreviewIndex(index)}
               aria-label={`Preview ${item.titleEn || item.titlePt || 'gallery image'}`}
             >
-              <img
-                src={item.imageUrl}
+              <SafeImage
+                src={resolveAboutGalleryMedia(item.imageUrl, item.storagePath).card}
+                fallbackSrc={item.imageUrl}
                 alt={item.titleEn || item.titlePt || ''}
                 loading="lazy"
               />
