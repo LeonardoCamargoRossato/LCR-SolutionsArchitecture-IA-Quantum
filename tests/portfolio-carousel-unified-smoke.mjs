@@ -35,6 +35,26 @@ async function listProjectSlugs(page) {
   )
 }
 
+// Wait for the rail's smooth motion to settle; assert alignment in visual pixels.
+async function assertThumbnailCentered(page, slug, device, action) {
+  await page.waitForFunction(() => {
+    const rail = document.querySelector('.case-hero-thumbnails')
+    const active = rail?.querySelector('button.is-active')
+    if (!rail || !active) return false
+    const railRect = rail.getBoundingClientRect()
+    const activeRect = active.getBoundingClientRect()
+    const thumbCenter = activeRect.left + activeRect.width / 2
+    const viewportCenter = railRect.left + rail.clientWidth / 2
+    return Math.abs(thumbCenter - viewportCenter) < 4
+  }, null, { timeout: 8000 })
+  const details = await page.locator('.case-hero-thumbnails').evaluate((rail) => ({
+    selected: [...rail.querySelectorAll('button')].findIndex((button) => button.classList.contains('is-active')),
+    scrollLeft: rail.scrollLeft,
+    scrollMax: rail.scrollWidth - rail.clientWidth,
+  }))
+  console.log('CENTER', device, slug, action, JSON.stringify(details))
+}
+
 async function checkDevice(device, viewport, slugs, storageState) {
   const context = await browser.newContext({ viewport, isMobile: device === 'mobile', hasTouch: device === 'mobile', storageState })
   let railCount = 0
@@ -123,23 +143,42 @@ async function checkDevice(device, viewport, slugs, storageState) {
             slug + ' scrollbar not aligned with project buttons: ' + JSON.stringify(data))
         }
       }
-      // Do not silently leave slide navigation broken while changing gallery styles.
+      // The main preview and active thumbnail must stay in sync, including
+      // edge items (real center, not just "mostly visible").
+      await assertThumbnailCentered(page, slug, device, 'initial first slide')
       const activeCount = await page.locator('.case-hero-carousel-count').innerText()
       await page.locator('.case-hero-carousel-controls > button').last().click()
       const nextCount = await page.locator('.case-hero-carousel-count').innerText()
       assert.notEqual(nextCount, activeCount, slug + ' carousel next button did not advance')
-      if (data.scrollWidth > data.clientWidth + 2) {
-        await page.locator('.case-hero-thumbnails').evaluate((rail) => {
-          rail.scrollLeft = Math.min(80, rail.scrollWidth - rail.clientWidth)
-        })
-        const offset = await page.locator('.case-hero-thumbnails').evaluate((rail) => rail.scrollLeft)
-        assert(offset > 0, slug + ' thumbnail rail cannot be scrolled')
-      }
-      // Opening the full-resolution lightbox must stay available after refactoring.
+      await assertThumbnailCentered(page, slug, device, 'next arrow')
+
+      const middle = Math.floor(data.imageCount / 2)
+      await page.locator('.case-hero-carousel-dots button').nth(middle).click()
+      assert.equal(await page.locator('.case-hero-carousel-count').innerText(),
+        `${middle + 1} / ${data.imageCount}`)
+      await assertThumbnailCentered(page, slug, device, 'dot selection')
+
+      await page.locator('.case-hero-thumbnails button').nth(middle - 1).click()
+      assert.equal(await page.locator('.case-hero-carousel-count').innerText(),
+        `${middle} / ${data.imageCount}`)
+      await assertThumbnailCentered(page, slug, device, 'thumbnail click')
+
+      await page.locator('.case-hero-carousel-dots button').last().click()
+      await assertThumbnailCentered(page, slug, device, 'last slide')
+      await page.locator('.case-hero-carousel-controls > button').last().click()
+      assert.equal(await page.locator('.case-hero-carousel-count').innerText(), `1 / ${data.imageCount}`)
+      await assertThumbnailCentered(page, slug, device, 'wrap to first')
+
+      // Changing the selected image inside the lightbox must synchronize the
+      // image and the centered thumbnail behind the modal as well.
       await page.locator('.case-story-cover').click()
       await page.locator('.image-lightbox-backdrop').waitFor({ state: 'visible', timeout: 12000 })
+      await page.getByRole('button', { name: 'Next Image', exact: true }).click()
       await page.getByRole('button', { name: 'Close', exact: true }).click()
       await page.locator('.image-lightbox-backdrop').waitFor({ state: 'hidden' })
+      assert.equal(await page.locator('.case-hero-carousel-count').innerText(), `2 / ${data.imageCount}`)
+      await assertThumbnailCentered(page, slug, device, 'lightbox navigation')
+
       await mkdir('test-results', { recursive: true })
       await page.screenshot({ path: `test-results/portfolio-carousel-${slug}-${device}.png`, fullPage: false })
     }
@@ -165,7 +204,7 @@ try {
   console.log('Discovered projects:', slugs.join(', '))
   await checkDevice('desktop', { width: 1440, height: 900 }, slugs, storageState)
   await checkDevice('mobile', { width: 390, height: 844 }, slugs, storageState)
-  console.log('PASS: reusable project carousel, both hero baselines, fixed 16:9 image, adaptable thumbnail rail and zoom')
+  console.log('PASS: shared carousels auto-center active thumbnails for arrows, dots, clicks, edges and lightbox')
 } catch (error) {
   report.failures.push(String(error))
   console.error('PORTFOLIO CAROUSEL SMOKE FAILED:', error)
