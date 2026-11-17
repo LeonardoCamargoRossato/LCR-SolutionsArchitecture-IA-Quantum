@@ -119,11 +119,17 @@ async function mockedAdminUploadTest() {
       if (bytes && contentType.includes('multipart/form-data')) {
         const match = contentType.match(/boundary=([^;]+)/)
         if (!match) throw Error('Multipart upload missing boundary')
-        const headerEnd = bytes.indexOf(Buffer.from('\r\n\r\n'))
-        const payloadStart = headerEnd + 4
-        const payloadEnd = bytes.indexOf(Buffer.from('\r\n--' + match[1]), payloadStart)
-        if (headerEnd < 0 || payloadEnd < 0) throw Error('Invalid multipart mock payload')
-        bytes = bytes.subarray(payloadStart, payloadEnd)
+        // Storage uploads contain metadata fields before the actual file;
+        // locate the file part, never assume it is first.
+        const multipartParts = bytes.toString('latin1').split('--' + match[1])
+        const filePart = multipartParts.find(part => {
+          const headers = part.split('\r\n\r\n')[0] || ''
+          return /filename=|name="file"/i.test(headers)
+        })
+        if (!filePart) throw Error('Could not find file part in Supabase mock upload')
+        const firstBody = filePart.indexOf('\r\n\r\n')
+        const data = filePart.slice(firstBody + 4).replace(/\r\n$/, '')
+        bytes = Buffer.from(data, 'latin1')
       }
       if (!bytes || objects.has(path)) throw Error('Upload is empty or overwrote a prior object: ' + path)
       objects.set(path, bytes)
