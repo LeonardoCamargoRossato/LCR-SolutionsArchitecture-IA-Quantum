@@ -112,7 +112,19 @@ async function mockedAdminUploadTest() {
     const path = decodeURIComponent(url.pathname.split('/object/portfolio-media/')[1] || '')
     if (!path) throw Error('Bad mock Storage path')
     if (req.method() === 'POST') {
-      const bytes = req.postDataBuffer()
+      let bytes = req.postDataBuffer()
+      // Supabase's upload client serializes File/Blob as multipart form data.
+      // The mocked Storage server must persist the file bytes, not the envelope.
+      const contentType = req.headers()['content-type'] || ''
+      if (bytes && contentType.includes('multipart/form-data')) {
+        const match = contentType.match(/boundary=([^;]+)/)
+        if (!match) throw Error('Multipart upload missing boundary')
+        const headerEnd = bytes.indexOf(Buffer.from('\r\n\r\n'))
+        const payloadStart = headerEnd + 4
+        const payloadEnd = bytes.indexOf(Buffer.from('\r\n--' + match[1]), payloadStart)
+        if (headerEnd < 0 || payloadEnd < 0) throw Error('Invalid multipart mock payload')
+        bytes = bytes.subarray(payloadStart, payloadEnd)
+      }
       if (!bytes || objects.has(path)) throw Error('Upload is empty or overwrote a prior object: ' + path)
       objects.set(path, bytes)
       await route.fulfill({ status: 200, contentType: 'application/json',
