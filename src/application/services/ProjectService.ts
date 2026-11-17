@@ -2,6 +2,7 @@ import type { IProjectRepository } from '../../domain/repositories/IProjectRepos
 import type { Project, ProjectPlacement, ProjectSource } from '../../domain/models/Project'
 import { defaultMoreProjects, defaultProjects } from '../../data/defaultProjects'
 import { citiesComparingContent } from '../../data/citiesComparing'
+import { citiesComparingSeriesGallery } from '../../data/citiesComparingSeriesGallery'
 import { ce235Project } from '../../data/ce235Project'
 import { metCompBProject } from '../../data/metCompBProject'
 
@@ -178,17 +179,28 @@ function enrich(project: Project): Project {
     // abstract as an additional gallery slide, never discard the original.
     coverImage: enriched.coverImage ?? base.coverImage,
     imageType: enriched.imageType ?? base.imageType,
-    gallery: (enriched.gallery.length || !base.coverImage) ? enriched.gallery : [{
-      id: 'cities-comparing-graphical-abstract',
-      image: base.coverImage,
-      caption: 'Graphical abstract',
-      altText: base.coverImage.altText ?? 'Cities Comparing graphical abstract',
-      cardUrl: base.coverImage.cardUrl,
-      thumbnailUrl: base.coverImage.thumbnailUrl,
-      fullUrl: base.coverImage.fullUrl,
-      order: 1,
-      visible: true,
-    }],
+    // Keep the existing two slides (CMS cover + the graphical abstract) first.
+    // Add seven approved series screenshots in upload order as slides 3–9.
+    // Do not duplicate entries that an editor later adds to the CMS gallery.
+    gallery: [
+      ...(base.coverImage && !enriched.gallery.some((item) =>
+        item.id === 'cities-comparing-graphical-abstract' ||
+        item.image?.url === base.coverImage?.url
+      ) ? [{
+        id: 'cities-comparing-graphical-abstract',
+        image: base.coverImage,
+        caption: 'Graphical abstract',
+        altText: base.coverImage.altText ?? 'Cities Comparing graphical abstract',
+        cardUrl: base.coverImage.cardUrl,
+        thumbnailUrl: base.coverImage.thumbnailUrl,
+        fullUrl: base.coverImage.fullUrl,
+        order: 1,
+        visible: true,
+      }] : []),
+      ...enriched.gallery,
+      ...citiesComparingSeriesGallery.filter((asset) =>
+        !enriched.gallery.some((item) => item.id === asset.id)),
+    ],
     links: { ...enriched.links, ...citiesComparingContent.links },
     sections: { ...enriched.sections, ...citiesComparingContent.sections },
     translations: {
