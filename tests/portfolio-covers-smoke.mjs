@@ -21,11 +21,22 @@ async function ready() {
   throw Error('Vite server did not start')
 }
 async function imageLoaded(page,selector,part) {
-  await page.waitForFunction(({selector,part})=>{
-    const img=document.querySelector(selector)
-    return img instanceof HTMLImageElement && img.src.includes(part) &&
-      img.complete && img.naturalWidth>0
-  },{selector,part},{timeout:30000})
+  try {
+    await page.waitForFunction(({selector,part})=>{
+      const img=document.querySelector(selector)
+      return img instanceof HTMLImageElement && img.src.includes(part) &&
+        img.complete && img.naturalWidth>0
+    },{selector,part},{timeout:30000})
+  } catch(e) {
+    const state=await page.evaluate(selector=>{
+      const element=document.querySelector(selector)
+      return { page:location.href,src:element?.getAttribute('src'),
+        complete:element?.complete,naturalWidth:element?.naturalWidth,
+        text:document.querySelector('h1')?.textContent,
+        imageCount:document.querySelectorAll('img').length}
+    },selector)
+    throw Error('Image readiness failed: '+part+' '+JSON.stringify(state)+' '+String(e))
+  }
   const actual=await page.locator(selector).getAttribute('src')
   assert(actual?.includes(part))
   return actual
