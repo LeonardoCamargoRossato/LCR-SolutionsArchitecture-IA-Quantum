@@ -58,6 +58,7 @@ async function viewportTest(mode, dimensions) {
       cardWidth: img.parentElement?.getBoundingClientRect().width,
       cardHeight: img.parentElement?.getBoundingClientRect().height,
     })))
+    console.log('LOGO DIAGNOSTIC', mode, slug, details.map(item => ({ image: item.src.split('/').at(-1), cardWidth: item.cardWidth })), errors)
     for (const item of details) {
       assert(item.src.endsWith('.svg'), 'A known logo still renders raster: ' + item.src)
       assert(item.cardWidth >= 74, 'Logo card too narrow to be legible')
