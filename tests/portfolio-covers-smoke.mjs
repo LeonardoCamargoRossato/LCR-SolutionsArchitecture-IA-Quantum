@@ -41,11 +41,14 @@ async function testViewport(label,width,height) {
         /\/(PNG|WebP)\//.test(r.url()) && r.status()>=400) bad.push(r.status())
   })
   await page.goto(BASE+'#/',{waitUntil:'domcontentloaded'})
-  await page.locator('a.project-card').first().waitFor({timeout:30000})
-  await page.locator('a.project-card').first().scrollIntoViewIfNeeded()
-  await page.waitForFunction(()=>[...document.querySelectorAll('a.project-card img')].some(
-    x=>x.getAttribute('src')?.includes('/WebP/')),null,{timeout:30000})
+  console.log('BROWSER',label,'Home loaded; waiting for Foton Hub card')
+  const homeCard=page.locator('a.project-card[href$="/projects/foton-hub"]')
+  await homeCard.waitFor({state:'attached',timeout:30000})
+  await homeCard.scrollIntoViewIfNeeded()
+  await imageLoaded(page,'a.project-card[href$="/projects/foton-hub"] img.progressive-image-main','/WebP/')
+  console.log('BROWSER',label,'Home WebP confirmed')
   for (const slug of SLUGS) {
+    console.log('BROWSER',label,slug,'begin')
     await page.goto(BASE+'#/projects/'+slug,{waitUntil:'domcontentloaded'})
     await page.locator('.case-story-cover').waitFor({state:'visible',timeout:30000})
     await imageLoaded(page,'.case-story-cover img.progressive-image-main','/WebP/')
@@ -69,6 +72,7 @@ async function testViewport(label,width,height) {
       assert(dimensions.scroll<=dimensions.width+2,'Mobile overflow: '+slug)
     }
     await dialog.getByRole('button',{name:'Close'}).click()
+    console.log('BROWSER',label,slug,'PASS')
     report.results.push({viewport:label,project:slug,webp:true,png:true})
   }
   assert.equal(bad.length,0,'Broken PNG/WebP network responses')
