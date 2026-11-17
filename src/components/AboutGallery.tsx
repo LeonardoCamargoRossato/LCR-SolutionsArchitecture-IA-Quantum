@@ -10,6 +10,7 @@ import { useI18n } from '../i18n/I18nProvider'
 import { AboutGalleryLightbox } from './AboutGalleryLightbox'
 import { SafeImage } from './SafeImage'
 import { normalizeAboutGallery } from '../data/aboutGalleryEditorial'
+import { resolveAboutGalleryMedia } from '../infrastructure/supabase/aboutGalleryMedia'
 
 function localized(item: AboutGalleryItem, locale: 'en-US' | 'pt-BR') {
   const pt = locale === 'pt-BR'
@@ -93,6 +94,7 @@ export function AboutGallery() {
       <div ref={railRef} className="about-gallery-rail">
         {items.map((item, index) => {
           const localizedItem = localized(item, locale)
+          const media = resolveAboutGalleryMedia(item.imageUrl, item.storagePath)
           const alt = [
             localizedItem.title,
             localizedItem.caption,
@@ -106,7 +108,14 @@ export function AboutGallery() {
               onClick={() => setLightboxIndex(index)}
               aria-label={localizedItem.title || alt}
             >
-              <SafeImage src={item.imageUrl} alt={alt} loading="lazy" sizes="(max-width: 680px) 86vw, 380px" />
+              <SafeImage
+                src={media.card}
+                fallbackSrc={media.hasVariants ? media.original : undefined}
+                alt={alt}
+                eager={index < 3}
+                loading={index < 3 ? 'eager' : 'lazy'}
+                sizes="(max-width: 680px) 86vw, 380px"
+              />
               <span className="about-gallery-card-copy">
                 {localizedItem.title && <strong>{localizedItem.title}</strong>}
                 {(localizedItem.location || localizedItem.caption) && (
