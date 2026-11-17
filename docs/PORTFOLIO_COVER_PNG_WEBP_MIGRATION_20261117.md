@@ -39,11 +39,11 @@ Todos os caminhos abaixo são relativos ao bucket `portfolio-media`. A coluna SH
 - `SupabaseMediaRepository.ts`, `MediaService.ts`, `IMediaRepository.ts` e painel `Admin.tsx`: novos uploads de capas exigem PNG original e geram par WebP via Canvas; validam PNG por SHA-256 e WebP por assinatura e dimensões. O repositório não remove mais automaticamente a mídia anterior em `replace()`; capas legadas e novas possuem guarda contra exclusão via método `delete()`. A exclusão de capa no editor desvincula o registro, sem apagar o objeto.
 - `ImageUploader.tsx`: restringe **somente o campo de capa** a PNG, preservando JPG/PNG/WebP para foto de perfil e outros usos.
 - `ProjectCard.tsx`, `MoreProjectCard.tsx` e `CaseHero.tsx`: cards usam URL WebP resolvida; o lightbox usa URL PNG e oferece download do original.
-- `.github/workflows/portfolio-cover-migration.yml`: executa build, validação dry-run e evidências; migração só é acionada quando o GitHub secret está configurado, com backup e verificação após cópia.
+- `.github/workflows/portfolio-cover-migration.yml`: executa build, validação dry-run e evidências; build e dry-run automáticos no push; migração privilegiada exige **disparo manual** por `workflow_dispatch` **e** o GitHub secret protegido, com backup e verificação após cópia.
 
 ### Dependência para efetivar a migração
 
-O responsável deve disponibilizar uma credencial administrativa protegida **exclusivamente no GitHub Actions**, em `Settings → Secrets and variables → Actions → New repository secret`, nome `SUPABASE_SERVICE_ROLE_KEY`, preferindo acesso de menor duração possível e rotação posterior. **Não divulgar o valor no chat, no frontend ou em commits.** A conexão Supabase de leitura/SQL disponível no chat não oferece a operação de upload de objetos do Storage. Ao rerodar o workflow da branch, este deverá comprovar 18 objetos e nove registros antes que o PR possa passar por revisão.
+O responsável deve disponibilizar uma credencial administrativa protegida **exclusivamente no GitHub Actions**, em `Settings → Secrets and variables → Actions → New repository secret`, nome `SUPABASE_SERVICE_ROLE_KEY`, preferindo acesso de menor duração possível e rotação posterior. **Não divulgar o valor no chat, no frontend ou em commits.** A conexão Supabase de leitura/SQL disponível no chat não oferece a operação de upload de objetos do Storage. Depois de configurar o segredo, acionar **Actions → Portfolio covers PNG/WebP - gated migration → Run workflow**, selecionar `feat/portfolio-cover-webp-20261117`. **Push automático apenas faz validação, sem escrita no Supabase.** O workflow disparado manualmente deverá comprovar 18 objetos e nove registros antes que o PR possa passar por revisão.
 
 ### Procedimento de execução e validação
 
