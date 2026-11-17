@@ -117,8 +117,9 @@ function enrich(project: Project): Project {
       status: base.status,
       description: base.description,
       technologies: base.technologies,
-      coverImage: base.coverImage,
-      imageType: base.imageType,
+      // Supabase owns the canonical PNG cover; retain code-managed gallery.
+      coverImage: enriched.coverImage ?? base.coverImage,
+      imageType: enriched.imageType ?? base.imageType,
       gallery: base.gallery,
       isAcademic: base.isAcademic,
       academicContext: base.academicContext,
@@ -174,8 +175,21 @@ function enrich(project: Project): Project {
   return {
     ...enriched,
     ...citiesComparingContent,
-    coverImage: base.coverImage,
-    imageType: base.imageType,
+    // Keep CMS cover in the first slide and retain the approved graphical
+    // abstract as an additional gallery slide, never discard the original.
+    coverImage: enriched.coverImage ?? base.coverImage,
+    imageType: enriched.imageType ?? base.imageType,
+    gallery: (enriched.gallery.length || !base.coverImage) ? enriched.gallery : [{
+      id: 'cities-comparing-graphical-abstract',
+      image: base.coverImage,
+      caption: 'Graphical abstract',
+      altText: base.coverImage.altText ?? 'Cities Comparing graphical abstract',
+      cardUrl: base.coverImage.cardUrl,
+      thumbnailUrl: base.coverImage.thumbnailUrl,
+      fullUrl: base.coverImage.fullUrl,
+      order: 1,
+      visible: true,
+    }],
     links: { ...enriched.links, ...citiesComparingContent.links },
     sections: { ...enriched.sections, ...citiesComparingContent.sections },
     translations: {
