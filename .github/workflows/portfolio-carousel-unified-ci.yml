@@ -3,7 +3,7 @@ name: LCR Standard Structures - shared project carousel and aligned hero
 on:
   push:
     branches:
-      - feat/lcr-standard-project-carousel-layout-20261117
+      - fix/lcr-carousel-thumbnail-autocenter-20261117
   pull_request:
     branches:
       - main

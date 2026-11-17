@@ -44,6 +44,8 @@ Se o projeto utilizar uma origem de imagens diferente, converta **os dados** par
 - A **imagem principal mantém proporção 16:9**; não esticar imagem original para preencher altura.
 - A **faixa de miniaturas aumenta de altura/largura proporcionalmente** quando necessário para completar a altura do painel.
 - Trilha neutra cinza transparente, com variação acessível em tema escuro. Estado selecionado permanece azul.
+- A miniatura selecionada acompanha o slide principal e é centralizada automaticamente na faixa inferior, com movimento suave nas mudanças e respeito a `prefers-reduced-motion`.
+- A centralização também funciona nas extremidades (primeira/última imagem), em cliques, indicadores, setas e mudanças feitas no visualizador. Só o trilho horizontal rola; a página não sofre salto vertical.
 - No mobile, as colunas empilham, sem forçar alturas idênticas nem causar overflow horizontal.
 
 ## Verificação e manutenção

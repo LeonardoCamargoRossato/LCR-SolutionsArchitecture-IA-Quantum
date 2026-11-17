@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react'
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { SafeImage } from '../../components/SafeImage'
 import type { ProjectCarouselImage } from './carousel-images'
 
@@ -10,6 +10,28 @@ const ImageLightbox = lazy(() =>
 type Props = {
   projectTitle: string
   images: readonly ProjectCarouselImage[]
+}
+
+/** Keep all centering calculations in one place for interaction and resizing. */
+function centerSelectedThumbnail(
+  rail: HTMLDivElement,
+  active: HTMLButtonElement,
+  behavior: ScrollBehavior,
+) {
+  // The gutter is intentionally large enough to center the edge images too.
+  rail.style.setProperty(
+    '--carousel-edge-space',
+    `${Math.max(2, (rail.clientWidth - active.offsetWidth) / 2)}px`,
+  )
+  const railBounds = rail.getBoundingClientRect()
+  const activeBounds = active.getBoundingClientRect()
+  const target = rail.scrollLeft
+    + activeBounds.left + activeBounds.width / 2
+    - railBounds.left - rail.clientWidth / 2
+  rail.scrollTo({
+    left: Math.max(0, Math.min(rail.scrollWidth - rail.clientWidth, target)),
+    behavior,
+  })
 }
 
 /**
@@ -23,6 +45,8 @@ export function ProjectCarousel({ projectTitle, images }: Props) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const pointerStart = useRef<number | null>(null)
   const swiped = useRef(false)
+  const thumbnailRailRef = useRef<HTMLDivElement>(null)
+  const previousIndexRef = useRef<number | null>(null)
   const hasCarousel = images.length > 1
   const current = images[index] ?? images[0]
 
@@ -36,6 +60,55 @@ export function ProjectCarousel({ projectTitle, images }: Props) {
       preload.src = adjacent.src
     }
   }, [images, index, hasCarousel])
+
+  // Keep the highlighted miniature centered when changing slides via arrows,
+  // dots, thumbnails, swipe or the lightbox. Scroll only the thumbnail rail,
+  // never the document (scrollIntoView could move the entire page).
+  useLayoutEffect(() => {
+    if (!hasCarousel) return
+    const rail = thumbnailRailRef.current
+    const active = rail?.querySelector<HTMLButtonElement>('button.is-active')
+    if (!rail || !active) return
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const behavior: ScrollBehavior = previousIndexRef.current === null || reducedMotion
+      ? 'auto'
+      : 'smooth'
+    centerSelectedThumbnail(rail, active, behavior)
+    previousIndexRef.current = index
+  }, [index, hasCarousel, images])
+
+  useEffect(() => {
+    if (!hasCarousel || typeof ResizeObserver === 'undefined') return
+    const rail = thumbnailRailRef.current
+    const active = rail?.querySelector<HTMLButtonElement>('button.is-active')
+    if (!rail || !active) return
+
+    let frame = 0
+    let lastRailWidth = rail.clientWidth
+    let lastThumbWidth = active.offsetWidth
+    const observer = new ResizeObserver(() => {
+      const railWidth = rail.clientWidth
+      const thumbWidth = active.offsetWidth
+      // Images and fonts can alter thumbnail widths without altering the rail.
+      // Re-center when either measurement changes after initial render.
+      if (Math.abs(railWidth - lastRailWidth) < 1
+        && Math.abs(thumbWidth - lastThumbWidth) < 1) return
+      lastRailWidth = railWidth
+      lastThumbWidth = thumbWidth
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        if (!rail.isConnected || !active.isConnected) return
+        centerSelectedThumbnail(rail, active, 'auto')
+      })
+    })
+    observer.observe(rail)
+    observer.observe(active)
+    return () => {
+      observer.disconnect()
+      cancelAnimationFrame(frame)
+    }
+  }, [hasCarousel, index, images])
 
   if (!current) return null
 
@@ -112,7 +185,7 @@ export function ProjectCarousel({ projectTitle, images }: Props) {
       )}
 
       {hasCarousel && (
-        <div className="case-hero-thumbnails" aria-label={`${projectTitle} thumbnails`}>
+        <div ref={thumbnailRailRef} className="case-hero-thumbnails" aria-label={`${projectTitle} thumbnails`}>
           {images.map((image, imageIndex) => (
             <button
               key={`${image.src}-${imageIndex}-thumb`}
