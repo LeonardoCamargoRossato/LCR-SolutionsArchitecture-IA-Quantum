@@ -1,6 +1,6 @@
 # Galeria do LCR Portfólio — 12 JPGs convertidos para PNG e WebP
 
-**Status: concluído e verificado — 17/11/2026.**
+**Status do Storage: concluído e verificado — 17/11/2026.**
 
 **Projeto:** `wdjffhfnzydudmhhekmk`  
 **Bucket:** `portfolio-media`
@@ -9,7 +9,7 @@
 - Primeiro foram criadas **12 cópias PNG** em `about/gallery/PNG/`, preservando os pixels decodificados, dimensões e orientação da fotografia.
 - Depois foram criadas **12 versões WebP** em `about/gallery/WebP/`, derivadas dos PNGs.
 - As 24 variantes foram relidas e validadas em um workflow independente. Nenhum arquivo foi removido ou sobrescrito; nenhum registro `public.about_gallery` foi modificado.
-- O site continua usando as URLs JPG originais até que seja solicitada uma integração posterior dos WebPs.
+- Na PR #3, o site passa a carregar WebP nos cards e PNG na ampliação, mantendo as URLs JPG no banco como fonte editorial e fallback.
 
 ## Links para visualizar cada imagem
 
@@ -50,5 +50,37 @@ about/
 - [GitHub Actions — execução e verificação](https://github.com/LeonardoCamargoRossato/LCR-SolutionsArchitecture-IA-Quantum/actions/runs/44094909700).
 - Artifact `gallery-jpg-png-webp-audit` com relatórios de todos os hashes, dimensões, tamanhos, URLs e estados.
 - A branch `feat/about-gallery-png-webp-20261117` contém o script para auditoria futura; a execução privilegiada automática foi desabilitada.
+
+## Implementação do carrossel — PR #3
+
+**Branch:** `feat/about-gallery-png-webp-20261117`
+
+| Uso | Versão | Regra |
+|---|---|---|
+| Carrossel na Home | `about/gallery/WebP/<asset>.webp` | Primeiras três imagens com prioridade; demais progressivas |
+| Lightbox / zoom | `about/gallery/PNG/<asset>.png` | Carrega somente quando aberto |
+| Download | PNG | Nome do arquivo termina em `.png` |
+| Retaguarda / CMS | JPG original | URLs e storage_path originais mantidos sem alterações |
+| Fallback | JPG original | Ativado quando falta WebP ou PNG |
+
+**Código central:** `src/infrastructure/supabase/aboutGalleryMedia.ts`. O mesmo resolvedor é utilizado por `AboutGallery.tsx`, `AboutGalleryLightbox.tsx` e pela miniatura no painel `AboutGalleryAdmin.tsx`. URLs externas e dados inconsistentes não são reescritos. `SafeImage.tsx` e `ImageLightbox.tsx` possuem fallback controlado.
+
+**Novos uploads:** `MediaService.uploadAboutGalleryPhoto` → `SupabaseMediaRepository.uploadAboutGalleryPhoto` grava original, PNG e WebP com nomes pareados, faz download de conferência, compara hashes e verifica dimensões. O banco recebe somente a URL do original. Exclusões de registros editoriais não apagam fotografias nem variantes. Os objetos originais anteriores não são sobrescritos.
+
+### Verificações executadas
+
+- [Run #44102443797 — CI da integração](https://github.com/LeonardoCamargoRossato/LCR-SolutionsArchitecture-IA-Quantum/actions/runs/44102443797): `npm ci`, `npm run build`, teste do resolvedor, navegação real com Playwright em **10 fotos × desktop/mobile**, WebP nos cards, PNG no zoom, download PNG, ausência de erros de imagem nas variantes verificadas, upload em Storage **simulado** (original + PNG + WebP) e conferência de conteúdo após leitura: **PASS**.
+- [Run #44094909700 — cópia e conferência de todos os 24 arquivos](https://github.com/LeonardoCamargoRossato/LCR-SolutionsArchitecture-IA-Quantum/actions/runs/44094909700): **PASS**.
+- Consultas independentes ao `storage.objects` confirmaram **12 JPGs + 12 PNGs + 12 WebPs**.
+- Tamanhos reais: JPGs **19.036.513 bytes**, PNGs **75.920.319 bytes**, WebPs **5.004.586 bytes**. Entrega em WebP reduz **73,71%** dos bytes frente ao conjunto JPG. O armazenamento total aumenta, pois todas as versões são preservadas.
+
+**Limitação reconhecida:** o upload administrativo foi validado em navegador com Storage mockado, não em uma sessão autenticada real do painel em produção. Revisões humanas obrigatórias devem ser respeitadas. A verificação do site público deve ser repetida após o deploy.
+
+### Reversão e segurança
+
+- Para reverter a renderização, reverter a PR #3 em GitHub; não é necessário modificar os registros `public.about_gallery` nem remover nenhum arquivo do Storage.
+- Os originais JPG permanecem a referência editorial e visual de fallback. Não foram removidos nem reprocessados por IA.
+- O fluxo privilegiado da migração dos 12 arquivos foi desabilitado depois de sua execução. A integração do carrossel não exige `service_role` no frontend.
+- Padrão: `LCR_ASSET_ORGANIZATION_STANDARD`, organização orientada à funcionalidade, migração gradual, rastreabilidade e testes.
 
 **Observação:** PNG é um formato sem perdas após a decodificação do JPEG, mas não recupera detalhes já perdidos na compressão JPG original. Não houve geração por IA.
