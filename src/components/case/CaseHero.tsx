@@ -49,7 +49,7 @@ export function CaseHero({
       thumbnailSrc: item.thumbnailUrl || item.cardUrl || item.image!.url,
       alt: item.altText || item.image!.altText || item.caption || `${project.title} project image`,
       caption: item.caption,
-      downloadName: `${project.slug}-${item.id}`,
+      downloadName: `${project.slug}-${item.id}${(item.fullUrl ?? '').toLowerCase().endsWith('.png') ? '.png' : ''}`,
     }))
   const normalizedCover = cover.replace(/^\.\//, '/')
   const heroItems = [coverItem, ...galleryItems.filter((item) => item.fullSrc.replace(/^\.\//, '/') !== normalizedCover)]
