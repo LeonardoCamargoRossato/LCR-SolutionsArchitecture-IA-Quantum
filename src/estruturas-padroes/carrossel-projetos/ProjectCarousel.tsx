@@ -68,7 +68,7 @@ export function ProjectCarousel({ projectTitle, images }: Props) {
       : 'smooth'
     centerActive(behavior)
     previousIndexRef.current = index
-  }, [index, hasCarousel])
+  }, [index, hasCarousel, images])
 
   useEffect(() => {
     if (!hasCarousel || typeof ResizeObserver === 'undefined') return
