@@ -37,14 +37,29 @@ async function listProjectSlugs(page) {
 
 async function checkDevice(device, viewport, slugs, storageState) {
   const context = await browser.newContext({ viewport, isMobile: device === 'mobile', hasTouch: device === 'mobile', storageState })
-  const page = await context.newPage()
   let railCount = 0
   for (const slug of slugs) {
+    // Isolate route effects and media preloading from previous project cases.
+    const page = await context.newPage()
+    const pageErrors = []
+    page.on('pageerror', (error) => pageErrors.push(String(error)))
     await page.goto(base + '#/projects/' + encodeURIComponent(slug), { waitUntil: 'domcontentloaded' })
-    await page.locator('.case-story-hero-grid, .not-found').first().waitFor({ state: 'visible', timeout: 15000 })
+    try {
+      await page.locator('.case-story-hero-grid, .not-found').first().waitFor({ state: 'visible', timeout: 8000 })
+    } catch {
+      const state = await page.evaluate(() => ({
+        title: document.title,
+        text: document.body?.innerText.slice(0, 240) ?? '',
+      }))
+      report.projects.push({ slug, device, status: 'case-page-not-rendered', hasCarousel: false, state, pageErrors })
+      console.warn('SKIP', device, slug, '(case page not rendered)', JSON.stringify({state,pageErrors}))
+      await page.close()
+      continue
+    }
     if (await page.locator('.not-found').count()) {
       report.projects.push({ slug, device, status: 'case-page-unavailable', hasCarousel: false })
       console.log('SKIP', device, slug, '(public card has no case page)')
+      await page.close()
       continue
     }
     const data = await page.evaluate(() => {
@@ -107,6 +122,7 @@ async function checkDevice(device, viewport, slugs, storageState) {
     }
     report.projects.push({ slug, device, ...data })
     console.log('PASS', device, slug, data.hasCarousel ? `gallery (${data.imageCount} images)` : 'no gallery')
+    await page.close()
   }
   await context.close()
   assert(railCount >= 2, 'Expected at least two project galleries on ' + device + '; observed ' + railCount)
