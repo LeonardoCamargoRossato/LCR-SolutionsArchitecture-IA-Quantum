@@ -128,6 +128,7 @@ export function AboutGallery() {
       </div>
 
       <AboutGalleryLightbox
+        allowDownload
         items={items}
         index={lightboxIndex}
         locale={locale}
