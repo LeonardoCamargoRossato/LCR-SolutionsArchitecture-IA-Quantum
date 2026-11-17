@@ -9,8 +9,6 @@ const defaults = [...defaultProjects, ...defaultMoreProjects]
 const retiredSlugs = new Set([
   'power-platform',
   'scientific-analysis',
-  'scientific-analysis-toolkit',
-  'pdf-frequency-analyzer',
 ])
 
 function canonicalSlug(project: Project) {
