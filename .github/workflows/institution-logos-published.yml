@@ -1,0 +1,42 @@
+name: LCR institution logos - public Pages check
+
+on:
+  workflow_run:
+    workflows:
+      - Deploy to GitHub Pages
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+jobs:
+  public-logos:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      INSTITUTION_LOGO_TEST_URL: https://leonardocamargorossato.github.io/LCR-SolutionsArchitecture-IA-Quantum/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install test dependencies
+        run: |
+          npm ci
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify all eleven published institution logos, sizing and fallback
+        run: node tests/institution-logos-browser-smoke.mjs
+      - name: Preserve public-browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: institution-logos-published-evidence
+          retention-days: 30
+          if-no-files-found: warn
+          path: test-results/
