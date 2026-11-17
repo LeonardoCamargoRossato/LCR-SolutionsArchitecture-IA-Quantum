@@ -1,4 +1,5 @@
 import type { ProjectInstitution } from '../../domain/models/ProjectInstitution'
+import { resolveInstitutionLogo } from '../../data/institutionLogoAssets'
 
 export function CaseInstitutionLogos({
   institutions,
@@ -11,27 +12,32 @@ export function CaseInstitutionLogos({
   return (
     <div className="case-institution-logos" aria-label="Project institutions">
       {visible.map((institution) => {
-        const content = (
-          <>
-            {institution.institutionLogoUrl ? (
-              <img
-                src={institution.institutionLogoUrl}
-                alt={institution.institutionName}
-                title={institution.institutionName}
-                loading="lazy"
-              />
-            ) : (
-              <span title={institution.institutionName}>
-                {institution.institutionName}
-              </span>
-            )}
-          </>
+        const logo = resolveInstitutionLogo(institution.institutionLogoUrl)
+        const content = logo.src ? (
+          <img
+            src={logo.src}
+            alt={institution.institutionName}
+            title={institution.institutionName}
+            loading="lazy"
+            decoding="async"
+            onError={(event) => {
+              // Keep the source supplied by Supabase if a vector fails to load.
+              if (logo.fallback && event.currentTarget.src !== logo.fallback) {
+                event.currentTarget.src = logo.fallback
+              }
+            }}
+          />
+        ) : (
+          <span title={institution.institutionName}>
+            {institution.institutionName}
+          </span>
         )
+        const className = `case-institution-logo case-institution-logo--${logo.layout}`
 
         return institution.institutionUrl ? (
           <a
             key={institution.id}
-            className="case-institution-logo"
+            className={className}
             href={institution.institutionUrl}
             target="_blank"
             rel="noopener noreferrer"
@@ -42,7 +48,7 @@ export function CaseInstitutionLogos({
         ) : (
           <div
             key={institution.id}
-            className="case-institution-logo"
+            className={className}
             title={institution.institutionName}
           >
             {content}
