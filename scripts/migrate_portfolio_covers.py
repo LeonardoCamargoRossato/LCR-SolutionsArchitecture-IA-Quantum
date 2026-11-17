@@ -27,7 +27,6 @@ COVERS = [
   ("embedded-control-platform","1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png","more_projects","embedded-control-platform","image_url"),
   ("foton-hub","1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.png","projects","foton-hub","cover_url"),
   ("hamlet","1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png","projects","hamlet","cover_url"),
-  ("pdf-frequency-analyzer","1789577994613-5507d9da-b3c8-42c1-9f27-ecdb8989dbef-FrequencyAnalyser_CapaCard.png","more_projects","pdf-frequency-analyzer","image_url"),
   ("quantum-education-apps","1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png","more_projects","quantum-education-apps","image_url"),
   ("scientific-analysis-toolkit","1789577893972-0ac3894c-5459-4df2-989a-029bf13891ec-ScientificAnalysisToolitCapaCard.png","more_projects","scientific-analysis-toolkit","image_url"),
   ("speaker-portfolio","1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png","projects","speaker-portfolio","cover_url"),
@@ -203,7 +202,7 @@ def main() -> None:
                                "target_url": new_url})
             pending.append((record, png, webp, old_url, new_url))
 
-        if len(pending) != 9:
+        if len(pending) != len(COVERS):
             raise RuntimeError("Unexpected inventory cardinality")
 
         if args.apply:
