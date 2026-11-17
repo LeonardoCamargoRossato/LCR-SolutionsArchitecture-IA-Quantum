@@ -23,7 +23,7 @@ jobs:
 
   convert:
     needs: validate
-    if: github.event_name == 'push' && github.ref == 'refs/heads/feat/about-gallery-png-webp-20261117' && contains(github.event.head_commit.message, 'lcr-gallery-apply-authorized-20261117')
+    if: false # One-time operation completed; privileged runner disabled
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     env:
