@@ -200,6 +200,15 @@ export class SupabaseMediaRepository implements IMediaRepository {
 
     if (!path) return
 
+    // Protect canonical and legacy project covers from accidental deletion.
+    // Files are only retired through an explicitly audited migration/cleanup.
+    if (
+      /^projects\/[^/]+\/(?:PNG|WebP)\/[^/]+\.(?:png|webp)$/i.test(path) ||
+      /^projects\/[^/]+\/[^/]+\.png$/i.test(path)
+    ) {
+      throw new Error('Capa protegida: primeiro audite todas as referências antes de excluir.')
+    }
+
     const { error } = await this.storage.remove([path])
     if (error) throw error
   }
