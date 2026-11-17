@@ -64,7 +64,7 @@ jobs:
 
   migrate:
     name: Upload, verify and update editorial URLs
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.event.head_commit.message == 'ci(assets): trigger authorized one-time migration')
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, 'authorized-one-time-migration'))
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 20
