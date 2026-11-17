@@ -18,6 +18,8 @@
 
 **Evidências adicionais:** artifacts `portfolio-cover-migration-evidence` e `portfolio-browser-evidence`, disponíveis nos respectivos workflows. O merge, a revisão formal independente (caso exigida por regra) e o deploy final devem ser confirmados separadamente.
 
+> **Atualização editorial (17/11/2026):** `pdf-frequency-analyzer` foi retirado do portfólio público após esta migração. Esta linha permanece **somente como evidência histórica** da transferência anterior de nove capas; não deve ser reutilizada para republicar o projeto. A lista operacional do script de migração contém agora oito capas. Consulte [o registro de retirada](PDF_FREQUENCY_ANALYZER_RETIREMENT_20261117.md).
+
 ## Inventário canônico — nove capas
 
 Todos os caminhos abaixo são relativos ao bucket `portfolio-media`. A coluna SHA-256 corresponde ao **PNG original lido do Storage em 17/11/2026**. O script verificou a **igualdade SHA-256** da cópia PNG contra este valor. O tamanho WebP foi medido no objeto efetivamente publicado e corresponde ao relatório da conversão.
