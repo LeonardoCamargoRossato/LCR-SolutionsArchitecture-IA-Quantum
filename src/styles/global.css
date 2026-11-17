@@ -2171,7 +2171,8 @@ select:focus-visible,
   display: grid;
   grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
   gap: 56px;
-  align-items: center;
+  /* Align the thumbnail rail with the bottom of the project CTA buttons. */
+  align-items: end;
 }
 
 .case-story-hero-copy {
@@ -2312,8 +2313,51 @@ select:focus-visible,
   text-align: center;
 }
 .case-hero-caption { margin: 10px 2px 0; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
-.case-hero-thumbnails { display: flex; gap: 8px; margin-top: 12px; padding: 2px 2px 6px; overflow-x: auto; scrollbar-width: thin; }
-.case-hero-thumbnails > button { width: 72px; height: 46px; flex: 0 0 72px; overflow: hidden; padding: 0; border: 2px solid transparent; border-radius: 8px; background: var(--surface-alt); cursor: pointer; opacity: .66; }
+/* Shared gallery rail: one neutral scrollbar and consistent thumbnail geometry for every case. */
+.case-hero-thumbnails {
+  --case-rail-thumb: rgba(107, 114, 128, 0.18);
+  --case-rail-thumb-hover: rgba(107, 114, 128, 0.34);
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 3px 2px 9px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--case-rail-thumb) transparent;
+}
+
+[data-theme='dark'] .case-hero-thumbnails {
+  --case-rail-thumb: rgba(170, 180, 192, 0.22);
+  --case-rail-thumb-hover: rgba(170, 180, 192, 0.38);
+}
+
+.case-hero-thumbnails:hover {
+  scrollbar-color: var(--case-rail-thumb-hover) transparent;
+}
+
+.case-hero-thumbnails::-webkit-scrollbar { height: 5px; }
+.case-hero-thumbnails::-webkit-scrollbar-track { background: transparent; }
+.case-hero-thumbnails::-webkit-scrollbar-thumb {
+  background: var(--case-rail-thumb);
+  border-radius: 999px;
+}
+.case-hero-thumbnails::-webkit-scrollbar-thumb:hover {
+  background: var(--case-rail-thumb-hover);
+}
+
+.case-hero-thumbnails > button {
+  width: 96px;
+  height: 62px;
+  flex: 0 0 96px;
+  overflow: hidden;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: var(--surface-alt);
+  cursor: pointer;
+  opacity: .66;
+}
 .case-hero-thumbnails > button.is-active { border-color: var(--primary); opacity: 1; }
 .case-hero-thumbnails .progressive-image { height: 100%; }
 .case-hero-thumbnails .progressive-image-main { object-fit: cover; }
@@ -2581,6 +2625,13 @@ select:focus-visible,
   .case-story-hero-grid {
     grid-template-columns: 1fr;
     gap: 30px;
+    align-items: stretch;
+  }
+
+  .case-hero-thumbnails > button {
+    width: 80px;
+    height: 52px;
+    flex-basis: 80px;
   }
 
   .case-back-link {
@@ -6321,44 +6372,4 @@ a.case-institution-logo:hover {
 @media (prefers-reduced-motion: reduce) {
   .workflow-visual-hint-arrow,
   .workflow-visual-slide { animation: none !important; }
-}
-
-
-/* Cities Comparing — subtle blue thumbnail rail and balanced hero baseline. */
-.case-story-hero--cities .case-story-hero-grid {
-  align-items: end;
-}
-.case-story-hero--cities .case-hero-thumbnails {
-  gap: 10px;
-  padding: 3px 2px 9px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(37, 99, 235, .26) transparent;
-}
-.case-story-hero--cities .case-hero-thumbnails::-webkit-scrollbar {
-  height: 5px;
-}
-.case-story-hero--cities .case-hero-thumbnails::-webkit-scrollbar-track {
-  background: transparent;
-}
-.case-story-hero--cities .case-hero-thumbnails::-webkit-scrollbar-thumb {
-  background: rgba(37, 99, 235, .26);
-  border-radius: 999px;
-}
-.case-story-hero--cities .case-hero-thumbnails::-webkit-scrollbar-thumb:hover {
-  background: rgba(37, 99, 235, .48);
-}
-.case-story-hero--cities .case-hero-thumbnails > button {
-  width: 96px;
-  height: 62px;
-  flex-basis: 96px;
-}
-@media (max-width: 760px) {
-  .case-story-hero--cities .case-story-hero-grid {
-    align-items: stretch;
-  }
-  .case-story-hero--cities .case-hero-thumbnails > button {
-    width: 80px;
-    height: 52px;
-    flex-basis: 80px;
-  }
 }
