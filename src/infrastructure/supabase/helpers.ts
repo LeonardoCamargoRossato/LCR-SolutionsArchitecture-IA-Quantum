@@ -16,6 +16,7 @@ export function mediaAssetFromUrl(
 ): MediaAsset | undefined {
   if (!url) return undefined
   const path = storagePathFromPublicUrl(url) || url
+  const isAnimeFinderBrand = /(?:^|\/)animefinder\/animefinder-brand\.svg$/i.test(path)
   // For migrated project covers, keep the PNG URL as the canonical editorial
   // value (including admin saves) while serving WebP in cards and carousels.
   // Old PNG URLs continue to work unchanged throughout the migration.
@@ -32,9 +33,9 @@ export function mediaAssetFromUrl(
     name,
     mimeType: name.toLowerCase().endsWith('.pdf')
       ? 'application/pdf'
-      : 'image/*',
+      : /\.svg(?:$|[?#])/i.test(path) ? 'image/svg+xml' : 'image/*',
     category,
-    imageType: 'real-screenshot',
+    imageType: isAnimeFinderBrand ? 'illustrative-placeholder' : 'real-screenshot',
     ...(optimizedUrl
       ? { cardUrl: optimizedUrl, thumbnailUrl: optimizedUrl, fullUrl: url }
       : {}),
