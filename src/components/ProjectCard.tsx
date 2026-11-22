@@ -4,6 +4,7 @@ import { localizedProject } from '../i18n/content'
 import { useI18n } from '../i18n/I18nProvider'
 import { SafeImage } from './SafeImage'
 import { animeFinderAssetPaths, animeFinderScreenshots } from '../data/animeFinderGallery'
+import { useAnimeFinderAssetsReady } from '../hooks/useAnimeFinderAssetsReady'
 
 type ProjectCardVariant = 'primary' | 'compact'
 
@@ -17,10 +18,11 @@ type Props = {
 export function ProjectCard({ project, variant = 'primary', reveal, revealDelay = 0 }: Props) {
   const { locale, t } = useI18n()
   const current = localizedProject(project, locale)
+  const animeFinderAssetsReady = useAnimeFinderAssetsReady(current.slug === 'animefinder')
   const description = (current.description ?? '').replace(/<[^>]*>/g, ' ')
   const technologies = current.technologies ?? []
   const originalCover = current.coverImage?.cardUrl || current.coverImage?.url
-  const image = current.slug === 'animefinder'
+  const image = current.slug === 'animefinder' && animeFinderAssetsReady
     ? animeFinderAssetPaths(animeFinderScreenshots[0].id).webp
     : originalCover
   const category = `${current.category} ${current.slug}`.toLowerCase()
