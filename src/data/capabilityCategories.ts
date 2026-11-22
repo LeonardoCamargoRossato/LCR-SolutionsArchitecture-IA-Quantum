@@ -8,51 +8,56 @@ type CapabilityCategory = {
   projects: RelatedProject[]
 }
 
+/** Human-curated project associations; hidden or unavailable cases are filtered by the UI. */
 const categories: Record<string, CapabilityCategory> = {
-  software: {
-    id: 'software', pt: 'Software', en: 'Software',
+  ai: {
+    id: 'ai', pt: 'Engenharia de IA & Sistemas Inteligentes', en: 'AI Engineering & Intelligent Systems',
     projects: [
-      { slug: 'foton-hub', pt: 'Aplicação web, componentes reutilizáveis e integrações.', en: 'Web application, reusable components and integrations.' },
-      { slug: 'hamlet', pt: 'Plataforma web e experiência interativa de conteúdo.', en: 'Web platform and interactive content experience.' },
-      { slug: 'speaker-portfolio', pt: 'Interface responsiva, conteúdo e galerias de mídia.', en: 'Responsive interface, content and media galleries.' },
+      { slug: 'animefinder', pt: 'LLMs, RAG e recuperação híbrida orientada por evidências.', en: 'LLMs, RAG and evidence-grounded hybrid retrieval.' },
+      { slug: 'hamlet', pt: 'Chatbot contextual com busca semântica e fontes.', en: 'Contextual chatbot with semantic retrieval and sources.' },
+      { slug: 'foton-hub', pt: 'Integrações GPT no ecossistema corporativo.', en: 'GPT integrations in an enterprise environment.' },
     ],
   },
-  ai: {
-    id: 'ai', pt: 'IA Aplicada', en: 'Applied AI',
+  software: {
+    id: 'software', pt: 'Engenharia de Software & Arquitetura', en: 'Software Engineering & Architecture',
     projects: [
-      { slug: 'hamlet', pt: 'Chatbot, LLM e acesso ao conhecimento com RAG.', en: 'Chatbot, LLM and knowledge access with RAG.' },
-      { slug: 'foton-hub', pt: 'Integrações GPT e acesso assistido ao conhecimento institucional.', en: 'GPT integrations and assisted access to institutional knowledge.' },
+      { slug: 'foton-hub', pt: 'Plataforma React/SPFx e integração Microsoft 365.', en: 'React/SPFx platform and Microsoft 365 integration.' },
+      { slug: 'animefinder', pt: 'Aplicação React e serviços Supabase integrados.', en: 'React application and integrated Supabase services.' },
+      { slug: 'hamlet', pt: 'Plataforma full-stack com banco, storage e administração.', en: 'Full-stack platform with database, storage and administration.' },
     ],
   },
   data: {
-    id: 'data', pt: 'Dados & Otimização', en: 'Data & Optimization',
+    id: 'data', pt: 'Engenharia de Dados & Otimização Matemática', en: 'Data Engineering & Mathematical Optimization',
     projects: [
-      { slug: 'cities-comparing', pt: 'Engenharia de dados, Binscatter, B-GCA e análise comparativa.', en: 'Data engineering, Binscatter, B-GCA and comparative analysis.' },
-      { slug: 'scientific-analysis', pt: 'Pipelines científicos, estatística e visualização de dados.', en: 'Scientific pipelines, statistics and data visualization.' },
-      { slug: 'webseer', pt: 'Análise de texto, visualização e apoio à decisão.', en: 'Text analysis, visualization and decision support.' },
+      { slug: 'cities-comparing', pt: 'Engenharia de dados, Binscatter, B-GCA e comparação quantitativa.', en: 'Data engineering, Binscatter, B-GCA and quantitative comparison.' },
+      { slug: 'animefinder', pt: 'PostgreSQL, recuperação estatística e semântica.', en: 'PostgreSQL with statistical and semantic retrieval.' },
+      { slug: 'webseer', pt: 'Análise de texto e visualização exploratória.', en: 'Text analysis and exploratory visualization.' },
     ],
   },
   science: {
-    id: 'science', pt: 'Sistemas Científicos & Quânticos', en: 'Scientific & Quantum Systems',
+    id: 'science', pt: 'Computação Quântica & Científica', en: 'Quantum & Scientific Computing',
     projects: [
-      { slug: 'quantum-education-apps', pt: 'Aplicações educacionais de computação quântica.', en: 'Quantum computing educational applications.' },
-      { slug: 'scientific-analysis', pt: 'Computação científica e fluxos de pesquisa reprodutíveis.', en: 'Scientific computing and reproducible research workflows.' },
-      { slug: 'ce235-real-time-systems', pt: 'Projeto acadêmico de sistemas de tempo real e telemetria simulada.', en: 'Academic real-time systems project and simulated telemetry.' },
+      { slug: 'quantum-education-apps', pt: 'Aplicações didáticas de computação quântica.', en: 'Quantum computing educational applications.' },
+      { slug: 'ce235-real-time-systems', pt: 'Engenharia acadêmica de tempo real e telemetria.', en: 'Academic real-time engineering and telemetry.' },
+      { slug: 'cities-comparing', pt: 'Métodos quantitativos e computação científica.', en: 'Quantitative methods and scientific computing.' },
     ],
   },
   enterprise: {
-    id: 'enterprise', pt: 'Arquitetura Corporativa', en: 'Enterprise Architecture',
+    id: 'enterprise', pt: 'Sistemas Corporativos & Integração', en: 'Enterprise Systems & Integration',
     projects: [
-      { slug: 'foton-hub', pt: 'Arquitetura modular, SharePoint/SPFx e integrações Microsoft 365.', en: 'Modular architecture, SharePoint/SPFx and Microsoft 365 integrations.' },
+      { slug: 'foton-hub', pt: 'Arquitetura modular, SharePoint/SPFx e Microsoft 365.', en: 'Modular architecture, SharePoint/SPFx and Microsoft 365.' },
     ],
   },
 }
 
-export function categoryForCapability(capability: Capability) {
+export function categoryForCapability(capability: Capability): CapabilityCategory {
   const title = (capability.title ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
-  if (/quantum|quantic|scientific|cientific/.test(title)) return categories.science
-  if (/enterprise|corporativ|architecture|arquitetura/.test(title)) return categories.enterprise
-  if (/applied ai|ia aplicada|agent|inteligencia artificial/.test(title)) return categories.ai
+  // First match the explicit engineering names. Otherwise "Architecture"
+  // would incorrectly classify software engineering as enterprise.
+  if (/ai engineering|engenharia de ia|intelligent systems|sistemas inteligentes|applied ai|ia aplicada/.test(title)) return categories.ai
+  if (/software|engenharia de software|desenvolvimento de software/.test(title)) return categories.software
   if (/data|dados|optimization|otimiz|quantitative|quantitativ/.test(title)) return categories.data
+  if (/quantum|quantic|scientific|cientific/.test(title)) return categories.science
+  if (/enterprise|corporativ|integracao|integration|sistemas corporativos|arquitetura/.test(title)) return categories.enterprise
   return categories.software
 }
