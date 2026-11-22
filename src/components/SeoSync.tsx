@@ -15,7 +15,7 @@ export function SeoSync() {
 
   useEffect(() => {
     const s = content.seo
-    const slug = pathname.startsWith('/projects/') ? decodeURIComponent(pathname.slice('/projects/'.length)) : null
+    const slug = pathname.startsWith('/projects/') ? pathname.slice('/projects/'.length) : null
     const caseSource = slug ? projects.find((project) => project.slug === slug && project.visible !== false && project.caseEnabled !== false) : null
     const currentCase = caseSource ? localizedProject(caseSource, locale) : null
     const caseDescription = currentCase?.description?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
