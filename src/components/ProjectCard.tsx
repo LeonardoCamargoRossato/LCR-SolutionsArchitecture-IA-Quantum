@@ -3,6 +3,7 @@ import type { Project } from '../domain/models/Project'
 import { localizedProject } from '../i18n/content'
 import { useI18n } from '../i18n/I18nProvider'
 import { SafeImage } from './SafeImage'
+import { animeFinderAssetPaths, animeFinderScreenshots } from '../data/animeFinderGallery'
 
 type ProjectCardVariant = 'primary' | 'compact'
 
@@ -18,7 +19,10 @@ export function ProjectCard({ project, variant = 'primary', reveal, revealDelay 
   const current = localizedProject(project, locale)
   const description = (current.description ?? '').replace(/<[^>]*>/g, ' ')
   const technologies = current.technologies ?? []
-  const image = current.coverImage?.cardUrl || current.coverImage?.url
+  const originalCover = current.coverImage?.cardUrl || current.coverImage?.url
+  const image = current.slug === 'animefinder'
+    ? animeFinderAssetPaths(animeFinderScreenshots[0].id).webp
+    : originalCover
   const category = `${current.category} ${current.slug}`.toLowerCase()
   const accent = /academic|acadêm|scientific|científica|quantum|telemetry|ce235|cities/.test(category)
     ? 'science'
@@ -34,6 +38,7 @@ export function ProjectCard({ project, variant = 'primary', reveal, revealDelay 
           <SafeImage
             className="project-image"
             src={image}
+            fallbackSrc={current.slug === 'animefinder' ? originalCover : undefined}
             previewSrc={current.coverImage?.previewUrl}
             alt={`${current.title ?? 'Project'} project cover`}
             fallbackLabel={current.title || 'Project image unavailable'}
