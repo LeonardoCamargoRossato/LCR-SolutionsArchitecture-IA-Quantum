@@ -2,7 +2,9 @@ import type { Project } from '../domain/models/Project'
 
 /**
  * Technical case curated from the AnimeFinder repository (November 2026).
- * The UI is account-restricted. Do not publish private screenshots or user data.
+ * The UI is account-restricted. Publish only owner-supplied, privacy-
+ * reviewed screenshots. Original PNG/WebP assets are activated atomically
+ * by the shared manifest gate; this fallback remains until they are deployed.
  * Browser-facing code and the deployed Edge Functions are verifiable; this
  * case does not claim unverified production throughput, model quality or ROI.
  */
