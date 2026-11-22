@@ -34,6 +34,7 @@ export function ProjectCaseV1() {
   const [adminProject, setAdminProject] = useState<Project>()
   const [adminLookupDone, setAdminLookupDone] = useState(false)
   const animeFinderAssetsReady = useAnimeFinderAssetsReady(slug === 'animefinder')
+  const [institutions, setInstitutions] = useState<ProjectInstitution[]>([])
 
   const publicSource = projects.find((project) =>
     project.slug === slug ||
