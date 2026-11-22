@@ -12,6 +12,7 @@ import { SectionTitle } from '../components/SectionTitle'
 import { SocialLinkList } from '../components/SocialLinks'
 import { WorkProcessSection } from '../components/WorkProcessSection'
 import { externalLinks } from '../config/externalLinks'
+import { PORTFOLIO_HERO_TITLE, PORTFOLIO_HERO_SUBTITLE, PORTFOLIO_SKILLS, PROFESSIONAL_POSITIONING } from '../config/portfolioPositioning'
 import { localizedAbout, localizedHome, localizedSiteSettings } from '../i18n/content'
 import { useI18n } from '../i18n/I18nProvider'
 import { useSiteContent } from '../providers/SiteContentProvider'
@@ -34,7 +35,7 @@ export function Home() {
     '--more-card-scale': String(moreCardScale / 100),
   } as CSSProperties
 
-  const featuredSlugs = ['foton-hub', 'cities-comparing', 'hamlet']
+  const featuredSlugs = ['foton-hub', 'cities-comparing', 'animefinder']
   const visibleProjects = projects.filter((project) => project.visible !== false)
   const projectOrder = (project: typeof projects[number]) =>
     project.sortOrder ?? project.order ?? 999
@@ -49,7 +50,7 @@ export function Home() {
       'scientific-analysis',
     ].includes(project.slug))
     .sort((a, b) => {
-      const priority = ['webseer', 'metcompb-landing-page']
+      const priority = ['hamlet', 'webseer', 'metcompb-landing-page']
       const priorityA = priority.indexOf(a.slug)
       const priorityB = priority.indexOf(b.slug)
       if (priorityA !== -1 || priorityB !== -1) {
@@ -68,21 +69,22 @@ export function Home() {
       return projectOrder(a) - projectOrder(b)
     })
 
-  const professionalTitle =
-    about.professionalTitle ||
-    about.headline ||
-    (locale === 'pt-BR'
-      ? 'Soluções em IA, Dados e Computação Quantitativa | Desenvolvimento de Software & IA Aplicada'
-      : 'AI, Data & Quantitative Solutions | Software Development & Applied AI')
+  const professionalTitle = PROFESSIONAL_POSITIONING
 
   return (
     <main className="portfolio-home" style={portfolioScaleStyle} ref={homeRef}>
       <section className="hero hero-positioning">
         <div className="site-container hero-main">
           <div className="eyebrow" data-reveal="down">{home.eyebrow || 'LEONARDO CAMARGO ROSSATO'}</div>
-          <div data-reveal="down" style={{ '--reveal-delay': '80ms' } as CSSProperties}><HeroTypeTitle text={home.title || t('heroPrimaryTitle')} /></div>
+          <div className="hero-title-block" data-reveal="down" style={{ '--reveal-delay': '80ms' } as CSSProperties}>
+            <HeroTypeTitle text={PORTFOLIO_HERO_TITLE} />
+            <p className="hero-identity-subtitle">{PORTFOLIO_HERO_SUBTITLE}</p>
+          </div>
           {home.focus && <p className="hero-statement" data-reveal="left" style={{ '--reveal-delay': '140ms' } as CSSProperties}>{home.focus}</p>}
           {home.description && <p className="hero-description" data-reveal="left" style={{ '--reveal-delay': '200ms' } as CSSProperties}>{home.description}</p>}
+          <div className="hero-specializations tech-list" aria-label={locale === 'pt-BR' ? 'Especializações profissionais' : 'Professional specializations'} data-reveal="left" style={{ '--reveal-delay': '240ms' } as CSSProperties}>
+            {PORTFOLIO_SKILLS[locale].map((skill) => <span key={skill}>{skill}</span>)}
+          </div>
           <div className="hero-actions" data-reveal="left" style={{ '--reveal-delay': '260ms' } as CSSProperties}>
             <a
               className="button"
