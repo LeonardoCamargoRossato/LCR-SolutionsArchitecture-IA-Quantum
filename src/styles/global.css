@@ -6268,3 +6268,119 @@ a.case-institution-logo:hover {
   .workflow-visual-hint-arrow,
   .workflow-visual-slide { animation: none !important; }
 }
+
+/* About gallery — four-square toggle and 16:9 thumbnail overview. */
+.about-gallery-controls { align-items: center; flex-wrap: nowrap; }
+.about-gallery-counter {
+  min-width: 3.9rem;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-align: right;
+  margin-right: 3px;
+}
+.about-gallery-controls button.is-active {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--surface-alt);
+}
+.about-gallery-grid-panel {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+.about-gallery-grid-item {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  text-align: left;
+  overflow: hidden;
+  cursor: zoom-in;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  aspect-ratio: 16 / 9;
+  transition: transform .2s ease, border-color .2s ease;
+}
+.about-gallery-grid-item:hover,
+.about-gallery-grid-item:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+}
+.about-gallery-grid-item .progressive-image,
+.about-gallery-grid-item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.about-gallery-grid-item-number {
+  position: absolute;
+  bottom: 7px;
+  right: 7px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: white;
+  background: rgba(8, 15, 30, .83);
+}
+@media(max-width: 840px) {
+  .about-gallery-grid-panel { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+}
+@media(max-width: 560px) {
+  .about-gallery-heading { align-items: flex-start; flex-wrap: wrap; gap: 14px; }
+  .about-gallery-controls { margin-left: auto; }
+  .about-gallery-grid-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 9px; }
+}
+
+/* Human-first credentials: coherent section below the About biography. */
+.about-highlights { margin-top: 24px; display: grid; gap: 18px; }
+.about-highlight-block { padding-top: 16px; border-top: 1px solid var(--border); }
+.about-highlight-block h3 {
+  margin: 0 0 10px;
+  color: var(--text);
+  font-size: 13px;
+  letter-spacing: .02em;
+}
+.about-highlight-list { display: grid; gap: 12px; }
+.about-highlight-entry { display: grid; gap: 3px; }
+.about-highlight-entry strong { color: var(--text); font-size: 13px; line-height: 1.5; }
+.about-highlight-entry small, .about-highlight-block p {
+  margin: 0; font-size: 12px; line-height: 1.55; color: var(--text-muted);
+}
+.about-highlight-education { display: grid; gap: 10px; }
+.about-highlight-education a {
+  display: grid; gap: 3px; padding: 10px 12px;
+  border-radius: 10px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); text-decoration: none;
+}
+.about-highlight-education a:hover,
+.about-highlight-education a:focus-visible { border-color: var(--primary); }
+.about-highlight-education a strong { font-size: 13px; }
+.about-highlight-education a span { display: flex; gap: 6px; align-items: center; color: var(--text-muted); font-size: 11px; }
+.about-universities-footer {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  border-top: 1px solid var(--border); padding-top: 12px;
+}
+.about-universities-footer a {
+  font-size: 12px; font-weight: 800;
+  text-decoration: none; color: var(--primary);
+}
+.about-universities-footer a:hover { text-decoration: underline; }
+@media(prefers-reduced-motion: reduce) {
+  .about-gallery-grid-item { transition: none; }
+}
+
+/* Keep the full 5:4 AnimeFinder screenshot visible inside the fixed 16:9 standard carousel. */
+[data-case-slug='animefinder'] .case-story-cover .progressive-image-main { object-fit: contain; }

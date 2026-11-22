@@ -4,7 +4,7 @@ const titles: Record<number, string> = {
   1: 'Natal - RN | Congresso Internacional de Matéria Condensada 2023',
   2: 'Curitiba - Paraná | Congresso de Econofísica e Sistemas Complexos 2023',
   3: 'São Paulo - SP | MVComp 2025',
-  4: 'Porto Alegre - RS | Inauguração da LACEQUI na PUC - TecnoPUC 2025',
+  4: 'Porto Alegre - RS | Inauguração da LACQ (Liga Acadêmica de Computação Quântica) na PUCRS — Tecnopuc 2025',
   5: 'Porto Alegre - RS | Primeira Semana de Computação Quântica da UFRGS 2025',
   6: 'Foz do Iguaçu - PR | Latinoware 2025',
   8: 'São Paulo - SP | ALESP - 2025 (Assembleia Legislativa do Estado de São Paulo)',

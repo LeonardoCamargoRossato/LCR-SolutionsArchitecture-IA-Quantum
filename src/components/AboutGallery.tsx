@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, LayoutGrid } from 'lucide-react'
 import {
   useEffect,
   useMemo,
@@ -31,6 +31,8 @@ export function AboutGallery() {
   const { locale } = useI18n()
   const [items, setItems] = useState<AboutGalleryItem[]>([])
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [galleryExpanded, setGalleryExpanded] = useState(false)
   const railRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -54,10 +56,14 @@ export function AboutGallery() {
         ? {
             title: 'Experiências & Apresentações',
             description: 'Palestras, cursos, eventos e apresentações técnicas.',
+            showGallery: 'Mostrar todas as imagens',
+            hideGallery: 'Ocultar todas as imagens',
           }
         : {
             title: 'Experiences & Presentations',
             description: 'Talks, courses, events and technical presentations.',
+            showGallery: 'Show all gallery images',
+            hideGallery: 'Hide all gallery images',
           },
     [locale],
   )
@@ -65,23 +71,58 @@ export function AboutGallery() {
   if (!items.length) return null
 
   const scroll = (direction: -1 | 1) => {
+    const nextIndex = Math.max(0, Math.min(items.length - 1, activeIndex + direction))
     const rail = railRef.current
-    if (!rail) return
-    rail.scrollBy({
-      left: direction * Math.max(280, rail.clientWidth * 0.78),
-      behavior: 'smooth',
-    })
+    const target = rail?.children.item(nextIndex)
+    if (rail && target instanceof HTMLElement) {
+      const viewport = rail.getBoundingClientRect()
+      const item = target.getBoundingClientRect()
+      const nextLeft = rail.scrollLeft + item.left - viewport.left - (viewport.width - item.width) / 2
+      rail.scrollTo({
+        left: Math.max(0, Math.min(rail.scrollWidth - rail.clientWidth, nextLeft)),
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      })
+    }
+    setActiveIndex(nextIndex)
+  }
+
+  const syncVisibleIndex = () => {
+    const rail = railRef.current
+    if (!rail || !items.length) return
+    const bounds = rail.getBoundingClientRect()
+    const left = bounds.left + 8
+    let firstVisibleIndex = 0
+    for (let index = 0; index < rail.children.length; index += 1) {
+      const child = rail.children.item(index)
+      if (child instanceof HTMLElement && child.getBoundingClientRect().right > left) {
+        firstVisibleIndex = index
+        break
+      }
+    }
+    setActiveIndex(firstVisibleIndex)
   }
 
   return (
     <div className="about-gallery-section" data-reveal="fade">
       <div className="about-gallery-heading">
         <div>
-          <div className="eyebrow">05.1 / Gallery</div>
+          <div className="eyebrow">06.1 / Gallery</div>
           <h3>{copy.title}</h3>
           <p>{copy.description}</p>
         </div>
         <div className="about-gallery-controls">
+          <span className="about-gallery-counter" aria-live="polite" aria-label={locale === 'pt-BR' ? 'Imagem atual e total' : 'Current image and total'}>{activeIndex + 1} / {items.length}</span>
+          <button
+            type="button"
+            onClick={() => setGalleryExpanded((open) => !open)}
+            aria-label={galleryExpanded ? copy.hideGallery : copy.showGallery}
+            aria-expanded={galleryExpanded}
+            aria-controls="about-gallery-all-images"
+            title={galleryExpanded ? copy.hideGallery : copy.showGallery}
+            className={galleryExpanded ? 'is-active' : undefined}
+          >
+            <LayoutGrid size={19} aria-hidden="true" />
+          </button>
           <button type="button" onClick={() => scroll(-1)} aria-label="Previous images">
             <ChevronLeft size={19} />
           </button>
@@ -91,7 +132,7 @@ export function AboutGallery() {
         </div>
       </div>
 
-      <div ref={railRef} className="about-gallery-rail">
+      <div ref={railRef} className="about-gallery-rail" onScroll={syncVisibleIndex}>
         {items.map((item, index) => {
           const localizedItem = localized(item, locale)
           const media = resolveAboutGalleryMedia(item.imageUrl, item.storagePath)
@@ -105,7 +146,7 @@ export function AboutGallery() {
               key={item.id}
               type="button"
               className="about-gallery-card"
-              onClick={() => setLightboxIndex(index)}
+              onClick={() => { setActiveIndex(index); setLightboxIndex(index) }}
               aria-label={localizedItem.title || alt}
             >
               <SafeImage
@@ -126,6 +167,33 @@ export function AboutGallery() {
           )
         })}
       </div>
+
+      {galleryExpanded && (
+        <div className="about-gallery-grid-panel" id="about-gallery-all-images" aria-label={copy.showGallery}>
+          {items.map((item, index) => {
+            const entry = localized(item, locale)
+            const media = resolveAboutGalleryMedia(item.imageUrl, item.storagePath)
+            return (
+              <button
+                type="button"
+                className="about-gallery-grid-item"
+                key={item.id}
+                aria-label={entry.title || `${index + 1} / ${items.length}`}
+                onClick={() => { setActiveIndex(index); setLightboxIndex(index) }}
+              >
+                <SafeImage
+                  src={media.card}
+                  fallbackSrc={media.hasVariants ? media.original : undefined}
+                  loading="lazy"
+                  sizes="(max-width: 560px) 44vw, (max-width: 900px) 31vw, 220px"
+                  alt={entry.title || `Gallery image ${index + 1}`}
+                />
+                <span className="about-gallery-grid-item-number">{index + 1} / {items.length}</span>
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       <AboutGalleryLightbox
         allowDownload

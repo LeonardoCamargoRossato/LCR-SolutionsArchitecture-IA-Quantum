@@ -1,6 +1,7 @@
 import { FileText, Mail } from 'lucide-react'
 import { useRef, useState, type CSSProperties } from 'react'
 import { AboutGallery } from '../components/AboutGallery'
+import { AboutHighlights } from '../components/AboutHighlights'
 import { CapabilitiesSection } from '../components/CapabilitiesSection'
 import { ContactForm } from '../components/ContactForm'
 import { CvViewer } from '../components/CvViewer'
@@ -190,6 +191,7 @@ export function Home() {
             {about.valueProposition && (
               <div className="about-value-proposition">{about.valueProposition}</div>
             )}
+            <AboutHighlights experiences={about.experiences ?? []} />
           </div>
 
           <AboutGallery />

@@ -33,7 +33,7 @@ export function CaseHero({
   const description = (project.description ?? '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
 
   return (
-    <section className="case-story-hero">
+    <section className="case-story-hero" data-case-slug={project.slug}>
       <div className="site-container">
         <Link className="case-back-link" to="/">← {backLabel}</Link>
         <div className="case-story-hero-grid">

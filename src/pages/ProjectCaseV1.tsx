@@ -14,6 +14,8 @@ import { CaseTags } from '../components/case/CaseTags'
 import type { Project } from '../domain/models/Project'
 import type { ProjectInstitution } from '../domain/models/ProjectInstitution'
 import { localizedProject } from '../i18n/content'
+import { withAnimeFinderScreenshots } from '../data/animeFinderGallery'
+import { useAnimeFinderAssetsReady } from '../hooks/useAnimeFinderAssetsReady'
 import { useI18n } from '../i18n/I18nProvider'
 import { useAuth } from '../providers/AuthProvider'
 import { useSiteContent } from '../providers/SiteContentProvider'
@@ -31,6 +33,7 @@ export function ProjectCaseV1() {
   const { isAdmin, loading: authLoading } = useAuth()
   const [adminProject, setAdminProject] = useState<Project>()
   const [adminLookupDone, setAdminLookupDone] = useState(false)
+  const animeFinderAssetsReady = useAnimeFinderAssetsReady(slug === 'animefinder')
   const [institutions, setInstitutions] = useState<ProjectInstitution[]>([])
 
   const publicSource = projects.find((project) =>
@@ -58,7 +61,8 @@ export function ProjectCaseV1() {
   }, [slug, publicSource, isAdmin])
 
   const source = publicSource ?? adminProject
-  const project = source ? localizedProject(source, locale) : undefined
+  const displaySource = source && animeFinderAssetsReady ? withAnimeFinderScreenshots(source) : source
+  const project = displaySource ? localizedProject(displaySource, locale) : undefined
 
   useEffect(() => {
     let active = true
