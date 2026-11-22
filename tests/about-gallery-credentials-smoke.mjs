@@ -82,7 +82,10 @@ async function check(page, label) {
   await page.goto(base + '#/projects/animefinder', { waitUntil: 'domcontentloaded' })
   await page.locator('.case-story-hero h1').waitFor({ state: 'visible', timeout: 15000 })
   const manifestResponse = await page.request.get(base + 'assets/projects/animefinder/assets-index.json')
-  if (manifestResponse.ok()) {
+  const assetManifest = manifestResponse.ok() && (manifestResponse.headers()['content-type'] ?? '').includes('application/json')
+    ? await manifestResponse.json().catch(() => null)
+    : null
+  if (Array.isArray(assetManifest?.assets) && assetManifest.assets.length === 16) {
     await page.waitForFunction(() => document.querySelectorAll('.case-hero-thumbnails button').length === 16, null, { timeout: 15000 })
     const picture = page.locator('.case-story-cover .progressive-image-main')
     const coverSource = await picture.getAttribute('src')
@@ -95,6 +98,11 @@ async function check(page, label) {
   } else {
     const picture = page.locator('.case-story-cover .progressive-image-main')
     await picture.waitFor({ state: 'visible', timeout: 10000 })
+    await page.waitForFunction(() => {
+      const image = document.querySelector('.case-story-cover .progressive-image-main')
+      return image instanceof HTMLImageElement &&
+        image.currentSrc.includes('animefinder-brand.svg') && image.complete && image.naturalWidth > 0
+    }, null, { timeout: 12000 })
     assert((await picture.getAttribute('src')).includes('animefinder-brand.svg'), 'Missing assets should retain original branded cover')
     assert.equal(await page.locator('.case-hero-thumbnails').count(), 0)
     report.scenarios.push({ label: label+'-animefinder', assets: 'safe fallback until originals uploaded' })
