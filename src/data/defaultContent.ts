@@ -3,10 +3,10 @@ import type { SiteContent } from '../domain/models/SiteContent'
 export const defaultContent: SiteContent = {
   home: {
     eyebrow: 'LEONARDO CAMARGO ROSSATO',
-    title: 'Software Development & Applied AI',
-    highlightedWords: 'Software Development & Applied AI',
-    description: 'Physicist, MSc in Physics and PhD researcher at ITA. I build software, AI agents and data-driven systems using open-source and enterprise technologies, with strong quantitative and scientific foundations.',
-    focus: 'Open Source · Data · Optimization · Quantitative Methods · Quantum Technologies',
+    title: 'AI Engineering & Software Development',
+    highlightedWords: 'AI Engineering & Software Development',
+    description: 'I design and build intelligent systems combining AI engineering, software development, systems architecture, LLM applications, retrieval-augmented generation (RAG), data engineering, and mathematical optimization. My background in physics and scientific computing provides a strong quantitative foundation, complemented by research in quantum technologies and complex systems.',
+    focus: 'AI Engineer | Software Development | Applied AI | Systems Architecture',
     skills: [
       'AI Agents',
       'LLM Applications',
@@ -24,10 +24,10 @@ export const defaultContent: SiteContent = {
     translations: {
       'pt-BR': {
         eyebrow: 'LEONARDO CAMARGO ROSSATO',
-        title: 'Desenvolvimento de Software & IA Aplicada',
-        highlightedWords: 'Desenvolvimento de Software & IA Aplicada',
-        description: 'Físico, Mestre em Física e doutorando no ITA. Desenvolvo software, agentes de IA e sistemas orientados por dados usando tecnologias open source e corporativas, com forte base quantitativa e científica.',
-        focus: 'Open Source · Dados · Otimização · Métodos Quantitativos · Tecnologias Quânticas',
+        title: 'AI Engineering & Software Development',
+        highlightedWords: 'AI Engineering & Software Development',
+        description: 'Projeto e desenvolvo sistemas inteligentes combinando engenharia de inteligência artificial, desenvolvimento de software, arquitetura de sistemas, aplicações com LLMs, recuperação aumentada por geração (RAG), engenharia de dados e otimização matemática. Minha formação em Física e Computação Científica oferece uma sólida base quantitativa, complementada por pesquisas em tecnologias quânticas e sistemas complexos.',
+        focus: 'AI Engineer | Software Development | Applied AI | Systems Architecture',
         skills: [
           'Agentes de IA',
           'Aplicações com LLM',
@@ -49,9 +49,9 @@ export const defaultContent: SiteContent = {
   about: {
     title: 'About',
     name: 'Leonardo Camargo Rossato',
-    headline: 'Software Development & Applied AI',
-    professionalTitle: 'Software Development & Applied AI',
-    intro: 'Software development and applied AI professional, Physicist, MSc in Physics and PhD researcher at ITA. I build software, AI agents and data-driven systems using open-source and enterprise technologies.',
+    headline: 'AI Engineer | Software Development | Applied AI | Systems Architecture',
+    professionalTitle: 'AI Engineer | Software Development | Applied AI | Systems Architecture',
+    intro: 'I design and build intelligent systems combining AI engineering, software development, systems architecture, LLM applications, retrieval-augmented generation (RAG), data engineering and mathematical optimization. My physics and scientific computing background underpins research in quantum technologies and complex systems.',
     valueProposition: 'I build end-to-end solutions from problem framing and architecture to implementation, integration and validation.',
     bio: [
       'My work combines software engineering, applied AI and data with a strong quantitative background in statistics, optimization, scientific computing and computational modeling.',
@@ -137,9 +137,9 @@ export const defaultContent: SiteContent = {
       'pt-BR': {
         title: 'Sobre',
         name: 'Leonardo Camargo Rossato',
-        headline: 'Desenvolvimento de Software & IA Aplicada',
-        professionalTitle: 'Desenvolvimento de Software & IA Aplicada',
-        intro: 'Profissional de desenvolvimento de software e IA aplicada, Físico, Mestre em Física e doutorando no ITA. Desenvolvo software, agentes de IA e sistemas orientados por dados utilizando tecnologias open source e corporativas.',
+        headline: 'AI Engineer | Software Development | Applied AI | Systems Architecture',
+        professionalTitle: 'AI Engineer | Software Development | Applied AI | Systems Architecture',
+        intro: 'Projeto e desenvolvo sistemas inteligentes integrando engenharia de IA, desenvolvimento de software, arquitetura de sistemas, LLMs, RAG, engenharia de dados e otimização matemática. Minha formação em Física e Computação Científica sustenta a atuação em tecnologias quânticas e sistemas complexos.',
         valueProposition: 'Desenvolvo soluções end-to-end, desde o entendimento do problema e arquitetura até implementação, integração e validação.',
         bio: [
           'Meu trabalho combina engenharia de software, IA aplicada e dados com uma forte base quantitativa em estatística, otimização, computação científica e modelagem computacional.',
@@ -231,35 +231,35 @@ export const defaultContent: SiteContent = {
   },
 
   siteSettings: {
-    footerTagline: 'Software Development · Applied AI · Data · Quantitative Systems',
+    footerTagline: 'AI Engineering · Software Development · Applied AI · Systems Architecture',
     contactIntro: 'Open to software development and applied AI opportunities, project-based work, R&D collaborations and technical speaking engagements.',
     projectsIntro: 'Selected software, AI, data and quantitative work demonstrating practical engineering, implementation and systems thinking.',
-    architectureStatement: 'Software Development · Applied AI · Data · Optimization · Quantitative Methods · Quantum Technologies',
+    architectureStatement: 'AI Engineering · Software Development · RAG · Data Engineering · Mathematical Optimization · Quantum Computing',
     capabilities: [
       {
-        title: 'Software Development & Open Source',
-        description: 'Modern software development with open-source tools, APIs and maintainable engineering practices.',
-        items: ['Python', 'React', 'JavaScript / TypeScript', 'APIs', 'Git / GitHub', 'Docker', 'Supabase', 'PostgreSQL / SQL'],
+        title: 'AI Engineering & Intelligent Systems',
+        description: 'LLM applications, grounded retrieval and intelligent query orchestration connected to verified data.',
+        items: ['LLMs', 'AI Agents', 'RAG', 'Hybrid Retrieval', 'Semantic Search', 'Embeddings', 'Knowledge Integration', 'Query Routing', 'Applied AI', 'OpenAI API', 'Prompt / Context Engineering', 'Guardrails', 'AI-Assisted Development'],
       },
       {
-        title: 'Applied AI & Agentic Systems',
-        description: 'Applied AI, LLM applications and agentic systems connected to real data and knowledge sources.',
-        items: ['OpenAI API', 'AI Agents', 'LLM Applications', 'RAG', 'Knowledge Integration', 'Prompt / Context Engineering', 'Guardrails', 'AI-Assisted Development'],
+        title: 'Software Engineering & Architecture',
+        description: 'Maintainable application and system design, from APIs and front-end architecture to integrated workflows.',
+        items: ['Python', 'APIs', 'Backend Development', 'React', 'TypeScript', 'Systems Architecture', 'Modular Software', 'System Integration', 'JavaScript / TypeScript', 'Git / GitHub', 'Docker', 'Supabase'],
       },
       {
-        title: 'Data, Optimization & Quantitative Methods',
-        description: 'Data engineering and quantitative workflows for analysis, optimization and reproducible decision support.',
-        items: ['Pandas', 'NumPy', 'SciPy', 'Jupyter', 'ETL / ELT', 'Data Engineering', 'scikit-learn', 'Clustering', 'Graph Algorithms', 'Optimization', 'Statistical Inference', 'Plotly'],
+        title: 'Data Engineering & Mathematical Optimization',
+        description: 'Reproducible quantitative workflows across databases, statistics, numerical methods and optimization.',
+        items: ['PostgreSQL', 'SQL', 'Data Engineering', 'Statistical Analysis', 'Numerical Methods', 'Clustering', 'Graph Algorithms', 'Optimization', 'Pandas', 'NumPy', 'SciPy', 'Jupyter', 'ETL / ELT', 'scikit-learn', 'Statistical Inference', 'Plotly'],
       },
       {
-        title: 'Quantum & Scientific Systems',
-        description: 'Scientific computing and research involving quantum technologies, sensing and computational modeling.',
-        items: ['Qiskit', 'Scientific Computing', 'Numerical Methods', 'Econophysics', 'Quantum Technologies', 'Hybrid Sensing', 'Sensor Fusion', 'State Estimation'],
+        title: 'Quantum & Scientific Computing',
+        description: 'Scientific research and computational modeling as quantitative foundations for emerging technologies.',
+        items: ['Quantum Computing', 'Qiskit', 'Scientific Computing', 'Computational Modeling', 'Numerical Simulation', 'Hybrid Sensing', 'Econophysics', 'Quantum Technologies', 'Sensor Fusion', 'State Estimation'],
       },
       {
-        title: 'Enterprise Systems & Solution Architecture',
-        description: 'Enterprise integration and solution architecture practices connecting requirements, technologies and implementation.',
-        items: ['SharePoint Framework (SPFx)', 'SharePoint CLI', 'Power Apps', 'Power Automate', 'SharePoint', 'Dataverse', 'Microsoft 365', 'System Integration', 'Solution Architecture Practices'],
+        title: 'Enterprise Systems & Integration',
+        description: 'Enterprise applications, Microsoft platforms, data governance and interoperable systems.',
+        items: ['SharePoint', 'SPFx', 'Microsoft 365', 'Enterprise Integration', 'Governance', 'Automated Workflows', 'SharePoint Framework (SPFx)', 'SharePoint CLI', 'Power Apps', 'Power Automate', 'Dataverse', 'System Integration', 'Solution Architecture Practices'],
       },
     ],
     workProcess: [
@@ -272,35 +272,35 @@ export const defaultContent: SiteContent = {
     moreCardScale: 100,
     translations: {
       'pt-BR': {
-        footerTagline: 'Desenvolvimento de Software · IA Aplicada · Dados · Sistemas Quantitativos',
+        footerTagline: 'Engenharia de IA · Desenvolvimento de Software · IA Aplicada · Arquitetura de Sistemas',
         contactIntro: 'Disponível para oportunidades em desenvolvimento de software e IA aplicada, trabalhos por projeto, colaborações de P&D e palestras técnicas.',
         projectsIntro: 'Trabalhos selecionados em software, IA, dados e computação quantitativa demonstrando engenharia prática, implementação e pensamento sistêmico.',
-        architectureStatement: 'Desenvolvimento de Software · IA Aplicada · Dados · Otimização · Métodos Quantitativos · Tecnologias Quânticas',
+        architectureStatement: 'Engenharia de IA · Desenvolvimento de Software · RAG · Engenharia de Dados · Otimização Matemática · Computação Quântica',
         capabilities: [
           {
-            title: 'Desenvolvimento de Software & Open Source',
-            description: 'Desenvolvimento de software moderno com ferramentas open source, APIs e práticas de engenharia sustentável.',
-            items: ['Python', 'React', 'JavaScript / TypeScript', 'APIs', 'Git / GitHub', 'Docker', 'Supabase', 'PostgreSQL / SQL'],
+            title: 'Engenharia de IA & Sistemas Inteligentes',
+            description: 'LLMs, recuperação fundamentada em evidências e roteamento inteligente integrado a dados verificáveis.',
+            items: ['LLMs', 'Agentes de IA', 'RAG', 'Recuperação Híbrida', 'Busca Semântica', 'Embeddings', 'Integração de Conhecimento', 'Roteamento de Consultas', 'IA Aplicada', 'OpenAI API', 'Engenharia de Prompt / Contexto', 'Guardrails', 'Desenvolvimento Assistido por IA'],
           },
           {
-            title: 'IA Aplicada & Sistemas Agênticos',
-            description: 'IA aplicada, aplicações com LLM e sistemas agênticos conectados a dados e fontes reais de conhecimento.',
-            items: ['OpenAI API', 'Agentes de IA', 'Aplicações com LLM', 'RAG', 'Integração de Conhecimento', 'Engenharia de Prompt / Contexto', 'Guardrails', 'Desenvolvimento Assistido por IA'],
+            title: 'Engenharia de Software & Arquitetura',
+            description: 'Arquitetura e desenvolvimento sustentável de aplicações, APIs, interfaces e integrações.',
+            items: ['Python', 'APIs', 'Desenvolvimento Backend', 'React', 'TypeScript', 'Arquitetura de Sistemas', 'Software Modular', 'Integração de Sistemas', 'JavaScript / TypeScript', 'Git / GitHub', 'Docker', 'Supabase'],
           },
           {
-            title: 'Dados, Otimização & Métodos Quantitativos',
-            description: 'Engenharia de dados e fluxos quantitativos para análise, otimização e apoio à decisão reprodutível.',
-            items: ['Pandas', 'NumPy', 'SciPy', 'Jupyter', 'ETL / ELT', 'Engenharia de Dados', 'scikit-learn', 'Clustering', 'Algoritmos em Grafos', 'Otimização', 'Inferência Estatística', 'Plotly'],
+            title: 'Engenharia de Dados & Otimização Matemática',
+            description: 'Fluxos quantitativos reprodutíveis para bancos de dados, estatística, métodos numéricos e otimização.',
+            items: ['PostgreSQL', 'SQL', 'Engenharia de Dados', 'Análise Estatística', 'Métodos Numéricos', 'Clustering', 'Algoritmos em Grafos', 'Otimização', 'Pandas', 'NumPy', 'SciPy', 'Jupyter', 'ETL / ELT', 'scikit-learn', 'Inferência Estatística', 'Plotly'],
           },
           {
-            title: 'Quantum & Sistemas Científicos',
-            description: 'Computação científica e pesquisa envolvendo tecnologias quânticas, sensoriamento e modelagem computacional.',
-            items: ['Qiskit', 'Computação Científica', 'Métodos Numéricos', 'Econofísica', 'Tecnologias Quânticas', 'Sensoriamento Híbrido', 'Fusão de Sensores', 'Estimação de Estado'],
+            title: 'Computação Quântica & Científica',
+            description: 'Pesquisa, computação científica e modelagem como bases quantitativas para tecnologias emergentes.',
+            items: ['Computação Quântica', 'Qiskit', 'Computação Científica', 'Modelagem Computacional', 'Simulação Numérica', 'Sensoriamento Híbrido', 'Econofísica', 'Tecnologias Quânticas', 'Fusão de Sensores', 'Estimação de Estado'],
           },
           {
-            title: 'Sistemas Corporativos & Arquitetura de Soluções',
-            description: 'Integração corporativa e práticas de arquitetura de soluções conectando requisitos, tecnologias e implementação.',
-            items: ['SharePoint Framework (SPFx)', 'SharePoint CLI', 'Power Apps', 'Power Automate', 'SharePoint', 'Dataverse', 'Microsoft 365', 'Integração de Sistemas', 'Práticas de Arquitetura de Soluções'],
+            title: 'Sistemas Corporativos & Integração',
+            description: 'Aplicações corporativas, ecossistema Microsoft, governança e sistemas interoperáveis.',
+            items: ['SharePoint', 'SPFx', 'Microsoft 365', 'Integração Corporativa', 'Governança', 'Fluxos Automatizados', 'SharePoint Framework (SPFx)', 'SharePoint CLI', 'Power Apps', 'Power Automate', 'Dataverse', 'Integração de Sistemas', 'Práticas de Arquitetura de Soluções'],
           },
         ],
         workProcess: [
@@ -323,9 +323,9 @@ export const defaultContent: SiteContent = {
   ],
 
   seo: {
-    siteTitle: 'LCR - Solutions Architecture | IA + Quantum',
-    metaDescription: 'Leonardo Camargo Rossato — AI, data and quantitative solutions professional, software developer and PhD researcher at ITA. Portfolio of applied AI, software engineering, data engineering, scientific computing and quantum technology projects.',
-    ogTitle: 'LCR - Solutions Architecture | IA + Quantum',
-    ogDescription: 'Leonardo Camargo Rossato — AI, data and quantitative solutions professional, software developer and PhD researcher at ITA. Portfolio of applied AI, software engineering, data engineering, scientific computing and quantum technology projects.',
+    siteTitle: 'Leonardo Camargo Rossato | AI Engineering & Software Development',
+    metaDescription: 'AI Engineer specializing in software development, intelligent systems architecture, LLM applications, RAG, hybrid retrieval, data engineering, mathematical optimization and quantum computing.',
+    ogTitle: 'Leonardo Camargo Rossato | AI Engineering & Software Development',
+    ogDescription: 'AI Engineer specializing in software development, intelligent systems architecture, LLM applications, RAG, hybrid retrieval, data engineering, mathematical optimization and quantum computing.',
   },
 }
