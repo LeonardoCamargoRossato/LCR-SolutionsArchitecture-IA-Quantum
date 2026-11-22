@@ -40,9 +40,11 @@ function toProject(row: Row, source: ProjectSource): Project {
       isMainSource ? 'Projects' : 'Icons',
       isMainSource ? `${row.slug}-cover` : `${row.id}-image`,
     ),
-    imageType: (isMainSource ? row.cover_url : (row.image_url ?? row.icon_url))
-      ? 'real-screenshot'
-      : 'illustrative-placeholder',
+    imageType: row.slug === 'animefinder' && String(row.cover_url ?? '').includes('animefinder-brand.svg')
+      ? 'illustrative-placeholder'
+      : (isMainSource ? row.cover_url : (row.image_url ?? row.icon_url))
+        ? 'real-screenshot'
+        : 'illustrative-placeholder',
     sections: sectionsEn,
     links: {
       liveUrl: isMainSource
