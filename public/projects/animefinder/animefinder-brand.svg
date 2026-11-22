@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="t d">
+<title id="t">AnimeFinder — AI Engineering and Hybrid Retrieval</title>
+<desc id="d">Branded vector identification for the portfolio case study. Not a screenshot of the private application.</desc>
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#08162d"/><stop offset="1" stop-color="#173963"/></linearGradient></defs>
+<rect width="1280" height="720" fill="url(#g)"/>
+<circle cx="1065" cy="170" r="218" fill="none" stroke="#22d3ee" stroke-width="2" opacity=".35"/>
+<circle cx="1065" cy="170" r="145" fill="none" stroke="#60a5fa" stroke-width="1" opacity=".45"/>
+<circle cx="1065" cy="170" r="67" fill="#22d3ee" opacity=".12"/>
+<path d="M830 426h355M830 455h278M830 485h320" stroke="#22d3ee" stroke-width="4" stroke-linecap="round" opacity=".42"/>
+<rect x="88" y="120" width="9" height="460" rx="4.5" fill="#22d3ee"/>
+<text x="135" y="230" fill="#b9d8ef" font-family="Arial,Helvetica,sans-serif" font-size="29" letter-spacing="6">LCR / PORTFOLIO</text>
+<text x="130" y="355" fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="92" font-weight="bold">AnimeFinder</text>
+<text x="135" y="426" fill="#22d3ee" font-family="Arial,Helvetica,sans-serif" font-size="35">AI Engineering &amp; Hybrid Retrieval</text>
+<text x="135" y="565" fill="#bed0e4" font-family="Arial,Helvetica,sans-serif" font-size="24">Estudo de caso técnico · Imagem de identificação, não captura de tela</text>
+</svg>

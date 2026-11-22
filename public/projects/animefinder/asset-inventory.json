@@ -1,0 +1,27 @@
+{
+  "standard": "LCR_ASSET_ORGANIZATION_STANDARD",
+  "project": "AnimeFinder",
+  "assets": [
+    {
+      "asset_id": "animefinder-brand-cover",
+      "description": "Identificação visual vetorial temporária do estudo de caso; não representa screenshot de interface.",
+      "context": "Portfolio / Projetos / AnimeFinder / Capa",
+      "source_file": "public/projects/animefinder/animefinder-brand.svg",
+      "published_version": "public/projects/animefinder/animefinder-brand.svg",
+      "png_version": null,
+      "webp_version": null,
+      "transformation": "SVG vetorial original; não convertido em raster para evitar duplicação e perda de fidelidade.",
+      "format": "image/svg+xml",
+      "origin": "Composição vetorial de identificação criada para a página do estudo de caso",
+      "approval_status": "Temporary portfolio brand cover; substitute with a verified, privacy-reviewed screenshot when authorized",
+      "rights": "Original vector authored for the portfolio",
+      "references": [
+        "src/data/animeFinderProject.ts",
+        "public.projects.cover_url"
+      ],
+      "access_level": "public",
+      "authentic_application_screenshot": false,
+      "security_note": "Nenhuma conversa, conta autenticada, catálogo privado ou informação pessoal incluída."
+    }
+  ]
+}

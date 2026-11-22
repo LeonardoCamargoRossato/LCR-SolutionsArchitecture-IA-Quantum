@@ -4,6 +4,7 @@ import { defaultMoreProjects, defaultProjects } from '../../data/defaultProjects
 import { citiesComparingContent } from '../../data/citiesComparing'
 import { citiesComparingSeriesGallery } from '../../data/citiesComparingSeriesGallery'
 import { ce235Project } from '../../data/ce235Project'
+import { animeFinderProject } from '../../data/animeFinderProject'
 import { metCompBProject } from '../../data/metCompBProject'
 
 const defaults = [...defaultProjects, ...defaultMoreProjects]
@@ -20,7 +21,11 @@ function canonicalSlug(project: Project) {
 
 function withEditorialDefaults(project: Project): Project {
   const source: ProjectSource = project.source ?? (project.caseStudy ? 'main' : 'more')
-  const placement: ProjectPlacement = project.placement ?? (source === 'main' ? 'main' : 'more')
+  const placement: ProjectPlacement = project.slug === 'hamlet'
+    ? 'more'
+    : project.slug === 'animefinder'
+      ? 'main'
+      : project.placement ?? (source === 'main' ? 'main' : 'more')
   const sortOrder = Number.isFinite(Number(project.sortOrder))
     ? Number(project.sortOrder)
     : Number.isFinite(Number(project.order))
@@ -244,7 +249,15 @@ export class ProjectService {
         : [...remote, await this.repo.getBySlug(ce235Project.slug, true) ?? ce235Project]
       const hasMetCompB = withCe235.some((project) => project.id === metCompBProject.id || project.slug === metCompBProject.slug)
       const projects = hasMetCompB ? withCe235 : [...withCe235, metCompBProject]
-      return sortEditorial(projects.filter((project) => !retiredSlugs.has(project.slug) && project.visible !== false).map(enrich))
+      // Progressive rollout: when the CMS does not yet contain AnimeFinder,
+      // supply the audited local case. Never resurface an explicitly hidden
+      // CMS record, and never duplicate an existing project.
+      let readyProjects = projects
+      if (!projects.some((project) => project.slug === animeFinderProject.slug)) {
+        const existing = await this.repo.getBySlug(animeFinderProject.slug, true)
+        if (!existing) readyProjects = [...projects, animeFinderProject]
+      }
+      return sortEditorial(readyProjects.filter((project) => !retiredSlugs.has(project.slug) && project.visible !== false).map(enrich))
     } catch {
       // Do not expose local defaults when the remote visibility query fails.
       return []
@@ -264,7 +277,10 @@ export class ProjectService {
       const found = all.find((project) => accepted.includes(project.slug) || (slug === 'cities-comparing' && project.id === 'city-comparing'))
       const project = found ?? (slug === ce235Project.slug
         ? await this.repo.getBySlug(ce235Project.slug, true) ?? ce235Project
-        : slug === metCompBProject.slug ? metCompBProject : null)
+        : slug === metCompBProject.slug ? metCompBProject
+          : slug === animeFinderProject.slug
+            ? await this.repo.getBySlug(animeFinderProject.slug, true) ?? animeFinderProject
+            : null)
       if (!includeHidden && project?.visible === false) return null
       return project ? enrich(project) : null
     } catch {

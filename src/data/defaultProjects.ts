@@ -1,5 +1,6 @@
 import type { Project } from '../domain/models/Project'
 import { citiesComparingContent } from './citiesComparing'
+import { animeFinderProject } from './animeFinderProject'
 import { ce235Project } from './ce235Project'
 import { metCompBProject } from './metCompBProject'
 import { embeddedControlProject } from './embeddedControlProject'
@@ -144,45 +145,59 @@ export const defaultProjects: Project[] = [
     caseEnabled: true,
   },
 
+  animeFinderProject,
+
   {
     id: 'hamlet',
     slug: 'hamlet',
     title: 'Hamlet — Narrative Universe',
-    subtitle: 'AI-Assisted Literary Platform',
-    category: 'AI / Knowledge Systems / Interactive Web',
+    subtitle: 'RAG-Powered Knowledge & Content Platform',
+    category: 'Applied AI / RAG / Knowledge Systems',
     status: 'Live',
-    description: 'AI-assisted literary platform for writers and reader engagement, combining an interactive narrative environment, an AI chatbot grounded in book content and a living knowledge repository.',
-    technologies: ['AI Chatbot', 'LLM', 'RAG', 'Knowledge Repository', 'Multi-Agent Systems', 'Fine-Tuning', 'React', 'TypeScript', 'Web Application'],
+    description: 'Full-stack literary knowledge platform combining React/TypeScript, Supabase content management and a contextual AI chatbot. A dedicated Edge Function retrieves relevant knowledge chunks, adds verified catalog context and returns source references.',
+    technologies: ['React', 'TypeScript', 'Supabase', 'RAG', 'AI Chatbot', 'Semantic Retrieval', 'Edge Functions', 'Knowledge Integration'],
     coverImage: ph('hamlet', './projects/hamlet.svg'),
     imageType: 'illustrative-placeholder',
     sections: {
       overview: [
-        'Hamlet is an AI-assisted literary platform for writers and reader engagement, combining an interactive narrative environment, an AI chatbot grounded in book content and a living knowledge repository.',
+        'Hamlet — Sociedade Ideal is a full-stack platform for digital publications, characters, media galleries, content management and contextual AI-assisted reader interactions.',
+        'This is a separate system from the Hamlet AI module inside AnimeFinder; their repositories and data stores are independent.',
       ],
       challenge: [
-        'The project explores how a literary universe can remain coherent while allowing readers to navigate characters, documents, media and AI-mediated interactions.',
+        'Make narrative documents, characters, content and references accessible without losing their relationship to verified sources.',
       ],
       solution: [
-        'The platform combines a web application, narrative content, document and media experiences, a grounded AI chatbot and a living knowledge repository.',
-        'Multi-agent orchestration combining RAG and model fine-tuning for character-specific AI agents is currently under development.',
+        'React/TypeScript interfaces connect to Supabase database, storage and protected administration. The hamlet-chat Edge Function uses a semantic match_knowledge retrieval step and injects relevant publication/character catalog items before sending a bounded prompt to the AI gateway.',
+        'The response includes source references, allowing the reader to follow the retrieved evidence. This description reflects the implemented code; experimental multi-agent/fine-tuning work is not claimed as shipped.',
       ],
+      architecture: {
+        body: 'Reader question → intent detection → semantic retrieval (knowledge_chunks / match_knowledge) + relevant publication/character catalog → grounded prompt → model gateway → response with source references.',
+        items: ['React / TypeScript / Vite', 'Supabase Auth / DB / Storage', 'hamlet-chat Edge Function', 'Semantic RAG + catalog enrichment', 'AI model gateway', 'Source references', 'Admin knowledge/content management'],
+      },
       features: [
-        'Interactive narrative environment',
-        'AI chatbot grounded in book content',
-        'Living knowledge repository',
-        'Document and media experiences',
-        'Character-specific AI agent research in progress',
+        'Contextual chatbot and retrieval of narrative knowledge',
+        'Knowledge ingestion and content administration',
+        'Document / booklet library, character catalog and galleries',
+        'Semantic retrieval through match_knowledge',
+        'Supabase integration and protected administration',
+        'Source references attached to the chatbot response',
       ],
       role: [
-        'Product and software development across narrative experience, application structure, AI integration and evolving knowledge-system architecture.',
+        'Full-stack platform architecture, modular frontend, data/service integration and AI-enabled knowledge interactions.',
       ],
-      technologies: ['AI Chatbot', 'LLM', 'RAG', 'Knowledge Repository', 'Multi-Agent Systems', 'Fine-Tuning', 'React', 'TypeScript', 'Web Application'],
+      results: [
+        'Repository-verified web platform and chatbot integration with source-aware response contracts. No unsupported accuracy or commercial metrics are claimed.',
+      ],
+      technologies: ['React', 'TypeScript', 'Supabase', 'RAG', 'Semantic Retrieval', 'Edge Functions'],
     },
-    links: { liveUrl: 'https://hamlet-sociedade-ideal.lovable.app/' },
+    links: {
+      liveUrl: 'https://hamlet-sociedade-ideal.lovable.app/',
+      githubUrl: 'https://github.com/LeonardoCamargoRossato/Hamlet-Digital-Platform',
+    },
     gallery: [],
-    order: 3,
-    sortOrder: 3,
-    placement: 'main',
+    order: 1,
+    sortOrder: 1,
+    placement: 'more',
     source: 'main',
     visible: true,
     caseStudy: true,
@@ -190,31 +205,36 @@ export const defaultProjects: Project[] = [
     translations: {
       'pt-BR': {
         title: 'Hamlet — Universo Narrativo',
-        subtitle: 'Plataforma Literária Assistida por IA',
-        category: 'IA / Sistemas de Conhecimento / Web Interativa',
-        description: 'Plataforma literária assistida por IA para escritores e engajamento de leitores, combinando ambiente narrativo interativo, chatbot de IA fundamentado no conteúdo da obra e um repositório vivo de conhecimento.',
+        subtitle: 'Plataforma de Conhecimento e Conteúdo com RAG',
+        category: 'IA Aplicada / RAG / Sistemas de Conhecimento',
+        description: 'Plataforma literária full-stack com React/TypeScript, gerenciamento de conteúdo no Supabase e chatbot contextual. Uma Edge Function recupera fragmentos de conhecimento, complementa o contexto do catálogo e devolve referências das fontes.',
         sections: {
           overview: [
-            'Hamlet é uma plataforma literária assistida por IA para escritores e engajamento de leitores, combinando ambiente narrativo interativo, chatbot de IA fundamentado no conteúdo da obra e um repositório vivo de conhecimento.',
+            'Hamlet — Sociedade Ideal é uma plataforma de publicações digitais, personagens, galerias, gerenciamento de conteúdo e interações contextualizadas com IA.',
+            'Este é um sistema independente do módulo Hamlet AI presente no AnimeFinder; os repositórios e bancos não são compartilhados.',
           ],
           challenge: [
-            'O projeto explora como manter a coerência de um universo literário ao permitir que leitores naveguem por personagens, documentos, mídia e interações mediadas por IA.',
+            'Permitir acesso contextual a documentos, personagens e referências da narrativa, mantendo vínculos com fontes verificáveis.',
           ],
           solution: [
-            'A plataforma combina aplicação web, conteúdo narrativo, experiências com documentos e mídia, chatbot de IA fundamentado no conteúdo e um repositório vivo de conhecimento.',
-            'A orquestração multiagente combinando RAG e fine-tuning para agentes de IA específicos de personagens está atualmente em desenvolvimento.',
+            'Interfaces React/TypeScript utilizam banco, storage e administração protegida do Supabase. A função hamlet-chat consulta match_knowledge e adiciona contexto do catálogo de personagens/publicações ao prompt antes de chamar o modelo.',
+            'O retorno possui referências às fontes recuperadas. Não são apresentados agentes multiagentes ou fine-tuning experimentais como funcionalidades concluídas.',
           ],
+          architecture: {
+            body: 'Pergunta → detecção de intenção → recuperação semântica (knowledge_chunks / match_knowledge) + catálogo → prompt contextualizado → modelo de IA → resposta com referências.',
+            items: ['React / TypeScript / Vite', 'Supabase Auth / Banco / Storage', 'Edge Function hamlet-chat', 'RAG semântico e catálogo', 'Gateway de IA', 'Referências das fontes', 'Administração de conteúdo'],
+          },
           features: [
-            'Ambiente narrativo interativo',
-            'Chatbot de IA fundamentado no conteúdo da obra',
-            'Repositório vivo de conhecimento',
-            'Experiências com documentos e mídia',
-            'Pesquisa com agentes de IA específicos de personagens em desenvolvimento',
+            'Chatbot contextualizado com recuperação de conhecimento',
+            'Ingestão e gestão de conhecimento',
+            'Biblioteca de publicações e catálogo de personagens',
+            'Busca semântica por match_knowledge',
+            'Integração Supabase e administração protegida',
+            'Resposta com referências das fontes',
           ],
-          role: [
-            'Desenvolvimento de produto e software envolvendo experiência narrativa, estrutura da aplicação, integração de IA e evolução da arquitetura do sistema de conhecimento.',
-          ],
-          technologies: ['Chatbot de IA', 'LLM', 'RAG', 'Repositório de Conhecimento', 'Sistemas Multiagente', 'Fine-Tuning', 'React', 'TypeScript', 'Aplicação Web'],
+          role: ['Arquitetura full-stack, frontend modular, integração de dados/serviços e interações com IA e conhecimento.'],
+          results: ['Plataforma web e contrato de resposta com fontes verificados no código, sem métricas comerciais ou de acurácia não comprovadas.'],
+          technologies: ['React', 'TypeScript', 'Supabase', 'RAG', 'Recuperação Semântica', 'Edge Functions'],
         },
       },
     },

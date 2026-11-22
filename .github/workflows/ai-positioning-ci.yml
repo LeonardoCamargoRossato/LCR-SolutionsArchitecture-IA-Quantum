@@ -1,0 +1,52 @@
+name: LCR Portfolio - AI Engineering positioning regression
+
+on:
+  push:
+    branches: [feat/ai-engineering-portfolio-positioning-20261122]
+  pull_request:
+    branches: [main]
+    paths:
+      - src/**
+      - index.html
+      - tests/ai-positioning-smoke.mjs
+      - .github/workflows/ai-positioning-ci.yml
+      - docs/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci
+      - name: Typecheck and build
+        run: npm run build
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Identity, case studies, hydration and ordering
+        run: node tests/ai-positioning-smoke.mjs
+      - name: Existing carousel component regression
+        run: node tests/portfolio-carousel-unified-smoke.mjs
+      - name: Evidence and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcr-ai-engineering-portfolio
+          path: test-results/
+          if-no-files-found: warn
+          retention-days: 30
