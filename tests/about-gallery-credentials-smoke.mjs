@@ -25,9 +25,9 @@ async function check(page, label) {
   const cards = gallery.locator('.about-gallery-card')
   await page.waitForFunction(() => document.querySelectorAll('.about-gallery-card').length === 10, null, { timeout: 20000 })
   assert.equal(await cards.count(), 10)
-  assert((await gallery.innerText()).includes('06.1 / Gallery'), 'Gallery section must follow 06 / About')
-  assert((await gallery.innerText()).includes('LACQ (Liga Acadêmica de Computação Quântica)'), 'Corrected LACQ event title is missing')
-  assert(!(await gallery.innerText()).includes('LACEQUI'), 'Retired LACEQUI spelling still visible')
+  assert((await gallery.locator('.about-gallery-heading .eyebrow').textContent())?.includes('06.1 / Gallery'), 'Gallery section must follow 06 / About')
+  assert((await gallery.textContent())?.includes('LACQ (Liga Acadêmica de Computação Quântica)'), 'Corrected LACQ event title is missing')
+  assert(!(await gallery.textContent())?.includes('LACEQUI'), 'Retired LACEQUI spelling still visible')
 
   const highlights = page.locator('.about-highlights')
   await highlights.waitFor({ state: 'visible', timeout: 10000 })
