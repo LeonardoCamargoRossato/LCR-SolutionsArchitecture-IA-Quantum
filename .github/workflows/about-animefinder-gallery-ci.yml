@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/about-gallery-animefinder-screenshots-20261122
+      - feat/animefinder-real-gallery-assets-20261122
   pull_request:
     branches: [main]
     paths:
@@ -11,6 +12,8 @@ on:
       - tests/about-gallery-credentials-smoke.mjs
       - .github/workflows/about-animefinder-gallery-ci.yml
       - docs/assets/**
+      - public/assets/projects/animefinder/**
+      - tests/animefinder-asset-integrity.test.mjs
   workflow_dispatch:
 
 permissions:
@@ -32,6 +35,8 @@ jobs:
           cache: npm
       - name: Install pinned dependencies
         run: npm ci
+      - name: Verify 16 original PNGs, 16 WebPs and SHA-256 inventory
+        run: node tests/animefinder-asset-integrity.test.mjs
       - name: Typecheck and build
         run: npm run build
       - name: About gallery media resolver regression
