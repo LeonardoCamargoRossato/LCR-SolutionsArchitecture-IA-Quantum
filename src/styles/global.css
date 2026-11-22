@@ -6381,3 +6381,6 @@ a.case-institution-logo:hover {
 @media(prefers-reduced-motion: reduce) {
   .about-gallery-grid-item { transition: none; }
 }
+
+/* Keep the full 5:4 AnimeFinder screenshot visible inside the fixed 16:9 standard carousel. */
+[data-case-slug='animefinder'] .case-story-cover .progressive-image-main { object-fit: contain; }
