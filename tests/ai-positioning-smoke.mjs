@@ -75,6 +75,10 @@ async function testViewport(name, viewport, reducedMotion) {
   const ctx = await browser.newContext({ viewport, reducedMotion: reducedMotion ? 'reduce' : 'no-preference' })
   const page = await ctx.newPage()
   await checkHomepage(page, name)
+  // Language controls live inside the collapsible navigation on mobile.
+  if (viewport.width <= 760) {
+    await page.getByRole('button', { name: 'Toggle navigation' }).click()
+  }
   const select = page.locator('.language-toggle select')
   await select.selectOption('en-US')
   await page.locator('.hero-type-title[data-typing-complete="true"]').waitFor({ timeout: 15000 })
