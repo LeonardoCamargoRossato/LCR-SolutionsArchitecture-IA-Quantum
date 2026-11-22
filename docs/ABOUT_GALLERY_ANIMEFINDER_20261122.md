@@ -1,7 +1,7 @@
 # LCR Portfolio — Galeria 06.1, Sobre e screenshots do AnimeFinder
 
 Data: 22/11/2026 · Builder Chat 2  
-Status: código e CMS atualizados; screenshots binários produzidos e verificados em arquivo ZIP, **aguardando incorporação no repositório**.
+Status: código e CMS atualizados; **16 PNGs originais, 16 WebPs e inventário incorporados ao GitHub e validados por hashes**.
 
 ## Correções editoriais
 
@@ -44,11 +44,23 @@ O catálogo versionado do código é `src/data/animeFinderGallery.ts`. O primeir
 
 **Integridade e proteção contra regressão:** `useAnimeFinderAssetsReady` exige um manifesto JSON válido com os 16 IDs. Somente depois da presença desse manifesto é que a interface troca o SVG temporário pelos prints. Se os binários não estiverem publicados, o site mantém a capa vetorial anterior, sem criar imagens quebradas, galerias fictícias ou requisições individuais para arquivos ausentes. A capa principal mantém a razão 16:9 do carrossel e usa `object-fit: contain` para exibir o print inteiro, sem recortá-lo.
 
-## Limitação operacional e instalação
+## Publicação efetiva e inventário
 
-A integração atual do GitHub permite criar e modificar **arquivos de texto**, mas não possui acesso direto aos bytes locais da pasta `/mnt/data` para a transferência binária. O pacote ZIP com os 16 PNGs, 16 WebPs e os hashes SHA-256 foi criado e validado no ambiente da conversa. **Não declarar que esses binários foram enviados ao GitHub enquanto não forem efetivamente incorporados.**
+Os 32 arquivos binários mais `assets-index.json` foram incorporados no commit
+`7cf99ecd3d615f8583089ddfe5885112280b60e1` da branch
+`feat/animefinder-real-gallery-assets-20261122`, usando a API Git de blobs e árvore.
+O manifesto de 16 screenshots ativa a integração de galeria já existente.
+Os arquivos PNG são cópias byte a byte das imagens enviadas, sem recortes ou reconstrução.
+As versões WebP foram otimizadas mantendo a resolução 1280×1024. O enquadramento
+16:9 aplica-se somente via CSS ao carrossel.
 
-Para instalar: extrair o ZIP, copiar `public/assets/projects/animefinder` para a mesma localização na raiz deste repositório, fazer commit e push. O manifest deve ser enviado **no mesmo commit** que os 32 arquivos. Após o deploy, a galeria entra em funcionamento automaticamente, sem novas alterações de React.
+Verificação: `tests/animefinder-asset-integrity.test.mjs` confere 16 IDs únicos,
+headers PNG/WebP, dimensões dos PNGs, tamanho e SHA-256 registrados no
+inventário. A CI executa ainda os testes de navegador e a regressão do carrossel.
+
+Os arquivos temporariamente preparados em Drive para transporte da carga
+binária foram excluídos após a gravação dos blobs no GitHub. Não há Drive como
+dependência da página publicada.
 
 ## Privacidade e rastreabilidade
 
@@ -56,6 +68,7 @@ As imagens foram fornecidas explicitamente para uso no portfólio, mas contêm d
 
 ## Validação
 
+- `node tests/animefinder-asset-integrity.test.mjs` (16 PNG + 16 WebP + SHA-256)
 - `npm run build` (TypeScript + Vite)
 - `tests/about-gallery-credentials-smoke.mjs`: desktop/mobile, contador, botão da grade, 16:9, rotas, formação, links oficiais, correção de LACQ e proteção quando assets ausentes
 - `tests/about-gallery-media.test.mjs`: resolução das fotos existentes e caminho WebP→PNG
