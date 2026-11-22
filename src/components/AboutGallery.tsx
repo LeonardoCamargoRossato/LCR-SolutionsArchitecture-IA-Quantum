@@ -74,8 +74,14 @@ export function AboutGallery() {
     const nextIndex = Math.max(0, Math.min(items.length - 1, activeIndex + direction))
     const rail = railRef.current
     const target = rail?.children.item(nextIndex)
-    if (target instanceof HTMLElement) {
-      target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', inline: 'nearest', block: 'nearest' })
+    if (rail && target instanceof HTMLElement) {
+      const viewport = rail.getBoundingClientRect()
+      const item = target.getBoundingClientRect()
+      const nextLeft = rail.scrollLeft + item.left - viewport.left - (viewport.width - item.width) / 2
+      rail.scrollTo({
+        left: Math.max(0, Math.min(rail.scrollWidth - rail.clientWidth, nextLeft)),
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+      })
     }
     setActiveIndex(nextIndex)
   }
