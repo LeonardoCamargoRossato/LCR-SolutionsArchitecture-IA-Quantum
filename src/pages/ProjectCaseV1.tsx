@@ -14,6 +14,7 @@ import { CaseTags } from '../components/case/CaseTags'
 import type { Project } from '../domain/models/Project'
 import type { ProjectInstitution } from '../domain/models/ProjectInstitution'
 import { localizedProject } from '../i18n/content'
+import { animeFinderAssetRoot, animeFinderScreenshots, withAnimeFinderScreenshots } from '../data/animeFinderGallery'
 import { useI18n } from '../i18n/I18nProvider'
 import { useAuth } from '../providers/AuthProvider'
 import { useSiteContent } from '../providers/SiteContentProvider'
@@ -31,6 +32,24 @@ export function ProjectCaseV1() {
   const { isAdmin, loading: authLoading } = useAuth()
   const [adminProject, setAdminProject] = useState<Project>()
   const [adminLookupDone, setAdminLookupDone] = useState(false)
+  const [animeFinderAssetsReady, setAnimeFinderAssetsReady] = useState(false)
+
+  useEffect(() => {
+    if (slug !== 'animefinder') { setAnimeFinderAssetsReady(false); return }
+    let alive = true
+    const controller = new AbortController()
+    // Manifest is uploaded in the same commit as all PNG/WebP pairs.
+    // Missing assets must never create broken carousels in production.
+    void fetch(`${animeFinderAssetRoot}/assets-index.json`, { signal: controller.signal })
+      .then((response) => response.ok ? response.json() : null)
+      .then((data) => {
+        const expected = new Set(animeFinderScreenshots.map((entry) => `animefinder-${entry.id}`))
+        const actual = new Set((Array.isArray(data?.assets) ? data.assets : []).map((entry: { asset_id?: string }) => entry.asset_id))
+        if (alive) setAnimeFinderAssetsReady(expected.size === 16 && [...expected].every((id) => actual.has(id)))
+      })
+      .catch(() => { if (alive) setAnimeFinderAssetsReady(false) })
+    return () => { alive = false; controller.abort() }
+  }, [slug])
   const [institutions, setInstitutions] = useState<ProjectInstitution[]>([])
 
   const publicSource = projects.find((project) =>
@@ -58,7 +77,8 @@ export function ProjectCaseV1() {
   }, [slug, publicSource, isAdmin])
 
   const source = publicSource ?? adminProject
-  const project = source ? localizedProject(source, locale) : undefined
+  const displaySource = source && animeFinderAssetsReady ? withAnimeFinderScreenshots(source) : source
+  const project = displaySource ? localizedProject(displaySource, locale) : undefined
 
   useEffect(() => {
     let active = true
