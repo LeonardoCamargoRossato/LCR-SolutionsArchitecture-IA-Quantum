@@ -4,6 +4,7 @@ import { HeroGraphDesktop, HeroGraphMobile } from './AiSystemsGraph'
 import { EngineeringWorkspace } from './EngineeringWorkspace'
 import { HeroBackgroundGraph } from './HeroBackgroundGraph'
 import { HeroParticleWave } from './HeroParticleWave'
+import { useHomeMotionEnabled } from '../../features/home-loading/HomeMotionContext'
 
 type Phase = 'neural' | 'code' | 'hamnet'
 // Three interactive scenes, starting directly with the AI graph.
@@ -23,6 +24,7 @@ type DragOrigin = { x: number; y: number; yaw: number; pitch: number }
  * 2.5D transform; pointer updates are coalesced into one frame on demand.
  */
 export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
+  const motionEnabled = useHomeMotionEnabled()
   const root = useRef<HTMLDivElement>(null)
   const frame = useRef<number | null>(null)
   const drag = useRef<DragOrigin | null>(null)
@@ -34,7 +36,7 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
   const [dragging, setDragging] = useState(false)
   const [visible, setVisible] = useState(true)
   const [documentVisible, setDocumentVisible] = useState(() => !document.hidden)
-  const playing = !paused && !reduced && visible && documentVisible
+  const playing = motionEnabled && !paused && !reduced && visible && documentVisible
 
   useEffect(() => {
     const preference = window.matchMedia(REDUCED)
