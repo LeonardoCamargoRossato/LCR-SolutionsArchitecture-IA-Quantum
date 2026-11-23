@@ -126,7 +126,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
       const center = { x: target.x + target.width * .5, y: target.y + target.height * .5 }
       await page.mouse.move(center.x, center.y)
       await page.mouse.down()
-      await page.mouse.move(center.x + 90, center.y - 42, { steps: 5 })
+      await page.mouse.move(center.x + 145, center.y - 42, { steps: 5 })
       assert.equal(await visual.getAttribute('data-dragging'), 'true', 'Pointer capture did not begin')
       await page.waitForFunction(() => Math.abs(parseFloat(document.querySelector('.hero-graph-field').style.getPropertyValue('--neural-tilt-y'))) > 6,
         null, { timeout: 3000 })
