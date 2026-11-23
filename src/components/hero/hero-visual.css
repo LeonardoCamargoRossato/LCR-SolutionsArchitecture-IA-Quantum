@@ -1043,3 +1043,23 @@
 @media (max-width: 600px) {
   [data-theme='light'] .hero-graph-field--v5 .hero-v7-background { opacity: 1; }
 }
+/* LCR Hero V9 — Mobile typography and spacing hotfix.
+ * V7/V8 static backgrounds, desktop composition and animation are unchanged.
+ * The visual has at least one button-height of clear space after the chips.
+ */
+@media (max-width: 900px) {
+  .portfolio-home .hero-v3 > .hero-graph-field--v5 {
+    margin-top: 60px;
+  }
+}
+@media (max-width: 600px) {
+  .portfolio-home .hero-v3 h1.hero-type-title {
+    /* Keep "AI Engineering &" and "Software Development" to two lines
+       even on narrow phones; leave the typewriter and its reserve intact. */
+    font-size: clamp(1.375rem, 6.7vw, 2.6rem);
+    line-height: 1.14;
+    overflow-wrap: normal;
+    word-break: normal;
+    text-wrap: balance;
+  }
+}
