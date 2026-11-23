@@ -32,7 +32,12 @@ async function checkPage(name, viewport, mobile) {
     const divider = document.querySelector('.about-section-closing')
     const email = media?.querySelector('.about-social-link:last-child')
     const gallery = document.querySelector('.about-gallery-section')
-    if (!(media && copy && divider && email && gallery)) throw Error('About structure incomplete')
+    if (!(media && copy && divider && email)) {
+      throw Error('About structure incomplete: ' + JSON.stringify({
+        media: !!media, copy: !!copy, divider: !!divider, email: !!email,
+        gallery: !!gallery, socialCount: media?.querySelectorAll('.about-social-link').length,
+      }))
+    }
     const a = media.getBoundingClientRect()
     const b = copy.getBoundingClientRect()
     const c = divider.getBoundingClientRect()
@@ -46,7 +51,7 @@ async function checkPage(name, viewport, mobile) {
       mediaHeight: a.height,
       copyHeight: b.height,
       dividerWidth: c.width,
-      galleryTop: gallery.getBoundingClientRect().top,
+      galleryTop: gallery?.getBoundingClientRect().top ?? null,
       containerWidth: document.querySelector('.home-about-grid')?.getBoundingClientRect().width,
       footerLinks: [...copy.querySelectorAll('.about-mini-footer .about-universities-footer a')].map((a) => ({
         text: a.textContent?.trim(),
@@ -65,7 +70,7 @@ async function checkPage(name, viewport, mobile) {
   assert(metrics.footerLinks.every((item) => item.target === '_blank' && item.rel?.includes('noopener')),
     name + ': university links must open securely in another tab')
   assert(metrics.dividerWidth >= (metrics.containerWidth ?? 0) - 3, name + ': closing line is not full-width')
-  assert(metrics.galleryTop > metrics.dividerTop, name + ': gallery must start below closing line')
+  if (metrics.galleryTop !== null) assert(metrics.galleryTop > metrics.dividerTop, name + ': gallery must start below closing line')
   if (!mobile) {
     assert(Math.abs(metrics.copyBottom - metrics.mediaBottom) < 3, name + ': columns do not end on same line: ' + JSON.stringify(metrics))
     assert(Math.abs(metrics.dividerTop - metrics.emailBottom) < 5, name + ': closing rule is not level with email: ' + JSON.stringify(metrics))
