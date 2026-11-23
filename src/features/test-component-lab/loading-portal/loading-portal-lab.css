@@ -19,7 +19,7 @@
 .lcr-portal-lab input:focus-visible { outline: 3px solid #5bdafa; outline-offset: 2px; }
 .lcr-portal-lab-stage-wrap { display: flex; justify-content: center; align-items: flex-start; min-width: 0; }
 .lcr-portal-lab-stage {
-  position: relative; container-type: size; overflow: hidden;
+  position: relative; container-type: inline-size; overflow: hidden;
   width: min(100%,1050px); border: 1px solid #234764;
   background: radial-gradient(ellipse at 50% 37%,#133b60,#030b17 82%);
   box-shadow: 0 25px 65px rgba(0,4,12,.35); isolation: isolate;
