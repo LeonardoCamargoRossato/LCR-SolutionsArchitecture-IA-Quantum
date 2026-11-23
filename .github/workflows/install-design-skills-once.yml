@@ -118,6 +118,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A .agents/skills .github/workflows/install-design-skills-once.yml
-          git diff --cached --check
+          # Vendored upstream text intentionally retains original whitespace.
+          # Check only our temporary workflow removal, not third-party snapshots.
+          git diff --cached --check -- .github/workflows/install-design-skills-once.yml
           git commit -m "chore(design): vendor four pinned design skills and remove one-time installer"
           git push origin HEAD:refs/heads/chore/install-design-skills
