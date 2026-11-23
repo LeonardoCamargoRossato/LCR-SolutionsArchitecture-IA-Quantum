@@ -1,8 +1,8 @@
-name: LCR Hero V6 — Animated Blue Code Background
+name: LCR Hero V7 — Performance Optimized Blue Code
 
 on:
   push:
-    branches: [feat/hero-v6-blue-code-background-20261123]
+    branches: [perf/hero-v7-static-blue-code-20261123]
   pull_request:
     branches: [main]
     paths:
@@ -16,6 +16,7 @@ on:
       - .github/workflows/hero-v2-ci.yml
       - docs/hero-v5/**
       - docs/hero-v6/**
+      - docs/hero-v7/**
   workflow_dispatch:
 
 permissions:
@@ -54,18 +55,20 @@ jobs:
           assert not list(Path('src/components/hero').rglob('*.mp4')), 'No video in interactive SVG hero'
           assert not list(Path('src/components/hero').rglob('*.webm')), 'No video in interactive SVG hero'
           from gzip import compress
-          svg = Path('public/assets/home/hero/lcr-hero-blue-code-v1.svg')
+          svg = Path('public/assets/home/hero/lcr-hero-blue-code-v7-lite.svg')
           data = svg.read_bytes()
           compressed = len(compress(data, compresslevel=9))
-          print(f'Animated SVG: {len(data):,} bytes source / {compressed:,} bytes gzip')
-          assert len(data) < 380_000, 'Animated SVG source budget exceeded'
-          assert compressed < 65_000, 'Animated SVG gzip transfer budget exceeded'
+          print(f'Optimized STATIC SVG: {len(data):,} bytes source / {compressed:,} bytes gzip')
+          assert len(data) < 220_000, 'Optimized SVG source budget exceeded'
+          assert compressed < 28_000, 'Optimized SVG gzip transfer budget exceeded'
+          assert b'<animateMotion' not in data and b'animation:' not in data, 'Continuous SVG rasterization detected'
+          assert data.count(b'<text ') < 2000, 'Glyph density regression'
           PY
       - name: Install Chromium for browser tests
         run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
-      - name: Validate transparent blue SVG, 4 Hero scenes, themes and Hamnet replay
+      - name: Validate low-CPU blue SVG, 4 Hero scenes, themes and Hamnet replay
         run: node tests/hero-v5-smoke.mjs
       - name: Existing Home/SEO/projects regression
         run: node tests/ai-positioning-smoke.mjs
@@ -73,7 +76,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lcr-hero-v6-browser-evidence
+          name: lcr-hero-v7-browser-evidence
           path: test-results/
           if-no-files-found: warn
           retention-days: 30

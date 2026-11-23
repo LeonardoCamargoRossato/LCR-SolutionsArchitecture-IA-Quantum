@@ -87,7 +87,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   assert.deepEqual(facts.actionHrefs, ['#projects', '#contact'])
   assert(facts.desktopEdges >= 90 && facts.mobileEdges >= 55, 'Four neural layers must be densely connected')
   assert(facts.scatterPoints >= 40, 'Scatter scene should span the Hero')
-  // V6: the approved dense, animated transparent SVG persists BEHIND all scenes.
+  // V7: the fast static transparent derivative persists BEHIND all four scenes.
   const bg = page.locator('[data-testid="hero-v5-background"]')
   assert.equal(await bg.count(), 1, 'Only one persistent Hero background is allowed')
   const imgStatus = await page.getByTestId('hero-v6-blue-code').evaluate(img => ({
@@ -95,10 +95,12 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
     loaded: img.complete && img.naturalWidth === 1440 && img.naturalHeight === 800,
     fallback: img.dataset.fallback || null,
     opacity: getComputedStyle(img.parentElement).opacity,
+    filter: getComputedStyle(img.parentElement).filter,
     objectFit: getComputedStyle(img).objectFit,
   }))
-  assert(imgStatus.loaded && imgStatus.source.includes('lcr-hero-blue-code-v1.svg'), 'Approved animated SVG was not loaded')
+  assert(imgStatus.loaded && imgStatus.source.includes('lcr-hero-blue-code-v7-lite.svg'), 'Optimized V7 SVG was not loaded')
   assert.equal(imgStatus.fallback, null, 'Unexpected fallback to old background SVG')
+  assert.equal(imgStatus.filter, 'none', 'A costly background filter remains enabled')
   assert(Number(imgStatus.opacity) >= .35, 'Animated SVG must remain visible on all themes and viewports')
   assert.equal(imgStatus.objectFit, 'cover', 'SVG must fill Hero without distortion')
   assert.equal(await page.locator('.hero-v5-packet').count(), 0, 'Old sparse binary-packet overlay should be removed')
@@ -262,12 +264,20 @@ async function sourceAudit() {
   }
   const approved = await readFile('public/assets/home/hero/lcr-hero-blue-code-v1.svg', 'utf8')
   const source = await readFile('src/components/hero/HeroBackgroundGraph.tsx', 'utf8')
-  assert(source.includes('lcr-hero-blue-code-v1.svg'), 'Hero must reference the approved SVG rather than a substitute')
+  assert(source.includes('lcr-hero-blue-code-v7-lite.svg'), 'Hero must reference the lightweight SVG derivative')
   assert(approved.startsWith('<svg') && approved.includes('viewBox="0 0 1440 800"'), 'Approved SVG is malformed')
   assert(approved.split('<text ').length > 3000, 'Dense 3D data field was accidentally simplified')
   assert(approved.includes('@media (prefers-reduced-motion:reduce)'), 'Reduced-motion fallback missing from SVG')
   assert(approved.length < 370000, 'Uncompressed SVG larger than expected')
   assert(!['<script', '<foreignObject', 'onload=', '<image', 'xlink:href="http', 'href="http'].some(token => approved.includes(token)), 'Active or remote content inside the SVG')
+  const optimized = await readFile('public/assets/home/hero/lcr-hero-blue-code-v7-lite.svg', 'utf8')
+  assert(optimized.startsWith('<svg') && optimized.includes('viewBox="0 0 1440 800"'), 'Optimized SVG malformed')
+  assert(optimized.length < 220000, 'Lightweight SVG source budget exceeded')
+  assert(optimized.split('<text ').length > 1500, 'Data field lost too much visual detail')
+  assert(optimized.split('<text ').length < 2000, 'Excessive glyph density returned')
+  assert(!optimized.includes('<animateMotion') && !optimized.includes('animation:') && !optimized.includes('rain-column'), 'Per-glyph animations must never return')
+  assert(!controller.includes('onBackdropPointerMove'), 'mousemove parallax should not repaint the vector')
+  assert(!['<script', '<foreignObject', 'onload=', '<image', 'xlink:href="http', 'href="http'].some(token => optimized.includes(token)), 'Unsafe optimized SVG content')
   report.checks.push({ name: 'static-security-and-performance', result: 'PASS' })
 }
 
@@ -280,7 +290,7 @@ try {
   await scenario({ name: 'tablet-768-light', width: 768, height: 1024 })
   await scenario({ name: 'mobile-390-reduced', width: 390, height: 844, reduced: true })
   await scenario({ name: 'mobile-360-dark', width: 360, height: 800, dark: true, reduced: true })
-  console.log('PASS Hero V6 — transparent animated blue code, 4 foreground scenes, themes and mobile')
+  console.log('PASS Hero V7 — static optimized transparent blue code, compositor accent, 4 foreground scenes, themes and mobile')
 } catch (error) {
   report.errors.push(String(error))
   console.error('HERO V5 FAILED:', error)

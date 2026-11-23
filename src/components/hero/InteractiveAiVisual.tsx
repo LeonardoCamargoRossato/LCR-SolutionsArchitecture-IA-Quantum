@@ -85,15 +85,6 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
     })
   }
 
-  const onBackdropPointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (reduced || !visible || !documentVisible || window.innerWidth <= 900 || event.pointerType === 'touch') return
-    const x = Math.max(-1, Math.min(1, (event.clientX / window.innerWidth) * 2 - 1))
-    const y = Math.max(-1, Math.min(1, (event.clientY / window.innerHeight) * 2 - 1))
-    // Very small presentation-only parallax; no React render or RAF loop.
-    event.currentTarget.style.setProperty('--fabric-parallax-x', `${(x * 9).toFixed(1)}px`)
-    event.currentTarget.style.setProperty('--fabric-parallax-y', `${(y * 7).toFixed(1)}px`)
-  }
-
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (reduced || !visible || !documentVisible || phase !== 'neural' || window.innerWidth <= 900 || event.pointerType === 'touch') return
     if (event.button !== 0) return
@@ -163,11 +154,6 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
       data-playing={playing ? 'true' : 'false'}
       data-reduced={reduced ? 'true' : 'false'}
       data-dragging={dragging ? 'true' : 'false'}
-      onPointerMove={onBackdropPointerMove}
-      onPointerLeave={(event) => {
-        event.currentTarget.style.setProperty('--fabric-parallax-x', '0px')
-        event.currentTarget.style.setProperty('--fabric-parallax-y', '0px')
-      }}
       role="group"
       aria-label={pt ? 'Animação da evolução de dados em redes neurais, código e AI Hamnet' : 'From scattered data to neural layers, code and AI Hamnet'}
     >
