@@ -69,8 +69,8 @@
     left: clamp(5px,1.7vw,16px);
     right: auto;
     bottom: auto;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     opacity: .95;
   }
   .portfolio-home .hero-graph-field--v5 .hero-v4-mobile { inset: 8% 1% 3%; }
