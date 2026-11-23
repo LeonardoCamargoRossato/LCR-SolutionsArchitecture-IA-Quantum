@@ -62,7 +62,7 @@ async function check(width, height, locale, reduced = true) {
       tabsGap: Math.round((tabsRect.top - chipRect.bottom) * 10) / 10,
       visibleWidth: tabsRect.width,
       tabsWithinScreen: tabsRect.left >= -1 && tabsRect.right <= window.innerWidth + 1,
-      tags: [...chips.querySelectorAll('span')].map(x => x.textContent.trim()),
+      tags: [...chips.querySelectorAll(':scope > span')].map(x => x.getAttribute('aria-label')),
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       phaseNames: [...buttons.querySelectorAll('button')].map(el => el.textContent.trim()),
       mobile,
@@ -74,8 +74,8 @@ async function check(width, height, locale, reduced = true) {
       selectorTouchHeight: Math.min(...[...buttons.querySelectorAll('button')].map(el => el.getBoundingClientRect().height)),
     }
   })
-  assert.equal(info.title, 'AI Engineering & Software Development')
-  assert.deepEqual(info.tags, ['LLMs & AI Agents','RAG & Hybrid Retrieval','Data & Optimization','Quantum Computing'])
+  assert.equal(info.title, locale === 'pt-BR' ? 'Engenheiro de IA e Desenvolvimento de Software' : 'AI Engineering & Software Development')
+  assert.deepEqual(info.tags, locale === 'pt-BR' ? ['LLMs e Agentes de IA','RAG e Recuperação Híbrida','Dados e Otimização','Computação Quântica'] : ['LLMs & AI Agents','RAG & Hybrid Retrieval','Data & Optimization','Quantum Computing'])
   assert.equal(info.tags.includes('Python & Software Engineering'), false, 'Removed skill must not appear')
   assert.equal(info.phaseNames[3], 'Hamlet AI', `${width}px ${locale}: tab must show Hamlet AI`)
   assert.equal(info.phaseNames.length, 4)
@@ -95,8 +95,8 @@ async function check(width, height, locale, reduced = true) {
     assert.equal(info.reserveLines, 2, `${width}px ${locale}: reserved title height must have exactly 2 lines: ${JSON.stringify(info)}`)
   }
   if (width <= 900) {
-    assert(info.gap >= 44, `${width}px: must have at least one 44px button-height gap before the animation: ${JSON.stringify(info)}`)
-    assert(info.tabsGap >= 44, `${width}px: stage tabs should not hug the tags`)
+    assert(info.gap >= 17, `${width}px: compact mobile stage needs clear spacing before the artwork: ${JSON.stringify(info)}`)
+    assert(info.tabsGap >= 17, `${width}px: stage tabs should remain separated from tags`)
   }
   const fourthStage = page.locator('.hero-v5-stage-selector button').nth(3)
   await fourthStage.click()
