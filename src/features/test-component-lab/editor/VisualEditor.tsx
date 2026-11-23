@@ -188,7 +188,7 @@ export function VisualEditor({
         </div>
       </div>
       <div className="lcr-v2-viewport-scale">Virtual: {doc.canvas.width} × {doc.canvas.height} · Zoom {Math.round(scale*100)}%
-        {zoom!==null&&<button type="button" onClick={()=>onZoom(null)}>Fit to Screen</button>}
+        {zoom!==null&&<button type="button" onClick={()=>onZoom(null)}>Fit</button>}
       </div>
     </div>
   )
