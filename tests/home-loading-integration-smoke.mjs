@@ -75,6 +75,12 @@ async function initialVisit() {
   assert.equal(await page.locator('h1.hero-type-title').getAttribute('data-typing-complete'), 'false')
   assert.equal(await page.locator('.hero-v5-stage-selector button').count(), 3)
   await page.screenshot({ path: 'test-results/home-portal-v1-first-frame.png' })
+  // The backing layer must be transparent as the two real leaves depart.
+  // Otherwise the doors open to a black rectangle, not the React Home.
+  await page.locator('[data-testid="loading-portal"][data-phase="opening"]').waitFor({ timeout: 16000 })
+  assert.equal(await page.locator('.home-boot-overlay').evaluate(
+    element => getComputedStyle(element).backgroundColor), 'rgba(0, 0, 0, 0)')
+  await page.screenshot({ path: 'test-results/home-portal-v1-door-opening.png' })
   await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({ timeout: 20000 })
   assert.equal(await page.getByTestId('loading-portal').count(), 0)
   await page.locator('h1.hero-type-title[data-typing-complete="true"]').waitFor({ timeout: 14000 })
