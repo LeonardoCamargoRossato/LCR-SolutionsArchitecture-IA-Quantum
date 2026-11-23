@@ -17,6 +17,8 @@ export type PreviewSurface = 'light' | 'dark' | 'transparent'
 export type ParticleWaveProps = {
   settings: WaveSettings
   running: boolean
+  /** Reverse propagation without spatial mirroring. */
+  direction?: 'forward' | 'reverse'
 }
 
 export const WAVE_LIMITS = {
