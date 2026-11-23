@@ -2,13 +2,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
-import App from './App'
+import { RootRouteGate } from './RootRouteGate'
 import { ThemeProvider } from './providers/ThemeProvider'
-import { I18nProvider } from './i18n/I18nProvider'
-import { AuthProvider } from './providers/AuthProvider'
-import { SiteContentProvider } from './providers/SiteContentProvider'
-import { ToastProvider } from './providers/ToastProvider'
-import { ErrorBoundary } from './components/ErrorBoundary'
 import './styles/theme.css'
 import './styles/global.css'
 import './styles/visual-refresh.css'
@@ -17,7 +12,7 @@ import './estruturas-padroes/carrossel-projetos/carrossel-projetos.css'
 import './components/hero/hero-visual.css'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-if (supabaseUrl) {
+if (supabaseUrl && !window.location.hash.startsWith('#/test-component-lab')) {
   try {
     const origin = new URL(supabaseUrl).origin
     for (const rel of ['preconnect', 'dns-prefetch']) {
@@ -36,17 +31,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HashRouter>
       <ThemeProvider>
-        <I18nProvider>
-          <AuthProvider>
-            <ToastProvider>
-              <SiteContentProvider>
-                <ErrorBoundary>
-                  <App />
-                </ErrorBoundary>
-              </SiteContentProvider>
-            </ToastProvider>
-          </AuthProvider>
-        </I18nProvider>
+        <RootRouteGate />
       </ThemeProvider>
     </HashRouter>
   </StrictMode>,
