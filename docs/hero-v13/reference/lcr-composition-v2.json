@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 2,
+  "componentId": "particle-wave",
+  "preset": "lcr-dark",
+  "canvas": {
+    "width": 1600,
+    "height": 900,
+    "aspectRatio": "16:9",
+    "lockAspectRatio": true
+  },
+  "units": "grid",
+  "gridVisible": true,
+  "rulersVisible": true,
+  "transform": {
+    "x": -25.15489467162331,
+    "y": -100.24783147459728,
+    "width": 1773.2342007434943,
+    "height": 997.2242874845106,
+    "rotation": 0,
+    "flipX": true,
+    "flipY": false,
+    "lockX": false,
+    "lockY": false,
+    "lockAspectRatio": false
+  },
+  "animation": {
+    "direction": "forward",
+    "running": true
+  },
+  "surface": "light",
+  "settings": {
+    "particleCount": 900,
+    "amplitude": 1.65,
+    "frequency": 2.35,
+    "speed": 0.72,
+    "size": 0.6,
+    "depth": 1.8,
+    "color": "#45bfff",
+    "background": "#f6f9ff",
+    "mouseInteraction": true
+  },
+  "background": {
+    "id": "8ace738e-3d71-4ae5-a7f9-f5d0c58e8a1b",
+    "name": "screenshot-1795460526665.png",
+    "mime": "image/png",
+    "width": 1366,
+    "height": 768,
+    "fit": "contain",
+    "opacity": 1
+  },
+  "texts": [],
+  "layers": [
+    {
+      "id": "background",
+      "kind": "background",
+      "name": "Background / Screenshot",
+      "visible": true,
+      "locked": true,
+      "order": 0
+    },
+    {
+      "id": "wave",
+      "kind": "wave",
+      "name": "Particle Wave",
+      "visible": true,
+      "locked": false,
+      "order": 1
+    },
+    {
+      "id": "guides",
+      "kind": "guides",
+      "name": "Editor Guides",
+      "visible": true,
+      "locked": true,
+      "order": 1000
+    }
+  ]
+}

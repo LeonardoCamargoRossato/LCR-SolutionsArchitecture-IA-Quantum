@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } fr
 import { HeroGraphDesktop, HeroGraphMobile } from './AiSystemsGraph'
 import { EngineeringWorkspace } from './EngineeringWorkspace'
 import { HeroBackgroundGraph } from './HeroBackgroundGraph'
+import { HeroParticleWave } from './HeroParticleWave'
 
 type Phase = 'neural' | 'code' | 'hamnet'
 // Three interactive scenes, starting directly with the AI graph.
@@ -157,6 +158,7 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
       aria-label={pt ? 'Visualização de rede neural, código e Hamlet AI' : 'AI neural graph, code and Hamlet AI visualization'}
     >
       <HeroBackgroundGraph />
+      <HeroParticleWave playing={playing} />
       <div className="hero-v4-art" aria-hidden="true">
         <div className="hero-v4-desktop"><HeroGraphDesktop locale={locale} /></div>
         <div className="hero-v4-mobile"><HeroGraphMobile locale={locale} /></div>

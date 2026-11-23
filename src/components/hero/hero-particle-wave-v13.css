@@ -1,0 +1,34 @@
+/* V13 Lab particle wave above approved SVG, behind the live Hero UI. */
+.portfolio-home .hero-graph-field--v5 .hero-v13-particle-wave {
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+  isolation: isolate;
+  pointer-events: auto;
+  opacity: 1;
+  max-width: none;
+  max-height: none;
+  background: transparent;
+}
+.portfolio-home .hero-graph-field--v5 .hero-v13-particle-wave .lcr-wave-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.portfolio-home .hero-graph-field--v5 .hero-v4-art {
+  z-index: 2;
+}
+[data-theme='light'] .portfolio-home .hero-graph-field--v5 .hero-v13-particle-wave {
+  opacity: .72;
+}
+@media (max-width: 900px) {
+  .portfolio-home .hero-graph-field--v5 .hero-v13-particle-wave {
+    opacity: .78;
+    pointer-events: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-home .hero-graph-field--v5 .hero-v13-particle-wave {
+    transition: none !important;
+  }
+}
