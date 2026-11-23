@@ -87,16 +87,21 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   assert.deepEqual(facts.actionHrefs, ['#projects', '#contact'])
   assert(facts.desktopEdges >= 90 && facts.mobileEdges >= 55, 'Four neural layers must be densely connected')
   assert(facts.scatterPoints >= 40, 'Scatter scene should span the Hero')
-  // Permanent architectural background is visible under every scene.
+  // V6: the approved dense, animated transparent SVG persists BEHIND all scenes.
   const bg = page.locator('[data-testid="hero-v5-background"]')
-  assert.equal(await bg.count(), 1, 'Only one persistent SVG backdrop is allowed')
-  const imgStatus = await bg.locator('img').evaluate(img => ({
+  assert.equal(await bg.count(), 1, 'Only one persistent Hero background is allowed')
+  const imgStatus = await page.getByTestId('hero-v6-blue-code').evaluate(img => ({
     source: img.getAttribute('src'),
-    loaded: img.complete && img.naturalWidth > 0,
-    width: img.naturalWidth,
+    loaded: img.complete && img.naturalWidth === 1440 && img.naturalHeight === 800,
+    fallback: img.dataset.fallback || null,
+    opacity: getComputedStyle(img.parentElement).opacity,
+    objectFit: getComputedStyle(img).objectFit,
   }))
-  assert(imgStatus.loaded && imgStatus.source.includes('lcr-data-network-background.svg'), 'Original architectural background SVG unavailable')
-  assert((await page.locator('.hero-v5-packet').count()) >= 10, 'Binary traffic layer missing')
+  assert(imgStatus.loaded && imgStatus.source.includes('lcr-hero-blue-code-v1.svg'), 'Approved animated SVG was not loaded')
+  assert.equal(imgStatus.fallback, null, 'Unexpected fallback to old background SVG')
+  assert(Number(imgStatus.opacity) >= .35, 'Animated SVG must remain visible on all themes and viewports')
+  assert.equal(imgStatus.objectFit, 'cover', 'SVG must fill Hero without distortion')
+  assert.equal(await page.locator('.hero-v5-packet').count(), 0, 'Old sparse binary-packet overlay should be removed')
   const sceneCount = await page.locator('.hero-v4-art .hero-v4-scatter').count()
   assert(sceneCount >= 2, 'Expected distinct mobile/desktop data scenes')
   assert(facts.srWidth <= 1 && facts.srHeight <= 1, 'Screen-reader-only description is visibly leaking at top of Hero')
@@ -255,6 +260,14 @@ async function sourceAudit() {
     assert(content.includes('<svg') && content.length < 7000, 'Small audited SVG asset: ' + file)
     assert(!/<script\b|<foreignObject\b|onload=|href="https?:/i.test(content), 'Unsafe or remote SVG content in ' + file)
   }
+  const approved = await readFile('public/assets/home/hero/lcr-hero-blue-code-v1.svg', 'utf8')
+  const source = await readFile('src/components/hero/HeroBackgroundGraph.tsx', 'utf8')
+  assert(source.includes('lcr-hero-blue-code-v1.svg'), 'Hero must reference the approved SVG rather than a substitute')
+  assert(approved.startsWith('<svg') && approved.includes('viewBox="0 0 1440 800"'), 'Approved SVG is malformed')
+  assert((approved.match(/<text\\b/g) || []).length > 3000, 'Dense 3D data field was accidentally simplified')
+  assert(approved.includes('@media (prefers-reduced-motion:reduce)'), 'Reduced-motion fallback missing from SVG')
+  assert(approved.length < 370000, 'Uncompressed SVG larger than expected')
+  assert(!/<script\\b|<foreignObject\\b|onload\\s*=|<image\\b|https?:\\/\\//i.test(approved), 'Active or remote content inside the SVG')
   report.checks.push({ name: 'static-security-and-performance', result: 'PASS' })
 }
 
@@ -267,7 +280,7 @@ try {
   await scenario({ name: 'tablet-768-light', width: 768, height: 1024 })
   await scenario({ name: 'mobile-390-reduced', width: 390, height: 844, reduced: true })
   await scenario({ name: 'mobile-360-dark', width: 360, height: 800, dark: true, reduced: true })
-  console.log('PASS Hero V5 — permanent background, binary packets, neural 2.5D, code, Hamnet replay, themes and mobile')
+  console.log('PASS Hero V6 — transparent animated blue code, 4 foreground scenes, themes and mobile')
 } catch (error) {
   report.errors.push(String(error))
   console.error('HERO V5 FAILED:', error)
