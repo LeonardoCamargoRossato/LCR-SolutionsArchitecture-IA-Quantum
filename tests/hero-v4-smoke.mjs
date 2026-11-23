@@ -4,7 +4,7 @@ import { spawn } from 'node:child_process'
 import { chromium } from 'playwright'
 
 const BASE = 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
-const DIALOGUE = 'AI Hamnet'
+const DIALOGUE = 'Hamlet AI'
 const TAGS = ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Python & Software Engineering', 'Data & Optimization', 'Quantum Computing']
 const report = { checks: [], errors: [] }
 const server = spawn('npm', ['run','dev','--','--host','127.0.0.1','--port','5173','--strictPort'], {

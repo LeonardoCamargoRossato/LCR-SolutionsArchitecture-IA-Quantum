@@ -76,7 +76,7 @@
 .hero-v3-actions .hero-actions .button { min-height: 44px; }
 .hero-v3-actions .hero-specializations {
   display: grid;
-  grid-template-columns: max-content max-content max-content;
+  grid-template-columns: max-content max-content;
   align-items: center;
   width: max-content;
   max-width: 100%;
@@ -91,7 +91,6 @@
   line-height: 1.42;
   white-space: normal;
 }
-.hero-v3-actions .hero-specializations span:nth-child(4) { grid-column: 1; }
 
 /* Desktop: full-bleed stage with progressively increasing technical order. */
 .hero-v3 > .hero-graph-field {
@@ -1042,4 +1041,30 @@
 }
 @media (max-width: 600px) {
   [data-theme='light'] .hero-graph-field--v5 .hero-v7-background { opacity: 1; }
+}
+/* LCR Hero V9 — Mobile typography and spacing hotfix.
+ * V7/V8 static backgrounds, desktop composition and animation are unchanged.
+ * The visual has at least one button-height of clear space after the chips.
+ */
+@media (max-width: 900px) {
+  .portfolio-home .hero-v3 > .hero-graph-field--v5 {
+    margin-top: 60px;
+  }
+}
+@media (max-width: 600px) {
+  /* Restrict only the Hero text/actions width; other sections and
+     the full-bleed graphic remain untouched. 7vw = 7% per side. */
+  .portfolio-home .hero-v3 .hero-main.hero-v3-layout {
+    width: calc(100% - 14vw);
+    max-width: var(--max-width);
+    margin-inline: auto;
+  }
+  .portfolio-home .hero-v3 h1.hero-type-title {
+    /* Two fully visible lines with balanced wrapping and the V1 typewriter. */
+    font-size: clamp(1.2rem, 5.4vw, 2.15rem);
+    line-height: 1.14;
+    overflow-wrap: normal;
+    word-break: normal;
+    text-wrap: balance;
+  }
 }

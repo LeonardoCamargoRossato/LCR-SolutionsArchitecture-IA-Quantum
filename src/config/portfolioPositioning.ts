@@ -16,7 +16,6 @@ export const PORTFOLIO_HERO_DESCRIPTION =
 export const PORTFOLIO_HERO_TAGS = [
   'LLMs & AI Agents',
   'RAG & Hybrid Retrieval',
-  'Python & Software Engineering',
   'Data & Optimization',
   'Quantum Computing',
 ] as const

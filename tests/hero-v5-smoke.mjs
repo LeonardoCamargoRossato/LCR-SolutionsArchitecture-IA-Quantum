@@ -4,8 +4,8 @@ import { spawn } from 'node:child_process'
 import { chromium } from 'playwright'
 
 const BASE = 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
-const DIALOGUE = 'AI Hamnet'
-const TAGS = ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Python & Software Engineering', 'Data & Optimization', 'Quantum Computing']
+const DIALOGUE = 'Hamlet AI'
+const TAGS = ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Data & Optimization', 'Quantum Computing']
 const report = { checks: [], errors: [] }
 const server = spawn('npm', ['run','dev','--','--host','127.0.0.1','--port','5173','--strictPort'], {
   env: process.env, detached: true, stdio: 'ignore',
@@ -116,9 +116,9 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
     assert.equal(facts.mobileVisible, false)
     assert.equal(facts.visualPosition, 'absolute')
     assert(facts.visWidth >= facts.heroWidth - 2, 'Desktop art must blend into Hero background')
-    assert(facts.tagRows[0] === facts.tagRows[1] && facts.tagRows[1] === facts.tagRows[2], 'First 3 tags must share first line')
-    assert(facts.tagRows[3] > facts.tagRows[2], 'Fourth tag must occupy an uncluttered second line')
-    assert.equal(facts.tagRows[4], facts.tagRows[3], 'Quantum Computing must sit beside Data & Optimization')
+    assert.equal(facts.tagRows[0], facts.tagRows[1], 'First two tags must share first line')
+    assert(facts.tagRows[2] > facts.tagRows[1], 'Data & Optimization must start second row')
+    assert.equal(facts.tagRows[2], facts.tagRows[3], 'Quantum Computing must share second row')
   } else {
     assert.equal(facts.mobileVisible, true)
     assert.equal(facts.desktopVisible, false)
@@ -193,7 +193,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
       await replay.click()
       const afterReplay = Number(await page.locator('.hero-v5-hamnet').getAttribute('data-demo-sequence'))
       assert.equal(afterReplay, beforeReplay + 1, 'Robot click must restart message demonstration')
-      assert((await page.getByTestId('hero-v5-user-message').innerText()).includes('Hello, Hamnet.'))
+      assert((await page.getByTestId('hero-v5-user-message').innerText()).includes('Hello, Hamlet AI.'))
       assert((await page.getByTestId('hero-v5-assistant-answer').innerText()).includes('Hello!'))
       assert((await page.locator('.hero-v5-chat-footer').innerText()).includes('no live AI connection'))
       await page.waitForTimeout(200)
@@ -207,12 +207,16 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   // motion users retain full access to each static scene.
   const stages = page.getByTestId('hero-v5-stage-selector').locator('button')
   assert.equal(await stages.count(), 4, 'Four accessible manual stage controls required')
+  assert.equal(await stages.nth(3).innerText(), 'Hamlet AI', 'Fourth stage must use the approved name in PT/EN')
   await stages.nth(2).click()
   assert.equal(await visual.getAttribute('data-phase'), 'code')
   assert.equal(await visual.getAttribute('data-playing'), 'false', 'Manual selection must pause scene rotation')
   assert.equal(await stages.nth(2).getAttribute('aria-pressed'), 'true')
   await stages.nth(3).click()
   assert.equal(await visual.getAttribute('data-phase'), 'hamnet')
+  assert.equal(await page.locator('.hero-v4-chat-heading strong').innerText(), 'Hamlet AI')
+  assert.equal(await page.locator('.hero-v4-hamnet-name').innerText(), 'Hamlet AI')
+  assert.equal(await page.locator('.hero-v4-stage-marker').innerText(), 'HAMLET AI')
   assert.equal(await stages.nth(3).getAttribute('aria-pressed'), 'true')
   const manualAnswerOpacity = await page.getByTestId('hero-v5-assistant-answer').evaluate(el => Number(getComputedStyle(el).opacity))
   assert(manualAnswerOpacity > .95, 'Manually selected Hamnet must show its conversation without auto-play')
@@ -303,7 +307,7 @@ try {
   await scenario({ name: 'tablet-768-light', width: 768, height: 1024 })
   await scenario({ name: 'mobile-390-reduced', width: 390, height: 844, reduced: true })
   await scenario({ name: 'mobile-360-dark', width: 360, height: 800, dark: true, reduced: true })
-  console.log('PASS Hero V8 — original V7 dark SVG, dark navy light SVG, five tags, 4 scenes, mobile')
+  console.log('PASS Hero V8 — original V7 dark SVG, dark navy light SVG, four tags, 4 scenes, mobile')
 } catch (error) {
   report.errors.push(String(error))
   console.error('HERO V5 FAILED:', error)
