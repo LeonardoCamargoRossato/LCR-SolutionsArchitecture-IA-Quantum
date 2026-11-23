@@ -97,7 +97,7 @@ function createLayers(size: SceneSize): LayerNode[][] {
 const desktopLayers = createLayers('desktop')
 const mobileLayers = createLayers('mobile')
 
-function NeuralNetwork({ size }: { size: SceneSize }) {
+function NeuralNetwork({ size, locale }: { size: SceneSize; locale: 'pt-BR' | 'en-US' }) {
   const mobile = size === 'mobile'
   const layers = mobile ? mobileLayers : desktopLayers
   const edges = layers.slice(0, -1).flatMap((layer, index) =>
@@ -144,30 +144,30 @@ function NeuralNetwork({ size }: { size: SceneSize }) {
         </g>
       ))}
       <g className="hero-v4-neural-caption">
-        <text x={mobile ? 195 : 394} y={mobile ? 301 : 483} textAnchor="middle">INPUT → HIDDEN LAYERS → OUTPUT</text>
+        <text x={mobile ? 195 : 394} y={mobile ? 301 : 483} textAnchor="middle">{locale === 'pt-BR' ? 'ENTRADA → CAMADAS OCULTAS → SAÍDA' : 'INPUT → HIDDEN LAYERS → OUTPUT'}</text>
       </g>
     </svg>
   )
 }
 
-export function HeroGraphDesktop() {
+export function HeroGraphDesktop({ locale }: { locale: 'pt-BR' | 'en-US' }) {
   return (
     <>
       <div className="hero-v4-scatter" data-testid="hero-scatter-scene"><Scatter size="desktop" /></div>
       <div className="hero-v4-neural-depth" data-testid="hero-neural-scene">
-        <div className="hero-v4-depth-shadow"><NeuralNetwork size="desktop" /></div>
+        <div className="hero-v4-depth-shadow"><NeuralNetwork size="desktop" locale={locale} /></div>
         <div className="hero-v4-depth-front"><NeuralNetwork size="desktop" /></div>
       </div>
     </>
   )
 }
 
-export function HeroGraphMobile() {
+export function HeroGraphMobile({ locale }: { locale: 'pt-BR' | 'en-US' }) {
   return (
     <>
       <div className="hero-v4-scatter" data-testid="hero-scatter-scene-mobile"><Scatter size="mobile" /></div>
       <div className="hero-v4-neural-depth" data-testid="hero-neural-scene-mobile">
-        <div className="hero-v4-depth-front"><NeuralNetwork size="mobile" /></div>
+        <div className="hero-v4-depth-front"><NeuralNetwork size="mobile" locale={locale} /></div>
       </div>
     </>
   )
