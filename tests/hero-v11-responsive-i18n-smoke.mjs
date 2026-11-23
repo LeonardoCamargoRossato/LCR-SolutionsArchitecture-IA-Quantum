@@ -38,7 +38,7 @@ async function check(width,height,locale){
  assert.equal(await tags.count(),4)
  const pills=await tags.evaluateAll(elements=>elements.map(x=>{
    const r=x.getBoundingClientRect()
-   return {top:Math.round(r.top),left:r.left,right:r.right,full:x.getAttribute('aria-label'),short:x.querySelector('.hero-tag-short')?.innerText.trim(),fullText:x.querySelector('.hero-tag-full')?.innerText.trim()}
+   return {top:Math.round(r.top),left:r.left,right:r.right,full:x.getAttribute('aria-label'),short:x.querySelector('.hero-tag-short')?.textContent.trim(),fullHidden:getComputedStyle(x.querySelector('.hero-tag-full')).display==='none'}
  }))
  assert(pills.every(x=>x.top===pills[0].top),width+' '+locale+' all four tags should be one line '+JSON.stringify(pills))
  assert(pills[0].left>=-1&&pills[3].right<=width+1,width+' '+locale+' tags must not overflow screen')
@@ -53,7 +53,7 @@ async function check(width,height,locale){
  assert(overflow<=2,width+' '+locale+' horizontal overflow '+overflow)
  if(width<=900){
   assert(pills.every(x=>x.short&&x.short.length>0),width+' '+locale+' shortened mobile chips should remain readable')
-  assert(pills.every(x=>x.fullText===''),width+' '+locale+' full desktop chip text should not appear on phone')
+  assert(pills.every(x=>x.fullHidden),width+' '+locale+' full desktop chip text should not appear on phone')
   assert(tabRect.height<=49,width+' stage selector must be compact: '+tabRect.height)
   assert(playRect.right+4<=tabRect.left,width+' play control must be LEFT of tabs: '+JSON.stringify({playRect,tabRect}))
   assert(Math.abs(playRect.top-tabRect.top)<10,width+' play must align with stage selector')
