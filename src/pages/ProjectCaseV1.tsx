@@ -20,6 +20,7 @@ import { useI18n } from '../i18n/I18nProvider'
 import { useAuth } from '../providers/AuthProvider'
 import { useSiteContent } from '../providers/SiteContentProvider'
 import { hasCaseSection, normalizeCaseSections } from '../utils/caseSections'
+import { RETIRED_PROJECT_SLUGS } from '../config/retiredProjects'
 
 export function ProjectCaseV1() {
   const { slug } = useParams()
@@ -37,8 +38,8 @@ export function ProjectCaseV1() {
   const [institutions, setInstitutions] = useState<ProjectInstitution[]>([])
 
   const publicSource = projects.find((project) =>
-    project.slug === slug ||
-    (slug === 'cities-comparing' && (project.slug === 'city-comparing' || project.id === 'city-comparing')),
+    !RETIRED_PROJECT_SLUGS.has(project.slug) && (project.slug === slug ||
+    (slug === 'cities-comparing' && (project.slug === 'city-comparing' || project.id === 'city-comparing'))),
   )
 
   useEffect(() => {
@@ -148,7 +149,7 @@ export function ProjectCaseV1() {
     return <main className="loading-page"><div className="site-container">Loading…</div></main>
   }
 
-  if (!project || project.caseEnabled === false) {
+  if (!project || project.caseEnabled === false || (slug && RETIRED_PROJECT_SLUGS.has(slug))) {
     return <main className="not-found"><div className="site-container"><div className="eyebrow">404</div><h1>Case study not found.</h1><Link className="button" to="/">{t('backProjects')}</Link></div></main>
   }
 
