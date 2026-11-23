@@ -108,7 +108,7 @@ async function check(width, height, locale, reduced = true) {
   assert.equal(name, 'Hamlet AI')
   assert.equal(chatName, 'Hamlet AI')
   assert.equal(caption, 'HAMLET AI')
-  assert.equal(greeting, 'Hello, Hamlet AI.')
+  assert.equal(greeting, locale === 'pt-BR' ? 'Olá, Hamlet AI.' : 'Hello, Hamlet AI.')
   assert.equal(await fourthStage.getAttribute('aria-pressed'), 'true')
   assert.deepEqual(pageErrors, [], 'Runtime errors detected')
   const nameTag = `hero-v9-${width}-${locale}-${reduced ? 'reduced' : 'animated'}`
