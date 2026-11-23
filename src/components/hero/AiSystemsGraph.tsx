@@ -41,8 +41,15 @@ function Scatter({ size }: { size: SceneSize }) {
     >
       <g className="hero-v4-scatter-edges">
         {nodes.map((node, index) => {
-          const other = nodes[(index + 7) % nodes.length]
-          return <line key={index} x1={node.x} y1={node.y} x2={other.x} y2={other.y} />
+          // Connect only near neighbours; avoid the former starburst of
+          // random crossings, which read as a chaotic scribble.
+          const other = nodes.reduce((nearest, candidate, j) => {
+            if (j === index) return nearest
+            const distance = Math.hypot(node.x - candidate.x, node.y - candidate.y)
+            if (distance >= nearest.distance) return nearest
+            return { point: candidate, distance }
+          }, { point: nodes[(index + 1) % nodes.length], distance: Infinity })
+          return <line key={index} x1={node.x} y1={node.y} x2={other.point.x} y2={other.point.y} />
         })}
       </g>
       <g>
