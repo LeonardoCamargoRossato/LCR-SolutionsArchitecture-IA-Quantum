@@ -1,0 +1,62 @@
+name: LCR Portfolio - Compact About and retired Toolkit
+
+on:
+  push:
+    branches:
+      - fix/lcr-about-compact-retire-toolkit-20261122
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/**
+      - public/projects/scientific-analysis.*
+      - tests/about-compact-retirement-smoke.mjs
+      - .github/workflows/about-compact-retirement-ci.yml
+      - docs/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  typecheck-and-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: TypeScript and production build
+        run: npm run build
+      - name: Check obsolete assets removed from deploy source
+        run: |
+          test ! -e public/projects/scientific-analysis.png
+          test ! -e public/projects/scientific-analysis.svg
+      - name: Install Chromium
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: New compact About + retired Toolkit tests (desktop/mobile)
+        run: node tests/about-compact-retirement-smoke.mjs
+      - name: AI identity and existing project cases regression
+        run: node tests/ai-positioning-smoke.mjs
+      - name: Existing project gallery and lightbox regression
+        run: node tests/portfolio-carousel-unified-smoke.mjs
+      - name: Upload screenshots and JSON results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcr-about-compact-retirement-evidence
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: warn
