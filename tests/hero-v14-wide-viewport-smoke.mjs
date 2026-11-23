@@ -110,7 +110,8 @@ async function layoutCheck(width, height, locale, theme) {
     assert(layout.background.height >= layout.hero.height - 2,
       label + ' optimized background does not fill the vertical Hero')
     assert.equal(layout.imageFit, 'cover', label + ' background must scale by height using cover')
-    assert(layout.imagePosition.includes('right'), label + ' keep approved right-side details in frame')
+    assert(/^100%(\\s|$)/.test(layout.imagePosition) || /\\bright\\b/.test(layout.imagePosition),
+      label + ' keep approved right-side details in frame: ' + layout.imagePosition)
   } else {
     assert(layout.heroShell.width <= 1180 + 2,
       label + ' notebook or mobile composition was unintentionally enlarged')
