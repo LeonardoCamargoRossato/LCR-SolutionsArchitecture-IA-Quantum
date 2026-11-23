@@ -101,7 +101,7 @@ async function run(name,viewport,reduced=false){
 
   await page.getByRole('button',{name:'LCR Hero'}).click()
   await page.getByRole('button',{name:'Add Text'}).click()
-  const text=page.locator('[data-layer-id^="text-"]').first()
+  const text=page.locator('.lcr-v2-text-content').first()
   assert(await text.count()>0,'Text overlay must render')
   await page.getByLabel('Text Content').fill('Text composition test')
   await page.getByLabel('Text Font Size').fill('38')
