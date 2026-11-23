@@ -7,6 +7,7 @@ import { SeoSync } from './components/SeoSync'
 import { Home } from './pages/Home'
 import { AboutRedirect } from './pages/AboutRedirect'
 import { NotFound } from './pages/NotFound'
+import { useI18n } from './i18n/I18nProvider'
 
 const ProjectCase = lazy(() =>
   import('./pages/ProjectCaseV1').then((module) => ({ default: module.ProjectCaseV1 })),
@@ -21,11 +22,12 @@ const Workflow = lazy(() =>
 )
 
 export default function App() {
+  const { locale } = useI18n()
   return (
     <>
       <SeoSync />
       <Header />
-      <Suspense fallback={<main className="loading-page"><div className="site-container">Loading…</div></main>}>
+      <Suspense fallback={<main className="loading-page"><div className="site-container">{locale === 'pt-BR' ? 'Carregando…' : 'Loading…'}</div></main>}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutRedirect />} />
