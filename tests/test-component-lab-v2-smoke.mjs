@@ -130,6 +130,13 @@ async function run(name,viewport,reduced=false){
 
   await page.getByRole('button',{name:'Import Animation'}).click()
   await page.getByRole('dialog',{name:'Import Animation'}).waitFor()
+  // Wrong file extension in the TSX dropzone must yield a clear rejection.
+  await page.evaluate(()=>{
+    const file=new File(['.incorrect{}'],'wrong.css',{type:'text/css'})
+    const transfer=new DataTransfer();transfer.items.add(file)
+    document.querySelectorAll('.lcr-v2-import-slot')[0].dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:transfer}))
+  })
+  await page.getByText('Formato incorreto: o campo requer .tsx.').waitFor()
   await page.getByRole('button',{name:'Info about import formats'}).click()
   await page.getByRole('dialog',{name:'File Formats & Safety'}).waitFor()
   await page.getByRole('button',{name:'Close Info'}).click()
@@ -172,6 +179,23 @@ async function run(name,viewport,reduced=false){
   await pasted('[data-testid="visual-editor"]','drop')
   await page.getByRole('dialog',{name:'Add Background'}).waitFor()
   await page.getByRole('button',{name:'Apply Background'}).click()
+  // Direct modal drag-and-drop is equivalent to Browse Files.
+  page.once('dialog',d=>d.accept())
+  await page.getByRole('button',{name:'Add Background'}).click()
+  await page.getByRole('dialog',{name:'Add Background'}).waitFor()
+  await pasted('.lcr-v2-dropzone','drop')
+  await page.getByRole('button',{name:'Apply Background'}).click()
+  // Pasting while a text editor has focus must never open background import.
+  await page.evaluate((b64)=>{
+    const raw=Uint8Array.from(atob(b64),c=>c.charCodeAt(0))
+    const transfer=new DataTransfer()
+    transfer.items.add(new File([raw],'clipboard.png',{type:'image/png'}))
+    const input=document.querySelector('textarea[aria-label="Text Content"]')
+    if(!input)throw Error('Text editor not available')
+    input.focus()
+    input.dispatchEvent(new ClipboardEvent('paste',{bubbles:true,cancelable:true,clipboardData:transfer}))
+  },screenshotB64)
+  assert.equal(await page.getByRole('dialog',{name:'Add Background'}).count(),0)
   // Invalid clipboard (no image) yields feedback, never auto-opens a modal.
   await page.evaluate(()=>{
     const data=new DataTransfer()
