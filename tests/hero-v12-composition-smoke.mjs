@@ -28,7 +28,7 @@ async function inspect(width, height, locale) {
   if (locale === 'pt-BR') {
     await page.addInitScript(() => localStorage.setItem('portfolio-locale', 'pt-BR'))
   }
-  await page.goto(BASE + '#/', { waitUntil: 'domcontentloaded' })
+  await page.goto(BASE + '#/?portal=skip', { waitUntil: 'domcontentloaded' })
   await page.locator('.hero-type-title[data-typing-complete="true"]').waitFor({ timeout: 20000 })
   await page.evaluate(() => document.fonts.ready)
   const expected = locale === 'pt-BR' ? ['Rede IA', 'Código', 'Hamlet AI'] : ['AI Graph', 'Code', 'Hamlet AI']
