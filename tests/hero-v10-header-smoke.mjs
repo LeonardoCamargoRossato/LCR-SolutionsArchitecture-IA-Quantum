@@ -59,6 +59,7 @@ async function check(width, height) {
   assert.equal(await trigger.locator('[data-flag]').getAttribute('data-flag'), 'BR')
   assert.equal(await page.locator('.hero-v5-stage-selector button').first().innerText(), 'Dados')
   assert.equal(await page.locator('.hero-type-title').getAttribute('aria-label'), 'Engenheiro de IA e Desenvolvimento de Software')
+  assert((await page.locator('.hero-description').innerText()).includes('RAG híbrido'))
   assert.equal(await page.locator('.hero-identity-subtitle').innerText(), 'Construindo Soluções Inteligentes.')
   await trigger.click()
   await page.getByRole('button',{name:'EN USA',exact:true}).click()
