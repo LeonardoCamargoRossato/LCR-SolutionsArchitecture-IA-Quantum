@@ -828,6 +828,19 @@
   .hero-v5-bot-replay .hero-v4-bot-art { transform: none !important; }
 }
 
+/* A manually selected Hamnet view remains readable while the scene timer is
+ * stopped. Reduced motion uses the same complete static conversation.
+ */
+.hero-graph-field--v5[data-playing='false'][data-phase='hamnet'] .hero-v5-chat-user,
+.hero-graph-field--v5[data-playing='false'][data-phase='hamnet'] .hero-v5-chat-answer {
+  animation: none !important;
+  opacity: 1;
+  transform: none;
+}
+.hero-graph-field--v5[data-playing='false'][data-phase='hamnet'] .hero-v5-chat-thinking {
+  display: none;
+}
+
 /* V5.1 — explicit stage navigation; original SVG and four-stage cycle retained.
  * At small sizes, a narrow toolbar band sits above—not over—the scenes.
  */
