@@ -75,17 +75,17 @@ async function testViewport(name, viewport, reducedMotion) {
   const ctx = await browser.newContext({ viewport, reducedMotion: reducedMotion ? 'reduce' : 'no-preference' })
   const page = await ctx.newPage()
   await checkHomepage(page, name)
-  // Language controls live inside the collapsible navigation on mobile.
-  if (viewport.width <= 760) {
-    await page.getByRole('button', { name: 'Toggle navigation' }).click()
-  }
-  const select = page.locator('.language-toggle select')
-  await select.selectOption('en-US')
+  // The flag picker must be accessible without opening the mobile menu.
+  const language = page.locator('.language-picker-trigger')
+  assert(await language.isVisible(), 'Language selector must be visible in the header')
+  await language.click()
+  await page.getByRole('button', { name: /EN USA/ }).last().click()
   await page.locator('.hero-type-title[data-typing-complete="true"]').waitFor({ timeout: 15000 })
   assert.equal(await page.locator('.hero-type-title').getAttribute('aria-label'), H1)
   assert.equal(await page.locator('.hero-identity-subtitle').innerText(), SUBTITLE)
   assert((await page.locator('.hero-specializations').innerText()).includes('Hybrid Retrieval'))
-  await select.selectOption('pt-BR')
+  await language.click()
+  await page.getByRole('button', { name: /PT BR/ }).last().click()
   assert.equal(await page.locator('.hero-type-title').getAttribute('aria-label'), H1)
   assert((await page.locator('.hero-specializations').innerText()).includes('RAG & Hybrid Retrieval'))
   assert.equal(await page.locator('.hero-description').innerText(), 'I design and build intelligent software, combining AI, data, and systems architecture.')
