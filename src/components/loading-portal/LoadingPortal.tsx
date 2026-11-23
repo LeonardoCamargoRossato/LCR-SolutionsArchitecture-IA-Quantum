@@ -59,7 +59,7 @@ export function LoadingPortal({
   // Load only the adjacent approved frames and opening assets when relevant.
   // Unlike the original demo, the other 7 frames do not all compete on mount.
   useEffect(() => {
-    const near = new Set([keyframes.from, keyframes.to])
+    const near = new Set<string>([keyframes.from, keyframes.to])
     if (safeProgress >= 80) {
       near.add('portal-100.webp')
       near.add('door-open-base.webp')
