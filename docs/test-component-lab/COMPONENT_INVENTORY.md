@@ -1,10 +1,10 @@
 # LCR Test Component Lab — Component Inventory
 
-Updated: 2026-11-23. This is a human-readable inventory for LCR Workflow governance.
+Updated: 2026-11-23. This is a human-readable inventory for LCR Workflow governance. See V2_ASSET_INVENTORY.md for imported backgrounds, components, JSON/PNG/ZIP.
 
 | ID | Component | Type | Category | Location | Default preset | State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `particle-wave` | Particle Wave | React/TypeScript + Canvas 2D | Motion / Generative | `src/components/test-component-lab/particle-wave/ParticleWave.tsx` | `lcr-dark` | Implemented in V1, CI pending until PR check |
+| `particle-wave` | Particle Wave | React/TypeScript + Canvas 2D | Motion / Generative | `src/components/test-component-lab/particle-wave/ParticleWave.tsx` | `lcr-dark` | V1 renderer preserved; V2 editor integration in PR #27 (tests tracked separately) |
 
 ## Preset registry
 

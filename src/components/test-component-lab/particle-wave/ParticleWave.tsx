@@ -12,7 +12,7 @@ import './particle-wave.css'
  * The particle field is deterministic and uses a perspective projection of
  * two continuous sinusoidal waves. All resources are released on unmount.
  */
-export function ParticleWave({ settings, running }: ParticleWaveProps) {
+export function ParticleWave({ settings, running, direction = 'forward' }: ParticleWaveProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pointerRef = useRef({ x: 0, y: 0 })
   const phaseRef = useRef(0)
@@ -122,7 +122,7 @@ export function ParticleWave({ settings, running }: ParticleWaveProps) {
       if (disposed || !allowed()) return
       if (now - lastFrame >= targetInterval) {
         const dt = lastFrame ? Math.min(now - lastFrame, 80) : targetInterval
-        phaseRef.current += dt * .001 * safe.speed * 2.3
+        phaseRef.current += dt * .001 * safe.speed * 2.3 * (direction === 'reverse' ? -1 : 1)
         lastFrame = now
         paint()
       }
@@ -165,7 +165,7 @@ export function ParticleWave({ settings, running }: ParticleWaveProps) {
       reduced.removeEventListener('change', onReduced)
       canvas.dataset.ready = 'false'
     }
-  }, [settings, running])
+  }, [settings, running, direction])
 
   if (!supported) {
     return (

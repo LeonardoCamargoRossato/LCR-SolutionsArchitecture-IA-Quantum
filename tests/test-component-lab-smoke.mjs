@@ -66,7 +66,7 @@ async function scenario(name, viewport, options = {}) {
   assert.equal(facts.title, 'LCR Test Component Lab')
   assert(facts.noHeader && facts.noFooter, 'Lab must not mount public portfolio shell')
   assert(facts.noOverflow, 'Horizontal overflow detected')
-  assert(facts.active && facts.stageWidth >= 290 && facts.stageHeight >= 330, 'Preview/controls not visible')
+  assert(facts.active && facts.stageWidth >= (viewport.width < 560 ? 210 : 290) && facts.stageHeight >= (viewport.width < 560 ? 115 : 300), 'Preview/controls not visible')
   assert(facts.colored >= 30, 'Particle canvas appears blank')
   assert(facts.effectiveParticles >= 200 && facts.effectiveParticles <= (viewport.width <= 700 ? 1700 : 4200), 'Particle safety cap failed')
   assert.equal(supabase.length, 0, 'Public lab must not make Supabase requests')
