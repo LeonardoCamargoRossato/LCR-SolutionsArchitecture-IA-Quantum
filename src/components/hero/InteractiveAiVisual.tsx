@@ -130,13 +130,13 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
         { phase: 'scatter', label: 'Dados' },
         { phase: 'neural', label: 'Rede IA' },
         { phase: 'code', label: 'Código' },
-        { phase: 'hamnet', label: 'Hamnet' },
+        { phase: 'hamnet', label: 'Hamlet AI' },
       ]
     : [
         { phase: 'scatter', label: 'Data' },
         { phase: 'neural', label: 'AI Graph' },
         { phase: 'code', label: 'Code' },
-        { phase: 'hamnet', label: 'Hamnet' },
+        { phase: 'hamnet', label: 'Hamlet AI' },
       ]
   const selectScene = (selected: Phase) => {
     setPhase(selected)
@@ -155,7 +155,7 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
       data-reduced={reduced ? 'true' : 'false'}
       data-dragging={dragging ? 'true' : 'false'}
       role="group"
-      aria-label={pt ? 'Animação da evolução de dados em redes neurais, código e AI Hamnet' : 'From scattered data to neural layers, code and AI Hamnet'}
+      aria-label={pt ? 'Animação da evolução de dados em redes neurais, código e Hamlet AI' : 'From scattered data to neural layers, code and Hamlet AI'}
     >
       <HeroBackgroundGraph />
       <div className="hero-v4-art" aria-hidden="true">
@@ -189,8 +189,8 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
       />
       <span className="hero-v4-visually-hidden">
         {pt
-          ? 'Visualização conceitual: fluxos binários convergem de um grafo em perspectiva para camadas neurais, código e uma conversa ilustrativa com AI Hamnet. Não há conexão com IA nesta animação.'
-          : 'Conceptual visual: binary packets flow through a perspective data network into neural layers, source code and a simulated AI Hamnet conversation. No live AI connection.'}
+          ? 'Visualização conceitual: fluxos binários convergem de um grafo em perspectiva para camadas neurais, código e uma conversa ilustrativa com Hamlet AI. Não há conexão com IA nesta animação.'
+          : 'Conceptual visual: binary packets flow through a perspective data network into neural layers, source code and a simulated Hamlet AI conversation. No live AI connection.'}
       </span>
       <div
         className="hero-v5-stage-selector"
@@ -211,7 +211,7 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
         ))}
       </div>
       <div className="hero-v4-stage-marker" aria-hidden="true">
-        {phase === 'scatter' ? 'DATA INPUT' : phase === 'neural' ? 'NEURAL ARCHITECTURE' : phase === 'code' ? 'SOFTWARE GENERATION' : 'AI HAMNET'}
+        {phase === 'scatter' ? 'DATA INPUT' : phase === 'neural' ? 'NEURAL ARCHITECTURE' : phase === 'code' ? 'SOFTWARE GENERATION' : 'HAMLET AI'}
         {phase === 'neural' && !reduced ? <span className="hero-v4-drag-hint"> · {pt ? 'ARRASTE PARA EXPLORAR' : 'DRAG TO EXPLORE'}</span> : null}
       </div>
       <button
