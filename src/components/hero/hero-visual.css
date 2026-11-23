@@ -1195,7 +1195,7 @@
     padding: 2px;
   }
   .portfolio-home .hero-graph-field--v5 .hero-v5-stage-button {
-    min-height: 36px;
+    min-height: 39px;
     font-size: 10px;
     padding-inline: clamp(5px,1.15vw,9px);
   }
@@ -1248,13 +1248,13 @@
     margin-top: 22px;
   }
   .portfolio-home .hero-graph-field--v5 .hero-v5-stage-button {
-    min-height: 36px;
+    min-height: 39px;
     font-size: clamp(9px,2.2vw,10px);
     padding-inline: clamp(4px,1vw,7px);
   }
   .portfolio-home .hero-graph-field--v5 .hero-v4-mobile { inset: 6% 1% 2%; }
   .portfolio-home .hero-graph-field--v5 .hero-v4-code-scene {
-    top: 15%;
+    top: 18%;
     left: 6%;
     width: 88%;
     padding: 8px 11px;
