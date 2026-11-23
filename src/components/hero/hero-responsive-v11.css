@@ -1,0 +1,159 @@
+/* LCR Hero V11 — compact, readable single-row mobile chips and raised scenes.
+   The full technical labels are preserved in markup and on desktop.
+   Deliberately CSS-only for zero additional animation/paint cost. */
+.portfolio-home .hero-v3-actions .hero-specializations > .hero-skill-tag {
+  white-space: nowrap;
+}
+.portfolio-home .hero-v3-actions .hero-specializations .hero-tag-full,
+.portfolio-home .hero-v3-actions .hero-specializations .hero-tag-short {
+  display: none;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
+  white-space: nowrap;
+}
+@media (min-width: 901px) {
+  .portfolio-home .hero-v3-actions .hero-specializations .hero-tag-full {
+    display: inline;
+  }
+  /* The neural network is 10% smaller and no longer crowds Development. */
+  .portfolio-home .hero-graph-field[data-phase='neural'] .hero-v4-desktop .hero-v4-neural-depth {
+    transform: scale(.9);
+    transform-origin: 54% center;
+  }
+}
+@media (max-width: 900px) {
+  .portfolio-home .hero-v3-actions .hero-specializations {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(2px, .6vw, 5px);
+    margin-top: 13px;
+  }
+  .portfolio-home .hero-v3-actions .hero-specializations > .hero-skill-tag {
+    flex: 0 0 auto;
+    min-height: 23px;
+    max-width: 100%;
+    padding: 0 clamp(3px,.6vw,6px);
+    font-size: clamp(7.5px,1.45vw,9px);
+    line-height: 1.35;
+  }
+  .portfolio-home .hero-v3-actions .hero-specializations .hero-tag-short {
+    display: inline;
+  }
+  .portfolio-home .hero-v3 > .hero-graph-field--v5 {
+    margin-top: 25px;
+    height: 333px;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v5-stage-selector {
+    top: 2px;
+    right: clamp(5px,1.7vw,16px);
+    gap: 1px;
+    padding: 2px;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v5-stage-button {
+    min-height: 39px;
+    font-size: 10px;
+    padding-inline: clamp(5px,1.15vw,9px);
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-graph-motion-control {
+    top: 2px;
+    left: clamp(5px,1.7vw,16px);
+    right: auto;
+    bottom: auto;
+    width: 40px;
+    height: 40px;
+    opacity: .95;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-mobile { inset: 8% 1% 3%; }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-code-scene {
+    top: 16%;
+    left: 8%;
+    width: 84%;
+    max-width: 450px;
+    padding: 9px 12px;
+    transform-origin: 50% 15%;
+  }
+  .portfolio-home .hero-graph-field--v5[data-phase='code'] .hero-v4-code-scene {
+    transform: perspective(850px) rotateY(-7deg) rotateX(2deg) scale(.92);
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-code-lines {
+    gap: 8px;
+    padding: 12px 0;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-code-line {
+    font-size: clamp(8.5px, 1.25vw, 10px);
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v5-hamnet.hero-v4-hamnet-scene {
+    top: 15%;
+    left: 2%;
+    width: 96%;
+    transform-origin: center 15%;
+  }
+  .portfolio-home .hero-graph-field--v5[data-phase='hamnet'] .hero-v5-hamnet.hero-v4-hamnet-scene {
+    transform: perspective(900px) rotateY(-4deg) scale(.95);
+  }
+}
+@media (max-width: 600px) {
+  .portfolio-home .hero-v3-actions .hero-specializations > .hero-skill-tag {
+    font-size: clamp(7.6px,2.12vw,9.5px);
+    padding-inline: clamp(2px,.5vw,4px);
+    min-height: 22px;
+  }
+  .portfolio-home .hero-v3 > .hero-graph-field--v5 {
+    height: 328px;
+    margin-top: 22px;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v5-stage-button {
+    min-height: 39px;
+    font-size: clamp(9px,2.2vw,10px);
+    padding-inline: clamp(4px,1vw,7px);
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-mobile { inset: 6% 1% 2%; }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-code-scene {
+    top: 18%;
+    left: 6%;
+    width: 88%;
+    padding: 8px 11px;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-code-architecture {
+    font-size: 9px;
+    gap: 7px;
+    padding-bottom: 9px;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-code-lines {
+    gap: 7px;
+    padding: 10px 0;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-code-line {
+    font-size: clamp(7.7px,2.28vw,9.5px);
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-code-lower { font-size: 7px; }
+  .portfolio-home .hero-graph-field--v5 .hero-v5-hamnet.hero-v4-hamnet-scene {
+    top: 16%;
+    left: 1%;
+    width: 98%;
+    min-height: 208px;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v5-conversation {
+    padding: 6px;
+  }
+}
+@media (max-width: 360px) {
+  .portfolio-home .hero-v3-actions .hero-specializations > .hero-skill-tag {
+    font-size: 7.5px;
+    padding-inline: 2px;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v5-stage-button {
+    font-size: 9px;
+    padding-inline: 4px;
+  }
+}
