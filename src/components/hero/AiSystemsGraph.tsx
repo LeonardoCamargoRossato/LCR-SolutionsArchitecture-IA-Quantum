@@ -156,7 +156,7 @@ export function HeroGraphDesktop({ locale }: { locale: 'pt-BR' | 'en-US' }) {
       <div className="hero-v4-scatter" data-testid="hero-scatter-scene"><Scatter size="desktop" /></div>
       <div className="hero-v4-neural-depth" data-testid="hero-neural-scene">
         <div className="hero-v4-depth-shadow"><NeuralNetwork size="desktop" locale={locale} /></div>
-        <div className="hero-v4-depth-front"><NeuralNetwork size="desktop" /></div>
+        <div className="hero-v4-depth-front"><NeuralNetwork size="desktop" locale={locale} /></div>
       </div>
     </>
   )
