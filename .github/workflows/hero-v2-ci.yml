@@ -1,8 +1,8 @@
-name: LCR Hero V3 — Living Graph and performance
+name: LCR Hero V4 — Neural AI Hamnet and performance
 
 on:
   push:
-    branches: [feat/hero-v3-living-graph-20261122]
+    branches: [feat/hero-v4-neural-hamnet-20261122]
   pull_request:
     branches: [main]
     paths:
@@ -10,10 +10,10 @@ on:
       - src/pages/Home.tsx
       - src/config/portfolioPositioning.ts
       - src/main.tsx
-      - tests/hero-v3-smoke.mjs
+      - tests/hero-v4-smoke.mjs
       - tests/ai-positioning-smoke.mjs
       - .github/workflows/hero-v2-ci.yml
-      - docs/hero-v2/**
+      - docs/hero-v4/**
   workflow_dispatch:
 
 permissions:
@@ -56,7 +56,7 @@ jobs:
         run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
-      - name: Validate full-bleed living graph, responsive motion and convergent sequence
+      - name: Validate data, neural drag, generated code and AI Hamnet cycle
         run: node tests/hero-v2-smoke.mjs
       - name: Existing Home/SEO/projects regression
         run: node tests/ai-positioning-smoke.mjs
@@ -64,7 +64,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lcr-hero-v3-browser-evidence
+          name: lcr-hero-v4-browser-evidence
           path: test-results/
           if-no-files-found: warn
           retention-days: 30

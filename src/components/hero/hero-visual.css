@@ -1,58 +1,45 @@
-/*
- * LCR Hero V3 — living systems graph, not a dashboard.
- * A custom, inline vector scene shares the actual Hero background and adapts
- * to the existing site theme. No remote fonts, media, canvas or animation lib.
+/* LCR Hero V4 | From data to deep learning to code to AI Hamnet
+ * One continuous visual language. The background is the real section;
+ * no dashboard framework, video, remote animation or heavy rendering API.
  */
-
-/* Design tokens are scoped: no regression to buttons or other sections. */
 .portfolio-home .hero-positioning.hero-v3 {
-  --graph-thread: #458ac6;
-  --graph-vertex: #3376cc;
-  --graph-bright: #007cab;
-  --graph-ray: #3d8dd1;
-  --graph-accent: #098ab6;
-  --graph-aura: #6bcfff;
-  --graph-caption: #35729f;
-  --graph-glass: rgba(255, 255, 255, .76);
-  --graph-glass-edge: rgba(69, 141, 196, .35);
+  --neural-line: #478bcc;
+  --neural-glow: #0c9ad8;
+  --neural-surface: rgba(255,255,255,.85);
+  --neural-border: rgba(44,130,197,.24);
+  --neural-ink: #234f83;
+  --neural-muted: #4b7199;
   position: relative;
   isolation: isolate;
   overflow: hidden;
   background: #fff;
-  min-height: clamp(590px, 56vw, 755px);
-  padding: clamp(58px, 6.8vw, 100px) 0;
+  min-height: clamp(590px,56vw,750px);
+  padding: clamp(57px,6.8vw,97px) 0;
 }
 [data-theme='dark'] .portfolio-home .hero-positioning.hero-v3 {
-  --graph-thread: #5c89d3;
-  --graph-vertex: #8dbafb;
-  --graph-bright: #78ddff;
-  --graph-ray: #52ccff;
-  --graph-accent: #86e8ff;
-  --graph-aura: #3574d5;
-  --graph-caption: #9acafa;
-  --graph-glass: rgba(13, 25, 46, .77);
-  --graph-glass-edge: rgba(105, 197, 248, .43);
+  --neural-line: #4c83e1;
+  --neural-glow: #59e5ff;
+  --neural-surface: rgba(10,24,47,.83);
+  --neural-border: rgba(94,206,255,.36);
+  --neural-ink: #d9f2ff;
+  --neural-muted: #96bddc;
   background: #0d1117;
 }
 .portfolio-home .hero-v3 .hero-main.hero-v3-layout {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: 100%;
   max-width: var(--max-width);
-  min-height: clamp(415px, 43vw, 565px);
+  min-height: clamp(410px,43vw,565px);
   display: flex;
   align-items: center;
   margin-inline: auto;
   pointer-events: none;
 }
-.hero-v3-content {
-  pointer-events: auto;
-  width: min(54%, 630px);
-  min-width: 0;
-}
+.hero-v3-content { width: min(53%,630px); min-width: 0; pointer-events: auto; }
 .hero-v3-copy { min-width: 0; }
 .hero-v3-copy > .eyebrow {
-  margin: 0 0 clamp(20px, 2.5vw, 30px);
+  margin: 0 0 clamp(20px,2.5vw,30px);
   color: var(--primary);
   font-size: 12px;
   font-weight: 750;
@@ -61,27 +48,25 @@
 .portfolio-home .hero-v3 h1.hero-type-title {
   max-width: 100%;
   margin: 0;
-  font-size: clamp(2.45rem, 4.1vw, 4.45rem);
+  font-size: clamp(2.45rem,4.1vw,4.45rem);
   line-height: 1.1;
   letter-spacing: -.045em;
-  text-wrap: balance;
   white-space: normal;
+  text-wrap: balance;
 }
 .portfolio-home .hero-v3 .hero-identity-subtitle {
   margin: 20px 0 0;
-  font-size: clamp(1.25rem, 2vw, 1.9rem);
+  font-size: clamp(1.25rem,2vw,1.9rem);
   line-height: 1.33;
 }
 .portfolio-home .hero-v3 .hero-description {
   max-width: 48ch;
-  margin: clamp(18px, 2.7vw, 32px) 0 0;
+  margin: clamp(18px,2.7vw,32px) 0 0;
   color: var(--text-muted);
-  font-size: clamp(15px, 1.27vw, 18px);
+  font-size: clamp(15px,1.27vw,18px);
   line-height: 1.68;
 }
-.hero-v3-actions {
-  margin-top: clamp(22px, 3.1vw, 38px);
-}
+.hero-v3-actions { margin-top: clamp(22px,3.1vw,38px); }
 .hero-v3-actions .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -90,378 +75,426 @@
 }
 .hero-v3-actions .hero-actions .button { min-height: 44px; }
 .hero-v3-actions .hero-specializations {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 600px;
-  margin-top: 23px;
+  display: grid;
+  grid-template-columns: max-content max-content max-content;
+  align-items: center;
+  width: max-content;
+  max-width: 100%;
   gap: 8px;
+  margin-top: 22px;
 }
 .hero-v3-actions .hero-specializations span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
   font-size: 11px;
   line-height: 1.42;
   white-space: normal;
 }
+.hero-v3-actions .hero-specializations span:nth-child(4) { grid-column: 1; }
 
-/* One landscape-scale visual under the copy. Its mesh *belongs* to the Hero. */
+/* Desktop: full-bleed stage with progressively increasing technical order. */
 .hero-v3 > .hero-graph-field {
-  --hero-shift-back-x: 0px;
-  --hero-shift-back-y: 0px;
-  --hero-shift-front-x: 0px;
-  --hero-shift-front-y: 0px;
   position: absolute;
   inset: 0;
   z-index: 1;
-  min-height: 0;
-  overflow: hidden;
-  contain: paint;
-  pointer-events: auto;
-}
-.hero-graph-visual {
-  position: absolute;
-  inset: -2%;
   pointer-events: none;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0,0,0,.09) 18%,
-    rgba(0,0,0,.48) 31%,
-    black 47%,
-    black 100%
-  );
-  mask-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0,0,0,.09) 18%,
-    rgba(0,0,0,.48) 31%,
-    black 47%,
-    black 100%
-  );
+  contain: paint;
+  --neural-tilt-x: 5deg;
+  --neural-tilt-y: -6deg;
 }
-.hero-living-svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  color: var(--graph-caption);
+.hero-v4-art { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.hero-v4-desktop {
+  position: absolute;
+  left: 46%;
+  top: 12%;
+  width: 56%;
+  height: 79%;
+  -webkit-mask-image: linear-gradient(90deg,transparent 0%,black 19%,black 100%);
+  mask-image: linear-gradient(90deg,transparent 0%,black 19%,black 100%);
 }
-.hero-living-svg--mobile { display: none; }
-.hero-svg-glow-first { stop-color: var(--graph-aura); stop-opacity: .38; }
-.hero-svg-glow-last { stop-color: var(--graph-aura); stop-opacity: 0; }
-.hero-svg-gradient-start { stop-color: var(--graph-thread); stop-opacity: .12; }
-.hero-svg-gradient-middle { stop-color: var(--graph-ray); stop-opacity: .72; }
-.hero-svg-gradient-end { stop-color: var(--graph-accent); stop-opacity: 1; }
-.hero-living-atmosphere {
-  opacity: .57;
-  animation: hero-atmosphere 16s ease-in-out infinite;
+.hero-v4-mobile { display: none; }
+.hero-v4-vector { width: 100%; height: 100%; display: block; overflow: visible; }
+.hero-v4-vector--mobile { display: none; }
+.hero-v4-scatter, .hero-v4-neural-depth {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 820ms ease, filter 900ms ease, transform 1000ms cubic-bezier(.2,.7,.2,1);
 }
-.hero-living-layer--mesh {
-  transition: transform 380ms cubic-bezier(.2,.75,.22,1);
-  transform: translate3d(var(--hero-shift-back-x), var(--hero-shift-back-y), 0);
-}
-.hero-living-layer--streams {
-  transition: transform 420ms cubic-bezier(.2,.75,.22,1);
-  transform: translate3d(var(--hero-shift-front-x), var(--hero-shift-front-y), 0);
-}
-.hero-network-thread {
-  fill: none;
-  stroke: var(--graph-thread);
-  stroke-width: 1.05;
-  opacity: .22;
+.hero-v4-scatter { transform: scale(.94); }
+.hero-graph-field[data-phase='scatter'] .hero-v4-scatter { opacity: 1; transform: scale(1); }
+.hero-v4-scatter-edges line {
+  stroke: var(--neural-line);
+  stroke-width: 1.15;
+  opacity: .24;
   vector-effect: non-scaling-stroke;
 }
-.hero-network-vertex {
-  fill: var(--graph-vertex);
+.hero-v4-data-point { fill: var(--neural-line); opacity: .65; animation: hero-v4-node-pulse 3.5s ease-in-out infinite; }
+.hero-v4-data-point--bright { fill: var(--neural-glow); opacity: .95; }
+.hero-v4-scatter-flows path {
+  fill: none;
+  stroke: var(--neural-glow);
+  opacity: .32;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 12;
+  animation: hero-v4-flow 4s linear infinite;
+}
+.hero-v4-neural-depth {
+  perspective: 820px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+  transform: scale(.84);
+}
+.hero-graph-field[data-phase='neural'] .hero-v4-neural-depth { opacity: 1; transform: scale(1); }
+.hero-v4-depth-front, .hero-v4-depth-shadow {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  backface-visibility: visible;
+}
+.hero-v4-depth-front {
+  animation: hero-v4-neural-idle 8s ease-in-out infinite alternate;
+}
+.hero-v4-depth-shadow {
+  transform: translate3d(16px,10px,-40px) scale(.96);
+  filter: blur(3px);
   opacity: .42;
 }
-.hero-network-vertex--bright {
-  fill: var(--graph-bright);
-  opacity: .76;
+/* The depth duplicate must not duplicate readable captions. */
+.hero-v4-depth-shadow .hero-v4-neural-caption { display: none; }
+.hero-graph-field[data-dragging='true'] .hero-v4-depth-front {
+  animation: none;
+  transform: rotateX(var(--neural-tilt-x)) rotateY(var(--neural-tilt-y));
+  transition: transform 120ms ease-out;
 }
-.hero-network-ray {
+/* One pulse per entire edge layer instead of hundreds of animations. */
+.hero-v4-neural-edges {
+  animation: hero-v4-edge-light 3.6s ease-in-out infinite alternate;
+}
+.hero-v4-neural-edges line {
   fill: none;
-  stroke: var(--graph-ray);
-  stroke-width: 1.45;
-  stroke-linecap: round;
-  stroke-dasharray: 5 13;
-  stroke-dashoffset: 600;
+  stroke-width: 1.55;
   vector-effect: non-scaling-stroke;
-  opacity: .0;
-  animation: hero-ray-flow 16s linear infinite;
+  opacity: .63;
 }
-.hero-network-traveler {
-  fill: var(--graph-accent);
-  opacity: 0;
-  animation: hero-travel 16s cubic-bezier(.24,.6,.27,.93) infinite;
-  animation-delay: var(--pulse-delay, 0s);
-  transform-box: view-box;
-  transform-origin: 0 0;
-  will-change: transform, opacity;
+.hero-v4-neural-layer { animation: hero-v4-layer-glimmer 4.7s ease-in-out infinite alternate; }
+.hero-v4-neuron-halo { fill: var(--neural-glow); opacity: .14; }
+.hero-v4-neuron-core {
+  fill: var(--neural-surface);
+  stroke: var(--neural-glow);
+  stroke-width: 1.8;
 }
-.hero-core-aura {
-  fill: var(--graph-aura);
-  opacity: .07;
-  animation: hero-core-bloom 16s ease-in-out infinite;
-}
-.hero-core-outer {
-  fill: none;
-  stroke: var(--graph-thread);
-  stroke-width: 1.1;
-  stroke-dasharray: 2 9;
-  opacity: .45;
-}
-.hero-core-ring {
-  fill: none;
-  stroke: var(--graph-accent);
-  stroke-width: 1.45;
-  stroke-dasharray: 19 12;
-  opacity: .84;
-}
-.hero-core-interior {
-  fill: var(--graph-aura);
-  fill-opacity: .095;
-  stroke: var(--graph-accent);
-  stroke-width: 1.35;
-  opacity: .86;
-}
-.hero-core-center {
-  fill: var(--graph-accent);
-  opacity: .95;
-}
-.hero-core-orbit {
-  animation: hero-orbit 26s linear infinite;
-  transform-box: view-box;
-}
-.hero-core-orbit--inverse {
-  animation-direction: reverse;
-  animation-duration: 19s;
-}
-.hero-core-orbit-path {
-  fill: none;
-  stroke: var(--graph-ray);
-  stroke-width: 1.1;
-  stroke-dasharray: 3 12;
-  opacity: .72;
-}
-.hero-core-orbit-path--secondary { stroke-dasharray: 8 14; }
-.hero-core-orbit-dot {
-  fill: var(--graph-bright);
-}
-.hero-core-caption {
-  color: var(--graph-caption);
-  fill: currentColor;
-  font-size: 10.5px;
+.hero-v4-neuron-highlight { fill: var(--neural-glow); }
+.hero-v4-neural-caption text {
+  fill: var(--neural-muted);
+  font-size: 12px;
+  letter-spacing: 2px;
   font-weight: 750;
-  letter-spacing: 2.6px;
 }
-.hero-core-caption-small {
-  font-size: 8.7px;
-  letter-spacing: 2.2px;
-  opacity: .75;
+.hero-v4-interaction {
+  position: absolute;
+  z-index: 4;
+  top: 15%;
+  left: 52%;
+  width: 43%;
+  height: 68%;
+  pointer-events: none;
+  touch-action: none;
+  cursor: grab;
+  border-radius: 24px;
+  outline-offset: 3px;
+}
+.hero-graph-field[data-phase='neural'] .hero-v4-interaction { pointer-events: auto; }
+.hero-graph-field[data-dragging='true'] .hero-v4-interaction { cursor: grabbing; }
+.hero-v4-interaction:focus-visible { outline: 3px solid var(--neural-glow); }
+
+/* Code rises from the neural diagram. It is deliberately code, not a generic dashboard. */
+.hero-v4-code-scene {
+  position: absolute;
+  z-index: 2;
+  left: 56%;
+  top: 22%;
+  width: min(37vw, 505px);
+  padding: 17px 22px 18px;
+  opacity: 0;
+  transform: translateY(34px) scale(.92);
+  transition: opacity 920ms ease, transform 1050ms cubic-bezier(.2,.7,.2,1);
+  background: var(--neural-surface);
+  border: 1px solid var(--neural-border);
+  border-radius: 16px;
+  box-shadow: 0 25px 74px -44px rgba(12,97,169,.48);
+  color: var(--neural-ink);
+}
+.hero-graph-field[data-phase='code'] .hero-v4-code-scene { opacity: 1; transform: translateY(0) scale(1); }
+.hero-v4-code-halo {
+  position: absolute;
+  inset: -20%;
+  z-index: -1;
+  background: radial-gradient(ellipse at center,rgba(37,166,255,.15),transparent 63%);
+}
+.hero-v4-code-architecture {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--neural-border);
+  font-size: 11px;
+  font-weight: 750;
+}
+.hero-v4-code-icon {
+  display: grid; place-items: center;
+  flex: 0 0 29px; height: 29px;
+  border-radius: 6px; background: #2369be; color: #fff;
+  font-size: 10px; font-weight: 900;
+}
+.hero-v4-code-state {
+  margin-left: auto;
+  font-size: 9px;
+  color: var(--neural-muted);
+  letter-spacing: .08em;
+}
+.hero-v4-code-lines {
+  display: grid;
+  gap: clamp(12px,1.7vw,18px);
+  padding: 25px 0;
+  overflow: hidden;
+}
+.hero-v4-code-line {
+  display: flex; gap: 7px;
+  color: var(--neural-ink);
+  font: 600 clamp(11px,1vw,14px)/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+.hero-graph-field[data-phase='code'] .hero-v4-code-line { animation: hero-v4-code-enter 670ms both cubic-bezier(.2,.75,.2,1); }
+.hero-v4-code-line--1 { padding-left: 15px; }
+.hero-v4-code-line-number { width: 18px; flex: 0 0 18px; color: var(--neural-muted); font-weight: 400; }
+.hero-v4-code-keyword { color: #1377d3; font-weight: 800; }
+[data-theme='dark'] .hero-v4-code-keyword { color: #77dfff; }
+.hero-v4-code-lower {
+  display: flex; align-items: center; gap: 8px;
+  padding-top: 12px; border-top: 1px solid var(--neural-border);
+  color: var(--neural-muted); font-size: 9px; font-weight: 700;
+}
+.hero-v4-code-lower span:last-child { margin-left: auto; }
+.hero-v4-code-led, .hero-v4-hamnet-state span {
+  width: 7px; height: 7px; flex: 0 0 7px;
+  display: inline-block; border-radius: 50%; background: #09aacf;
 }
 
-/* The technical trace is the outcome of convergence, never a boxed hero card.
-   Its glass uses transparency so the SVG network remains visible through it. */
-.hero-graph-resolution {
+/* The generated code becomes a friendly assistant interaction. */
+.hero-v4-hamnet-scene {
   position: absolute;
-  top: 49%;
-  left: 71.8%;
-  width: clamp(220px, 22vw, 304px);
-  transform: translate(-50%, -50%) scale(.86);
-  opacity: 0;
-  padding: 12px 14px 11px;
-  border: 1px solid var(--graph-glass-edge);
-  border-radius: 10px;
-  background: var(--graph-glass);
-  color: var(--text);
-  box-shadow: 0 19px 44px -31px rgba(8, 85, 160, .42);
-  animation: hero-resolution-reveal 16s ease-in-out infinite;
-}
-.hero-resolution-topline {
+  z-index: 2;
+  left: 53%;
+  top: 25%;
+  width: min(43vw, 550px);
+  min-height: 320px;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding-bottom: 9px;
-  border-bottom: 1px solid var(--graph-glass-edge);
-  color: var(--graph-caption);
-  font-size: 9px;
-  font-weight: 750;
-  letter-spacing: .08em;
+  opacity: 0;
+  transform: translateY(36px) scale(.9);
+  transition: opacity 1100ms ease, transform 1100ms cubic-bezier(.2,.75,.2,1);
 }
-.hero-resolution-glyph {
-  display: grid;
-  place-items: center;
-  width: 29px;
-  height: 25px;
-  border-radius: 5px;
-  color: #fff;
-  background: #2067c0;
-  letter-spacing: 0;
-  font-size: 9px;
+.hero-graph-field[data-phase='hamnet'] .hero-v4-hamnet-scene { opacity: 1; transform: translateY(0) scale(1); }
+.hero-v4-hamnet-glow {
+  position: absolute; inset: -30%; z-index: -1;
+  background: radial-gradient(ellipse at center,rgba(37,166,255,.16),transparent 62%);
 }
-.hero-resolution-signal {
-  margin-left: auto;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--graph-accent);
+.hero-v4-bot-persona {
+  flex: 0 0 38%;
+  min-width: 0;
+  text-align: center;
+  align-self: center;
 }
-.hero-resolution-content {
-  display: grid;
-  gap: 9px;
-  margin: 13px 0 12px;
-  font: 550 clamp(10px, .83vw, 12px)/1.3 ui-monospace, SFMono-Regular, Consolas, monospace;
+.hero-v4-bot-art {
+  display: block;
+  width: min(100%,177px);
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 14px 22px rgba(0,126,221,.19));
+  animation: hero-v4-bot-float 3.6s ease-in-out infinite;
+}
+.hero-v4-hamnet-name { font-weight: 900; font-size: 20px; color: var(--neural-ink); letter-spacing: -.02em; }
+.hero-v4-hamnet-state {
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 7px; gap: 5px; color: var(--neural-muted); font-size: 10px;
+}
+.hero-v4-chat-window {
+  width: 62%;
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--neural-border);
+  border-radius: 16px;
+  background: var(--neural-surface);
+  box-shadow: 0 18px 49px -35px rgba(12,97,169,.44);
+  overflow: hidden;
+}
+.hero-v4-chat-heading {
+  display: flex; align-items: center; gap: 9px;
+  padding: 13px 14px; border-bottom: 1px solid var(--neural-border);
+  color: var(--neural-ink); font-size: 13px;
+}
+.hero-v4-chat-avatar {
+  display: grid; place-items: center; width: 27px; height: 27px;
+  border-radius: 8px; background: #246fcc; color: #fff;
+  font-size: 10px; font-weight: 900;
+}
+.hero-v4-chat-online { margin-left: auto; color: #0cbbbd; }
+.hero-v4-chat-bubble {
+  margin: 21px 14px 27px;
+  padding: 15px 14px;
+  border-radius: 13px 13px 13px 3px;
+  background: rgba(29,131,220,.11);
+  color: var(--neural-ink);
+}
+.hero-v4-chat-hello {
+  font-size: 21px;
+  font-weight: 850;
+  color: var(--neural-glow);
+  overflow: hidden;
   white-space: nowrap;
 }
-.hero-resolution-content div > span { color: var(--graph-caption); opacity: .75; margin-right: 9px; }
-.hero-resolution-content em {
-  font-style: normal;
-  color: var(--graph-bright);
-  font-weight: 800;
+.hero-v4-chat-bubble p { margin: 10px 0 0; font-size: 13px; line-height: 1.5; }
+.hero-graph-field[data-phase='hamnet'] .hero-v4-chat-bubble {
+  animation: hero-v4-chat-appear 770ms both ease-out;
+  animation-delay: 250ms;
 }
-.hero-resolution-content b { font-weight: 500; }
-.hero-resolution-caption {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding-top: 9px;
-  border-top: 1px solid var(--graph-glass-edge);
-  font-size: 9px;
-  font-weight: 750;
-  color: var(--graph-caption);
-  letter-spacing: .08em;
+.hero-graph-field[data-phase='hamnet'] .hero-v4-chat-hello {
+  animation: hero-v4-hello-typing 650ms steps(6,end) both;
+  animation-delay: 350ms;
 }
-.hero-resolution-status {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--graph-accent);
-}
+.hero-v4-chat-bottom { display: flex; gap: 5px; padding: 0 14px 13px; }
+.hero-v4-chat-bottom span { width: 6px; height: 6px; border-radius: 50%; background: var(--neural-line); opacity: .45; }
 
-.hero-graph-motion-control {
+.hero-v4-stage-marker {
   position: absolute;
-  right: clamp(18px, 4vw, 62px);
-  bottom: 22px;
-  z-index: 3;
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--graph-glass-edge);
+  left: 57%;
+  bottom: clamp(27px,4.2vw,56px);
+  font-size: 11px; color: var(--neural-muted);
+  letter-spacing: .13em; font-weight: 800;
+}
+.hero-v4-drag-hint { font-size: 10px; font-weight: 650; letter-spacing: .07em; }
+.hero-graph-motion-control {
+  position: absolute; z-index: 5;
+  right: clamp(16px,3.7vw,54px); bottom: 21px;
+  display: grid; place-items: center;
+  width: 44px; height: 44px;
   border-radius: 50%;
-  background: var(--graph-glass);
-  color: var(--graph-caption);
-  opacity: .8;
+  border: 1px solid var(--neural-border);
+  background: var(--neural-surface);
+  color: var(--neural-ink);
+  opacity: .87;
   cursor: pointer;
-  transition: opacity 180ms ease, background-color 180ms ease;
+  pointer-events: auto;
 }
 .hero-graph-motion-control:hover { opacity: 1; }
-.hero-graph-motion-control:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; opacity: 1; }
-.hero-graph-motion-control:disabled { opacity: .46; cursor: not-allowed; }
-.hero-mobile-graph-caption {
-  font-size: 9px;
-  font-weight: 750;
-  letter-spacing: 1.1px;
-  fill: var(--graph-caption);
+.hero-graph-motion-control:focus-visible { outline: 3px solid var(--neural-glow); outline-offset: 3px; }
+.hero-graph-motion-control:disabled { cursor: not-allowed; opacity: .45; }
+.hero-v4-visually-hidden {
+  position: absolute !important; width: 1px !important; height: 1px !important;
+  padding: 0 !important; margin: -1px !important;
+  overflow: hidden !important; clip: rect(0,0,0,0) !important;
+  clip-path: inset(50%) !important; white-space: nowrap !important;
+  border: 0 !important;
 }
 
-/* All animation is CSS/SVG. No JS RAF loop, no WebGL, no external requests. */
-@keyframes hero-ray-flow {
-  0%, 8% { stroke-dashoffset: 700; opacity: 0; }
-  22% { opacity: .3; }
-  48%, 56% { stroke-dashoffset: 0; opacity: .79; }
-  68% { opacity: .09; }
-  82%, 100% { stroke-dashoffset: -350; opacity: 0; }
+@keyframes hero-v4-node-pulse { 0%,100% {opacity:.43} 50% {opacity:.92} }
+@keyframes hero-v4-flow { from {stroke-dashoffset:0} to {stroke-dashoffset:-150} }
+@keyframes hero-v4-neural-idle {
+  0% {transform: rotateY(-11deg) rotateX(5deg) translateY(3px)}
+  50% {transform: rotateY(2deg) rotateX(-7deg) translateY(-6px)}
+  100% {transform: rotateY(12deg) rotateX(4deg) translateY(3px)}
 }
-@keyframes hero-travel {
-  0%, 8% { opacity: 0; transform: translate3d(0, 0, 0); }
-  15% { opacity: .86; }
-  51%, 59% { opacity: .95; transform: translate3d(var(--converge-x), var(--converge-y), 0); }
-  66%, 100% { opacity: 0; transform: translate3d(var(--converge-x), var(--converge-y), 0); }
-}
-@keyframes hero-core-bloom {
-  0%, 18% { opacity: .045; }
-  40%, 59% { opacity: .2; }
-  75%, 100% { opacity: .075; }
-}
-@keyframes hero-atmosphere {
-  0%, 14% { opacity: .35; }
-  45%, 62% { opacity: .82; }
-  85%, 100% { opacity: .4; }
-}
-@keyframes hero-orbit {
-  to { transform: rotate(360deg); }
-}
-@keyframes hero-resolution-reveal {
-  0%, 51% { opacity: 0; transform: translate(-50%, -50%) scale(.86); }
-  61%, 82% { opacity: .96; transform: translate(-50%, -50%) scale(1); }
-  94%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(.94); }
+@keyframes hero-v4-edge-light { 0% {opacity:.21} 100% {opacity:.73} }
+@keyframes hero-v4-layer-glimmer { from {opacity:.84} to {opacity:1} }
+@keyframes hero-v4-code-enter { from {opacity:0;transform:translateY(-20px)} to {opacity:1;transform:translateY(0)} }
+@keyframes hero-v4-bot-float { from,to {transform:translateY(3px)} 50% {transform:translateY(-9px)} }
+@keyframes hero-v4-chat-appear { from {opacity:0;transform:translateY(12px)} to {opacity:1;transform:translateY(0)} }
+@keyframes hero-v4-hello-typing { from {clip-path:inset(0 100% 0 0)} to {clip-path:inset(0 0 0 0)} }
+
+.hero-graph-field[data-playing='false'] .hero-v4-art *,
+.hero-graph-field[data-playing='false'] .hero-v4-art *::before,
+.hero-graph-field[data-playing='false'] .hero-v4-art *::after {
+  animation-play-state: paused !important;
 }
 
-/* No graph animation runs when hidden or explicitly paused. */
-.hero-graph-field[data-playing='false'] .hero-network-ray,
-.hero-graph-field[data-playing='false'] .hero-network-traveler,
-.hero-graph-field[data-playing='false'] .hero-core-orbit,
-.hero-graph-field[data-playing='false'] .hero-core-aura,
-.hero-graph-field[data-playing='false'] .hero-living-atmosphere,
-.hero-graph-field[data-playing='false'] .hero-graph-resolution { animation-play-state: paused; }
-
-@media (max-width: 1100px) and (min-width: 901px) {
-  .hero-v3-content { width: min(56%, 600px); }
-  .portfolio-home .hero-v3 h1.hero-type-title { font-size: clamp(2.5rem, 4.2vw, 3.55rem); }
-  .hero-graph-resolution { left: 72%; width: 224px; }
+@media (min-width: 901px) and (max-width: 1170px) {
+  .hero-v3-content { width: min(54%,620px); }
+  .portfolio-home .hero-v3 h1.hero-type-title { font-size: clamp(2.25rem,4.1vw,3.65rem); }
+  .hero-v3-actions .hero-specializations { gap: 5px; }
+  .hero-v3-actions .hero-specializations span { font-size: 10px; }
+  .hero-v4-code-scene { left: 55%; width: 43vw; }
+  .hero-v4-code-lines { gap: 12px; }
+  .hero-v4-code-line { font-size: 10px; }
 }
 @media (max-width: 900px) {
-  .portfolio-home .hero-positioning.hero-v3 {
-    min-height: 0;
-    padding: 45px 0 0;
-  }
+  .portfolio-home .hero-positioning.hero-v3 { min-height: 0; padding: 44px 0 0; }
   .portfolio-home .hero-v3 .hero-main.hero-v3-layout {
-    min-height: 0;
-    display: block;
-    pointer-events: auto;
+    min-height: 0; display: block; pointer-events: auto;
   }
-  .hero-v3-content { width: min(100%, 720px); }
-  .portfolio-home .hero-v3 h1.hero-type-title { font-size: clamp(2.35rem, 6vw, 3.6rem); }
+  .hero-v3-content { width: min(100%,720px); }
+  .portfolio-home .hero-v3 h1.hero-type-title { font-size: clamp(2.35rem,6vw,3.6rem); }
   .portfolio-home .hero-v3 .hero-description { max-width: 58ch; }
-  .hero-v3-actions { margin-top: 23px; }
+  .hero-v3-actions { margin-top: 24px; }
   .hero-v3 > .hero-graph-field {
-    position: relative;
-    height: 380px;
-    margin-top: 10px;
-    contain: paint;
+    position: relative; height: 365px; margin-top: 8px; overflow: hidden;
   }
-  .hero-graph-visual {
-    inset: 0;
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-  .hero-living-svg--desktop { display: none; }
-  .hero-living-svg--mobile { display: block; }
-  .hero-graph-resolution { display: none; }
-  .hero-graph-motion-control { right: 22px; bottom: 8px; }
+  .hero-v4-desktop { display: none; }
+  .hero-v4-mobile { position: absolute; inset: 3% 1% 3%; display: block; }
+  .hero-v4-vector--desktop { display: none; }
+  .hero-v4-vector--mobile { display: block; }
+  .hero-v4-depth-shadow { display: none; }
+  .hero-v4-depth-front { animation: none; transform: none; }
+  /* Mobile has one clear stage caption, never two overlapping labels. */
+  .hero-v4-neural-caption { display: none; }
+  .hero-v4-interaction { display: none; }
+  .hero-v4-code-scene { top: 10%; left: 8%; width: 84%; max-width: 500px; padding: 12px 16px; }
+  .hero-v4-code-lines { gap: 11px; padding: 13px 0; }
+  .hero-v4-code-line { font-size: clamp(11px,2vw,13px); }
+  .hero-v4-hamnet-scene { top: 7%; left: 5%; width: 90%; min-height: 260px; }
+  .hero-v4-stage-marker { left: 18px; bottom: 21px; font-size: 10px; }
+  .hero-graph-motion-control { right: 18px; bottom: 11px; }
 }
 @media (max-width: 600px) {
   .portfolio-home .hero-positioning.hero-v3 { padding-top: 36px; }
   .hero-v3-copy > .eyebrow { margin-bottom: 16px; font-size: 10px; }
   .portfolio-home .hero-v3 h1.hero-type-title {
-    font-size: clamp(2.05rem, 8.25vw, 3.05rem);
-    line-height: 1.1;
-    overflow-wrap: anywhere;
+    font-size: clamp(2rem,8.15vw,3.05rem);
+    line-height: 1.1; overflow-wrap: anywhere;
   }
-  .portfolio-home .hero-v3 .hero-identity-subtitle { font-size: 1.2rem; margin-top: 14px; }
-  .portfolio-home .hero-v3 .hero-description { font-size: 15px; line-height: 1.65; margin-top: 18px; }
+  .portfolio-home .hero-v3 .hero-identity-subtitle { margin-top: 14px; font-size: 1.2rem; }
+  .portfolio-home .hero-v3 .hero-description { margin-top: 18px; font-size: 15px; line-height: 1.65; }
   .hero-v3-actions { margin-top: 22px; }
   .hero-v3-actions .hero-actions { gap: 9px; }
   .hero-v3-actions .hero-actions .button { flex: 1 1 auto; }
-  .hero-v3-actions .hero-specializations { margin-top: 16px; gap: 6px; }
-  .hero-v3-actions .hero-specializations span { font-size: 11px; }
-  .hero-v3 > .hero-graph-field { height: 325px; margin-top: 7px; }
-  .hero-graph-motion-control { right: 12px; bottom: 9px; }
-  .hero-network-thread { opacity: .16; }
+  .hero-v3-actions .hero-specializations { display: flex; width: 100%; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+  .hero-v3-actions .hero-specializations span { font-size: 10px; }
+  .hero-v3 > .hero-graph-field { height: 310px; margin-top: 9px; }
+  .hero-v4-code-scene { top: 8%; left: 4%; width: 92%; }
+  .hero-v4-code-line { font-size: 9.5px; gap: 4px; }
+  .hero-v4-code-line--1 { padding-left: 9px; }
+  .hero-v4-code-architecture { font-size: 10px; }
+  .hero-v4-code-lower { font-size: 8px; }
+  .hero-v4-hamnet-scene { left: 4%; width: 92%; top: 8%; min-height: 228px; }
+  .hero-v4-bot-persona { flex-basis: 36%; }
+  .hero-v4-bot-art { width: 112px; }
+  .hero-v4-hamnet-name { font-size: 15px; }
+  .hero-v4-hamnet-state { font-size: 8px; }
+  .hero-v4-chat-heading { padding: 9px; font-size: 11px; }
+  .hero-v4-chat-bubble { margin: 12px 9px 16px; padding: 11px 10px; }
+  .hero-v4-chat-hello { font-size: 17px; }
+  .hero-v4-chat-bubble p { font-size: 11px; }
+  .hero-v4-stage-marker { bottom: 16px; font-size: 9px; }
+  .hero-graph-motion-control { right: 10px; bottom: 8px; }
 }
-@media (max-width: 390px) {
-  .hero-v3 > .hero-graph-field { height: 290px; }
+@media (max-width: 370px) {
+  .hero-v3-actions .hero-specializations span { font-size: 9.5px; }
+  .hero-v4-code-line { font-size: 9px; }
+  .hero-v4-chat-bubble p { font-size: 10.5px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-graph-field *, .hero-graph-field *::before, .hero-graph-field *::after {
@@ -469,10 +502,6 @@
     transition: none !important;
     will-change: auto !important;
   }
-  .hero-graph-resolution { display: none !important; }
-  .hero-living-atmosphere { opacity: .5; }
-  .hero-network-ray { stroke-dashoffset: 0; opacity: .28; }
-  .hero-network-traveler { display: none; }
-  .hero-core-aura { opacity: .1; }
-  .hero-graph-field { --hero-shift-back-x: 0px !important; --hero-shift-back-y: 0px !important; --hero-shift-front-x: 0px !important; --hero-shift-front-y: 0px !important; }
+  .hero-v4-depth-front { transform: none !important; }
+  .hero-v4-interaction { pointer-events: none !important; }
 }

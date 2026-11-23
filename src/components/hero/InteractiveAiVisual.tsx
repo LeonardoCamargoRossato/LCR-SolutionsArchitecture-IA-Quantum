@@ -1,121 +1,178 @@
 import { Pause, Play } from 'lucide-react'
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { HeroGraphDesktop, HeroGraphMobile } from './AiSystemsGraph'
 import { EngineeringWorkspace } from './EngineeringWorkspace'
 
-const REDUCED_MOTION = '(prefers-reduced-motion: reduce)'
+type Phase = 'scatter' | 'neural' | 'code' | 'hamnet'
+const PHASES: readonly Phase[] = ['scatter', 'neural', 'code', 'hamnet']
+const DURATION: Record<Phase, number> = {
+  scatter: 3300,
+  neural: 7900,
+  code: 5600,
+  hamnet: 6600,
+}
+const REDUCED = '(prefers-reduced-motion: reduce)'
+type DragOrigin = { x: number; y: number; yaw: number; pitch: number }
 
 /**
- * Hero V3: one seamless background visual rather than a demo widget.
- * - CSS/SVG animates the scatter -> convergence -> engineering sequence.
- * - requestAnimationFrame runs only after mouse movement, never as a loop.
- * - Observer, document visibility, motion preferences and explicit pause
- *   stop animation entirely when it cannot benefit the visitor.
+ * The only timer advances the scene at a human-readable pace.
+ * CSS animates the graphics. Pointer/keyboard controls manipulate a small
+ * 2.5D transform; pointer updates are coalesced into one frame on demand.
  */
 export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
   const root = useRef<HTMLDivElement>(null)
-  const pointerFrame = useRef<number | null>(null)
+  const frame = useRef<number | null>(null)
+  const drag = useRef<DragOrigin | null>(null)
+  const rotation = useRef({ yaw: -6, pitch: 5 })
+  const [reduced, setReduced] = useState(() => window.matchMedia(REDUCED).matches)
+  const [phase, setPhase] = useState<Phase>(() => window.matchMedia(REDUCED).matches ? 'neural' : 'scatter')
   const [paused, setPaused] = useState(false)
-  const [reduced, setReduced] = useState(() => window.matchMedia(REDUCED_MOTION).matches)
-  const [inViewport, setInViewport] = useState(true)
+  const [dragging, setDragging] = useState(false)
+  const [visible, setVisible] = useState(true)
   const [documentVisible, setDocumentVisible] = useState(() => !document.hidden)
-  const playing = !paused && !reduced && inViewport && documentVisible
+  const playing = !paused && !reduced && visible && documentVisible
 
   useEffect(() => {
-    const media = window.matchMedia(REDUCED_MOTION)
-    const update = () => setReduced(media.matches)
-    media.addEventListener('change', update)
-    return () => media.removeEventListener('change', update)
+    const preference = window.matchMedia(REDUCED)
+    const update = () => {
+      setReduced(preference.matches)
+      if (preference.matches) setPhase('neural')
+    }
+    preference.addEventListener('change', update)
+    return () => preference.removeEventListener('change', update)
   }, [])
 
   useEffect(() => {
-    const onVisibilityChange = () => setDocumentVisible(!document.hidden)
-    document.addEventListener('visibilitychange', onVisibilityChange)
-    return () => document.removeEventListener('visibilitychange', onVisibilityChange)
+    const update = () => setDocumentVisible(!document.hidden)
+    document.addEventListener('visibilitychange', update)
+    return () => document.removeEventListener('visibilitychange', update)
   }, [])
 
   useEffect(() => {
-    const node = root.current
-    if (!node || !('IntersectionObserver' in window)) return
+    if (!root.current || typeof IntersectionObserver === 'undefined') return
     const observer = new IntersectionObserver(
-      ([entry]) => setInViewport(entry?.isIntersecting ?? true),
-      { threshold: 0.03 },
+      ([entry]) => setVisible(entry?.isIntersecting ?? true),
+      { threshold: 0.035 },
     )
-    observer.observe(node)
+    observer.observe(root.current)
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    if (!playing || dragging) return
+    const timeout = window.setTimeout(() => {
+      setPhase((old) => PHASES[(PHASES.indexOf(old) + 1) % PHASES.length])
+    }, DURATION[phase])
+    return () => window.clearTimeout(timeout)
+  }, [playing, dragging, phase])
+
   useEffect(() => () => {
-    if (pointerFrame.current !== null) cancelAnimationFrame(pointerFrame.current)
+    if (frame.current !== null) cancelAnimationFrame(frame.current)
   }, [])
 
-  const clearParallax = () => {
-    const el = root.current
-    if (pointerFrame.current !== null) {
-      cancelAnimationFrame(pointerFrame.current)
-      pointerFrame.current = null
+  const applyRotation = (yaw: number, pitch: number) => {
+    rotation.current = {
+      yaw: Math.max(-23, Math.min(23, yaw)),
+      pitch: Math.max(-15, Math.min(15, pitch)),
     }
-    if (!el) return
-    el.style.setProperty('--hero-shift-back-x', '0px')
-    el.style.setProperty('--hero-shift-back-y', '0px')
-    el.style.setProperty('--hero-shift-front-x', '0px')
-    el.style.setProperty('--hero-shift-front-y', '0px')
-  }
-
-  const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (!playing || (event.pointerType !== 'mouse' && event.pointerType !== 'pen')) return
-    if (window.innerWidth <= 900 || pointerFrame.current !== null) return
-
-    const element = event.currentTarget
-    const rect = element.getBoundingClientRect()
-    const offsetX = (event.clientX - rect.left) / Math.max(rect.width, 1) * 2 - 1
-    const offsetY = (event.clientY - rect.top) / Math.max(rect.height, 1) * 2 - 1
-    pointerFrame.current = requestAnimationFrame(() => {
-      pointerFrame.current = null
-      const x = Math.max(-1, Math.min(1, offsetX))
-      const y = Math.max(-1, Math.min(1, offsetY))
-      element.style.setProperty('--hero-shift-back-x', `${(-x * 10).toFixed(1)}px`)
-      element.style.setProperty('--hero-shift-back-y', `${(-y * 7).toFixed(1)}px`)
-      element.style.setProperty('--hero-shift-front-x', `${(x * 15).toFixed(1)}px`)
-      element.style.setProperty('--hero-shift-front-y', `${(y * 11).toFixed(1)}px`)
+    if (frame.current !== null) return
+    frame.current = requestAnimationFrame(() => {
+      frame.current = null
+      root.current?.style.setProperty('--neural-tilt-y', `${rotation.current.yaw.toFixed(1)}deg`)
+      root.current?.style.setProperty('--neural-tilt-x', `${rotation.current.pitch.toFixed(1)}deg`)
     })
   }
 
+  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (!playing || phase !== 'neural' || window.innerWidth <= 900 || event.pointerType === 'touch') return
+    if (event.button !== 0) return
+    drag.current = {
+      x: event.clientX, y: event.clientY,
+      yaw: rotation.current.yaw, pitch: rotation.current.pitch,
+    }
+    setDragging(true)
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (!drag.current || !playing) return
+    applyRotation(
+      drag.current.yaw + (event.clientX - drag.current.x) * .13,
+      drag.current.pitch - (event.clientY - drag.current.y) * .10,
+    )
+  }
+
+  const stopDragging = (event: PointerEvent<HTMLDivElement>) => {
+    if (!drag.current) return
+    drag.current = null
+    setDragging(false)
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+  }
+
+  const onKeyboardRotate = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (phase !== 'neural' || reduced) return
+    const change: Record<string, [number, number]> = {
+      ArrowLeft: [-4, 0], ArrowRight: [4, 0],
+      ArrowUp: [0, -4], ArrowDown: [0, 4],
+    }
+    if (!change[event.key]) return
+    event.preventDefault()
+    applyRotation(rotation.current.yaw + change[event.key][0], rotation.current.pitch + change[event.key][1])
+  }
+
+  const pt = locale === 'pt-BR'
   return (
     <div
       ref={root}
-      className="hero-graph-field"
+      className="hero-graph-field hero-graph-field--v4"
       data-testid="interactive-ai-visual"
+      data-phase={phase}
       data-playing={playing ? 'true' : 'false'}
       data-reduced={reduced ? 'true' : 'false'}
-      data-layout="responsive-graph"
-      onPointerMove={onPointerMove}
-      onPointerLeave={clearParallax}
+      data-dragging={dragging ? 'true' : 'false'}
       role="group"
-      aria-label={locale === 'pt-BR'
-        ? 'Grafo interativo de inteligência artificial que conecta dados, recuperação e raciocínio'
-        : 'Interactive intelligent systems graph connecting data, retrieval, and reasoning'}
+      aria-label={pt ? 'Animação da evolução de dados em redes neurais, código e AI Hamnet' : 'From scattered data to neural layers, code and AI Hamnet'}
     >
-      <div className="hero-graph-visual" aria-hidden="true">
-        <HeroGraphDesktop />
-        <HeroGraphMobile />
-        <EngineeringWorkspace />
+      <div className="hero-v4-art" aria-hidden="true">
+        <div className="hero-v4-desktop"><HeroGraphDesktop /></div>
+        <div className="hero-v4-mobile"><HeroGraphMobile /></div>
+        <EngineeringWorkspace locale={locale} />
       </div>
-      <span className="sr-only">
-        {locale === 'pt-BR'
-          ? 'Nós e conexões dispersos convergem para um núcleo de inteligência e revelam uma representação conceitual de engenharia de software. Sem processamento real de dados.'
-          : 'Scattered nodes and connections converge into an intelligence core and reveal a conceptual software engineering trace. No data is processed.'}
+
+      <div
+        className="hero-v4-interaction"
+        data-testid="hero-v4-drag-target"
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={stopDragging}
+        onPointerCancel={stopDragging}
+        onKeyDown={onKeyboardRotate}
+        role="group"
+        tabIndex={phase === 'neural' ? 0 : -1}
+        aria-label={pt
+          ? 'Explorar camadas neurais: arraste com o mouse ou use as teclas de seta'
+          : 'Explore the neural layers: drag with mouse or use arrow keys'}
+      />
+      <span className="hero-v4-visually-hidden">
+        {pt
+          ? 'Visualização conceitual. Primeiro pontos de dados dispersos, depois uma rede neural conectada em camadas, linhas de código e o robô AI Hamnet dizendo Hello. Não existe uma conversa real nesta animação.'
+          : 'Conceptual visualization: scattered data points become a layered neural network, then source code and the AI Hamnet robot saying Hello. No live conversation is involved.'}
       </span>
+      <div className="hero-v4-stage-marker" aria-hidden="true">
+        {phase === 'scatter' ? 'DATA INPUT' : phase === 'neural' ? 'NEURAL ARCHITECTURE' : phase === 'code' ? 'SOFTWARE GENERATION' : 'AI HAMNET'}
+        {phase === 'neural' && !reduced ? <span className="hero-v4-drag-hint"> · {pt ? 'ARRASTE PARA EXPLORAR' : 'DRAG TO EXPLORE'}</span> : null}
+      </div>
       <button
         type="button"
         className="hero-graph-motion-control"
         disabled={reduced}
         aria-label={reduced
-          ? (locale === 'pt-BR' ? 'Animação desativada pela preferência de movimento reduzido' : 'Animation disabled by reduced motion preference')
+          ? (pt ? 'Animação desativada por preferência de movimento reduzido' : 'Animation disabled by reduced motion preference')
           : paused
-            ? (locale === 'pt-BR' ? 'Reativar animação do grafo' : 'Resume graph animation')
-            : (locale === 'pt-BR' ? 'Pausar animação do grafo' : 'Pause graph animation')}
-        title={paused ? 'Play' : 'Pause'}
+            ? (pt ? 'Reiniciar animação do grafo' : 'Resume graph animation')
+            : (pt ? 'Pausar animação do grafo' : 'Pause graph animation')}
         onClick={() => setPaused((old) => !old)}
       >
         {paused || reduced ? <Play size={16} aria-hidden="true" /> : <Pause size={16} aria-hidden="true" />}
