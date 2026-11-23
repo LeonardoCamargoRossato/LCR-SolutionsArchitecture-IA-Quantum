@@ -1,12 +1,19 @@
-name: LCR Hero V9 — Mobile Typography, Gap and Hamlet AI
+name: LCR Hero V10 — Responsive Tags, Header Languages, Dark Default
 
 on:
   push:
-    branches: [fix/hero-mobile-title-spacing-hamlet-ai-20261123]
+    branches: [fix/hero-nav-defaults-language-ui-20261123]
   pull_request:
     branches: [main]
     paths:
       - src/components/hero/**
+      - src/components/Header.tsx
+      - src/components/header/**
+      - src/i18n/**
+      - src/providers/ThemeProvider.tsx
+      - src/styles/global.css
+      - index.html
+      - tests/hero-v10-header-smoke.mjs
       - src/pages/Home.tsx
       - src/config/portfolioPositioning.ts
       - src/main.tsx
@@ -20,6 +27,7 @@ on:
       - docs/hero-v7/**
       - docs/hero-v8/**
       - docs/hero-v9/**
+      - docs/hero-v10/**
   workflow_dispatch:
 
 permissions:
@@ -79,17 +87,19 @@ jobs:
         run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
-      - name: Validate theme-specific SVG contrast, 5 Hero tags, performance and 4 scenes
+      - name: Validate theme-specific SVG contrast, 4 Hero tags, performance and 4 scenes
         run: node tests/hero-v5-smoke.mjs
       - name: Mobile two-line headline, 44px gap, Hamlet AI label (9 responsive viewports)
         run: node tests/hero-mobile-v9-layout-smoke.mjs
+      - name: Header flags, English/dark defaults, desktop tags and mobile scene clearance
+        run: node tests/hero-v10-header-smoke.mjs
       - name: Existing Home/SEO/projects regression
         run: node tests/ai-positioning-smoke.mjs
       - name: Browser evidence (desktop, notebook, tablet, mobile)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lcr-hero-v9-browser-evidence
+          name: lcr-hero-v10-browser-evidence
           path: test-results/
           if-no-files-found: warn
           retention-days: 30

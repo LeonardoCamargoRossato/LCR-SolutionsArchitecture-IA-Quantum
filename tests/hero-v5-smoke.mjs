@@ -33,6 +33,13 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
     colorScheme: dark ? 'dark' : 'light',
   })
   const page = await context.newPage()
+  // The product defaults to dark; explicitly choose the theme for each
+  // existing contrast and regression scenario.
+  await page.addInitScript(({ dark }) => {
+    if (!localStorage.getItem('portfolio-theme')) {
+      localStorage.setItem('portfolio-theme', dark ? 'dark' : 'light')
+    }
+  }, { dark })
   const pageErrors = []
   page.on('pageerror', e => pageErrors.push(String(e)))
   await page.goto(BASE + '#/', { waitUntil: 'domcontentloaded' })
@@ -116,9 +123,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
     assert.equal(facts.mobileVisible, false)
     assert.equal(facts.visualPosition, 'absolute')
     assert(facts.visWidth >= facts.heroWidth - 2, 'Desktop art must blend into Hero background')
-    assert.equal(facts.tagRows[0], facts.tagRows[1], 'First two tags must share first line')
-    assert(facts.tagRows[2] > facts.tagRows[1], 'Data & Optimization must start second row')
-    assert.equal(facts.tagRows[2], facts.tagRows[3], 'Quantum Computing must share second row')
+    assert(facts.tagRows.every(row => row === facts.tagRows[0]), 'All four desktop tags must share ONE line')
   } else {
     assert.equal(facts.mobileVisible, true)
     assert.equal(facts.desktopVisible, false)

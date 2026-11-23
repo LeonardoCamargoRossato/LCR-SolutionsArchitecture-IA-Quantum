@@ -1,0 +1,113 @@
+/* Global header controls — always visible before the collapsed mobile menu.
+ * Keep the original navigation routes untouched. No external flag assets.
+ */
+.site-header .header-controls {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+.site-header .language-picker {
+  position: relative;
+  display: inline-flex;
+  isolation: isolate;
+}
+.site-header .language-picker-trigger {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  min-width: 109px;
+  padding: 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 760;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.site-header .language-picker-trigger[aria-expanded='true'] {
+  border-color: var(--primary);
+}
+.site-header .language-flag-icon {
+  display: block;
+  width: 23px;
+  height: 16px;
+  border-radius: 2px;
+}
+.site-header .language-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  line-height: 1;
+  flex: 0 0 20px;
+  font-family: system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+}
+.site-header .language-picker-options {
+  position: absolute;
+  z-index: 120;
+  top: calc(100% + 8px);
+  right: 0;
+  display: grid;
+  gap: 5px;
+  min-width: 155px;
+  padding: 7px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.site-header .language-picker-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.site-header .language-picker-option:hover,
+.site-header .language-picker-option[aria-pressed='true'] {
+  border-color: var(--border);
+  background: var(--surface-alt);
+}
+.site-header .language-picker-trigger:focus-visible,
+.site-header .language-picker-option:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+@media (max-width: 1100px) {
+  .site-header .header-inner { gap: 12px; }
+  .site-header .nav { gap: 12px; }
+}
+@media (max-width: 980px) {
+  .site-header .header-inner { gap: 12px; }
+  .site-header .header-controls { gap: 7px; margin-left: auto; }
+  .site-header .language-picker-trigger { min-height: 40px; }
+  .site-header .theme-toggle { flex: 0 0 34px; }
+  .site-header .menu-button { flex: 0 0 40px; }
+}
+@media (max-width: 410px) {
+  .site-header .header-controls { gap: 5px; }
+  .site-header .language-picker-trigger {
+    min-width: 101px;
+    padding-inline: 7px;
+    font-size: 10px;
+    gap: 4px;
+  }
+  .site-header .language-picker-options { right: 0; }
+}

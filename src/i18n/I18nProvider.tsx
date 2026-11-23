@@ -14,7 +14,9 @@ const I18nContext = createContext<I18nContextValue | undefined>(undefined)
 function initialLocale(): Locale {
   const stored = localStorage.getItem('portfolio-locale')
   if (stored === 'pt-BR' || stored === 'en-US') return stored
-  return navigator.language.toLowerCase().startsWith('pt') ? 'pt-BR' : 'en-US'
+  // First visit is always English, regardless of browser/OS language.
+  // After an explicit choice, preserve the user's selected language.
+  return 'en-US'
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
