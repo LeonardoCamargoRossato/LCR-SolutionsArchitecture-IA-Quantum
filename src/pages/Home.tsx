@@ -20,6 +20,7 @@ import { localizedAbout, localizedHome, localizedSiteSettings } from '../i18n/co
 import { useI18n } from '../i18n/I18nProvider'
 import { useSiteContent } from '../providers/SiteContentProvider'
 import { useHomeEntrance } from '../hooks/useHomeEntrance'
+import { useHomeMotionEnabled } from '../features/home-loading/HomeMotionContext'
 
 export function Home() {
   const { content, projects } = useSiteContent()
@@ -28,7 +29,8 @@ export function Home() {
   const homeRef = useRef<HTMLElement>(null)
   const aboutMediaRef = useRef<HTMLDivElement>(null)
   const [aboutReferenceHeight, setAboutReferenceHeight] = useState<number | null>(null)
-  useHomeEntrance(homeRef)
+  const homeMotionEnabled = useHomeMotionEnabled()
+  useHomeEntrance(homeRef, homeMotionEnabled)
 
   // The photo + last contact line is the desktop height reference for About.
   // The right column never grows the section; its details open on demand.
@@ -96,7 +98,8 @@ export function Home() {
   const professionalTitle = heroCopy.positioning
 
   return (
-    <main className="portfolio-home" style={portfolioScaleStyle} ref={homeRef}>
+    <main className="portfolio-home" style={portfolioScaleStyle} ref={homeRef}
+      data-home-motion={homeMotionEnabled ? 'running' : 'paused'}>
       <section className="hero hero-positioning hero-v3" aria-label={locale === 'pt-BR' ? 'Apresentação profissional' : 'Professional introduction'}>
         <div className="site-container hero-main hero-v3-layout">
           <div className="hero-v3-content">
