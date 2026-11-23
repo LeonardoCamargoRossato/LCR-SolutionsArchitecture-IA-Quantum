@@ -95,10 +95,19 @@ async function inspect(name, width, height, reduced) {
   await page.getByLabel('Duração de abertura').fill('150')
   await page.getByLabel('Espera após carregamento').fill('0')
   await page.getByLabel('Ready para abrir').check()
-  await page.waitForFunction(() =>
-    document.querySelector('[data-testid="loading-portal"]')?.dataset.phase === 'opening', null, { timeout: 6000 })
-  assert.equal(await page.locator('.lcr-loading-portal__leaf').count(), 2)
-  assert.equal(await page.locator('.lcr-loading-portal__lock-core').count(), 1)
+  if (!reduced) {
+    await page.waitForFunction(() =>
+      document.querySelector('[data-testid="loading-portal"]')?.dataset.phase === 'opening', null, { timeout: 6000 })
+    assert.equal(await page.locator('.lcr-loading-portal__leaf').count(), 2,
+      'Normal-motion opening must reveal the original two leaves')
+    assert.equal(await page.locator('.lcr-loading-portal__lock-core').count(), 1,
+      'Opening core must remain attached to left leaf')
+  } else {
+    // A reduced-motion portal legitimately skips its 0 ms intermediate phase.
+    // Assert completion rather than racing an ephemeral DOM state.
+    await page.waitForFunction(() =>
+      document.querySelector('[data-testid="loading-portal"]') === null, null, { timeout: 6000 })
+  }
   await portal.waitFor({ state: 'detached', timeout: 7000 })
   assert((await page.getByTestId('loading-portal-lab').innerText()).includes('Porta aberta'),
     'Portal must open and reveal actual React demo backdrop')
