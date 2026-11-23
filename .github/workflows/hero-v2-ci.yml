@@ -60,7 +60,9 @@ jobs:
           compressed = len(compress(data, compresslevel=9))
           print(f'Optimized STATIC SVG: {len(data):,} bytes source / {compressed:,} bytes gzip')
           assert len(data) < 220_000, 'Optimized SVG source budget exceeded'
-          assert compressed < 28_000, 'Optimized SVG gzip transfer budget exceeded'\n          assert b'<animateMotion' not in data and b'animation:' not in data, 'Continuous SVG rasterization detected'\n          assert data.count(b'<text ') < 2000, 'Glyph density regression'
+          assert compressed < 28_000, 'Optimized SVG gzip transfer budget exceeded'
+          assert b'<animateMotion' not in data and b'animation:' not in data, 'Continuous SVG rasterization detected'
+          assert data.count(b'<text ') < 2000, 'Glyph density regression'
           PY
       - name: Install Chromium for browser tests
         run: |
