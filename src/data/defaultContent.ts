@@ -24,10 +24,10 @@ export const defaultContent: SiteContent = {
     translations: {
       'pt-BR': {
         eyebrow: 'LEONARDO CAMARGO ROSSATO',
-        title: 'AI Engineering & Software Development',
-        highlightedWords: 'AI Engineering & Software Development',
+        title: 'Engenheiro de IA e Desenvolvimento de Software',
+        highlightedWords: 'Engenheiro de IA e Desenvolvimento de Software',
         description: 'Projeto e desenvolvo sistemas inteligentes combinando engenharia de inteligência artificial, desenvolvimento de software, arquitetura de sistemas, aplicações com LLMs, recuperação aumentada por geração (RAG), engenharia de dados e otimização matemática. Minha formação em Física e Computação Científica oferece uma sólida base quantitativa, complementada por pesquisas em tecnologias quânticas e sistemas complexos.',
-        focus: 'AI Engineer | Software Development | Applied AI | Systems Architecture',
+        focus: 'Engenheiro de IA | Desenvolvimento de Software | IA Aplicada | Arquitetura de Sistemas',
         skills: [
           'Agentes de IA',
           'Aplicações com LLM',
@@ -145,8 +145,8 @@ export const defaultContent: SiteContent = {
       'pt-BR': {
         title: 'Sobre',
         name: 'Leonardo Camargo Rossato',
-        headline: 'AI Engineer | Software Development | Applied AI | Systems Architecture',
-        professionalTitle: 'AI Engineer | Software Development | Applied AI | Systems Architecture',
+        headline: 'Engenheiro de IA | Desenvolvimento de Software | IA Aplicada | Arquitetura de Sistemas',
+        professionalTitle: 'Engenheiro de IA | Desenvolvimento de Software | IA Aplicada | Arquitetura de Sistemas',
         intro: 'Projeto e desenvolvo sistemas inteligentes integrando engenharia de IA, desenvolvimento de software, arquitetura de sistemas, LLMs, RAG, engenharia de dados e otimização matemática. Minha formação em Física e Computação Científica sustenta a atuação em tecnologias quânticas e sistemas complexos.',
         valueProposition: 'Desenvolvo soluções end-to-end, desde o entendimento do problema e arquitetura até implementação, integração e validação.',
         bio: [
