@@ -13,6 +13,7 @@ import './components/hero/hero-visual.css'
 import './components/hero/hero-responsive-v11.css'
 import './components/hero/hero-responsive-v12.css'
 import './components/hero/hero-particle-wave-v13.css'
+import './styles/hero-wide-desktop-v14.css'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 if (supabaseUrl && !window.location.hash.startsWith('#/test-component-lab')) {

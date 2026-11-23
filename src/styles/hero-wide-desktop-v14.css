@@ -1,0 +1,49 @@
+/* LCR Hero V14 — fluid wide-landscape viewport fit.
+ * Targets only spacious desktop viewports. The approved notebook/mobile
+ * compositions, portal frames, particle renderer and SVG assets are untouched.
+ *
+ * At 1500px the shell equals the legacy 1180px, then expands smoothly.
+ * Full viewport height keeps the second blue section below the fold.
+ */
+@media (min-width: 1500px) and (min-aspect-ratio: 17 / 10) {
+  :root {
+    --lcr-wide-hero-shell: min(2000px, calc(85vw - 95px), calc(100% - 64px));
+  }
+
+  /* Keep navigation avatar and the title aligned as the shell expands. */
+  .site-header .site-container.header-inner,
+  .portfolio-home .hero-v3 .site-container.hero-main.hero-v3-layout {
+    width: var(--lcr-wide-hero-shell);
+    max-width: none;
+    margin-inline: auto;
+  }
+
+  /* The first screen fills the browser viewport below the sticky header. */
+  .portfolio-home .hero-positioning.hero-v3 {
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - 67px);
+    min-height: calc(100dvh - 67px);
+    padding-block: clamp(32px, 4vh, 64px);
+  }
+
+  .portfolio-home .hero-v3 .hero-main.hero-v3-layout {
+    flex: 0 0 auto;
+    min-height: 0;
+  }
+
+  .portfolio-home .hero-v3 .hero-v3-content {
+    width: min(55%, 850px);
+    max-width: 100%;
+  }
+
+  /* A taller Hero makes the existing optimized SVG cover more vertically.
+   * No new image, CSS transform or additional animation is required. */
+  .portfolio-home .hero-graph-field--v5 .hero-v6-backdrop-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center;
+  }
+}
