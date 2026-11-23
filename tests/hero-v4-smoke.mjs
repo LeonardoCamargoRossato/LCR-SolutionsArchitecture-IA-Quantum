@@ -148,10 +148,13 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
     if (allScenes) {
       await screenshot(page, name + '-neural')
       await waitPhase(page, 'code', 14000)
+      await page.waitForFunction(() => Number(getComputedStyle(document.querySelector('.hero-v4-code-scene')).opacity) > .95, null, { timeout: 3000 })
       assert((await page.locator('.hero-v4-code-scene').innerText()).includes('intelligence.pipeline.ts'))
+      assert((await page.locator('.hero-v4-code-scene').innerText()).includes('neuralNetwork'))
       await screenshot(page, name + '-code')
       await waitPhase(page, 'hamnet', 8500)
-      await page.waitForTimeout(1100)
+      await page.waitForFunction(() => Number(getComputedStyle(document.querySelector('.hero-v4-hamnet-scene')).opacity) > .95, null, { timeout: 3200 })
+      await page.waitForTimeout(1150)
       assert((await page.locator('.hero-v4-hamnet-scene').innerText()).includes(DIALOGUE))
       assert((await page.locator('.hero-v4-hamnet-scene').innerText()).includes('Hello!'))
       const image = await page.locator('.hero-v4-bot-art').evaluate(el => ({
@@ -165,6 +168,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
     }
   }
 
+  await screenshot(page, name + '-original-theme')
   await page.evaluate(mode => document.documentElement.setAttribute('data-theme', mode), dark ? 'light' : 'dark')
   const newBackground = await hero.evaluate(el => getComputedStyle(el).backgroundColor)
   assert.notEqual(newBackground, facts.background, 'Theme toggle failed to change Hero background')
