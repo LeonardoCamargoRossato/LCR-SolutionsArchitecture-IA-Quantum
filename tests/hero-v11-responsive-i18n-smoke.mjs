@@ -112,7 +112,10 @@ async function languageAudit(locale){
  await stage.locator('button').nth(2).click()
  assert((await page.getByTestId('hero-v4-code-scene').innerText()).includes(pt?'VISUALIZAÇÃO CONCEITUAL':'CONCEPT VISUALIZATION'))
  await page.goto(BASE+'#/workflow',{waitUntil:'domcontentloaded'})
- assert((await page.locator('h1').first().innerText()).includes(pt?'Como eu estruturo':'How I structure'),'Workflow not localized')
+ // Hash route renders asynchronously through React.lazy; wait for the new view
+ // rather than accidentally asserting against the previous Home headline.
+ await page.locator('.workflow-page h1').waitFor({timeout:16000})
+ assert((await page.locator('.workflow-page h1').innerText()).includes(pt?'Como eu estruturo':'How I structure'),'Workflow not localized')
  await page.goto(BASE+'#/this-path-does-not-exist',{waitUntil:'domcontentloaded'})
  assert.equal(await page.locator('.not-found h1').innerText(),pt?'Página não encontrada.':'Page not found.')
  await page.goto(BASE+'#/projects/foton-hub',{waitUntil:'domcontentloaded'})
