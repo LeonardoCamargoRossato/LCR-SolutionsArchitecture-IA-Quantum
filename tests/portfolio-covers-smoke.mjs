@@ -7,8 +7,9 @@ import { chromium } from 'playwright'
 const PUBLIC_BASE = process.env.PORTFOLIO_TEST_BASE_URL?.trim()
 const BASE = PUBLIC_BASE ? (PUBLIC_BASE.endsWith('/') ? PUBLIC_BASE : PUBLIC_BASE + '/') : 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
 const SLUGS = ['cities-comparing','embedded-control-platform','foton-hub','hamlet',
-  'quantum-education-apps','scientific-analysis-toolkit',
+  'quantum-education-apps',
   'speaker-portfolio','webseer']
+const RETIRED_SLUGS = ['power-platform', 'scientific-analysis', 'scientific-analysis-toolkit', 'pdf-frequency-analyzer']
 const report = { results: [], admin: {}, error: null }
 const server = PUBLIC_BASE ? null : spawn('npm',['run','dev','--','--host','127.0.0.1','--port','5173','--strictPort'],
   { stdio: 'ignore', env: process.env, detached: true })
@@ -87,16 +88,19 @@ async function testViewport(label,width,height) {
     console.log('BROWSER',label,slug,'PASS')
     report.results.push({viewport:label,project:slug,webp:true,png:true})
   }
-  // Retired projects must be absent from the public carousel and direct route.
+  // Keep historical CMS records for traceability, but never expose retired
+  // projects on the public Home carousel or direct case routes.
   await page.goto(BASE + '#/', { waitUntil: 'domcontentloaded' })
   await page.locator('a.project-card').first().waitFor({ timeout: 30000 })
-  assert.equal(await page.locator('a[href*="pdf-frequency-analyzer"]').count(), 0,
-    'Retired project card unexpectedly present on Home')
-  await page.goto(BASE + '#/projects/pdf-frequency-analyzer', { waitUntil: 'domcontentloaded' })
-  await page.getByRole('heading', { name: 'Case study not found.' }).waitFor({ timeout: 30000 })
-  assert.equal(await page.locator('.case-story-cover').count(), 0,
-    'Retired project case unexpectedly loaded')
-  console.log('BROWSER',label,'retired PDF Frequency Analyzer absent: PASS')
+  for (const retiredSlug of RETIRED_SLUGS) {
+    assert.equal(await page.locator('a.project-card[href$="/projects/' + retiredSlug + '"]').count(), 0,
+      'Retired project still visible on Home: ' + retiredSlug)
+    await page.goto(BASE + '#/projects/' + retiredSlug, { waitUntil: 'domcontentloaded' })
+    await page.getByRole('heading', { name: 'Case study not found.' }).waitFor({ timeout: 30000 })
+    assert.equal(await page.locator('.case-story-cover').count(), 0,
+      'Retired project case unexpectedly loaded: ' + retiredSlug)
+    console.log('BROWSER', label, 'retired project absent: PASS', retiredSlug)
+  }
   assert.equal(bad.length,0,'Broken PNG/WebP network responses')
   if(label==='desktop') {
     await page.goto(BASE+'#/admin',{waitUntil:'domcontentloaded'})
@@ -135,7 +139,7 @@ try {
   await testViewport('desktop',1440,900)
   await testViewport('mobile',390,844)
   if (!PUBLIC_BASE) await testAdminUploader()
-  console.log('PASS: '+(PUBLIC_BASE ? 'PUBLISHED SITE' : 'BRANCH')+' 8 cases x 2 viewports, original PNG zoom/download and retired card/route check')
+  console.log('PASS: '+(PUBLIC_BASE ? 'PUBLISHED SITE' : 'BRANCH')+' 7 active cases x 2 viewports, original PNG zoom/download and retired card/route check')
 } catch(error) {
   report.error=String(error)
   console.error('FAIL browser smoke:',String(error))
