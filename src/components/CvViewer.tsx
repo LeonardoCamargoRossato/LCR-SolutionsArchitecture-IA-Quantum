@@ -92,13 +92,13 @@ export function CvViewer({ open, url, onClose }: Props) {
         <div className="cv-viewer-toolbar">
           <strong id="cv-viewer-title">{t('curriculumVitae')}</strong>
           <div className="cv-viewer-actions">
-            <button type="button" onClick={() => void enterFullscreen()} aria-label="Fullscreen CV" title={t('fullscreenCv')}>
+            <button type="button" onClick={() => void enterFullscreen()} aria-label={t('fullscreenCv')} title={t('fullscreenCv')}>
               <Maximize2 size={18} />
             </button>
-            <a href={url} download="leonardo-rossato-cv.pdf" target="_blank" rel="noreferrer" aria-label="Download CV" title={t('downloadCv')}>
+            <a href={url} download="leonardo-rossato-cv.pdf" target="_blank" rel="noreferrer" aria-label={t('downloadCv')} title={t('downloadCv')}>
               <Download size={18} />
             </a>
-            <button ref={closeButtonRef} type="button" onClick={onClose} aria-label="Close CV" title={t('closeCv')}>
+            <button ref={closeButtonRef} type="button" onClick={onClose} aria-label={t('closeCv')} title={t('closeCv')}>
               <X size={19} />
             </button>
           </div>
