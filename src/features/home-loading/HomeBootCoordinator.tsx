@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import { LoadingPortal } from '../../components/loading-portal/LoadingPortal'
 import { HomeMotionProvider } from './HomeMotionContext'
@@ -38,7 +38,6 @@ export function HomeBootCoordinator({ children }: { children: ReactNode }) {
   const [slow, setSlow] = useState(false)
   const [homeSafe, setHomeSafe] = useState(false)
   const [openingArtOk, setOpeningArtOk] = useState(false)
-  const cancelledRef = useRef(false)
 
   const permittedToAnimate = !active || state === 'opened'
   const completed = Object.entries(results).reduce(
@@ -55,16 +54,18 @@ export function HomeBootCoordinator({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!active || state === 'opened') return
-    cancelledRef.current = false
+    let cancelled = false
+    const outcomes: Results = {}
     markHomeBoot('portal-mounted')
     setState('loading')
     const apply = (task: HomeBootTask, outcome: BootOutcome) => {
-      if (cancelledRef.current) return
+      if (cancelled) return
+      outcomes[task] = outcome
       mark(task, outcome)
     }
     const domTask = waitForHomeDom().then(outcome => {
       apply('home-render', outcome)
-      if (outcome === 'ok') {
+      if (outcome === 'ok' && !cancelled) {
         setHomeSafe(true)
         markHomeBoot('home-render-ready')
         return waitForHeroMedia().then(media => {
@@ -79,11 +80,11 @@ export function HomeBootCoordinator({ children }: { children: ReactNode }) {
       waitForFonts().then(outcome => apply('fonts', outcome)),
       waitForOpeningArt().then(outcome => {
         apply('door-art', outcome)
-        if (!cancelledRef.current) setOpeningArtOk(outcome === 'ok')
+        if (!cancelled) setOpeningArtOk(outcome === 'ok')
       }),
     ]
     void Promise.all(tasks).then(() => {
-      if (cancelledRef.current) return
+      if (cancelled) return
       const rendered = Boolean(document.querySelector('main.portfolio-home .hero-v3'))
       if (!rendered) {
         setState('error')
@@ -91,18 +92,18 @@ export function HomeBootCoordinator({ children }: { children: ReactNode }) {
       }
       markHomeBoot('home-critical-resources-ready')
       // Readiness is deliberately independent of remote CMS completion.
-      setState('ready')
+      setState(Object.values(outcomes).some(value => value === 'fallback') ? 'degraded' : 'ready')
     }).catch(() => {
-      if (!cancelledRef.current) setState('error')
+      if (!cancelled) setState('error')
     })
-    const slowTimer = window.setTimeout(() => { if (!cancelledRef.current) setSlow(true) }, 7000)
+    const slowTimer = window.setTimeout(() => { if (!cancelled) setSlow(true) }, 7000)
     const faultTimer = window.setTimeout(() => {
-      if (!cancelledRef.current && !document.querySelector('main.portfolio-home .hero-v3')) {
+      if (!cancelled && !document.querySelector('main.portfolio-home .hero-v3')) {
         setState('error')
       }
     }, 12000)
     return () => {
-      cancelledRef.current = true
+      cancelled = true
       window.clearTimeout(slowTimer)
       window.clearTimeout(faultTimer)
     }
@@ -135,6 +136,18 @@ export function HomeBootCoordinator({ children }: { children: ReactNode }) {
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = previous }
   }, [showPortal])
+
+  // Failed decorative door art cannot hold a safely mounted Home hostage.
+  useEffect(() => {
+    if (!active || !homeSafe || !ready || openingArtOk || state !== 'degraded') return
+    const timer = window.setTimeout(() => {
+      recordSession()
+      setState('opened')
+      markHomeBoot('portal-opened')
+      markHomeBoot('home-animation-started')
+    }, 450)
+    return () => window.clearTimeout(timer)
+  }, [active, homeSafe, ready, openingArtOk, state])
 
   const opened = useCallback(() => {
     recordSession()
