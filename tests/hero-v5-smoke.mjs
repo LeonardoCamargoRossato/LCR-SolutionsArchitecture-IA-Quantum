@@ -36,7 +36,9 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   // The product defaults to dark; explicitly choose the theme for each
   // existing contrast and regression scenario.
   await page.addInitScript(({ dark }) => {
-    localStorage.setItem('portfolio-theme', dark ? 'dark' : 'light')
+    if (!localStorage.getItem('portfolio-theme')) {
+      localStorage.setItem('portfolio-theme', dark ? 'dark' : 'light')
+    }
   }, { dark })
   const pageErrors = []
   page.on('pageerror', e => pageErrors.push(String(e)))
