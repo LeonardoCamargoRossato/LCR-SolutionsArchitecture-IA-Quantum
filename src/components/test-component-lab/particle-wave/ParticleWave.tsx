@@ -31,6 +31,7 @@ export function ParticleWave({ settings, running }: ParticleWaveProps) {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
     const isMobile = window.matchMedia('(max-width: 700px)').matches
     const count = Math.min(safe.particleCount, isMobile ? 1700 : 4200)
+    canvas.dataset.effectiveParticles = String(count)
     const columns = Math.ceil(Math.sqrt(count * 1.7))
     const rows = Math.ceil(count / columns)
     const particles = new Float32Array(count * 3)
