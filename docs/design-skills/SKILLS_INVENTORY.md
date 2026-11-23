@@ -28,9 +28,9 @@
 | --- | --- |
 | Four `SKILL.md` files, valid frontmatter names and complete subtrees | PASS — 2 / 82 / 71 / 3 files, pinned official source trees |
 | Linked references and resource paths | PASS — static validation |
-| Python UI UX search smoke (read-only) | Pending |
+| Python UI UX search smoke (read-only) | PASS — [design-skills CI #45092668851](https://github.com/LeonardoCamargoRossato/LCR-SolutionsArchitecture-IA-Quantum/actions/runs/45092668851) |
 | Impeccable command/reference files present; native engine invocation | Static-only; engine invocation intentionally deferred |
 | Codex native discovery | Not directly available through connector; directory structure checked statically |
-| UI/React files unchanged vs base `main` | Pending independent PR diff check; snapshot installer touched only `.agents/skills` |
-| `npm ci && npm run build` | Pending |
-| CI | Pending |
+| UI/React files unchanged vs base `main` | PASS — CI scoped-diff check; no application source/public/config changes |
+| `npm ci && npm run build` | PASS — TypeScript + Vite on PR CI #45092668851 |
+| Design skills CI | PASS — static checks, Python parsing, read-only search, build |
