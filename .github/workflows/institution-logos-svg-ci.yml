@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - feat/institution-logos-svg-20261117
+  pull_request:
+    branches: [main]
+    paths:
+      - tests/institution-logos-browser-smoke.mjs
+      - src/config/retiredProjects.ts
+      - src/pages/ProjectCaseV1.tsx
+      - .github/workflows/institution-logos-svg-ci.yml
   workflow_dispatch:
 
 permissions:
@@ -34,7 +41,7 @@ jobs:
         run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
-      - name: Desktop/mobile all institution marks and raster fallback
+      - name: Desktop/mobile active institution marks, retired case and raster fallback
         run: node tests/institution-logos-browser-smoke.mjs
       - name: Preserve screenshots and JSON audit
         if: always()
