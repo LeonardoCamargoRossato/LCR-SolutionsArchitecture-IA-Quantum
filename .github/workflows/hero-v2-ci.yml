@@ -1,8 +1,8 @@
-name: LCR Hero V11 — Mobile Composition and End-to-End Bilingual QA
+name: LCR Hero V12 — Three Scenes, Compact Controls and Bilingual QA
 
 on:
   push:
-    branches: [feat/hero-v11-mobile-and-bilingual-audit-20261123]
+    branches: [feat/hero-v12-three-scenes-compact-controls-20261123]
   pull_request:
     branches: [main]
     paths:
@@ -18,6 +18,7 @@ on:
       - src/components/WorkflowManual.tsx
       - src/App.tsx
       - tests/hero-v11-responsive-i18n-smoke.mjs
+      - tests/hero-v12-composition-smoke.mjs
       - src/components/Header.tsx
       - src/components/header/**
       - src/i18n/**
@@ -40,6 +41,7 @@ on:
       - docs/hero-v9/**
       - docs/hero-v10/**
       - docs/hero-v11/**
+      - docs/hero-v12/**
   workflow_dispatch:
 
 permissions:
@@ -101,8 +103,10 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Validate theme-specific SVG contrast, 4 Hero tags, performance and 4 scenes
         run: node tests/hero-v5-smoke.mjs
-      - name: V11 mobile one-row tags, play-left, centered neural, 3D code/Hamlet and bilingual route audit
+      - name: V11 responsive and public bilingual route regression
         run: node tests/hero-v11-responsive-i18n-smoke.mjs
+      - name: V12 three-scene navigation, readable left-aligned tags, compact controls and raised desktop neural view
+        run: node tests/hero-v12-composition-smoke.mjs
       - name: Mobile two-line headline, compact gap, Hamlet AI label (9 responsive viewports)
         run: node tests/hero-mobile-v9-layout-smoke.mjs
       - name: Header flags, English/dark defaults, desktop tags and mobile scene clearance
@@ -113,7 +117,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lcr-hero-v11-browser-evidence
+          name: lcr-hero-v12-browser-evidence
           path: test-results/
           if-no-files-found: warn
           retention-days: 30

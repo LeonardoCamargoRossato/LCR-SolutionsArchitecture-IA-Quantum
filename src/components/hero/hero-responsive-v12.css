@@ -1,0 +1,92 @@
+/* LCR Hero V12 — mobile readability, 3-stage controls and desktop graph lift.
+ * Imported after V11; the approved V7/V8 background assets and V11 visual
+ * treatments remain untouched. No JS layout polling or animation rework.
+ */
+@media (min-width: 901px) {
+  /* Begin the neural network near the first line of the Hero headline.
+   * Expand the visual plane upward rather than translating the whole SVG:
+   * transform/drag/perspective logic from V11 stays intact. */
+  .portfolio-home .hero-graph-field--v5 .hero-v4-desktop {
+    top: -8%;
+    height: 95%;
+  }
+}
+@media (max-width: 900px) {
+  /* All four capability chips form a left-aligned compact group. Avoid
+   * space-between: it used to distribute small text across the entire row. */
+  .portfolio-home .hero-v3-actions .hero-specializations {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    width: max-content;
+    max-width: 100%;
+    gap: clamp(4px, 1.2vw, 8px);
+    margin: 14px 0 0;
+  }
+  .portfolio-home .hero-v3-actions .hero-specializations > .hero-skill-tag {
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    min-height: 26px;
+    padding: 3px clamp(4px, 1.1vw, 7px);
+    font-size: clamp(9px, 2.55vw, 11.75px);
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
+  /* A little more breathing room before the illustration, even with a
+   * shorter control bar. Leave ample space for the three scene artworks. */
+  .portfolio-home .hero-v3 > .hero-graph-field--v5 {
+    margin-top: clamp(30px, 4.5vw, 38px);
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v5-stage-selector {
+    top: 2px;
+    right: clamp(7px, 2vw, 16px);
+    left: auto;
+    transform: none;
+    display: flex;
+    width: max-content;
+    max-width: calc(100% - 56px);
+    gap: 1px;
+    padding: 2px;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v5-stage-button {
+    min-height: 32px;
+    padding: 4px clamp(7px, 1.6vw, 13px);
+    font-size: clamp(10px, 1.6vw, 11px);
+    line-height: 1.1;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-graph-motion-control {
+    top: 3px;
+    left: clamp(7px, 2vw, 16px);
+    right: auto;
+    bottom: auto;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-graph-motion-control svg {
+    width: 14px;
+    height: 14px;
+  }
+  /* Preserve V11 centered graph and 3D Code/Hamlet, now with more canvas
+   * visible because the selector occupies less vertical space. */
+}
+@media (max-width: 360px) {
+  .portfolio-home .hero-v3-actions .hero-specializations {
+    gap: 3px;
+  }
+  .portfolio-home .hero-v3-actions .hero-specializations > .hero-skill-tag {
+    font-size: 8.8px;
+    padding-inline: 4px;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v5-stage-button {
+    font-size: 9.5px;
+    padding-inline: 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-home .hero-graph-field--v5 .hero-v5-stage-button {
+    transition: none !important;
+  }
+}

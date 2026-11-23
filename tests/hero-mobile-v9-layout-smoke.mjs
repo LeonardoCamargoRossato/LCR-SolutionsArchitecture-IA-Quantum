@@ -77,11 +77,11 @@ async function check(width, height, locale, reduced = true) {
   assert.equal(info.title, locale === 'pt-BR' ? 'Engenheiro de IA e Desenvolvimento de Software' : 'AI Engineering & Software Development')
   assert.deepEqual(info.tags, locale === 'pt-BR' ? ['LLMs e Agentes de IA','RAG e Recuperação Híbrida','Dados e Otimização','Computação Quântica'] : ['LLMs & AI Agents','RAG & Hybrid Retrieval','Data & Optimization','Quantum Computing'])
   assert.equal(info.tags.includes('Python & Software Engineering'), false, 'Removed skill must not appear')
-  assert.equal(info.phaseNames[3], 'Hamlet AI', `${width}px ${locale}: tab must show Hamlet AI`)
-  assert.equal(info.phaseNames.length, 4)
+  assert.equal(info.phaseNames[2], 'Hamlet AI', `${width}px ${locale}: tab must show Hamlet AI`)
+  assert.equal(info.phaseNames.length, 3)
   assert(info.overflow <= 2, `${width}px ${locale}: horizontal overflow ${JSON.stringify(info)}`)
   assert(info.tabsWithinScreen, `${width}px ${locale}: tabs clipped ${JSON.stringify(info)}`)
-  assert(info.selectorTouchHeight >= 39, 'Stage buttons must remain touch-accessible')
+  assert(info.selectorTouchHeight >= 32, 'V12 controls must remain usable while staying visually compact')
   if (width <= 600) {
     const minGutter = width * .05
     const maxGutter = width * .10
@@ -98,8 +98,8 @@ async function check(width, height, locale, reduced = true) {
     assert(info.gap >= 17, `${width}px: compact mobile stage needs clear spacing before the artwork: ${JSON.stringify(info)}`)
     assert(info.tabsGap >= 17, `${width}px: stage tabs should remain separated from tags`)
   }
-  const fourthStage = page.locator('.hero-v5-stage-selector button').nth(3)
-  await fourthStage.click()
+  const thirdStage = page.locator('.hero-v5-stage-selector button').nth(2)
+  await thirdStage.click()
   await page.waitForFunction(() => document.querySelector('.hero-graph-field')?.dataset.phase === 'hamnet')
   const name = await page.locator('.hero-v4-hamnet-name').innerText()
   const chatName = await page.locator('.hero-v4-chat-heading strong').innerText()
@@ -109,7 +109,7 @@ async function check(width, height, locale, reduced = true) {
   assert.equal(chatName, 'Hamlet AI')
   assert.equal(caption, 'HAMLET AI')
   assert.equal(greeting, locale === 'pt-BR' ? 'Olá, Hamlet AI.' : 'Hello, Hamlet AI.')
-  assert.equal(await fourthStage.getAttribute('aria-pressed'), 'true')
+  assert.equal(await thirdStage.getAttribute('aria-pressed'), 'true')
   assert.deepEqual(pageErrors, [], 'Runtime errors detected')
   const nameTag = `hero-v9-${width}-${locale}-${reduced ? 'reduced' : 'animated'}`
   await page.screenshot({ path: `test-results/${nameTag}.png`, fullPage: false })
