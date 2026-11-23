@@ -134,9 +134,9 @@ export function Home() {
                   {t('heroContact')}
                 </a>
               </div>
-              <div className="hero-specializations tech-list" aria-label={locale === 'pt-BR' ? 'Especializações profissionais' : 'Professional specializations'} data-reveal="left" style={{ '--reveal-delay': '270ms' } as CSSProperties}>
+              <div className="hero-specializations tech-list" role="list" aria-label={locale === 'pt-BR' ? 'Especializações profissionais' : 'Professional specializations'} data-reveal="left" style={{ '--reveal-delay': '270ms' } as CSSProperties}>
                 {heroCopy.tags.map((skill) => (
-                  <span className="hero-skill-tag" key={skill.full} aria-label={skill.full} title={skill.full}>
+                  <span className="hero-skill-tag" role="listitem" key={skill.full} aria-label={skill.full} title={skill.full}>
                     <span className="hero-tag-full" aria-hidden="true">{skill.full}</span>
                     <span className="hero-tag-short" aria-hidden="true">{skill.short}</span>
                   </span>
