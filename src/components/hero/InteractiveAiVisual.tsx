@@ -134,6 +134,26 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
   }
 
   const pt = locale === 'pt-BR'
+  const sceneOptions: { phase: Phase; label: string }[] = pt
+    ? [
+        { phase: 'scatter', label: 'Dados' },
+        { phase: 'neural', label: 'Rede IA' },
+        { phase: 'code', label: 'Código' },
+        { phase: 'hamnet', label: 'Hamnet' },
+      ]
+    : [
+        { phase: 'scatter', label: 'Data' },
+        { phase: 'neural', label: 'AI Graph' },
+        { phase: 'code', label: 'Code' },
+        { phase: 'hamnet', label: 'Hamnet' },
+      ]
+  const selectScene = (selected: Phase) => {
+    setPhase(selected)
+    // Deliberate selection stays in place until Play is pressed.
+    setPaused(true)
+    if (selected === 'hamnet') setReplayKey((key) => key + 1)
+  }
+
   return (
     <div
       ref={root}
@@ -182,6 +202,24 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
           ? 'Visualização conceitual: fluxos binários convergem de um grafo em perspectiva para camadas neurais, código e uma conversa ilustrativa com AI Hamnet. Não há conexão com IA nesta animação.'
           : 'Conceptual visual: binary packets flow through a perspective data network into neural layers, source code and a simulated AI Hamnet conversation. No live AI connection.'}
       </span>
+      <div
+        className="hero-v5-stage-selector"
+        data-testid="hero-v5-stage-selector"
+        role="group"
+        aria-label={pt ? 'Selecionar etapa da visualização' : 'Select a visualization stage'}
+      >
+        {sceneOptions.map(({ phase: option, label }) => (
+          <button
+            key={option}
+            type="button"
+            className="hero-v5-stage-button"
+            aria-pressed={phase === option}
+            onClick={() => selectScene(option)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
       <div className="hero-v4-stage-marker" aria-hidden="true">
         {phase === 'scatter' ? 'DATA INPUT' : phase === 'neural' ? 'NEURAL ARCHITECTURE' : phase === 'code' ? 'SOFTWARE GENERATION' : 'AI HAMNET'}
         {phase === 'neural' && !reduced ? <span className="hero-v4-drag-hint"> · {pt ? 'ARRASTE PARA EXPLORAR' : 'DRAG TO EXPLORE'}</span> : null}
