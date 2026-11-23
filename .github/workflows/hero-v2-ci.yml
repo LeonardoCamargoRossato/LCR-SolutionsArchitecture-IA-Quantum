@@ -1,8 +1,8 @@
-name: LCR Hero V8 — Light Navy Contrast and Quantum Tag
+name: LCR Hero V9 — Mobile Typography, Gap and Hamlet AI
 
 on:
   push:
-    branches: [fix/hero-v8-light-navy-quantum-tag-20261123]
+    branches: [fix/hero-mobile-title-spacing-hamlet-ai-20261123]
   pull_request:
     branches: [main]
     paths:
@@ -11,6 +11,7 @@ on:
       - src/config/portfolioPositioning.ts
       - src/main.tsx
       - tests/hero-v5-smoke.mjs
+      - tests/hero-mobile-v9-layout-smoke.mjs
       - public/assets/home/hero/**
       - tests/ai-positioning-smoke.mjs
       - .github/workflows/hero-v2-ci.yml
@@ -18,6 +19,7 @@ on:
       - docs/hero-v6/**
       - docs/hero-v7/**
       - docs/hero-v8/**
+      - docs/hero-v9/**
   workflow_dispatch:
 
 permissions:
@@ -79,13 +81,15 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Validate theme-specific SVG contrast, 5 Hero tags, performance and 4 scenes
         run: node tests/hero-v5-smoke.mjs
+      - name: Mobile two-line headline, 44px gap, Hamlet AI label (9 responsive viewports)
+        run: node tests/hero-mobile-v9-layout-smoke.mjs
       - name: Existing Home/SEO/projects regression
         run: node tests/ai-positioning-smoke.mjs
       - name: Browser evidence (desktop, notebook, tablet, mobile)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lcr-hero-v8-browser-evidence
+          name: lcr-hero-v9-browser-evidence
           path: test-results/
           if-no-files-found: warn
           retention-days: 30
