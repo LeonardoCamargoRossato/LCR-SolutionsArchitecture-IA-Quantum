@@ -1,0 +1,70 @@
+name: LCR Hero V2 — UX, accessibility and performance
+
+on:
+  push:
+    branches: [feat/interactive-ai-engineering-hero]
+  pull_request:
+    branches: [main]
+    paths:
+      - src/components/hero/**
+      - src/pages/Home.tsx
+      - src/config/portfolioPositioning.ts
+      - src/main.tsx
+      - tests/hero-v2-smoke.mjs
+      - tests/ai-positioning-smoke.mjs
+      - .github/workflows/hero-v2-ci.yml
+      - docs/hero-v2/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-hero:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Locked dependency install
+        run: npm ci
+      - name: TypeScript and production Vite build
+        run: npm run build
+      - name: Check Hero render asset/code budgets
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          src = Path('src/components/hero')
+          files = sorted(p for p in src.rglob('*') if p.is_file())
+          total = sum(p.stat().st_size for p in files)
+          print(f'Hero component/source bytes: {total:,} across {len(files)} files')
+          assert total < 65_000, 'Hero source grew unexpectedly'
+          assert not list(Path('src/components/hero').rglob('*.png')), 'No large images in interactive SVG hero'
+          assert not list(Path('src/components/hero').rglob('*.mp4')), 'No video in interactive SVG hero'
+          assert not list(Path('src/components/hero').rglob('*.webm')), 'No video in interactive SVG hero'
+          PY
+      - name: Install Chromium for browser tests
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify interactive Hero behavior and responsive performance
+        run: node tests/hero-v2-smoke.mjs
+      - name: Existing Home/SEO/projects regression
+        run: node tests/ai-positioning-smoke.mjs
+      - name: Browser evidence (desktop, notebook, tablet, mobile)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcr-hero-v2-browser-evidence
+          path: test-results/
+          if-no-files-found: warn
+          retention-days: 30

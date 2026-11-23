@@ -7,6 +7,7 @@ import { ContactForm } from '../components/ContactForm'
 import { CvViewer } from '../components/CvViewer'
 import { ExperienceSection } from '../components/ExperienceSection'
 import { HeroTypeTitle } from '../components/HeroTypeTitle'
+import { InteractiveAiVisual } from '../components/hero/InteractiveAiVisual'
 import { MoreProjectCard } from '../components/MoreProjectCard'
 import { ProjectCard } from '../components/ProjectCard'
 import { SectionTitle } from '../components/SectionTitle'
@@ -14,7 +15,7 @@ import { SocialLinkList } from '../components/SocialLinks'
 import { WorkProcessSection } from '../components/WorkProcessSection'
 import { externalLinks } from '../config/externalLinks'
 import { RETIRED_PROJECT_SLUGS } from '../config/retiredProjects'
-import { PORTFOLIO_HERO_TITLE, PORTFOLIO_HERO_SUBTITLE, PORTFOLIO_SKILLS, PROFESSIONAL_POSITIONING } from '../config/portfolioPositioning'
+import { PORTFOLIO_HERO_TITLE, PORTFOLIO_HERO_SUBTITLE, PORTFOLIO_HERO_DESCRIPTION, PORTFOLIO_HERO_TAGS, PROFESSIONAL_POSITIONING } from '../config/portfolioPositioning'
 import { localizedAbout, localizedHome, localizedSiteSettings } from '../i18n/content'
 import { useI18n } from '../i18n/I18nProvider'
 import { useSiteContent } from '../providers/SiteContentProvider'
@@ -95,39 +96,49 @@ export function Home() {
 
   return (
     <main className="portfolio-home" style={portfolioScaleStyle} ref={homeRef}>
-      <section className="hero hero-positioning">
-        <div className="site-container hero-main">
-          <div className="eyebrow" data-reveal="down">{home.eyebrow || 'LEONARDO CAMARGO ROSSATO'}</div>
-          <div className="hero-title-block" data-reveal="down" style={{ '--reveal-delay': '80ms' } as CSSProperties}>
-            <HeroTypeTitle text={PORTFOLIO_HERO_TITLE} />
-            <p className="hero-identity-subtitle">{PORTFOLIO_HERO_SUBTITLE}</p>
+      <section className="hero hero-positioning hero-v2">
+        <div className="site-container hero-main hero-v2-grid">
+          <div className="hero-v2-copy">
+            <div className="eyebrow" data-reveal="down">LEONARDO CAMARGO ROSSATO</div>
+            <div className="hero-title-block" data-reveal="down" style={{ '--reveal-delay': '80ms' } as CSSProperties}>
+              <HeroTypeTitle text={PORTFOLIO_HERO_TITLE} />
+              <p className="hero-identity-subtitle">{PORTFOLIO_HERO_SUBTITLE}</p>
+            </div>
+            <p className="hero-description" data-reveal="left" style={{ '--reveal-delay': '170ms' } as CSSProperties}>
+              {PORTFOLIO_HERO_DESCRIPTION}
+            </p>
           </div>
-          {home.focus && <p className="hero-statement" data-reveal="left" style={{ '--reveal-delay': '140ms' } as CSSProperties}>{home.focus}</p>}
-          {home.description && <p className="hero-description" data-reveal="left" style={{ '--reveal-delay': '200ms' } as CSSProperties}>{home.description}</p>}
-          <div className="hero-specializations tech-list" aria-label={locale === 'pt-BR' ? 'Especializações profissionais' : 'Professional specializations'} data-reveal="left" style={{ '--reveal-delay': '240ms' } as CSSProperties}>
-            {PORTFOLIO_SKILLS[locale].map((skill) => <span key={skill}>{skill}</span>)}
+
+          <div className="hero-v2-visual">
+            <InteractiveAiVisual locale={locale} />
           </div>
-          <div className="hero-actions" data-reveal="left" style={{ '--reveal-delay': '260ms' } as CSSProperties}>
-            <a
-              className="button"
-              href="#projects"
-              onClick={(event) => {
-                event.preventDefault()
-                document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-              }}
-            >
-              {t('heroViewWork')}
-            </a>
-            <a
-              className="button button-secondary"
-              href="#contact"
-              onClick={(event) => {
-                event.preventDefault()
-                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-              }}
-            >
-              {t('heroContact')}
-            </a>
+
+          <div className="hero-v2-bottom">
+            <div className="hero-actions" data-reveal="left" style={{ '--reveal-delay': '220ms' } as CSSProperties}>
+              <a
+                className="button"
+                href="#projects"
+                onClick={(event) => {
+                  event.preventDefault()
+                  document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }}
+              >
+                {t('heroViewWork')}
+              </a>
+              <a
+                className="button button-secondary"
+                href="#contact"
+                onClick={(event) => {
+                  event.preventDefault()
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }}
+              >
+                {t('heroContact')}
+              </a>
+            </div>
+            <div className="hero-specializations tech-list" aria-label={locale === 'pt-BR' ? 'Especializações profissionais' : 'Professional specializations'} data-reveal="left" style={{ '--reveal-delay': '270ms' } as CSSProperties}>
+              {PORTFOLIO_HERO_TAGS.map((skill) => <span key={skill}>{skill}</span>)}
+            </div>
           </div>
         </div>
       </section>
