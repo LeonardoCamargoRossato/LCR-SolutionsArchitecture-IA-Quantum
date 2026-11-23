@@ -1,0 +1,81 @@
+name: LCR Loading Portal V1 — Lab, Approved Assets and Browser QA
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/components/loading-portal/**'
+      - 'src/features/test-component-lab/loading-portal/**'
+      - 'src/pages/TestComponentLab.tsx'
+      - 'public/assets/home/loading-portal/**'
+      - 'docs/test-component-lab/loading-portal-v1/**'
+      - 'scripts/import_loading_portal_assets.py'
+      - 'tests/loading-portal-lab-smoke.mjs'
+      - '.github/workflows/loading-portal-lab-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-preservation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Locked install
+        run: npm ci
+      - name: TypeScript and Vite production build
+        run: npm run build
+      - name: Isolation and provenance safeguards
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('src')
+          source=(root/'components/loading-portal/LoadingPortal.tsx').read_text()
+          lab=(root/'features/test-component-lab/loading-portal/LoadingPortalLab.tsx').read_text()
+          routing=(root/'RootRouteGate.tsx').read_text()
+          assert "assetBaseUrl = DEFAULT_LOADING_PORTAL_ASSETS" in source
+          assert "ready" in source and "completedRef" in source
+          assert "prefers-reduced-motion" in source
+          assert "LoadingPortal" in lab and "simulado" in lab
+          assert "LoadingPortalLab" in (root/'pages/TestComponentLab.tsx').read_text()
+          assert "const TestComponentLab = lazy(" in routing
+          assert "LoadingPortal" not in (root/'PortfolioExperience.tsx').read_text()
+          assert "LoadingPortal" not in (root/'pages/Home.tsx').read_text()
+          for text in (source,lab):
+              assert "eval(" not in text and "new Function" not in text
+          assert list(Path('dist/assets').glob('TestComponentLab-*.js'))
+          print("PASS: isolated Lab, Vite base, guarded readiness, sources preserved")
+          PY
+
+  approved-runtime-assets:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: All ten approved WebPs present and SHA-256 identical
+        run: python3 scripts/import_loading_portal_assets.py --check
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Install browser runtime
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Lab ready/percentage/door/replay/mobile/reduced-motion tests
+        run: node tests/loading-portal-lab-smoke.mjs
+      - name: Evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: loading-portal-lab-v1-browser-evidence
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: warn

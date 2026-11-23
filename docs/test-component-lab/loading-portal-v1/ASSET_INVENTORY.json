@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "asset_id": "lcr-loading-portal-v1",
+  "origin": "User-supplied approved ChatDrawer ZIP; no image redrawing",
+  "zip_filename": "LCR_Loading_Portal_V1_Arquivos(1).zip",
+  "zip_sha256": "20ffa802b5d06ad15301659fcd366336636204a10f07644e101883a30b8c62a0",
+  "archive_prefix": "lcr-loading-portal-v1/public/assets/home/loading-portal/",
+  "repo_directory": "public/assets/home/loading-portal/",
+  "publication_rule": "Publish only the 10 required runtime WebPs. Keep 11 original PNGs and the reference screenshots exclusively in the original ZIP.",
+  "assets": [
+    {
+      "filename": "portal-000.webp",
+      "bytes": 61164,
+      "sha256": "0a053f4ce21bf53adc571104c8be8fbf5311f8806312f0addad04523edd5d56c",
+      "role": "approved keyframe",
+      "progress": 0
+    },
+    {
+      "filename": "portal-002.webp",
+      "bytes": 66720,
+      "sha256": "53c49896882b2d85ee6aa62b8fcab785e17949f943c122cbb93af4221349bd6a",
+      "role": "approved keyframe",
+      "progress": 2
+    },
+    {
+      "filename": "portal-010.webp",
+      "bytes": 78370,
+      "sha256": "b3c275501e7a19937716409ef9af9c993ebf609afdff5e2431dd2a8a8033d6cc",
+      "role": "approved keyframe",
+      "progress": 10
+    },
+    {
+      "filename": "portal-030.webp",
+      "bytes": 96258,
+      "sha256": "7efc9be9d74b007e4c85d59e68de13319f48378b11ca2548b9bde59340aaa9b0",
+      "role": "approved keyframe",
+      "progress": 30
+    },
+    {
+      "filename": "portal-050.webp",
+      "bytes": 102956,
+      "sha256": "1957e9b16a2180d37502288e9aaddc34162f3c545bbc4a29f4b564308ba919c9",
+      "role": "approved keyframe",
+      "progress": 50
+    },
+    {
+      "filename": "portal-080.webp",
+      "bytes": 110470,
+      "sha256": "d2af8f198d0bd7662c3f2cb6a53dfb5547ab5be580a07dd6d7614638d3d5b2e4",
+      "role": "approved keyframe",
+      "progress": 80
+    },
+    {
+      "filename": "portal-099.webp",
+      "bytes": 93102,
+      "sha256": "f8b19a4b66d4d01a7153f5d10f57a55fe12912e8c799839bd5c2e74d147edcf7",
+      "role": "approved keyframe",
+      "progress": 99
+    },
+    {
+      "filename": "portal-100.webp",
+      "bytes": 81862,
+      "sha256": "58a31293a72773925be31a514f9b2e2e2e96ea941077f003e623ae170f95e92c",
+      "role": "approved keyframe",
+      "progress": 100
+    },
+    {
+      "filename": "door-open-base.webp",
+      "bytes": 53670,
+      "sha256": "5e557d1bb4144e8487ff6791f179e5320048a7fa7c634c304ffa7d211c1204bb",
+      "role": "opening layer"
+    },
+    {
+      "filename": "lock-core.webp",
+      "bytes": 33954,
+      "sha256": "8ca92bd5b5d99237810670fb8251078ad87107625fd51bb74ec271bb884306ff",
+      "role": "opening layer"
+    }
+  ]
+}

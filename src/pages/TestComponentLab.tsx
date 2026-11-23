@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, Download, FileInput, FileOutput, FileArchive, FlaskConical, ImagePlus, Maximize, Minus, Plus, Save, Type, UploadCloud, ZoomIn, ZoomOut } from 'lucide-react'
 import { EditorProperties } from '../features/test-component-lab/editor/EditorProperties'
 import { LabPreview } from '../features/test-component-lab/components/LabPreview'
+import { LoadingPortalLab } from '../features/test-component-lab/loading-portal/LoadingPortalLab'
 import { AddBackgroundDialog } from '../features/test-component-lab/background/AddBackgroundDialog'
 import { ImportAnimationDialog, type ImportedFiles } from '../features/test-component-lab/import/ImportAnimationDialog'
 import { PresetManager } from '../features/test-component-lab/presets/PresetManager'
@@ -16,6 +17,7 @@ import '../features/test-component-lab/styles/editor-v2.css'
 
 type Dialog = 'background' | 'import' | 'preset' | null
 export function TestComponentLab() {
+  const [activeComponent,setActiveComponent] = useState<'particle-wave' | 'loading-portal'>('particle-wave')
   const [doc,setDoc] = useState<CompositionDocument>(()=>structuredClone(defaultDocument))
   const [displayedCount,setDisplayedCount] = useState(doc.settings.particleCount)
   const [selected,setSelected] = useState<string|null>(null)
@@ -180,6 +182,13 @@ export function TestComponentLab() {
           <div><h1>LCR Test Component Lab</h1><p>Visual Composition &amp; Animation Editor · V2</p></div></div>
         <Link to="/" className="lcr-lab-back"><ArrowLeft size={16}/> Retornar ao LCR Portfolio</Link>
       </header>
+      <div className="lcr-lab-component-switch" role="group" aria-label="Componente do laboratório" data-testid="lab-component-switch">
+        <button type="button" aria-pressed={activeComponent==='particle-wave'}
+          onClick={()=>{setActiveComponent('particle-wave');setDialog(null)}}>Particle Wave</button>
+        <button type="button" aria-pressed={activeComponent==='loading-portal'}
+          onClick={()=>{setActiveComponent('loading-portal');setDialog(null)}}>Loading Portal</button>
+      </div>
+      {activeComponent==='particle-wave' ? <>
       <div className="lcr-v2-toolbar" aria-label="Editor toolbar">
         <div className="lcr-v2-toolbar-row">
           <label>Canvas Size<select aria-label="Canvas Size" value={doc.canvas.aspectRatio}
@@ -237,6 +246,7 @@ export function TestComponentLab() {
           displayedCount={displayedCount} setDisplayedCount={setDisplayedCount}
           onPreset={choosePreset} onSetting={updateSetting} onRemoveBackground={removeBackground} onEdit={enterEditing}/>
       </div>
+      </> : <LoadingPortalLab />}
       <footer className="lcr-lab-footer"><span>Local rendering · IndexedDB · No authentication · Imported code never executes</span><span>V2 / LCR Workflow</span></footer>
     </div>
     {dialog==='background'&&<AddBackgroundDialog initial={fileCandidate} onClose={()=>{setDialog(null);setFileCandidate(null)}} onApply={applyBackground}/>}
