@@ -1,7 +1,4 @@
-/* LCR Hero V13 — transparent Lab Particle Wave composed above the
- * approved V7/V8 static SVG and beneath all real Hero content.
- * Coordinates and reflection are defined in config/heroParticleWave.ts.
- */
+/* V13 Lab particle wave above approved SVG, behind the live Hero UI. */
 .portfolio-home .hero-graph-field--v5 .hero-v13-particle-wave {
   position: absolute;
   z-index: 1;
@@ -11,7 +8,6 @@
   opacity: 1;
   max-width: none;
   max-height: none;
-  /* Transparent Canvas; do not paint over real text or screenshot the site. */
   background: transparent;
 }
 .portfolio-home .hero-graph-field--v5 .hero-v13-particle-wave .lcr-wave-canvas {
@@ -23,16 +19,15 @@
   z-index: 2;
 }
 [data-theme='light'] .portfolio-home .hero-graph-field--v5 .hero-v13-particle-wave {
-  opacity: .72; /* cyan remains visible on the light palette without dominating copy */
+  opacity: .72;
 }
 @media (max-width: 900px) {
   .portfolio-home .hero-graph-field--v5 .hero-v13-particle-wave {
     opacity: .78;
-    pointer-events: none; /* keep mobile gestures and stage controls unobstructed */
+    pointer-events: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  /* ParticleWave still paints its initial static frame and stops its RAF. */
   .portfolio-home .hero-graph-field--v5 .hero-v13-particle-wave {
     transition: none !important;
   }
