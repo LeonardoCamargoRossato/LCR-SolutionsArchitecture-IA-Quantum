@@ -1,3 +1,5 @@
+> **V2 active:** The Test Component Lab now includes the Visual Composition & Animation Editor. See [V2_VISUAL_EDITOR.md](./V2_VISUAL_EDITOR.md) for canvas sizing, rulers, background import (Browse / Drop / Ctrl+V), transforms, text, layers, presets, JSON, PNG, ZIP and secure code-import behavior. See [V2_ASSET_INVENTORY.md](./V2_ASSET_INVENTORY.md) for source provenance and export inventory. The V1 guidance below is retained for backward compatibility.
+
 # LCR Test Component Lab — V1
 
 **Status:** Public developer preview, bundled into the LCR Portfolio repository.  
