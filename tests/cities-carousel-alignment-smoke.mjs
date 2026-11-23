@@ -19,6 +19,9 @@ async function waitForServer() {
 async function check(name, width, height, minWidth, minHeight) {
   const ctx = await browser.newContext({viewport:{width,height},isMobile:name==='mobile',hasTouch:name==='mobile'})
   const page = await ctx.newPage()
+  // Explicitly test the original LIGHT neutral-gray scrollbar contract.
+  // V10 separately enforces dark as the default on first visit.
+  await page.addInitScript(() => localStorage.setItem('portfolio-theme', 'light'))
   await page.goto(base + '#/projects/cities-comparing', {waitUntil:'domcontentloaded'})
   await page.locator('.case-story-hero .case-hero-thumbnails button').first().waitFor({state:'visible',timeout:30000})
   await page.getByText('1 / 9', {exact:true}).waitFor({timeout:30000})
