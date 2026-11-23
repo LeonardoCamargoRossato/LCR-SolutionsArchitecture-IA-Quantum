@@ -5,7 +5,7 @@ import { chromium } from 'playwright'
 
 const BASE = 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
 const DIALOGUE = 'Hamlet AI'
-const TAGS = ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Python & Software Engineering', 'Data & Optimization', 'Quantum Computing']
+const TAGS = ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Data & Optimization', 'Quantum Computing']
 const report = { checks: [], errors: [] }
 const server = spawn('npm', ['run','dev','--','--host','127.0.0.1','--port','5173','--strictPort'], {
   env: process.env, detached: true, stdio: 'ignore',
@@ -116,9 +116,9 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
     assert.equal(facts.mobileVisible, false)
     assert.equal(facts.visualPosition, 'absolute')
     assert(facts.visWidth >= facts.heroWidth - 2, 'Desktop art must blend into Hero background')
-    assert(facts.tagRows[0] === facts.tagRows[1] && facts.tagRows[1] === facts.tagRows[2], 'First 3 tags must share first line')
-    assert(facts.tagRows[3] > facts.tagRows[2], 'Fourth tag must occupy an uncluttered second line')
-    assert.equal(facts.tagRows[4], facts.tagRows[3], 'Quantum Computing must sit beside Data & Optimization')
+    assert.equal(facts.tagRows[0], facts.tagRows[1], 'First two tags must share first line')
+    assert(facts.tagRows[2] > facts.tagRows[1], 'Data & Optimization must start second row')
+    assert.equal(facts.tagRows[2], facts.tagRows[3], 'Quantum Computing must share second row')
   } else {
     assert.equal(facts.mobileVisible, true)
     assert.equal(facts.desktopVisible, false)
@@ -307,7 +307,7 @@ try {
   await scenario({ name: 'tablet-768-light', width: 768, height: 1024 })
   await scenario({ name: 'mobile-390-reduced', width: 390, height: 844, reduced: true })
   await scenario({ name: 'mobile-360-dark', width: 360, height: 800, dark: true, reduced: true })
-  console.log('PASS Hero V8 — original V7 dark SVG, dark navy light SVG, five tags, 4 scenes, mobile')
+  console.log('PASS Hero V8 — original V7 dark SVG, dark navy light SVG, four tags, 4 scenes, mobile')
 } catch (error) {
   report.errors.push(String(error))
   console.error('HERO V5 FAILED:', error)
