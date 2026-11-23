@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { Project } from '../domain/models/Project'
-import { localizedProject } from '../i18n/content'
+import { localizedProject, localizedProjectStatus } from '../i18n/content'
 import { useI18n } from '../i18n/I18nProvider'
 import { SafeImage } from './SafeImage'
 import { animeFinderAssetPaths, animeFinderScreenshots } from '../data/animeFinderGallery'
@@ -42,8 +42,8 @@ export function ProjectCard({ project, variant = 'primary', reveal, revealDelay 
             src={image}
             fallbackSrc={current.slug === 'animefinder' ? originalCover : undefined}
             previewSrc={current.coverImage?.previewUrl}
-            alt={`${current.title ?? 'Project'} project cover`}
-            fallbackLabel={current.title || 'Project image unavailable'}
+            alt={locale === 'pt-BR' ? `Capa do projeto ${current.title}` : `${current.title} project cover`}
+            fallbackLabel={current.title || (locale === 'pt-BR' ? 'Imagem indisponível' : 'Project image unavailable')}
             loading="lazy"
             sizes={variant === 'compact' ? '(max-width: 680px) 100vw, 32vw' : '(max-width: 900px) 100vw, 45vw'}
           />
@@ -51,7 +51,7 @@ export function ProjectCard({ project, variant = 'primary', reveal, revealDelay 
           <div
             className="project-image-placeholder"
             role="img"
-            aria-label={`${current.title ?? 'Project'} image placeholder`}
+            aria-label={locale === 'pt-BR' ? `Imagem ilustrativa de ${current.title}` : `${current.title} image placeholder`}
           >
             {current.slug === 'quantum-education-apps' ? (
               <div className="project-image-placeholder-content">
@@ -69,7 +69,7 @@ export function ProjectCard({ project, variant = 'primary', reveal, revealDelay 
         <div className="project-meta-row">
           <span className="project-category">{current.category ?? ''}</span>
           <span className="project-status">
-            {current.status === 'Private Platform' ? t('privatePlatform') : current.status}
+            {localizedProjectStatus(current.status, locale)}
           </span>
         </div>
 
