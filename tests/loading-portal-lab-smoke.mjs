@@ -65,7 +65,14 @@ async function inspect(name, width, height, reduced) {
   assert.equal(await page.locator('.lcr-loading-portal__art').count(), 2,
     'First two keyframes should be available for interpolated crossfades')
 
-  if (width < 500) await page.getByRole('button', { name: 'Mobile · 9:16' }).click()
+  if (width < 500) {
+    await page.getByRole('button', { name: 'Mobile · 9:16' }).click()
+    await page.locator('.lcr-portal-lab-stage--mobile').waitFor()
+    await page.waitForFunction(() => {
+      const r = document.querySelector('.lcr-portal-lab-stage--mobile')?.getBoundingClientRect()
+      return r && r.height > r.width
+    }, null, { timeout: 6000 })
+  }
   const stage = page.getByTestId('loading-portal-stage')
   const stageMetrics = await stage.evaluate(el => {
     const r = el.getBoundingClientRect()
