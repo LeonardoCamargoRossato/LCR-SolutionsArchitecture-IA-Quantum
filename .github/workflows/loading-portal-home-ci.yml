@@ -1,0 +1,75 @@
+name: LCR Loading Portal — Real Home Boot & Performance
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/features/home-loading/**'
+      - 'src/components/loading-portal/**'
+      - 'src/components/HeroTypeTitle.tsx'
+      - 'src/components/hero/**'
+      - 'src/hooks/useHomeEntrance.ts'
+      - 'src/pages/Home.tsx'
+      - 'src/RootRouteGate.tsx'
+      - 'tests/home-loading-*.mjs'
+      - '.github/workflows/loading-portal-home-ci.yml'
+      - 'docs/home-loading/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  home-boot-integration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci
+      - name: Compile TypeScript and build production bundles
+        run: npm run build
+      - name: Audit portal and Home route separation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root = Path('src/RootRouteGate.tsx').read_text()
+          source = Path('src/features/home-loading/HomeBootCoordinator.tsx').read_text()
+          preload = Path('src/features/home-loading/preloadCriticalResources.ts').read_text()
+          home = Path('src/pages/Home.tsx').read_text()
+          hero = Path('src/components/hero/InteractiveAiVisual.tsx').read_text()
+          assert "location.pathname === '/test-component-lab'" in root
+          assert 'HomeBootCoordinator' in root
+          assert 'sessionStorage' in source
+          assert 'portal' in source and 'homeSafe' in source and 'onOpened' in source
+          assert 'waitForHomeDom' in preload and 'waitForHeroMedia' in preload
+          assert 'waitForOpeningArt' in preload
+          assert 'VITE_SUPABASE' not in source and 'supabase' not in preload.lower()
+          assert 'useHomeMotionEnabled' in home and hero
+          assert 'data-home-motion' in home
+          assert Path('src/components/loading-portal/LoadingPortal.tsx').exists()
+          assert Path('public/assets/home/loading-portal/portal-000.webp').exists()
+          assert Path('public/assets/home/loading-portal/door-open-base.webp').exists()
+          assert not list(Path('dist/assets').glob('*background-original.png'))
+          print('PASS: runtime safe, Home is real, Lab isolated, approved assets preserved')
+          PY
+      - name: Install browser tests
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Test first visit, readiness, CSS/Canvas motion synchronization, sessions, routes and safe fallback
+        run: node tests/home-loading-integration-smoke.mjs
+      - name: Upload screenshots and performance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcr-loading-portal-home-boot-evidence
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: warn
