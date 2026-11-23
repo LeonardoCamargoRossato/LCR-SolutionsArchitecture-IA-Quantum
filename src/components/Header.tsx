@@ -6,11 +6,12 @@ import { useI18n } from '../i18n/I18nProvider'
 import type { Locale } from '../i18n/types'
 import { useSiteContent } from '../providers/SiteContentProvider'
 import { useTheme } from '../providers/ThemeProvider'
+import { FlagIcon } from './header/FlagIcon'
 import './header/header-controls.css'
 
-const LANGUAGES: ReadonlyArray<{ locale: Locale; flag: string; label: string }> = [
-  { locale: 'en-US', flag: '🇺🇸', label: 'EN USA' },
-  { locale: 'pt-BR', flag: '🇧🇷', label: 'PT BR' },
+const LANGUAGES: ReadonlyArray<{ locale: Locale; label: string }> = [
+  { locale: 'en-US', label: 'EN USA' },
+  { locale: 'pt-BR', label: 'PT BR' },
 ]
 
 export function Header() {
@@ -110,7 +111,7 @@ export function Header() {
               aria-controls="portfolio-language-options"
               onClick={() => setLanguageOpen(value => !value)}
             >
-              <span className="language-flag" aria-hidden="true">{selectedLanguage.flag}</span>
+              <span className="language-flag" aria-hidden="true"><FlagIcon locale={selectedLanguage.locale} /></span>
               <span className="language-picker-label">{selectedLanguage.label}</span>
               <ChevronDown size={13} aria-hidden="true" />
             </button>
@@ -124,7 +125,7 @@ export function Header() {
                     aria-pressed={locale === option.locale}
                     onClick={() => chooseLanguage(option.locale)}
                   >
-                    <span className="language-flag" aria-hidden="true">{option.flag}</span>
+                    <span className="language-flag" aria-hidden="true"><FlagIcon locale={option.locale} /></span>
                     <span>{option.label}</span>
                   </button>
                 ))}
