@@ -986,3 +986,37 @@
   .hero-graph-field--v5 .hero-v6-backdrop-fabric { transition: none !important; transform: none !important; }
   /* The SVG itself disables CSS and SMIL animations via its own media query. */
 }
+
+/* ── LCR Hero V7 PERF: image is rasterized once; do not recompose the dense
+ * vector asset on every frame or pointer movement. V6 original remains on disk.
+ */
+.hero-graph-field--v5 .hero-v7-backdrop-fabric,
+[data-theme='dark'] .hero-graph-field--v5 .hero-v7-backdrop-fabric,
+[data-theme='light'] .hero-graph-field--v5 .hero-v7-backdrop-fabric {
+  transform: none !important;
+  transition: none !important;
+  filter: none !important;
+  will-change: auto;
+}
+.hero-graph-field--v5 .hero-v7-light-trace {
+  position: absolute;
+  pointer-events: none;
+  right: 7%;
+  bottom: 16%;
+  width: min(260px, 25%);
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(37,173,240,.18) 25%, rgba(110,236,255,.55) 58%, transparent 100%);
+  opacity: .40;
+  transform: translate3d(-35px, 0, 0);
+  animation: hero-v7-trace 13s ease-in-out infinite alternate;
+}
+@keyframes hero-v7-trace {
+  from { transform: translate3d(-35px, 0, 0); opacity: .25; }
+  to { transform: translate3d(35px, -12px, 0); opacity: .56; }
+}
+.hero-graph-field--v5[data-playing='false'] .hero-v7-light-trace {
+  animation-play-state: paused;
+}
+@media (max-width: 900px), (prefers-reduced-motion: reduce) {
+  .hero-graph-field--v5 .hero-v7-light-trace { animation: none !important; }
+}
