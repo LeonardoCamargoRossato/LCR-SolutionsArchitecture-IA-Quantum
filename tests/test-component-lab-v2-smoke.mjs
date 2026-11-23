@@ -163,7 +163,7 @@ async function run(name,viewport,reduced=false){
       element.dispatchEvent(event)
     },{b64:screenshotB64,target,type})
   }
-  page.once('dialog',d=>d.accept())
+  // LCR Hero preset starts with no background; first paste needs no replacement confirmation.
   await pasted('[data-testid="visual-editor"]','paste')
   await page.getByRole('dialog',{name:'Add Background'}).waitFor()
   await page.getByRole('button',{name:'Apply Background'}).click()
