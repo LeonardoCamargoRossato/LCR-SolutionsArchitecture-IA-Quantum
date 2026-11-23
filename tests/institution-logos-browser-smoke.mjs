@@ -11,12 +11,11 @@ const server = publicUrl ? null : spawn('npm',
   ['run', 'dev', '--', '--host', '127.0.0.1', '--port', '5173', '--strictPort'],
   { env: process.env, stdio: 'ignore', detached: true })
 
-// Every public institution reference in the Supabase project_institutions table.
+// Every active public institution reference; retired projects retain CMS records but do not render publicly.
 const cases = [
   ['cities-comparing', ['instituto-pense-mais', 'instituto-fisica-ufrgs', 'ufrgs']],
   ['foton-hub', ['instituto-foton']],
   ['quantum-education-apps', ['instituto-pense-mais', 'instituto-foton']],
-  ['scientific-analysis-toolkit', ['instituto-fisica-ufrgs', 'ufrgs']],
   ['embedded-control-platform', ['ita']],
   ['webseer', ['ita', 'instituto-foton']],
 ]
@@ -100,7 +99,12 @@ async function viewportTest(mode, dimensions) {
     report[mode].push({ slug, logos: details })
     console.log('LOGOS', mode, slug, expected, 'SVG PASS')
   }
-  assert.equal(total, 11)
+  // The retired Scientific Analysis Toolkit must not resurrect as a public case.
+  await page.goto(base + '#/projects/scientific-analysis-toolkit', { waitUntil: 'domcontentloaded' })
+  await page.getByRole('heading', { name: 'Case study not found.' }).waitFor({ timeout: 30000 })
+  assert.equal(await page.locator('.case-institution-logos img').count(), 0,
+    'Retired case still displays institution logos')
+  assert.equal(total, 9)
   assert.equal(errors.length, 0, 'SVG requests failed: ' + JSON.stringify(errors))
   await context.close()
 }
@@ -125,7 +129,7 @@ try {
   await viewportTest('desktop', { width: 1440, height: 900 })
   await viewportTest('mobile', { width: 390, height: 844 })
   await testFallback()
-  console.log('PASS: 11 SVG references on 6 projects x desktop/mobile, sizing and PNG fallback')
+  console.log('PASS: 9 active SVG references on 5 projects x desktop/mobile, sizing and PNG fallback')
 } catch (error) {
   report.failure = String(error)
   console.error('INSTITUTION LOGO SMOKE FAILED:', error)
