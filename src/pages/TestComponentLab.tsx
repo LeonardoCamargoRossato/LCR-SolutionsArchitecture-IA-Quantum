@@ -235,7 +235,7 @@ export function TestComponentLab() {
           copyStatus={copyStatus} onRunning={togglePlaying} onReset={reset} onCopy={()=>{void copyConfig()}} onSurface={setSurface}/>
         <EditorProperties doc={doc} update={setDoc} selected={selected} select={setSelected}
           displayedCount={displayedCount} setDisplayedCount={setDisplayedCount}
-          onPreset={choosePreset} onSetting={updateSetting} onRemoveBackground={removeBackground}/>
+          onPreset={choosePreset} onSetting={updateSetting} onRemoveBackground={removeBackground} onEdit={enterEditing}/>
       </div>
       <footer className="lcr-lab-footer"><span>Local rendering · IndexedDB · No authentication · Imported code never executes</span><span>V2 / LCR Workflow</span></footer>
     </div>
