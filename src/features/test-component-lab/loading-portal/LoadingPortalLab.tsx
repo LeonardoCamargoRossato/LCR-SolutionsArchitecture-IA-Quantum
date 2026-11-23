@@ -34,12 +34,15 @@ export function LoadingPortalLab() {
     if (paused) return
     let frame = 0
     let lastUpdate = 0
+    let accumulated = 0
     const tick = (now: number) => {
       if (lastTime.current === null) lastTime.current = now
-      const delta = Math.min(100, Math.max(0, now - lastTime.current))
+      accumulated += Math.min(100, Math.max(0, now - lastTime.current))
       lastTime.current = now
       if (now - lastUpdate >= 48) {
         lastUpdate = now
+        const delta = accumulated
+        accumulated = 0
         const rate = slow ? .18 : 1
         setProgress(value => Math.min(100, value + delta * speed * rate * 100 / DEMO_DURATION))
       }
