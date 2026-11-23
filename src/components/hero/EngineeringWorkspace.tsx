@@ -1,9 +1,8 @@
-/**
- * Hero V4 outcomes: generated code resolves into AI Hamnet's conversation.
- * Visual-only, deterministic. Never executes the displayed code or connects
- * to an assistant, model, user account or external data source.
- */
+import type { PointerEvent } from 'react'
 
+/** The terminal and the assistant are authored demos, never live services.
+ * Replaying the transcript remounts a CSS-driven message timeline; no AI call.
+ */
 const codeLines = [
   { number: '01', indent: 0, keyword: 'const', expression: ' pipeline = createAI()' },
   { number: '02', indent: 1, keyword: 'const', expression: ' context = await retrieve(data)' },
@@ -13,12 +12,32 @@ const codeLines = [
   { number: '06', indent: 0, keyword: '//', expression: ' intelligence becomes software' },
 ] as const
 
-export function EngineeringWorkspace({ locale }: { locale: 'pt-BR' | 'en-US' }) {
+export function EngineeringWorkspace({
+  locale, active, replayKey, onReplay,
+}: {
+  locale: 'pt-BR' | 'en-US'
+  active: boolean
+  replayKey: number
+  onReplay: () => void
+}) {
   const pt = locale === 'pt-BR'
+  const onRobotMove = (event: PointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType === 'touch') return
+    const box = event.currentTarget.getBoundingClientRect()
+    const mx = (event.clientX - box.left) / Math.max(1, box.width) * 2 - 1
+    const my = (event.clientY - box.top) / Math.max(1, box.height) * 2 - 1
+    event.currentTarget.style.setProperty('--hamnet-yaw', `${(mx * 8).toFixed(1)}deg`)
+    event.currentTarget.style.setProperty('--hamnet-pitch', `${(-my * 6).toFixed(1)}deg`)
+  }
+  const onRobotLeave = (event: PointerEvent<HTMLButtonElement>) => {
+    event.currentTarget.style.removeProperty('--hamnet-yaw')
+    event.currentTarget.style.removeProperty('--hamnet-pitch')
+  }
+
   return (
     <>
-      <div className="hero-v4-code-scene" data-testid="hero-v4-code-scene">
-        <div className="hero-v4-code-halo" aria-hidden="true" />
+      <div className="hero-v4-code-scene" data-testid="hero-v4-code-scene" aria-hidden="true">
+        <div className="hero-v4-code-halo" />
         <div className="hero-v4-code-architecture">
           <span className="hero-v4-code-icon">TS</span>
           <span>intelligence.pipeline.ts</span>
@@ -40,31 +59,61 @@ export function EngineeringWorkspace({ locale }: { locale: 'pt-BR' | 'en-US' }) 
         </div>
       </div>
 
-      <div className="hero-v4-hamnet-scene" data-testid="hero-v4-hamnet-scene">
+      <div
+        className="hero-v4-hamnet-scene hero-v5-hamnet"
+        data-testid="hero-v4-hamnet-scene"
+        data-demo-sequence={replayKey}
+        aria-hidden={!active}
+        inert={!active}
+      >
         <div className="hero-v4-hamnet-glow" aria-hidden="true" />
         <div className="hero-v4-bot-persona">
-          <img
-            src={`${import.meta.env.BASE_URL}assets/home/hero/ai-hamnet-robot.svg`}
-            alt=""
-            className="hero-v4-bot-art"
-            width="150"
-            height="150"
-            decoding="async"
-          />
+          <button
+            type="button"
+            className="hero-v5-bot-replay"
+            data-testid="hero-v5-hamnet-replay"
+            aria-label={pt ? 'Reproduzir demonstração de conversa com AI Hamnet' : 'Replay AI Hamnet conversation demo'}
+            onPointerMove={onRobotMove}
+            onPointerLeave={onRobotLeave}
+            onClick={onReplay}
+            title={pt ? 'Clique para repetir a demonstração' : 'Click to replay the demo'}
+          >
+            <img
+              src={`${import.meta.env.BASE_URL}assets/home/hero/ai-hamnet-enterprise-v2.svg`}
+              alt=""
+              className="hero-v4-bot-art"
+              width="240"
+              height="260"
+              decoding="async"
+            />
+          </button>
           <div className="hero-v4-hamnet-name">AI Hamnet</div>
-          <div className="hero-v4-hamnet-state"><span /> Intelligent assistant concept</div>
+          <div className="hero-v4-hamnet-state">
+            <span aria-hidden="true" /> {pt ? 'Demonstração de assistente de IA' : 'AI assistant concept demo'}
+          </div>
+          <div className="hero-v5-replay-hint">{pt ? 'Clique para repetir' : 'Click to replay'}</div>
         </div>
-        <div className="hero-v4-chat-window">
+        <div className="hero-v4-chat-window hero-v5-chat-window">
           <div className="hero-v4-chat-heading">
             <span className="hero-v4-chat-avatar">AI</span>
             <strong>AI Hamnet</strong>
-            <span className="hero-v4-chat-online">●</span>
+            <span className="hero-v5-demo-label">{pt ? 'DEMONSTRAÇÃO' : 'DEMO'}</span>
           </div>
-          <div className="hero-v4-chat-bubble">
-            <div className="hero-v4-chat-hello">Hello!</div>
-            <p>{pt ? 'Eu transformo dados em soluções inteligentes.' : 'I turn data into intelligent solutions.'}</p>
+          <div className="hero-v5-conversation" key={replayKey} aria-label={pt ? 'Exemplo de conversa simulada' : 'Simulated conversation example'}>
+            <div className="hero-v5-chat-user" data-testid="hero-v5-user-message">
+              Hello, Hamnet.
+            </div>
+            <div className="hero-v5-chat-thinking" aria-hidden="true">
+              <span /><span /><span />
+            </div>
+            <div className="hero-v5-chat-answer" data-testid="hero-v5-assistant-answer">
+              <strong>Hello!</strong>
+              <p>{pt
+                ? 'Desenvolvo soluções com IA, engenharia de software e dados para transformar problemas complexos em sistemas inteligentes.'
+                : 'I build intelligent systems through AI engineering, software development and data-driven solutions.'}</p>
+            </div>
           </div>
-          <div className="hero-v4-chat-bottom"><span /> <span /> <span /></div>
+          <div className="hero-v5-chat-footer">{pt ? 'Conversa ilustrativa · sem conexão com IA' : 'Illustrative conversation · no live AI connection'}</div>
         </div>
       </div>
     </>

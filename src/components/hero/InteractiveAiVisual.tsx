@@ -2,6 +2,7 @@ import { Pause, Play } from 'lucide-react'
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { HeroGraphDesktop, HeroGraphMobile } from './AiSystemsGraph'
 import { EngineeringWorkspace } from './EngineeringWorkspace'
+import { HeroBackgroundGraph } from './HeroBackgroundGraph'
 
 type Phase = 'scatter' | 'neural' | 'code' | 'hamnet'
 const PHASES: readonly Phase[] = ['scatter', 'neural', 'code', 'hamnet']
@@ -27,6 +28,7 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
   const [reduced, setReduced] = useState(() => window.matchMedia(REDUCED).matches)
   const [phase, setPhase] = useState<Phase>(() => window.matchMedia(REDUCED).matches ? 'neural' : 'scatter')
   const [paused, setPaused] = useState(false)
+  const [replayKey, setReplayKey] = useState(0)
   const [dragging, setDragging] = useState(false)
   const [visible, setVisible] = useState(true)
   const [documentVisible, setDocumentVisible] = useState(() => !document.hidden)
@@ -83,6 +85,15 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
     })
   }
 
+  const onBackdropPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (reduced || !visible || !documentVisible || window.innerWidth <= 900 || event.pointerType === 'touch') return
+    const x = Math.max(-1, Math.min(1, (event.clientX / window.innerWidth) * 2 - 1))
+    const y = Math.max(-1, Math.min(1, (event.clientY / window.innerHeight) * 2 - 1))
+    // Very small presentation-only parallax; no React render or RAF loop.
+    event.currentTarget.style.setProperty('--fabric-parallax-x', `${(x * 9).toFixed(1)}px`)
+    event.currentTarget.style.setProperty('--fabric-parallax-y', `${(y * 7).toFixed(1)}px`)
+  }
+
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (!playing || phase !== 'neural' || window.innerWidth <= 900 || event.pointerType === 'touch') return
     if (event.button !== 0) return
@@ -126,20 +137,31 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
   return (
     <div
       ref={root}
-      className="hero-graph-field hero-graph-field--v4"
+      className="hero-graph-field hero-graph-field--v4 hero-graph-field--v5"
       data-testid="interactive-ai-visual"
       data-phase={phase}
       data-playing={playing ? 'true' : 'false'}
       data-reduced={reduced ? 'true' : 'false'}
       data-dragging={dragging ? 'true' : 'false'}
+      onPointerMove={onBackdropPointerMove}
+      onPointerLeave={(event) => {
+        event.currentTarget.style.setProperty('--fabric-parallax-x', '0px')
+        event.currentTarget.style.setProperty('--fabric-parallax-y', '0px')
+      }}
       role="group"
       aria-label={pt ? 'Animação da evolução de dados em redes neurais, código e AI Hamnet' : 'From scattered data to neural layers, code and AI Hamnet'}
     >
+      <HeroBackgroundGraph />
       <div className="hero-v4-art" aria-hidden="true">
         <div className="hero-v4-desktop"><HeroGraphDesktop /></div>
         <div className="hero-v4-mobile"><HeroGraphMobile /></div>
-        <EngineeringWorkspace locale={locale} />
       </div>
+      <EngineeringWorkspace
+        locale={locale}
+        active={phase === 'hamnet'}
+        replayKey={replayKey}
+        onReplay={() => setReplayKey(key => key + 1)}
+      />
 
       <div
         className="hero-v4-interaction"
@@ -157,8 +179,8 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
       />
       <span className="hero-v4-visually-hidden">
         {pt
-          ? 'Visualização conceitual. Primeiro pontos de dados dispersos, depois uma rede neural conectada em camadas, linhas de código e o robô AI Hamnet dizendo Hello. Não existe uma conversa real nesta animação.'
-          : 'Conceptual visualization: scattered data points become a layered neural network, then source code and the AI Hamnet robot saying Hello. No live conversation is involved.'}
+          ? 'Visualização conceitual: fluxos binários convergem de um grafo em perspectiva para camadas neurais, código e uma conversa ilustrativa com AI Hamnet. Não há conexão com IA nesta animação.'
+          : 'Conceptual visual: binary packets flow through a perspective data network into neural layers, source code and a simulated AI Hamnet conversation. No live AI connection.'}
       </span>
       <div className="hero-v4-stage-marker" aria-hidden="true">
         {phase === 'scatter' ? 'DATA INPUT' : phase === 'neural' ? 'NEURAL ARCHITECTURE' : phase === 'code' ? 'SOFTWARE GENERATION' : 'AI HAMNET'}

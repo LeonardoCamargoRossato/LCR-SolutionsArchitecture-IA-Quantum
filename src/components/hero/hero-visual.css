@@ -505,3 +505,325 @@
   .hero-v4-depth-front { transform: none !important; }
   .hero-v4-interaction { pointer-events: none !important; }
 }
+
+
+/* ───────────── LCR HERO V5 — PERSISTENT ARCHITECTURAL DATA FABRIC ─────────────
+ * A real source SVG is retained in public/assets/home/hero. It is positioned
+ * separately from every 4-stage scene, so no "empty background" on transition.
+ * Only the 12 binary labels move: no animated hundreds-of-line SVG.
+ */
+.hero-graph-field--v5 {
+  --fabric-parallax-x: 0px;
+  --fabric-parallax-y: 0px;
+  pointer-events: auto;
+}
+.hero-v5-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 1;
+}
+.hero-v5-backdrop-fabric {
+  position: absolute;
+  inset: -8% -4% -8% 0;
+  transform: perspective(1300px) rotateY(-8deg) rotateX(4deg) translate3d(var(--fabric-parallax-x), var(--fabric-parallax-y), 0);
+  transform-origin: 85% 50%;
+  transition: transform 330ms ease-out;
+  opacity: .72;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 25%, rgba(0,0,0,.4) 42%, #000 57%);
+  mask-image: linear-gradient(90deg, transparent 0%, transparent 25%, rgba(0,0,0,.4) 42%, #000 57%);
+}
+.hero-v5-backdrop-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 100% 50%;
+}
+[data-theme='dark'] .hero-v5-backdrop-fabric {
+  opacity: .86;
+  filter: saturate(1.25) brightness(1.26);
+}
+.hero-v5-backdrop-packets {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 36%, #000 58%);
+  mask-image: linear-gradient(90deg, transparent 0%, transparent 36%, #000 58%);
+}
+.hero-v5-packet {
+  position: absolute;
+  top: var(--data-y);
+  left: var(--data-x);
+  color: #236da6;
+  font: 700 12px/1.2 ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .07em;
+  white-space: nowrap;
+  opacity: 0;
+  text-shadow: 0 0 12px rgba(16,170,227,.18);
+  animation: hero-v5-binary-travel 10.5s linear infinite;
+  animation-delay: var(--data-delay);
+  will-change: transform, opacity;
+}
+.hero-v5-packet--far { font-size: 10px; opacity: .4; filter: blur(.25px); }
+.hero-v5-packet--near { font-size: 13px; }
+[data-theme='dark'] .hero-v5-packet {
+  color: #69ddfa;
+  text-shadow: 0 0 16px rgba(45,199,255,.55);
+}
+.hero-v5-backdrop-vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--section-base, #fff) 0%, transparent 39%, transparent 100%);
+  opacity: .38;
+  pointer-events: none;
+}
+[data-theme='dark'] .hero-v5-backdrop-vignette {
+  background: linear-gradient(90deg, #0d1117, transparent 45%);
+}
+@keyframes hero-v5-binary-travel {
+  0% { transform: translate3d(66px,-19px,0); opacity: 0; }
+  17% { opacity: .64; }
+  55% { opacity: .78; }
+  87% { opacity: .26; }
+  100% { transform: translate3d(-215px,33px,0); opacity: 0; }
+}
+/* Former random scatter starburst becomes a data-routing stage. */
+.hero-v4-scatter-edges line { opacity: .13; }
+.hero-graph-field[data-phase='scatter'] .hero-v4-scatter-edges line {
+  stroke: var(--neural-line);
+  opacity: .27;
+}
+.hero-graph-field[data-phase='scatter'] .hero-v4-data-point--bright {
+  filter: drop-shadow(0 0 5px rgba(44,185,250,.58));
+}
+
+/* More substantial perspective, consistent across all four scenes. */
+.hero-v4-desktop { z-index: 1; }
+.hero-v4-code-scene {
+  transform-origin: 80% 52%;
+  transform: perspective(1000px) rotateY(-13deg) rotateX(4deg) translate3d(35px,34px,0) scale(.92);
+}
+.hero-graph-field[data-phase='code'] .hero-v4-code-scene {
+  transform: perspective(1000px) rotateY(-9deg) rotateX(2deg) translate3d(0,0,0) scale(1);
+}
+.hero-v4-hamnet-scene.hero-v5-hamnet {
+  left: 50%;
+  top: 21%;
+  width: min(47vw, 605px);
+  z-index: 3;
+  min-height: 340px;
+  gap: 15px;
+  pointer-events: none;
+  transform-origin: 78% 50%;
+  transform: perspective(1000px) rotateY(-13deg) translate3d(35px,28px,0) scale(.92);
+}
+.hero-graph-field[data-phase='hamnet'] .hero-v4-hamnet-scene.hero-v5-hamnet {
+  transform: perspective(1000px) rotateY(-7deg) rotateX(1deg) translate3d(0,0,0) scale(1);
+  pointer-events: auto;
+}
+.hero-v4-hamnet-scene .hero-v4-hamnet-glow { pointer-events: none; }
+.hero-v5-bot-replay {
+  --hamnet-yaw: 0deg;
+  --hamnet-pitch: 0deg;
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 15px;
+  cursor: pointer;
+  perspective: 600px;
+  touch-action: manipulation;
+  transition: filter 220ms ease;
+}
+.hero-v5-bot-replay:hover {
+  filter: drop-shadow(0 8px 19px rgba(35,170,237,.29));
+}
+.hero-v5-bot-replay:focus-visible { outline: 3px solid var(--neural-glow); outline-offset: 4px; }
+.hero-v5-bot-replay .hero-v4-bot-art {
+  width: min(100%, 205px);
+  max-height: 230px;
+  object-fit: contain;
+  margin-inline: auto;
+  transform: perspective(650px) rotateX(var(--hamnet-pitch)) rotateY(var(--hamnet-yaw));
+  transition: transform 170ms ease-out;
+  animation: none;
+}
+.hero-v5-replay-hint {
+  margin-top: 9px;
+  color: var(--neural-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .025em;
+}
+.hero-v5-chat-window { position: relative; width: 64%; flex: 1 1 auto; }
+.hero-v5-demo-label {
+  margin-left: auto;
+  padding: 4px 7px;
+  border: 1px solid var(--neural-border);
+  border-radius: 7px;
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: .04em;
+  color: var(--neural-muted);
+}
+.hero-v5-conversation {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  min-height: 180px;
+  padding: 16px 12px 13px;
+}
+.hero-v5-chat-user {
+  align-self: flex-end;
+  max-width: 88%;
+  padding: 10px 12px;
+  border-radius: 12px 12px 3px 12px;
+  color: white;
+  background: #1c67b9;
+  font-size: 12px;
+  font-weight: 650;
+  opacity: 0;
+  animation: hero-v5-message-in 420ms 350ms ease-out forwards;
+}
+.hero-v5-chat-thinking {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: max-content;
+  padding: 9px 13px;
+  border-radius: 11px 11px 11px 3px;
+  background: rgba(60,137,198,.13);
+  opacity: 0;
+  animation: hero-v5-typing-show 1250ms 900ms both;
+}
+.hero-v5-chat-thinking span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--neural-glow);
+}
+.hero-v5-chat-thinking span:nth-child(2) { opacity: .65; }
+.hero-v5-chat-thinking span:nth-child(3) { opacity: .32; }
+.hero-v5-chat-answer {
+  max-width: 95%;
+  padding: 12px 13px;
+  border-radius: 11px 11px 11px 3px;
+  border: 1px solid var(--neural-border);
+  background: rgba(31,124,202,.09);
+  color: var(--neural-ink);
+  opacity: 0;
+  animation: hero-v5-message-in 580ms 2040ms ease-out forwards;
+}
+.hero-v5-chat-answer strong { color: var(--neural-glow); font-size: 16px; }
+.hero-v5-chat-answer p { margin: 8px 0 0; font-size: 11px; line-height: 1.56; }
+.hero-v5-chat-footer {
+  border-top: 1px solid var(--neural-border);
+  padding: 9px 12px 12px;
+  color: var(--neural-muted);
+  font-size: 9px;
+  line-height: 1.3;
+}
+@keyframes hero-v5-message-in {
+  from { transform: translate3d(0,10px,0); opacity: 0; }
+  to { transform: translate3d(0,0,0); opacity: 1; }
+}
+@keyframes hero-v5-typing-show {
+  0%, 9% { opacity: 0; }
+  20%, 83% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.hero-graph-field[data-playing='false'] .hero-v5-packet,
+.hero-graph-field[data-playing='false'] .hero-v5-conversation *,
+.hero-graph-field[data-playing='false'] .hero-v5-conversation *::before {
+  animation-play-state: paused !important;
+}
+.hero-graph-field[data-playing='false'] .hero-v5-backdrop-fabric { transition: none; }
+
+@media (max-width: 1120px) and (min-width: 901px) {
+  .hero-v5-hamnet { gap: 8px; }
+  .hero-v5-chat-answer p { font-size: 10px; }
+  .hero-v5-chat-user { font-size: 11px; }
+  .hero-v5-conversation { min-height: 163px; }
+}
+@media (max-width: 900px) {
+  .hero-v5-backdrop-fabric {
+    inset: -2% -42% -2% -52%;
+    opacity: .44;
+    transform: none !important;
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 27%, black 80%, transparent);
+    mask-image: linear-gradient(90deg, transparent, black 27%, black 80%, transparent);
+  }
+  .hero-v5-backdrop-packets {
+    opacity: .6;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .hero-v5-packet:nth-child(n+8) { display: none; }
+  .hero-v5-packet { font-size: 10px; }
+  .hero-v5-hamnet.hero-v4-hamnet-scene {
+    left: 4%;
+    top: 7%;
+    width: 92%;
+    min-height: 250px;
+    gap: 9px;
+    transform: translateY(26px) scale(.96);
+  }
+  .hero-graph-field[data-phase='hamnet'] .hero-v5-hamnet.hero-v4-hamnet-scene {
+    transform: translateY(0) scale(1);
+  }
+  .hero-v4-code-scene {
+    transform: perspective(850px) rotateY(-8deg) translateY(30px) scale(.94);
+  }
+  .hero-graph-field[data-phase='code'] .hero-v4-code-scene {
+    transform: perspective(850px) rotateY(-4deg) translateY(0) scale(1);
+  }
+  .hero-v5-bot-replay .hero-v4-bot-art { max-height: 165px; width: min(100%, 142px); }
+  .hero-v5-conversation { min-height: 146px; gap: 7px; padding: 9px; }
+  .hero-v5-chat-user { font-size: 10px; padding: 8px; }
+  .hero-v5-chat-thinking { padding: 7px; }
+  .hero-v5-chat-answer { padding: 9px; }
+  .hero-v5-chat-answer strong { font-size: 13px; }
+  .hero-v5-chat-answer p { font-size: 10px; line-height: 1.4; }
+  .hero-v5-chat-footer { font-size: 8px; padding: 7px; }
+  .hero-v5-replay-hint { font-size: 9px; }
+}
+@media (max-width: 600px) {
+  .hero-v5-background { opacity: .65; }
+  .hero-v5-packet { font-size: 9px; }
+  .hero-v5-hamnet.hero-v4-hamnet-scene {
+    top: 9%;
+    left: 2%;
+    width: 96%;
+    min-height: 222px;
+    gap: 5px;
+  }
+  .hero-v4-bot-persona { flex: 0 0 35%; }
+  .hero-v5-bot-replay .hero-v4-bot-art { width: min(100%, 115px); max-height: 140px; }
+  .hero-v5-chat-window { width: 65%; }
+  .hero-v5-chat-window .hero-v4-chat-heading { padding: 8px; }
+  .hero-v5-demo-label { font-size: 7px; padding: 3px 4px; }
+  .hero-v5-conversation { min-height: 151px; padding: 8px; }
+  .hero-v5-chat-answer p { font-size: 9.5px; }
+  .hero-v5-replay-hint { font-size: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-v5-background *,
+  .hero-v5-background *::before,
+  .hero-v5-background *::after,
+  .hero-v5-conversation *,
+  .hero-v5-conversation *::before,
+  .hero-v5-conversation *::after {
+    animation: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+  .hero-v5-packet { opacity: .35; transform: none !important; }
+  .hero-v5-chat-user, .hero-v5-chat-answer { opacity: 1; transform: none; }
+  .hero-v5-chat-thinking { display: none; }
+  .hero-v5-bot-replay .hero-v4-bot-art { transform: none !important; }
+}
