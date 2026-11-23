@@ -18,4 +18,5 @@ export const PORTFOLIO_HERO_TAGS = [
   'RAG & Hybrid Retrieval',
   'Python & Software Engineering',
   'Data & Optimization',
+  'Quantum Computing',
 ] as const
