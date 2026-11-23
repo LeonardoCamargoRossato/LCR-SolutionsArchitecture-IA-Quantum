@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from 'react'
 import { defaultContent } from '../data/defaultContent'
+import { RETIRED_PROJECT_SLUGS } from '../config/retiredProjects'
 import { defaultMoreProjects, defaultProjects } from '../data/defaultProjects'
 import type { Project } from '../domain/models/Project'
 import type { SiteContent } from '../domain/models/SiteContent'
@@ -44,10 +45,12 @@ function writeCache<T>(key: string, value: T) {
 
 export function SiteContentProvider({ children }: { children: ReactNode }) {
   const [content, setContent] = useState<SiteContent>(() => readCache('lcr-site-content-v2', defaultContent))
-  const [projects, setProjects] = useState<Project[]>(() => readCache('lcr-projects-v2', [
-    ...defaultProjects,
-    ...defaultMoreProjects,
-  ]))
+  const [projects, setProjects] = useState<Project[]>(() =>
+    readCache('lcr-projects-v2', [
+      ...defaultProjects,
+      ...defaultMoreProjects,
+    ]).filter((project) => !RETIRED_PROJECT_SLUGS.has(project.slug)),
+  )
   const [loading, setLoading] = useState(true)
 
   const refreshContent = async () => {

@@ -29,7 +29,12 @@ async function check(page, label) {
   assert((await gallery.textContent())?.includes('LACQ (Liga Acadêmica de Computação Quântica)'), 'Corrected LACQ event title is missing')
   assert(!(await gallery.textContent())?.includes('LACEQUI'), 'Retired LACEQUI spelling still visible')
 
-  const highlights = page.locator('.about-highlights')
+  // About details have deliberately moved into the accessible Read More
+  // dialog so section 06 can match the profile/contact column height.
+  const compactFooter = page.locator('.about-mini-footer .about-universities-footer a')
+  assert.equal(await compactFooter.count(), 3)
+  await page.locator('.about-read-more').click()
+  const highlights = page.locator('.about-details-dialog .about-highlights')
   await highlights.waitFor({ state: 'visible', timeout: 10000 })
   const copy = await highlights.innerText()
   assert(copy.includes('2025–2026'), 'Missing Foton presidency dates')
@@ -53,6 +58,9 @@ async function check(page, label) {
     assert.equal(await educationLink.getAttribute('href'), url)
     assert.equal(await educationLink.getAttribute('target'), '_blank')
   }
+
+  await page.locator('.about-details-close').click()
+  await page.locator('.about-details-dialog').waitFor({ state: 'hidden', timeout: 8000 })
 
   const toggle = gallery.locator('button[aria-controls="about-gallery-all-images"]')
   assert.equal(await toggle.getAttribute('aria-expanded'), 'false')

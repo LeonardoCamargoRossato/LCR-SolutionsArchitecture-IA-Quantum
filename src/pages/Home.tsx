@@ -1,7 +1,7 @@
 import { FileText, Mail } from 'lucide-react'
-import { useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { AboutGallery } from '../components/AboutGallery'
-import { AboutHighlights } from '../components/AboutHighlights'
+import { AboutCompact } from '../components/AboutCompact'
 import { CapabilitiesSection } from '../components/CapabilitiesSection'
 import { ContactForm } from '../components/ContactForm'
 import { CvViewer } from '../components/CvViewer'
@@ -13,6 +13,7 @@ import { SectionTitle } from '../components/SectionTitle'
 import { SocialLinkList } from '../components/SocialLinks'
 import { WorkProcessSection } from '../components/WorkProcessSection'
 import { externalLinks } from '../config/externalLinks'
+import { RETIRED_PROJECT_SLUGS } from '../config/retiredProjects'
 import { PORTFOLIO_HERO_TITLE, PORTFOLIO_HERO_SUBTITLE, PORTFOLIO_SKILLS, PROFESSIONAL_POSITIONING } from '../config/portfolioPositioning'
 import { localizedAbout, localizedHome, localizedSiteSettings } from '../i18n/content'
 import { useI18n } from '../i18n/I18nProvider'
@@ -24,7 +25,30 @@ export function Home() {
   const { locale, t } = useI18n()
   const [cvOpen, setCvOpen] = useState(false)
   const homeRef = useRef<HTMLElement>(null)
+  const aboutMediaRef = useRef<HTMLDivElement>(null)
+  const [aboutReferenceHeight, setAboutReferenceHeight] = useState<number | null>(null)
   useHomeEntrance(homeRef)
+
+  // The photo + last contact line is the desktop height reference for About.
+  // The right column never grows the section; its details open on demand.
+  useEffect(() => {
+    const media = aboutMediaRef.current
+    if (!media) return
+    const update = () => {
+      const height = window.matchMedia('(min-width: 721px)').matches
+        ? Math.ceil(media.getBoundingClientRect().height)
+        : null
+      setAboutReferenceHeight((previous) => previous === height ? previous : height)
+    }
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(update) : null
+    observer?.observe(media)
+    window.addEventListener('resize', update)
+    update()
+    return () => {
+      observer?.disconnect()
+      window.removeEventListener('resize', update)
+    }
+  }, [])
 
   const home = localizedHome(content.home, locale)
   const about = localizedAbout(content.about, locale)
@@ -37,7 +61,7 @@ export function Home() {
   } as CSSProperties
 
   const featuredSlugs = ['foton-hub', 'cities-comparing', 'animefinder']
-  const visibleProjects = projects.filter((project) => project.visible !== false)
+  const visibleProjects = projects.filter((project) => project.visible !== false && !RETIRED_PROJECT_SLUGS.has(project.slug))
   const projectOrder = (project: typeof projects[number]) =>
     project.sortOrder ?? project.order ?? 999
 
@@ -46,10 +70,7 @@ export function Home() {
     .sort((a, b) => featuredSlugs.indexOf(a.slug) - featuredSlugs.indexOf(b.slug))
 
   const moreProjects = visibleProjects
-    .filter((project) => !featuredSlugs.includes(project.slug) && ![
-      'power-platform',
-      'scientific-analysis',
-    ].includes(project.slug))
+    .filter((project) => !featuredSlugs.includes(project.slug))
     .sort((a, b) => {
       const priority = ['hamlet', 'webseer', 'metcompb-landing-page']
       const priorityA = priority.indexOf(a.slug)
@@ -154,7 +175,7 @@ export function Home() {
 
       <section className="section home-about" id="about">
         <div className="site-container home-about-grid">
-          <div className="about-media" data-reveal="right">
+          <div className="about-media" data-reveal="right" ref={aboutMediaRef}>
             <div className="profile-frame">
               {about.profileImage?.url ? (
                 <img src={about.profileImage.url} alt="Leonardo Rossato" />
@@ -178,21 +199,15 @@ export function Home() {
             <SocialLinkList links={content.socialLinks} />
           </div>
 
-          <div className="about-mini-copy" data-reveal="right" style={{ '--reveal-delay': '100ms' } as CSSProperties}>
-            <div className="eyebrow">06 / {t('about')}</div>
-            <h2>Leonardo Rossato</h2>
-            <p className="about-headline">{professionalTitle}</p>
-            {about.intro && <p className="about-intro">{about.intro}</p>}
-            <div className="about-bio-paragraphs">
-              {(about.bio ?? []).map((paragraph, paragraphIndex) => (
-                <p key={paragraphIndex} dangerouslySetInnerHTML={{ __html: paragraph }} />
-              ))}
-            </div>
-            {about.valueProposition && (
-              <div className="about-value-proposition">{about.valueProposition}</div>
-            )}
-            <AboutHighlights experiences={about.experiences ?? []} />
-          </div>
+          <AboutCompact
+            professionalTitle={professionalTitle}
+            intro={about.intro}
+            bio={about.bio ?? []}
+            valueProposition={about.valueProposition}
+            experiences={about.experiences ?? []}
+            matchingHeight={aboutReferenceHeight}
+          />
+          <div className="about-section-closing" aria-hidden="true" />
 
           <AboutGallery />
         </div>

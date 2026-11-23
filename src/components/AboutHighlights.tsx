@@ -92,19 +92,29 @@ export function AboutHighlights({ experiences }: { experiences: Experience[] }) 
         </div>
       </section>
 
-      <nav className="about-universities-footer" aria-label={pt ? 'Sites oficiais das universidades' : 'Official university websites'}>
-        {universities.map((university) => (
-          <a
-            key={university.acronym}
-            href={university.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={pt ? university.pt : university.en}
-          >
-            {university.acronym} <span aria-hidden="true">↗</span>
-          </a>
-        ))}
-      </nav>
+      <UniversityFooter />
     </div>
+  )
+}
+
+/** Tiny common footer, reused by the collapsed About card and full biography. */
+export function UniversityFooter() {
+  const { locale } = useI18n()
+  const pt = locale === 'pt-BR'
+  return (
+    <nav className="about-universities-footer" aria-label={pt ? 'Universidades — sites oficiais' : 'Universities — official websites'}>
+      {universities.map((university) => (
+        <a
+          key={university.acronym}
+          href={university.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${university.acronym} — ${pt ? university.pt : university.en} (${pt ? 'abrir nova aba' : 'open new tab'})`}
+          title={pt ? university.pt : university.en}
+        >
+          {university.acronym} <span aria-hidden="true">↗</span>
+        </a>
+      ))}
+    </nav>
   )
 }
