@@ -271,7 +271,6 @@ async function sourceAudit() {
   assert(approved.length < 370000, 'Uncompressed SVG larger than expected')
   assert(!['<script', '<foreignObject', 'onload=', '<image', 'xlink:href="http', 'href="http'].some(token => approved.includes(token)), 'Active or remote content inside the SVG')
   const optimized = await readFile('public/assets/home/hero/lcr-hero-blue-code-v7-lite.svg', 'utf8')
-  const controller = await readFile('src/components/hero/InteractiveAiVisual.tsx', 'utf8')
   assert(optimized.startsWith('<svg') && optimized.includes('viewBox="0 0 1440 800"'), 'Optimized SVG malformed')
   assert(optimized.length < 220000, 'Lightweight SVG source budget exceeded')
   assert(optimized.split('<text ').length > 1500, 'Data field lost too much visual detail')
