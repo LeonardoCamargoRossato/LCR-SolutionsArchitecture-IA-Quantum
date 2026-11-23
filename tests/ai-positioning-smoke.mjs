@@ -36,22 +36,24 @@ async function checkHomepage(page, label) {
     const mainCards = [...document.querySelectorAll('.selected-grid .project-card-primary h3')].map((node) => node.textContent?.trim())
     const moreCards = [...document.querySelectorAll('.more-projects-grid .project-card-compact h3')].map((node) => node.textContent?.trim())
     return {
+      locale: document.documentElement.lang,
       h1: h1?.getAttribute('aria-label'),
       h1Complete: h1?.getAttribute('data-typing-complete'),
       subtitle: subtitle?.textContent?.trim(),
       opacity: subtitle ? Number(getComputedStyle(subtitle).opacity) : 0,
       mainCards,
       moreCards,
-      specializations: [...document.querySelectorAll('.hero-specializations span')].map((x) => x.textContent?.trim()),
+      specializations: [...document.querySelectorAll('.hero-specializations > span')].map((x) => x.getAttribute('aria-label')),
       homeSeo: document.title,
       htmlWidth: document.documentElement.scrollWidth,
       viewportWidth: document.documentElement.clientWidth,
       heroHeight: document.querySelector('.hero-type-title')?.getBoundingClientRect().height,
     }
   })
-  assert.equal(info.h1, H1)
+  const expectedH1 = info.locale === 'pt-BR' ? 'Engenheiro de IA e Desenvolvimento de Software' : H1
+  assert.equal(info.h1, expectedH1)
   assert.equal(info.h1Complete, 'true')
-  assert.equal(info.subtitle, SUBTITLE)
+  assert.equal(info.subtitle, info.locale === 'pt-BR' ? 'Construindo Soluções Inteligentes.' : SUBTITLE)
   await page.waitForFunction(() => {
     const el = document.querySelector('.hero-identity-subtitle')
     return !!el && Number(getComputedStyle(el).opacity) > .98
@@ -61,8 +63,8 @@ async function checkHomepage(page, label) {
   assert.equal(info.moreCards[1]?.includes(MORE[1]), true)
   assert.equal(info.moreCards[2]?.includes(MORE[2]), true)
   assert.equal(new Set([...info.mainCards, ...info.moreCards]).size, info.mainCards.length + info.moreCards.length)
-  assert.deepEqual(info.specializations, ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Data & Optimization', 'Quantum Computing'])
-  assert(info.homeSeo.includes(H1), 'SEO reverted after loading remote content: '+info.homeSeo)
+  assert.deepEqual(info.specializations, info.locale === 'pt-BR' ? ['LLMs e Agentes de IA','RAG e Recuperação Híbrida','Dados e Otimização','Computação Quântica'] : ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Data & Optimization', 'Quantum Computing'])
+  assert(info.homeSeo.includes(expectedH1), 'SEO reverted after loading remote content: '+info.homeSeo)
   assert(info.htmlWidth <= info.viewportWidth + 2, 'Page horizontal overflow: '+JSON.stringify(info))
   assert(info.heroHeight > 0, 'Typing title reserved no layout height')
   await mkdir('test-results', { recursive: true })
@@ -83,12 +85,11 @@ async function testViewport(name, viewport, reducedMotion) {
   await page.locator('.hero-type-title[data-typing-complete="true"]').waitFor({ timeout: 15000 })
   assert.equal(await page.locator('.hero-type-title').getAttribute('aria-label'), H1)
   assert.equal(await page.locator('.hero-identity-subtitle').innerText(), SUBTITLE)
-  assert((await page.locator('.hero-specializations').innerText()).includes('Hybrid Retrieval'))
+  assert((await page.locator('.hero-description').innerText()).includes('hybrid RAG'))
   await language.click()
   await page.getByRole('button', { name: /PT BR/ }).last().click()
-  assert.equal(await page.locator('.hero-type-title').getAttribute('aria-label'), H1)
-  assert((await page.locator('.hero-specializations').innerText()).includes('RAG & Hybrid Retrieval'))
-  assert.equal(await page.locator('.hero-description').innerText(), 'I design and build intelligent software, combining AI, data, and systems architecture.')
+  assert.equal(await page.locator('.hero-type-title').getAttribute('aria-label'), 'Engenheiro de IA e Desenvolvimento de Software')
+  assert((await page.locator('.hero-description').innerText()).includes('RAG híbrido'))
   await page.reload({ waitUntil: 'domcontentloaded' })
   await checkHomepage(page, name+'-reload')
 
