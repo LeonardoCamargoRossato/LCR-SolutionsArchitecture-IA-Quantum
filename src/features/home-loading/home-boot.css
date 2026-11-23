@@ -5,7 +5,8 @@
 .home-boot-overlay {
   position: fixed; inset: 0; z-index: 9998;
   isolation: isolate; overflow: hidden;
-  background: #020913;
+  /* Transparent under the moving leaves: the real Home must appear between them. */
+  background: transparent;
 }
 .home-boot-recovery {
   position: absolute; z-index: 10001; left: 50%; bottom: max(22px,env(safe-area-inset-bottom));
