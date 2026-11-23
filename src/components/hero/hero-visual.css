@@ -161,6 +161,8 @@
   filter: blur(3px);
   opacity: .42;
 }
+/* The depth duplicate must not duplicate readable captions. */
+.hero-v4-depth-shadow .hero-v4-neural-caption { display: none; }
 .hero-graph-field[data-dragging='true'] .hero-v4-depth-front {
   animation: none;
   transform: rotateX(var(--neural-tilt-x)) rotateY(var(--neural-tilt-y));
@@ -359,11 +361,11 @@
 .hero-v4-chat-bubble p { margin: 10px 0 0; font-size: 13px; line-height: 1.5; }
 .hero-graph-field[data-phase='hamnet'] .hero-v4-chat-bubble {
   animation: hero-v4-chat-appear 770ms both ease-out;
-  animation-delay: 500ms;
+  animation-delay: 250ms;
 }
 .hero-graph-field[data-phase='hamnet'] .hero-v4-chat-hello {
-  animation: hero-v4-hello-typing 850ms steps(6,end) both;
-  animation-delay: 1s;
+  animation: hero-v4-hello-typing 650ms steps(6,end) both;
+  animation-delay: 350ms;
 }
 .hero-v4-chat-bottom { display: flex; gap: 5px; padding: 0 14px 13px; }
 .hero-v4-chat-bottom span { width: 6px; height: 6px; border-radius: 50%; background: var(--neural-line); opacity: .45; }
@@ -447,6 +449,8 @@
   .hero-v4-vector--mobile { display: block; }
   .hero-v4-depth-shadow { display: none; }
   .hero-v4-depth-front { animation: none; transform: none; }
+  /* Mobile has one clear stage caption, never two overlapping labels. */
+  .hero-v4-neural-caption { display: none; }
   .hero-v4-interaction { display: none; }
   .hero-v4-code-scene { top: 10%; left: 8%; width: 84%; max-width: 500px; padding: 12px 16px; }
   .hero-v4-code-lines { gap: 11px; padding: 13px 0; }
