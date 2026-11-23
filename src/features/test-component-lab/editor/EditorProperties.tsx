@@ -13,9 +13,10 @@ type Props = {
   onPreset: (id:WavePresetId)=>void
   onSetting: <K extends keyof WaveSettings>(key:K,value:WaveSettings[K])=>void
   onRemoveBackground: ()=>void
+  onEdit: ()=>void
 }
 const num = (value:number)=>Number(value.toFixed(2))
-export function EditorProperties({ doc, update, selected, select, displayedCount, setDisplayedCount, onPreset, onSetting, onRemoveBackground }:Props) {
+export function EditorProperties({ doc, update, selected, select, displayedCount, setDisplayedCount, onPreset, onSetting, onRemoveBackground, onEdit }:Props) {
   const text = doc.texts.find(t=>t.id===selected)
   const target = selected==='wave' ? doc.transform : text?.transform
   const patch = (transform:Transform) => update(current => selected==='wave'
@@ -138,7 +139,7 @@ export function EditorProperties({ doc, update, selected, select, displayedCount
         <div className="lcr-v2-property-body lcr-v2-layer-list">
           {[...doc.layers].sort((a,b)=>b.order-a.order).map(layer=>
             <div className={`lcr-v2-layer ${selected===layer.id?'is-active':''}`} key={layer.id}>
-              <button type="button" className="lcr-v2-layer-name" onClick={()=>select(layer.id)}
+              <button type="button" className="lcr-v2-layer-name" onClick={()=>{select(layer.id);if(layer.kind==='wave'||layer.kind==='text')onEdit()}}
                 aria-pressed={selected===layer.id}>{layer.name}</button>
               <button type="button" title={layer.visible?'Hide layer':'Show layer'} aria-label={`${layer.visible?'Hide':'Show'} ${layer.name}`}
                 onClick={()=>patchLayer(layer.id,{visible:!layer.visible})}>{layer.visible?<Eye size={14}/>:<EyeOff size={14}/>}</button>
