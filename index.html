@@ -1,9 +1,18 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f6f7f9" />
+    <meta name="theme-color" content="#0b0f16" />
+    <script>
+      // Set the first-paint theme before styles load; user preference still wins.
+      try {
+        document.documentElement.dataset.theme =
+          localStorage.getItem('portfolio-theme') === 'light' ? 'light' : 'dark'
+      } catch {
+        document.documentElement.dataset.theme = 'dark'
+      }
+    </script>
 
     <link rel="icon" type="image/png" href="./projects/logo_LCR_PortifolioApps.png" />
 
