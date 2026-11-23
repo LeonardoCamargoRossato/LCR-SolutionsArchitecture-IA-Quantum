@@ -78,7 +78,7 @@ export function Header() {
   return (
     <header className="site-header">
       <div className="site-container header-inner">
-        <Link to="/" className="brand" aria-label="Leonardo Rossato home">
+        <Link to="/" className="brand" aria-label={locale === 'pt-BR' ? 'Início — Leonardo Rossato' : 'Leonardo Rossato home'}>
           <span className="brand-avatar">
             {content.about.profileImage?.url ? (
               <img src={content.about.profileImage.url} alt="" aria-hidden="true" />
@@ -89,7 +89,7 @@ export function Header() {
           <span className="brand-name">Leonardo Rossato</span>
         </Link>
 
-        <nav className={`nav ${open ? 'nav-open' : ''}`} aria-label="Primary navigation">
+        <nav className={`nav ${open ? 'nav-open' : ''}`} aria-label={locale === 'pt-BR' ? 'Navegação principal' : 'Primary navigation'}>
           <button type="button" onClick={() => goToSection('projects')}>{t('projects')}</button>
           <button type="button" onClick={() => goToSection('experience')}>{t('experienceNav')}</button>
           <button type="button" onClick={() => goToSection('about')}>{t('about')}</button>
@@ -105,7 +105,7 @@ export function Header() {
               ref={pickerButtonRef}
               type="button"
               className="language-picker-trigger"
-              aria-label={`Language: ${selectedLanguage.label}. Select language`}
+              aria-label={locale === 'pt-BR' ? `Idioma: ${selectedLanguage.label}. Selecionar idioma` : `Language: ${selectedLanguage.label}. Select language`}
               aria-haspopup="true"
               aria-expanded={languageOpen}
               aria-controls="portfolio-language-options"
@@ -116,7 +116,7 @@ export function Header() {
               <ChevronDown size={13} aria-hidden="true" />
             </button>
             {languageOpen && (
-              <div className="language-picker-options" id="portfolio-language-options" aria-label="Choose language">
+              <div className="language-picker-options" id="portfolio-language-options" aria-label={locale === 'pt-BR' ? 'Escolha o idioma' : 'Choose language'}>
                 {LANGUAGES.map(option => (
                   <button
                     type="button"
@@ -136,15 +136,15 @@ export function Header() {
             type="button"
             className="theme-toggle"
             onClick={toggleTheme}
-            aria-label={theme === 'dark' ? 'Use light theme' : 'Use dark theme'}
-            title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            aria-label={locale === 'pt-BR' ? (theme === 'dark' ? 'Usar tema claro' : 'Usar tema escuro') : (theme === 'dark' ? 'Use light theme' : 'Use dark theme')}
+            title={locale === 'pt-BR' ? (theme === 'dark' ? 'Modo claro' : 'Modo escuro') : (theme === 'dark' ? 'Light mode' : 'Dark mode')}
           >
             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
           <button
             type="button"
             className="menu-button"
-            aria-label="Toggle navigation"
+            aria-label={locale === 'pt-BR' ? 'Abrir ou fechar menu' : 'Toggle navigation'}
             aria-expanded={open}
             onClick={() => { setLanguageOpen(false); setOpen(value => !value) }}
           >
