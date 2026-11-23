@@ -13,6 +13,7 @@ import { SectionTitle } from '../components/SectionTitle'
 import { SocialLinkList } from '../components/SocialLinks'
 import { WorkProcessSection } from '../components/WorkProcessSection'
 import { externalLinks } from '../config/externalLinks'
+import { RETIRED_PROJECT_SLUGS } from '../config/retiredProjects'
 import { PORTFOLIO_HERO_TITLE, PORTFOLIO_HERO_SUBTITLE, PORTFOLIO_SKILLS, PROFESSIONAL_POSITIONING } from '../config/portfolioPositioning'
 import { localizedAbout, localizedHome, localizedSiteSettings } from '../i18n/content'
 import { useI18n } from '../i18n/I18nProvider'
@@ -60,7 +61,7 @@ export function Home() {
   } as CSSProperties
 
   const featuredSlugs = ['foton-hub', 'cities-comparing', 'animefinder']
-  const visibleProjects = projects.filter((project) => project.visible !== false)
+  const visibleProjects = projects.filter((project) => project.visible !== false && !RETIRED_PROJECT_SLUGS.has(project.slug))
   const projectOrder = (project: typeof projects[number]) =>
     project.sortOrder ?? project.order ?? 999
 
@@ -69,11 +70,7 @@ export function Home() {
     .sort((a, b) => featuredSlugs.indexOf(a.slug) - featuredSlugs.indexOf(b.slug))
 
   const moreProjects = visibleProjects
-    .filter((project) => !featuredSlugs.includes(project.slug) && ![
-      'power-platform',
-      'scientific-analysis',
-      'scientific-analysis-toolkit',
-    ].includes(project.slug))
+    .filter((project) => !featuredSlugs.includes(project.slug))
     .sort((a, b) => {
       const priority = ['hamlet', 'webseer', 'metcompb-landing-page']
       const priorityA = priority.indexOf(a.slug)
