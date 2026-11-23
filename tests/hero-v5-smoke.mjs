@@ -205,6 +205,8 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   await stages.nth(3).click()
   assert.equal(await visual.getAttribute('data-phase'), 'hamnet')
   assert.equal(await stages.nth(3).getAttribute('aria-pressed'), 'true')
+  const manualAnswerOpacity = await page.getByTestId('hero-v5-assistant-answer').evaluate(el => Number(getComputedStyle(el).opacity))
+  assert(manualAnswerOpacity > .95, 'Manually selected Hamnet must show its conversation without auto-play')
   await stages.nth(1).focus()
   await stages.nth(1).press('Enter')
   assert.equal(await visual.getAttribute('data-phase'), 'neural', 'Keyboard activation should select the neural scene')
