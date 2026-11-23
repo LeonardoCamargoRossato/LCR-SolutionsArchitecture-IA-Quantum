@@ -926,7 +926,11 @@
 .hero-graph-field--v5 .hero-v6-background {
   isolation: isolate;
   background: transparent;
+  opacity: 1;
 }
+/* The earlier sparse constellation is now only an understated foreground trace;
+ * the approved vector code field supplies the scene's visual density. */
+.hero-graph-field--v5[data-phase='scatter'] .hero-v4-scatter { opacity: .16; }
 .hero-graph-field--v5 .hero-v6-backdrop-fabric {
   inset: 0;
   width: 100%;
