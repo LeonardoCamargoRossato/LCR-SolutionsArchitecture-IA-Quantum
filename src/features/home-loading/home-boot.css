@@ -1,0 +1,39 @@
+/* First visit portal is layered over the real mounted React Home.
+ * No layout shift, no screenshot, no global animation clock.
+ */
+.home-boot-app { min-width: 0; }
+.home-boot-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  isolation: isolate; overflow: hidden;
+  background: #020913;
+}
+.home-boot-recovery {
+  position: absolute; z-index: 10001; left: 50%; bottom: max(22px,env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  flex-wrap: wrap; max-width: min(94vw,700px);
+  padding: 11px 16px; border: 1px solid #2976a6;
+  border-radius: 13px; background: rgba(3,14,29,.95);
+  color: #e7f9ff; font: 13px/1.45 system-ui,sans-serif;
+  box-shadow: 0 0 35px rgba(16,165,225,.27);
+}
+.home-boot-recovery p { margin: 0; }
+.home-boot-recovery button {
+  appearance: none; cursor: pointer; color: #eefaff;
+  border: 1px solid #3897c3; background: #0a395b;
+  padding: 8px 13px; border-radius: 8px; font: 600 13px system-ui,sans-serif;
+}
+.home-boot-recovery button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+/* CSS animations would consume their first loop invisibly otherwise.
+ * The Hero's existing SVG, particle style and node geometry are untouched. */
+.portfolio-home[data-home-motion='paused'] .hero-v4-art *,
+.portfolio-home[data-home-motion='paused'] .hero-v5-background *,
+.portfolio-home[data-home-motion='paused'] .hero-v3-content * {
+  animation-play-state: paused !important;
+}
+.portfolio-home[data-home-motion='paused'] [data-reveal] {
+  opacity: 0 !important; transform: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-boot-recovery { box-shadow: none; }
+}
