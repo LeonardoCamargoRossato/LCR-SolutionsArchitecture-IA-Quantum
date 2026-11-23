@@ -15,7 +15,7 @@ import { SocialLinkList } from '../components/SocialLinks'
 import { WorkProcessSection } from '../components/WorkProcessSection'
 import { externalLinks } from '../config/externalLinks'
 import { RETIRED_PROJECT_SLUGS } from '../config/retiredProjects'
-import { PORTFOLIO_HERO_TITLE, PORTFOLIO_HERO_SUBTITLE, PORTFOLIO_HERO_DESCRIPTION, PORTFOLIO_HERO_TAGS, PROFESSIONAL_POSITIONING } from '../config/portfolioPositioning'
+import { PORTFOLIO_HERO_CONTENT } from '../config/portfolioPositioning'
 import { localizedAbout, localizedHome, localizedSiteSettings } from '../i18n/content'
 import { useI18n } from '../i18n/I18nProvider'
 import { useSiteContent } from '../providers/SiteContentProvider'
@@ -92,7 +92,8 @@ export function Home() {
       return projectOrder(a) - projectOrder(b)
     })
 
-  const professionalTitle = PROFESSIONAL_POSITIONING
+  const heroCopy = PORTFOLIO_HERO_CONTENT[locale]
+  const professionalTitle = heroCopy.positioning
 
   return (
     <main className="portfolio-home" style={portfolioScaleStyle} ref={homeRef}>
@@ -102,11 +103,11 @@ export function Home() {
             <div className="hero-v3-copy">
               <div className="eyebrow" data-reveal="down">LEONARDO CAMARGO ROSSATO</div>
               <div className="hero-title-block" data-reveal="down" style={{ '--reveal-delay': '80ms' } as CSSProperties}>
-                <HeroTypeTitle text={PORTFOLIO_HERO_TITLE} />
-                <p className="hero-identity-subtitle">{PORTFOLIO_HERO_SUBTITLE}</p>
+                <HeroTypeTitle text={heroCopy.title} />
+                <p className="hero-identity-subtitle">{heroCopy.subtitle}</p>
               </div>
               <p className="hero-description" data-reveal="left" style={{ '--reveal-delay': '170ms' } as CSSProperties}>
-                {PORTFOLIO_HERO_DESCRIPTION}
+                {heroCopy.description}
               </p>
             </div>
 
@@ -134,7 +135,12 @@ export function Home() {
                 </a>
               </div>
               <div className="hero-specializations tech-list" aria-label={locale === 'pt-BR' ? 'Especializações profissionais' : 'Professional specializations'} data-reveal="left" style={{ '--reveal-delay': '270ms' } as CSSProperties}>
-                {PORTFOLIO_HERO_TAGS.map((skill) => <span key={skill}>{skill}</span>)}
+                {heroCopy.tags.map((skill) => (
+                  <span className="hero-skill-tag" key={skill.full} aria-label={skill.full} title={skill.full}>
+                    <span className="hero-tag-full" aria-hidden="true">{skill.full}</span>
+                    <span className="hero-tag-short" aria-hidden="true">{skill.short}</span>
+                  </span>
+                ))}
               </div>
             </div>
           </div>
