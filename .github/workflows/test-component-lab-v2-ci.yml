@@ -1,0 +1,69 @@
+name: LCR Test Component Lab V2 — Editor, Safety & Browser
+
+on:
+  push:
+    branches: [feat/test-component-lab-v2-editor]
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/pages/TestComponentLab.tsx'
+      - 'src/features/test-component-lab/**'
+      - 'src/components/test-component-lab/**'
+      - 'tests/test-component-lab-*.mjs'
+      - '.github/workflows/test-component-lab-v2-ci.yml'
+      - 'docs/test-component-lab/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned production dependencies
+        run: npm ci
+      - name: TypeScript and Vite build
+        run: npm run build
+      - name: Security and preservation assertions
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          renderer = Path('src/components/test-component-lab/particle-wave/ParticleWave.tsx').read_text()
+          importer = Path('src/features/test-component-lab/import/ImportAnimationDialog.tsx').read_text()
+          model = Path('src/features/test-component-lab/editor/document-model.ts').read_text()
+          app = Path('src/pages/TestComponentLab.tsx').read_text()
+          assert 'requestAnimationFrame' in renderer and 'cancelAnimationFrame' in renderer
+          assert 'direction' in renderer and 'Canvas' in renderer
+          assert 'schemaVersion: 2' in model and 'parseConfiguration' in model
+          assert 'IndexedDB' in Path('src/features/test-component-lab/presets/local-store.ts').read_text()
+          assert 'file.text()' not in importer, 'User code should not be interpreted'
+          for text in [importer, app]:
+              assert 'eval(' not in text and 'new Function' not in text, 'Execution of imported code is prohibited'
+          assert 'const TestComponentLab = lazy(' in Path('src/RootRouteGate.tsx').read_text()
+          assert list(Path('dist/assets').glob('TestComponentLab-*.js')), 'Lab must be route-split'
+          print('PASS source preservation, route split, schema, private imports and safety')
+          PY
+      - name: Chromium Playwright
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: V2 editor functional browser tests
+        run: node tests/test-component-lab-v2-smoke.mjs
+      - name: V1 controls/regression compatibility
+        run: node tests/test-component-lab-smoke.mjs
+      - name: Upload screenshots and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcr-component-lab-v2-editor-evidence
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: warn
