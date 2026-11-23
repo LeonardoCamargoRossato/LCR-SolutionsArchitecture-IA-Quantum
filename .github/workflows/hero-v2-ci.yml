@@ -1,8 +1,8 @@
-name: LCR Hero V7 — Performance Optimized Blue Code
+name: LCR Hero V8 — Light Navy Contrast and Quantum Tag
 
 on:
   push:
-    branches: [perf/hero-v7-static-blue-code-20261123]
+    branches: [fix/hero-v8-light-navy-quantum-tag-20261123]
   pull_request:
     branches: [main]
     paths:
@@ -17,6 +17,7 @@ on:
       - docs/hero-v5/**
       - docs/hero-v6/**
       - docs/hero-v7/**
+      - docs/hero-v8/**
   workflow_dispatch:
 
 permissions:
@@ -63,12 +64,20 @@ jobs:
           assert compressed < 28_000, 'Optimized SVG gzip transfer budget exceeded'
           assert b'<animateMotion' not in data and b'animation:' not in data, 'Continuous SVG rasterization detected'
           assert data.count(b'<text ') < 2000, 'Glyph density regression'
+          light = Path('public/assets/home/hero/lcr-hero-blue-code-v8-light-navy.svg')
+          light_data = light.read_bytes()
+          light_gzip = len(compress(light_data, compresslevel=9))
+          print(f'Light navy SVG: {len(light_data):,} bytes source / {light_gzip:,} bytes gzip')
+          assert len(light_data) < 220_000 and light_gzip < 28_000, 'Light SVG transfer budget exceeded'
+          assert light_data.count(b'<text ') == data.count(b'<text '), 'Light theme must retain identical perspective detail'
+          assert b'<animateMotion' not in light_data and b'animation:' not in light_data, 'Expensive motion added to light SVG'
+          assert b'<script' not in light_data and b'<foreignObject' not in light_data, 'Unsafe SVG markup'
           PY
       - name: Install Chromium for browser tests
         run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
-      - name: Validate low-CPU blue SVG, 4 Hero scenes, themes and Hamnet replay
+      - name: Validate theme-specific SVG contrast, 5 Hero tags, performance and 4 scenes
         run: node tests/hero-v5-smoke.mjs
       - name: Existing Home/SEO/projects regression
         run: node tests/ai-positioning-smoke.mjs
@@ -76,7 +85,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lcr-hero-v7-browser-evidence
+          name: lcr-hero-v8-browser-evidence
           path: test-results/
           if-no-files-found: warn
           retention-days: 30

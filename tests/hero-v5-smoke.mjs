@@ -5,7 +5,7 @@ import { chromium } from 'playwright'
 
 const BASE = 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
 const DIALOGUE = 'AI Hamnet'
-const TAGS = ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Python & Software Engineering', 'Data & Optimization']
+const TAGS = ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Python & Software Engineering', 'Data & Optimization', 'Quantum Computing']
 const report = { checks: [], errors: [] }
 const server = spawn('npm', ['run','dev','--','--host','127.0.0.1','--port','5173','--strictPort'], {
   env: process.env, detached: true, stdio: 'ignore',
@@ -98,7 +98,8 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
     filter: getComputedStyle(img.parentElement).filter,
     objectFit: getComputedStyle(img).objectFit,
   }))
-  assert(imgStatus.loaded && imgStatus.source.includes('lcr-hero-blue-code-v7-lite.svg'), 'Optimized V7 SVG was not loaded')
+  assert(imgStatus.loaded, 'Theme-specific static SVG background was not loaded')
+  assert(imgStatus.source.includes(dark ? 'lcr-hero-blue-code-v7-lite.svg' : 'lcr-hero-blue-code-v8-light-navy.svg'), 'Incorrect theme-specific background SVG')
   assert.equal(imgStatus.fallback, null, 'Unexpected fallback to old background SVG')
   assert.equal(imgStatus.filter, 'none', 'A costly background filter remains enabled')
   assert(Number(imgStatus.opacity) >= .35, 'Animated SVG must remain visible on all themes and viewports')
@@ -117,6 +118,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
     assert(facts.visWidth >= facts.heroWidth - 2, 'Desktop art must blend into Hero background')
     assert(facts.tagRows[0] === facts.tagRows[1] && facts.tagRows[1] === facts.tagRows[2], 'First 3 tags must share first line')
     assert(facts.tagRows[3] > facts.tagRows[2], 'Fourth tag must occupy an uncluttered second line')
+    assert.equal(facts.tagRows[4], facts.tagRows[3], 'Quantum Computing must sit beside Data & Optimization')
   } else {
     assert.equal(facts.mobileVisible, true)
     assert.equal(facts.desktopVisible, false)
@@ -231,6 +233,11 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   await page.reload({ waitUntil: 'domcontentloaded' })
   await page.waitForFunction(mode => document.documentElement.dataset.theme === mode,
     alternateTheme, { timeout: 8000 })
+  await page.getByTestId('hero-v6-blue-code').evaluate(img => img.decode())
+  const alternateSource = await page.getByTestId('hero-v6-blue-code').getAttribute('src')
+  assert(alternateSource.includes(alternateTheme === 'dark'
+    ? 'lcr-hero-blue-code-v7-lite.svg' : 'lcr-hero-blue-code-v8-light-navy.svg'),
+    'Theme toggle should select the correct static SVG without filtering')
   const newBackground = await page.locator('.hero-v3').evaluate(el => getComputedStyle(el).backgroundColor)
   assert.notEqual(newBackground, facts.background, 'Theme preference did not change Hero background')
 
@@ -271,6 +278,12 @@ async function sourceAudit() {
   assert(approved.length < 370000, 'Uncompressed SVG larger than expected')
   assert(!['<script', '<foreignObject', 'onload=', '<image', 'xlink:href="http', 'href="http'].some(token => approved.includes(token)), 'Active or remote content inside the SVG')
   const optimized = await readFile('public/assets/home/hero/lcr-hero-blue-code-v7-lite.svg', 'utf8')
+  const lightOptimized = await readFile('public/assets/home/hero/lcr-hero-blue-code-v8-light-navy.svg', 'utf8')
+  assert(source.includes('lcr-hero-blue-code-v8-light-navy.svg'), 'Theme-aware component must reference the light navy SVG')
+  assert(lightOptimized.length < 220000 && lightOptimized.includes('viewBox="0 0 1440 800"'), 'Optimized light SVG budget/viewBox regression')
+  assert(lightOptimized.split('<text ').length === optimized.split('<text ').length, 'Light SVG must preserve the exact V7 vector density')
+  assert(!lightOptimized.includes('<animateMotion') && !lightOptimized.includes('animation:'), 'Light SVG must stay static')
+  assert(!['<script', '<foreignObject', 'onload=', '<image', 'xlink:href="http', 'href="http'].some(token => lightOptimized.includes(token)), 'Unsafe content in light SVG')
   assert(optimized.startsWith('<svg') && optimized.includes('viewBox="0 0 1440 800"'), 'Optimized SVG malformed')
   assert(optimized.length < 220000, 'Lightweight SVG source budget exceeded')
   assert(optimized.split('<text ').length > 1500, 'Data field lost too much visual detail')
@@ -290,7 +303,7 @@ try {
   await scenario({ name: 'tablet-768-light', width: 768, height: 1024 })
   await scenario({ name: 'mobile-390-reduced', width: 390, height: 844, reduced: true })
   await scenario({ name: 'mobile-360-dark', width: 360, height: 800, dark: true, reduced: true })
-  console.log('PASS Hero V7 — static optimized transparent blue code, compositor accent, 4 foreground scenes, themes and mobile')
+  console.log('PASS Hero V8 — original V7 dark SVG, dark navy light SVG, five tags, 4 scenes, mobile')
 } catch (error) {
   report.errors.push(String(error))
   console.error('HERO V5 FAILED:', error)

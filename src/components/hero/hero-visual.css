@@ -1020,3 +1020,26 @@
 @media (max-width: 900px), (prefers-reduced-motion: reduce) {
   .hero-graph-field--v5 .hero-v7-light-trace { animation: none !important; }
 }
+/* LCR Hero V8 — light-only contrast hotfix.
+ * Static navy SVG is selected by ThemeProvider, never recolored using
+ * large-image CSS filters. Dark mode and all Hero V7 performance rules stay.
+ */
+[data-theme='light'] .portfolio-home .hero-positioning.hero-v3 {
+  --neural-line: #28569e;
+  --neural-glow: #145da7;
+  --neural-muted: #315780;
+  --neural-border: rgba(30,83,145,.30);
+}
+[data-theme='light'] .hero-graph-field--v5 .hero-v7-backdrop-fabric {
+  opacity: 1;
+  filter: none !important;
+}
+[data-theme='light'] .hero-graph-field--v5 .hero-v7-light-trace {
+  background: linear-gradient(90deg, transparent, rgba(30,91,166,.3) 36%, rgba(23,83,154,.63) 60%, transparent);
+}
+@media (max-width: 900px) {
+  [data-theme='light'] .hero-graph-field--v5 .hero-v7-backdrop-fabric { opacity: .9; }
+}
+@media (max-width: 600px) {
+  [data-theme='light'] .hero-graph-field--v5 .hero-v7-background { opacity: 1; }
+}

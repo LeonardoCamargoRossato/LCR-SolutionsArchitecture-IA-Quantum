@@ -61,7 +61,7 @@ async function checkHomepage(page, label) {
   assert.equal(info.moreCards[1]?.includes(MORE[1]), true)
   assert.equal(info.moreCards[2]?.includes(MORE[2]), true)
   assert.equal(new Set([...info.mainCards, ...info.moreCards]).size, info.mainCards.length + info.moreCards.length)
-  assert.deepEqual(info.specializations, ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Python & Software Engineering', 'Data & Optimization'])
+  assert.deepEqual(info.specializations, ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Python & Software Engineering', 'Data & Optimization', 'Quantum Computing'])
   assert(info.homeSeo.includes(H1), 'SEO reverted after loading remote content: '+info.homeSeo)
   assert(info.htmlWidth <= info.viewportWidth + 2, 'Page horizontal overflow: '+JSON.stringify(info))
   assert(info.heroHeight > 0, 'Typing title reserved no layout height')
