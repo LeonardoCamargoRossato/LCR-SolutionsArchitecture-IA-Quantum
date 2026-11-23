@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'src/components/hero/hero-wide-desktop-v14.css'
+      - 'src/styles/hero-wide-desktop-v14.css'
       - 'src/main.tsx'
       - 'tests/hero-v14-wide-viewport-smoke.mjs'
       - '.github/workflows/hero-v14-wide-ci.yml'
@@ -34,7 +34,7 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          css = Path('src/components/hero/hero-wide-desktop-v14.css').read_text()
+          css = Path('src/styles/hero-wide-desktop-v14.css').read_text()
           styles = Path('src/main.tsx').read_text()
           assert '(min-width: 1500px)' in css and '(min-aspect-ratio: 17 / 10)' in css
           assert 'calc(100dvh - 67px)' in css
