@@ -31,7 +31,7 @@ async function verifyScene(name, width, height, theme, reduced) {
     localStorage.setItem('portfolio-theme', current)
     localStorage.setItem('portfolio-locale', 'en-US')
   }, theme)
-  await page.goto(BASE + '#/', { waitUntil: 'domcontentloaded' })
+  await page.goto(BASE + '#/?portal=skip', { waitUntil: 'domcontentloaded' })
   await page.locator('.hero-type-title[data-typing-complete="true"]').waitFor({ timeout: 18000 })
   const wave = page.getByTestId('hero-v13-particle-wave')
   const canvas = page.getByTestId('particle-wave-canvas')
