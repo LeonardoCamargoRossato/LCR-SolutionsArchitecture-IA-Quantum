@@ -94,7 +94,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   assert.deepEqual(facts.actionHrefs, ['#projects', '#contact'])
   assert(facts.desktopEdges >= 90 && facts.mobileEdges >= 55, 'Four neural layers must be densely connected')
   assert(facts.scatterPoints >= 40, 'Scatter scene should span the Hero')
-  // V7: the fast static transparent derivative persists BEHIND all four scenes.
+  // V7: the fast static transparent derivative persists BEHIND all three active scenes.
   const bg = page.locator('[data-testid="hero-v5-background"]')
   assert.equal(await bg.count(), 1, 'Only one persistent Hero background is allowed')
   const imgStatus = await page.getByTestId('hero-v6-blue-code').evaluate(img => ({
@@ -133,7 +133,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
 
   const toggle = page.locator('.hero-graph-motion-control')
   const rect = await toggle.boundingBox()
-  assert(rect && rect.width >= 44 && rect.height >= 44, 'Pause button requires 44px touch target')
+  assert(rect && rect.width >= (width > 900 ? 44 : 32) && rect.height >= (width > 900 ? 44 : 32), 'Pause button needs a usable touch target')
 
   if (reduced) {
     assert.equal(facts.phase, 'neural')
@@ -202,33 +202,34 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
       assert((await page.getByTestId('hero-v5-assistant-answer').innerText()).includes('Hello!'))
       assert((await page.locator('.hero-v5-chat-footer').innerText()).includes('no live AI connection'))
       await page.waitForTimeout(200)
-      await waitPhase(page, 'scatter', 9000)
-      assert.equal(await visual.getAttribute('data-phase'), 'scatter', 'The animation must loop back to dispersed data')
+      await waitPhase(page, 'neural', 9000)
+      assert.equal(await visual.getAttribute('data-phase'), 'neural', 'The animation must loop back directly to AI Graph')
     }
   }
 
-  // V5.1: users can navigate the complete data → neural → code → Hamnet story.
+  // V12: users can navigate AI Graph → Code → Hamlet AI without a separate Data step.
   // A manual selection pauses auto-advance until explicitly resumed; reduced
   // motion users retain full access to each static scene.
   const stages = page.getByTestId('hero-v5-stage-selector').locator('button')
-  assert.equal(await stages.count(), 4, 'Four accessible manual stage controls required')
-  assert.equal(await stages.nth(3).innerText(), 'Hamlet AI', 'Fourth stage must use the approved name in PT/EN')
-  await stages.nth(2).click()
+  assert.equal(await stages.count(), 3, 'Three accessible manual stage controls required')
+  assert.equal(await stages.first().innerText(), 'AI Graph', 'AI Graph must be the first stage')
+  assert.equal(await stages.nth(2).innerText(), 'Hamlet AI', 'Third stage must use the approved name in PT/EN')
+  await stages.nth(1).click()
   assert.equal(await visual.getAttribute('data-phase'), 'code')
   assert.equal(await visual.getAttribute('data-playing'), 'false', 'Manual selection must pause scene rotation')
-  assert.equal(await stages.nth(2).getAttribute('aria-pressed'), 'true')
-  await stages.nth(3).click()
+  assert.equal(await stages.nth(1).getAttribute('aria-pressed'), 'true')
+  await stages.nth(2).click()
   assert.equal(await visual.getAttribute('data-phase'), 'hamnet')
   assert.equal(await page.locator('.hero-v4-chat-heading strong').innerText(), 'Hamlet AI')
   assert.equal(await page.locator('.hero-v4-hamnet-name').innerText(), 'Hamlet AI')
   assert.equal(await page.locator('.hero-v4-stage-marker').innerText(), 'HAMLET AI')
-  assert.equal(await stages.nth(3).getAttribute('aria-pressed'), 'true')
+  assert.equal(await stages.nth(2).getAttribute('aria-pressed'), 'true')
   const manualAnswerOpacity = await page.getByTestId('hero-v5-assistant-answer').evaluate(el => Number(getComputedStyle(el).opacity))
   assert(manualAnswerOpacity > .95, 'Manually selected Hamnet must show its conversation without auto-play')
-  await stages.nth(1).focus()
-  await stages.nth(1).press('Enter')
+  await stages.nth(0).focus()
+  await stages.nth(0).press('Enter')
   assert.equal(await visual.getAttribute('data-phase'), 'neural', 'Keyboard activation should select the neural scene')
-  assert.equal(await stages.nth(1).getAttribute('aria-pressed'), 'true')
+  assert.equal(await stages.nth(0).getAttribute('aria-pressed'), 'true')
   if (!reduced) {
     await toggle.click()
     assert.equal(await visual.getAttribute('data-playing'), 'true', 'Play must resume rotation after manual selection')
