@@ -264,10 +264,10 @@ async function sourceAudit() {
   const source = await readFile('src/components/hero/HeroBackgroundGraph.tsx', 'utf8')
   assert(source.includes('lcr-hero-blue-code-v1.svg'), 'Hero must reference the approved SVG rather than a substitute')
   assert(approved.startsWith('<svg') && approved.includes('viewBox="0 0 1440 800"'), 'Approved SVG is malformed')
-  assert((approved.match(/<text\\b/g) || []).length > 3000, 'Dense 3D data field was accidentally simplified')
+  assert(approved.split('<text ').length > 3000, 'Dense 3D data field was accidentally simplified')
   assert(approved.includes('@media (prefers-reduced-motion:reduce)'), 'Reduced-motion fallback missing from SVG')
   assert(approved.length < 370000, 'Uncompressed SVG larger than expected')
-  assert(!/<script\\b|<foreignObject\\b|onload\\s*=|<image\\b|https?:\\/\\//i.test(approved), 'Active or remote content inside the SVG')
+  assert(!['<script', '<foreignObject', 'onload=', '<image', 'https://', 'http://'].some(token => approved.includes(token)), 'Active or remote content inside the SVG')
   report.checks.push({ name: 'static-security-and-performance', result: 'PASS' })
 }
 
