@@ -53,8 +53,8 @@ Não adicionar o ZIP de 19 MB ao `public/`. Nenhuma versão antiga de arte aprov
 
 ## Critérios de aceite, QA e pontos de controle
 
-- [ ] Os 10 WebPs exatos estão no repositório, `public/assets/home/loading-portal/`, sem 404.
-- [ ] Build e TypeScript `npm ci && npm run build`.
+- [x] Os 10 WebPs exatos estão no repositório, `public/assets/home/loading-portal/`, sem 404.
+- [x] Build e TypeScript `npm ci && npm run build`.
 - [ ] CI `loading-portal-lab-ci.yml`, inclusive 10 hashes e browser em desktop/mobile.
 - [ ] CI pré-existente de Component Lab V1/V2 sem regressão.
 - [ ] Reprodução visual aprovada pelo responsável (primeiro frame, oito níveis, 2 folhas e núcleo).
@@ -62,10 +62,14 @@ Não adicionar o ZIP de 19 MB ao `public/`. Nenhuma versão antiga de arte aprov
 
 **Gate obrigatório:** não fazer merge nem deploy da animação na Home antes dessa aprovação. A etapa de Home Readiness será PR separada e implementará `initializing → loading → ready → opening → opened`, with `degraded`/`error`, tarefas reais mensuradas, fallback, bloqueio seguro de animações e validação de LCP/CLS/FCP/CPU.
 
-### Limitação operacional do commit inicial
+### Assets binários originais integrados
 
-O conector atual de escrita GitHub aceita **texto UTF-8**, mas os dez WebPs requerem objetos binários. O código e o inventário foram integrados na branch; a verificação de assets **bloqueia o merge** enquanto os blobs binários originais ainda não estiverem presentes. Não substituir por arte aproximada nem maquiar o teste com placeholders.
+Os **dez WebPs aprovados** foram incluídos como objetos Git binários, preservando a identidade exata dos arquivos do ZIP. O inventário possui SHA-256 e tamanhos; o fluxo GitHub Actions executa o `--check` sem depender de arquivos externos. A importação preservou os 11 PNGs originais e os 3 WebPs de storyboard somente no acervo original, sem publicá-los. O pacote-fonte permanece sob custódia do responsável.
 
-O pacote do usuário segue disponível para importação exata. Após importar e confirmar o CI, apresentar o Lab ao responsável e aguardar aprovação da abertura antes de qualquer implantação na Home.
+Foi criada também uma cópia **privada**, organizada por projeto, dos WebPs otimizados no Drive:
+`LCR Apps/LCR-SolutionsArchitecture-IA-Quantum/LCR Loading Portal V1 - WebP Aprovados`.
+Esse acervo não substitui o Git como fonte de verdade do produto. Nenhum recurso confidencial ou screenshot da Home foi publicado.
+
+**Status de integração:** componente Lab e assets implementados na PR #34, builds e hashes aprovados. A conclusão dos testes Playwright e a aprovação visual são gates obrigatórios antes de uma futura PR de Home.
 
 **Reversão:** fechar a PR ou reverter o commit específico. Nenhum dado de usuário, conteúdo Supabase, autenticação ou asset original foi modificado.
