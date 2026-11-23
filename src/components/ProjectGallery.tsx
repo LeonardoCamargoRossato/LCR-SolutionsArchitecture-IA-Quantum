@@ -1,6 +1,8 @@
 import type { Project } from '../types/project'
+import { useI18n } from '../i18n/I18nProvider'
 
 export function ProjectGallery({ project }: { project: Project }) {
+  const { locale } = useI18n()
   if (!project.gallery?.length) return null
 
   return (
@@ -8,7 +10,7 @@ export function ProjectGallery({ project }: { project: Project }) {
       <div className="container">
         <div className="case-section-label">07</div>
         <div className="case-section-content">
-          <h2>Gallery</h2>
+          <h2>{locale === 'pt-BR' ? 'Galeria' : 'Gallery'}</h2>
           <div className="gallery-grid">
             {project.gallery.map((item, index) => (
               <figure className="gallery-item" key={`${item.label}-${index}`}>
@@ -18,7 +20,7 @@ export function ProjectGallery({ project }: { project: Project }) {
                   ) : (
                     <>
                       <img src={project.coverImage} alt="" aria-hidden="true" />
-                      <div className="gallery-overlay">Screenshot slot</div>
+                      <div className="gallery-overlay">{locale === 'pt-BR' ? 'Espaço para captura de tela' : 'Screenshot slot'}</div>
                     </>
                   )}
                 </div>
