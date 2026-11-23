@@ -34,6 +34,12 @@
 .site-header .language-picker-trigger[aria-expanded='true'] {
   border-color: var(--primary);
 }
+.site-header .language-flag-icon {
+  display: block;
+  width: 23px;
+  height: 16px;
+  border-radius: 2px;
+}
 .site-header .language-flag {
   display: inline-flex;
   align-items: center;
