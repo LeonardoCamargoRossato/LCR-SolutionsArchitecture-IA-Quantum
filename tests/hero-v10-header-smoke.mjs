@@ -33,7 +33,7 @@ async function check(width, height) {
   const page = await context.newPage()
   const errors = []
   page.on('pageerror', e => errors.push(String(e)))
-  await page.goto(BASE + '#/', { waitUntil: 'domcontentloaded' })
+  await page.goto(BASE + '#/?portal=skip', { waitUntil: 'domcontentloaded' })
   await page.locator('.hero-type-title[data-typing-complete="true"]').waitFor({ timeout: 20000 })
   await page.evaluate(() => document.fonts.ready)
 

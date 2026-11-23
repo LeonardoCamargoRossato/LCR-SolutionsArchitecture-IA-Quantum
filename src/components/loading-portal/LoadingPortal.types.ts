@@ -8,6 +8,8 @@ export type LoadingPortalProps = {
   ready: boolean;
   /** Called exactly once after the door finishes opening. */
   onOpened?: () => void;
+  /** Optional lifecycle milestone for HomeBootCoordinator, unused by Lab. */
+  onOpening?: () => void;
   /** Respects the Vite Pages base (not /assets/... absolute root). */
   assetBaseUrl?: string;
   chargedHoldMs?: number;

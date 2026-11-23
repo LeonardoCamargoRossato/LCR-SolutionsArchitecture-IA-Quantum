@@ -2,10 +2,10 @@ import { useLayoutEffect, type RefObject } from 'react'
 
 const reducedMotionQuery = '(prefers-reduced-motion: reduce)'
 
-export function useHomeEntrance(rootRef: RefObject<HTMLElement | null>) {
+export function useHomeEntrance(rootRef: RefObject<HTMLElement | null>, enabled = true) {
   useLayoutEffect(() => {
     const root = rootRef.current
-    if (!root) return
+    if (!root || !enabled) return
 
     const motion = window.matchMedia(reducedMotionQuery)
     const observed = new Set<HTMLElement>()
@@ -58,5 +58,5 @@ export function useHomeEntrance(rootRef: RefObject<HTMLElement | null>) {
       motion.removeEventListener('change', updateMotion)
       observed.forEach((element) => element.removeAttribute('data-reveal-state'))
     }
-  }, [rootRef])
+  }, [rootRef, enabled])
 }

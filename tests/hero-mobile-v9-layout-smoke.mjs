@@ -31,7 +31,7 @@ async function check(width, height, locale, reduced = true) {
   await page.addInitScript(({ locale }) => {
     localStorage.setItem('portfolio-locale', locale)
   }, { locale })
-  await page.goto(BASE + '#/', { waitUntil: 'domcontentloaded' })
+  await page.goto(BASE + '#/?portal=skip', { waitUntil: 'domcontentloaded' })
   await page.locator('.hero-type-title[data-typing-complete="true"]').waitFor({ timeout: 20000 })
   await page.evaluate(() => document.fonts.ready)
   const info = await page.evaluate(() => {

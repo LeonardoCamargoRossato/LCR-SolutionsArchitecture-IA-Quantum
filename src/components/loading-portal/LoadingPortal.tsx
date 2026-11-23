@@ -14,7 +14,7 @@ import './LoadingPortal.css'
  * Does not own loading progress, routing, authentication or Home readiness.
  */
 export function LoadingPortal({
-  progress, ready, onOpened,
+  progress, ready, onOpened, onOpening,
   assetBaseUrl = DEFAULT_LOADING_PORTAL_ASSETS,
   chargedHoldMs = 550,
   openingDurationMs = 1600,
@@ -23,8 +23,10 @@ export function LoadingPortal({
   const safeProgress = clampProgress(progress)
   const [phase, setPhase] = useState<LoadingPortalPhase>('charging')
   const callbackRef = useRef(onOpened)
+  const openingCallbackRef = useRef(onOpening)
   const completedRef = useRef(false)
   callbackRef.current = onOpened
+  openingCallbackRef.current = onOpening
 
   const keyframes = useMemo(() => resolveKeyframes(safeProgress), [safeProgress])
   const leaving = phase === 'opening' || phase === 'opened'
@@ -42,7 +44,10 @@ export function LoadingPortal({
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
     const hold = reduce ? 0 : Math.max(0, chargedHoldMs)
     const opening = reduce ? 0 : Math.max(0, openingDurationMs)
-    const start = window.setTimeout(() => setPhase('opening'), hold)
+    const start = window.setTimeout(() => {
+      setPhase('opening')
+      openingCallbackRef.current?.()
+    }, hold)
     const done = window.setTimeout(() => {
       setPhase('opened')
       if (!completedRef.current) {

@@ -24,7 +24,7 @@ async function check(width,height,locale){
  if(locale==='pt-BR'){
   await page.addInitScript(()=>localStorage.setItem('portfolio-locale','pt-BR'))
  }
- await page.goto(BASE+'#/',{waitUntil:'domcontentloaded'})
+ await page.goto(BASE + '#/?portal=skip',{waitUntil:'domcontentloaded'})
  await page.locator('.hero-type-title[data-typing-complete="true"]').waitFor({timeout:20000})
  await page.evaluate(()=>document.fonts.ready)
  const pt=locale==='pt-BR'
@@ -98,7 +98,7 @@ async function languageAudit(locale){
  const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'})
  const page=await ctx.newPage()
  if(locale==='pt-BR')await page.addInitScript(()=>localStorage.setItem('portfolio-locale','pt-BR'))
- await page.goto(BASE+'#/',{waitUntil:'domcontentloaded'})
+ await page.goto(BASE + '#/?portal=skip',{waitUntil:'domcontentloaded'})
  await page.locator('.hero-type-title[data-typing-complete="true"]').waitFor()
  const pt=locale==='pt-BR'
  const headline=await page.locator('.about-headline').first().innerText()

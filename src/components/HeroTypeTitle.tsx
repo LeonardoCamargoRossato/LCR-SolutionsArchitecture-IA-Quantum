@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
+import { useHomeMotionEnabled } from '../features/home-loading/HomeMotionContext'
 
 const reducedMotionQuery = '(prefers-reduced-motion: reduce)'
 
 export function HeroTypeTitle({ text }: { text: string }) {
+  const motionEnabled = useHomeMotionEnabled()
   const [typed, setTyped] = useState(() => window.matchMedia(reducedMotionQuery).matches ? text : '')
 
   useEffect(() => {
     const motion = window.matchMedia(reducedMotionQuery)
+    if (!motionEnabled) { setTyped(motion.matches ? text : ''); return }
     const letters = Array.from(text)
     let timer = 0
     let index = motion.matches ? letters.length : 0
@@ -24,7 +27,7 @@ export function HeroTypeTitle({ text }: { text: string }) {
     }
     motion.addEventListener('change', update)
     return () => { window.clearTimeout(timer); motion.removeEventListener('change', update) }
-  }, [text])
+  }, [text, motionEnabled])
 
   return (
     <h1 className="hero-type-title" aria-label={text} data-typing-complete={typed === text}>
