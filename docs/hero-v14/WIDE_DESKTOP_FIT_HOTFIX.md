@@ -12,7 +12,7 @@ The approved original backdrop SVG already has `object-fit: cover`. Enlarging th
 
 ## Scoped implementation
 
-- New `src/components/hero/hero-wide-desktop-v14.css`, loaded after V13.
+- New `src/styles/hero-wide-desktop-v14.css`, loaded after V13.
 - Only `min-width:1500px` **and** `min-aspect-ratio:17/10` trigger the wider variant.
 - Desktop header and Hero shell change **together**, ensuring the avatar aligns horizontally with the Hero's left copy.
 - The width increases continuously from the existing 1180px at exactly 1500px to `min(2000px, 85vw - 95px, 100% - 64px)`; no sudden breakpoint jump.
