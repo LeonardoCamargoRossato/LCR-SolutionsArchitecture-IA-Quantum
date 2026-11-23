@@ -16,7 +16,8 @@ function getInitialTheme(): Theme {
   const saved = window.localStorage.getItem(STORAGE_KEY)
   if (saved === 'light' || saved === 'dark') return saved
 
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  // Dark is the product default on all devices; a manual choice still persists.
+  return 'dark'
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
