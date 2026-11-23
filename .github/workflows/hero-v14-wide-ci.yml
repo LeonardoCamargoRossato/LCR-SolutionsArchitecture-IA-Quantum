@@ -1,0 +1,65 @@
+name: LCR Hero V14 — Wide Landscape Cover & Portal Fit
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/components/hero/hero-wide-desktop-v14.css'
+      - 'src/main.tsx'
+      - 'tests/hero-v14-wide-viewport-smoke.mjs'
+      - '.github/workflows/hero-v14-wide-ci.yml'
+      - 'docs/hero-v14/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hero-wide-layout:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Build production
+        run: npm run build
+      - name: Audit layout scope, source budgets and existing portal art
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          css = Path('src/components/hero/hero-wide-desktop-v14.css').read_text()
+          styles = Path('src/main.tsx').read_text()
+          assert '(min-width: 1500px)' in css and '(min-aspect-ratio: 17 / 10)' in css
+          assert 'calc(100dvh - 67px)' in css
+          assert 'object-fit: cover' in css
+          assert 'hero-wide-desktop-v14.css' in styles
+          assert 'padding-block:' in css
+          assert 'height: 100vh' not in css, 'Hero must grow naturally when copy needs room'
+          assert len(css.encode('utf-8')) < 3000
+          assert Path('public/assets/home/loading-portal/portal-000.webp').is_file()
+          assert Path('public/assets/home/loading-portal/door-open-base.webp').is_file()
+          assert Path('public/assets/home/hero/lcr-hero-blue-code-v7-lite.svg').is_file()
+          assert Path('public/assets/home/hero/lcr-hero-blue-code-v8-light-navy.svg').is_file()
+          print('PASS V14 CSS scope, assets preserved and zero added media bytes')
+          PY
+      - name: Install Chromium
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Layout and visual tests — notebook/mobile, wide PT/EN, both themes and portal replay
+        run: node tests/hero-v14-wide-viewport-smoke.mjs
+      - name: Upload screenshot and geometry evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcr-hero-v14-wide-landscape-evidence
+          path: test-results/
+          if-no-files-found: warn
+          retention-days: 30
