@@ -54,7 +54,7 @@ export function CaseHero({
 
             <div className="case-story-status">
               <span>{statusLabel}</span>
-              <strong>{localizedProjectStatus(project.status, locale)}</strong>
+              <strong>{project.status === 'Private Platform' ? privatePlatformLabel : localizedProjectStatus(project.status, locale)}</strong>
             </div>
 
             {(project.links.githubUrl || project.reportPdfUrl || (project.isAcademic && project.academicContext)) && (
