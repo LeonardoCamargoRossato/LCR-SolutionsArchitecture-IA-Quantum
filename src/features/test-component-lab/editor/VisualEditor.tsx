@@ -17,6 +17,7 @@ type Props = {
   enterEditing: () => void
   zoom: number | null
   onZoom: (value: number | null) => void
+  onFitScale: (value: number) => void
 }
 const HANDLES = ['nw','n','ne','e','se','s','sw','w']
 const fontFamily = { sans: 'Inter,system-ui,sans-serif', serif: 'Georgia,serif', mono: 'ui-monospace,monospace' }
@@ -24,7 +25,7 @@ const order = (layers: Layer[]) => [...layers].sort((a,b)=>a.order-b.order)
 
 export function VisualEditor({
   document: doc, setDocument, selected, select, imageUrl, onDroppedImage, onPasteImage,
-  editing, enterEditing, zoom, onZoom,
+  editing, enterEditing, zoom, onZoom, onFitScale,
 }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const stage = useRef<HTMLDivElement>(null)
@@ -46,6 +47,7 @@ export function VisualEditor({
   const ruler = doc.rulersVisible ? 28 : 0
   const fit = Math.min((Math.max(frame.width-60-ruler,260))/doc.canvas.width,
     (Math.max(frame.height-60-ruler,220))/doc.canvas.height)
+  useEffect(() => { onFitScale(fit) }, [fit, onFitScale])
   const scale = Math.min(3, Math.max(.08, zoom ?? fit))
   const width = doc.canvas.width * scale
   const height = doc.canvas.height * scale
@@ -154,7 +156,7 @@ export function VisualEditor({
 
   return (
     <div className="lcr-v2-editor-viewport" ref={container} data-testid="visual-editor"
-      tabIndex={0} onPaste={paste} aria-label="Área de edição visual, clique para colar screenshot" 
+      tabIndex={0} onPaste={paste} aria-label="Área de edição visual, clique para colar screenshot" onPointerDown={event=>{if(!(event.target instanceof HTMLElement && event.target.closest('button,input,textarea,select')))event.currentTarget.focus()}} 
       onDragOver={event=>{event.preventDefault();setDropping(true)}} onDragLeave={event=>{event.preventDefault();setDropping(false)}}
       onDrop={importDrop}>
       {notice && <div className="lcr-v2-editor-notice" role="status">{notice}</div>}
