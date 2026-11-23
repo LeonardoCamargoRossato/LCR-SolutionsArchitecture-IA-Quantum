@@ -4,10 +4,11 @@ import { HeroGraphDesktop, HeroGraphMobile } from './AiSystemsGraph'
 import { EngineeringWorkspace } from './EngineeringWorkspace'
 import { HeroBackgroundGraph } from './HeroBackgroundGraph'
 
-type Phase = 'scatter' | 'neural' | 'code' | 'hamnet'
-const PHASES: readonly Phase[] = ['scatter', 'neural', 'code', 'hamnet']
+type Phase = 'neural' | 'code' | 'hamnet'
+// Three interactive scenes, starting directly with the AI graph.
+// The original scatter SVG source stays archived in AiSystemsGraph for provenance.
+const PHASES: readonly Phase[] = ['neural', 'code', 'hamnet']
 const DURATION: Record<Phase, number> = {
-  scatter: 3300,
   neural: 7900,
   code: 5600,
   hamnet: 6600,
@@ -26,7 +27,7 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
   const drag = useRef<DragOrigin | null>(null)
   const rotation = useRef({ yaw: -6, pitch: 5 })
   const [reduced, setReduced] = useState(() => window.matchMedia(REDUCED).matches)
-  const [phase, setPhase] = useState<Phase>(() => window.matchMedia(REDUCED).matches ? 'neural' : 'scatter')
+  const [phase, setPhase] = useState<Phase>('neural')
   const [paused, setPaused] = useState(false)
   const [replayKey, setReplayKey] = useState(0)
   const [dragging, setDragging] = useState(false)
@@ -127,13 +128,11 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
   const pt = locale === 'pt-BR'
   const sceneOptions: { phase: Phase; label: string }[] = pt
     ? [
-        { phase: 'scatter', label: 'Dados' },
         { phase: 'neural', label: 'Rede IA' },
         { phase: 'code', label: 'Código' },
         { phase: 'hamnet', label: 'Hamlet AI' },
       ]
     : [
-        { phase: 'scatter', label: 'Data' },
         { phase: 'neural', label: 'AI Graph' },
         { phase: 'code', label: 'Code' },
         { phase: 'hamnet', label: 'Hamlet AI' },
@@ -155,7 +154,7 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
       data-reduced={reduced ? 'true' : 'false'}
       data-dragging={dragging ? 'true' : 'false'}
       role="group"
-      aria-label={pt ? 'Animação da evolução de dados em redes neurais, código e Hamlet AI' : 'From scattered data to neural layers, code and Hamlet AI'}
+      aria-label={pt ? 'Visualização de rede neural, código e Hamlet AI' : 'AI neural graph, code and Hamlet AI visualization'}
     >
       <HeroBackgroundGraph />
       <div className="hero-v4-art" aria-hidden="true">
@@ -189,8 +188,8 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
       />
       <span className="hero-v4-visually-hidden">
         {pt
-          ? 'Visualização conceitual: fluxos binários convergem de um grafo em perspectiva para camadas neurais, código e uma conversa ilustrativa com Hamlet AI. Não há conexão com IA nesta animação.'
-          : 'Conceptual visual: binary packets flow through a perspective data network into neural layers, source code and a simulated Hamlet AI conversation. No live AI connection.'}
+          ? 'Visualização conceitual de camadas neurais, geração de código e uma conversa ilustrativa com Hamlet AI. Não há conexão com IA nesta animação.'
+          : 'Conceptual visual: neural layers, generated source code and a simulated Hamlet AI conversation. No live AI connection.'}
       </span>
       <div
         className="hero-v5-stage-selector"
@@ -211,7 +210,7 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
         ))}
       </div>
       <div className="hero-v4-stage-marker" aria-hidden="true">
-        {phase === 'scatter' ? (pt ? 'ENTRADA DE DADOS' : 'DATA INPUT') : phase === 'neural' ? (pt ? 'ARQUITETURA NEURAL' : 'NEURAL ARCHITECTURE') : phase === 'code' ? (pt ? 'GERAÇÃO DE SOFTWARE' : 'SOFTWARE GENERATION') : 'HAMLET AI'}
+        {phase === 'neural' ? (pt ? 'ARQUITETURA NEURAL' : 'NEURAL ARCHITECTURE') : phase === 'code' ? (pt ? 'GERAÇÃO DE SOFTWARE' : 'SOFTWARE GENERATION') : 'HAMLET AI'}
         {phase === 'neural' && !reduced ? <span className="hero-v4-drag-hint"> · {pt ? 'ARRASTE PARA EXPLORAR' : 'DRAG TO EXPLORE'}</span> : null}
       </div>
       <button
