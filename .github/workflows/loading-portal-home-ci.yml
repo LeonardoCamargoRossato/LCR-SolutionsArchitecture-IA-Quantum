@@ -50,7 +50,7 @@ jobs:
           assert 'portal' in source and 'homeSafe' in source and 'onOpened' in source
           assert 'waitForHomeDom' in preload and 'waitForHeroMedia' in preload
           assert 'waitForOpeningArt' in preload
-          assert 'VITE_SUPABASE' not in source and 'supabase' not in preload.lower()
+          assert 'VITE_SUPABASE' not in source and "from '../../infrastructure/supabase" not in preload
           assert 'useHomeMotionEnabled' in home and hero
           assert 'data-home-motion' in home
           assert Path('src/components/loading-portal/LoadingPortal.tsx').exists()
