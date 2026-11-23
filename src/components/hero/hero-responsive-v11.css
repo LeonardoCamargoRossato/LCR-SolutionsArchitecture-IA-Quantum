@@ -157,3 +157,12 @@
     padding-inline: 4px;
   }
 }
+
+/* The Portuguese technical title is longer than EN; reduce only that
+   typography enough to preserve the established two-line mobile baseline. */
+@media (max-width: 600px) {
+  html[lang='pt-BR'] .portfolio-home .hero-v3 h1.hero-type-title {
+    font-size: clamp(.99rem, 4.8vw, 1.65rem);
+    line-height: 1.16;
+  }
+}
