@@ -96,51 +96,50 @@ export function Home() {
 
   return (
     <main className="portfolio-home" style={portfolioScaleStyle} ref={homeRef}>
-      <section className="hero hero-positioning hero-v2">
-        <div className="site-container hero-main hero-v2-grid">
-          <div className="hero-v2-copy">
-            <div className="eyebrow" data-reveal="down">LEONARDO CAMARGO ROSSATO</div>
-            <div className="hero-title-block" data-reveal="down" style={{ '--reveal-delay': '80ms' } as CSSProperties}>
-              <HeroTypeTitle text={PORTFOLIO_HERO_TITLE} />
-              <p className="hero-identity-subtitle">{PORTFOLIO_HERO_SUBTITLE}</p>
+      <section className="hero hero-positioning hero-v3" aria-label={locale === 'pt-BR' ? 'Apresentação profissional' : 'Professional introduction'}>
+        <div className="site-container hero-main hero-v3-layout">
+          <div className="hero-v3-content">
+            <div className="hero-v3-copy">
+              <div className="eyebrow" data-reveal="down">LEONARDO CAMARGO ROSSATO</div>
+              <div className="hero-title-block" data-reveal="down" style={{ '--reveal-delay': '80ms' } as CSSProperties}>
+                <HeroTypeTitle text={PORTFOLIO_HERO_TITLE} />
+                <p className="hero-identity-subtitle">{PORTFOLIO_HERO_SUBTITLE}</p>
+              </div>
+              <p className="hero-description" data-reveal="left" style={{ '--reveal-delay': '170ms' } as CSSProperties}>
+                {PORTFOLIO_HERO_DESCRIPTION}
+              </p>
             </div>
-            <p className="hero-description" data-reveal="left" style={{ '--reveal-delay': '170ms' } as CSSProperties}>
-              {PORTFOLIO_HERO_DESCRIPTION}
-            </p>
-          </div>
 
-          <div className="hero-v2-visual">
-            <InteractiveAiVisual locale={locale} />
-          </div>
-
-          <div className="hero-v2-bottom">
-            <div className="hero-actions" data-reveal="left" style={{ '--reveal-delay': '220ms' } as CSSProperties}>
-              <a
-                className="button"
-                href="#projects"
-                onClick={(event) => {
-                  event.preventDefault()
-                  document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                }}
-              >
-                {t('heroViewWork')}
-              </a>
-              <a
-                className="button button-secondary"
-                href="#contact"
-                onClick={(event) => {
-                  event.preventDefault()
-                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                }}
-              >
-                {t('heroContact')}
-              </a>
-            </div>
-            <div className="hero-specializations tech-list" aria-label={locale === 'pt-BR' ? 'Especializações profissionais' : 'Professional specializations'} data-reveal="left" style={{ '--reveal-delay': '270ms' } as CSSProperties}>
-              {PORTFOLIO_HERO_TAGS.map((skill) => <span key={skill}>{skill}</span>)}
+            <div className="hero-v3-actions">
+              <div className="hero-actions" data-reveal="left" style={{ '--reveal-delay': '220ms' } as CSSProperties}>
+                <a
+                  className="button"
+                  href="#projects"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }}
+                >
+                  {t('heroViewWork')}
+                </a>
+                <a
+                  className="button button-secondary"
+                  href="#contact"
+                  onClick={(event) => {
+                    event.preventDefault()
+                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }}
+                >
+                  {t('heroContact')}
+                </a>
+              </div>
+              <div className="hero-specializations tech-list" aria-label={locale === 'pt-BR' ? 'Especializações profissionais' : 'Professional specializations'} data-reveal="left" style={{ '--reveal-delay': '270ms' } as CSSProperties}>
+                {PORTFOLIO_HERO_TAGS.map((skill) => <span key={skill}>{skill}</span>)}
+              </div>
             </div>
           </div>
         </div>
+        <InteractiveAiVisual locale={locale} />
       </section>
 
       <section className="section selected-section" id="projects">
