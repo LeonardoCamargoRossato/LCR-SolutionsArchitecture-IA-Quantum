@@ -95,7 +95,7 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
   }
 
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (!playing || phase !== 'neural' || window.innerWidth <= 900 || event.pointerType === 'touch') return
+    if (reduced || !visible || !documentVisible || phase !== 'neural' || window.innerWidth <= 900 || event.pointerType === 'touch') return
     if (event.button !== 0) return
     drag.current = {
       x: event.clientX, y: event.clientY,
@@ -106,7 +106,7 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
   }
 
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (!drag.current || !playing) return
+    if (!drag.current || reduced || !visible || !documentVisible) return
     applyRotation(
       drag.current.yaw + (event.clientX - drag.current.x) * .13,
       drag.current.pitch - (event.clientY - drag.current.y) * .10,
@@ -180,7 +180,11 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
         locale={locale}
         active={phase === 'hamnet'}
         replayKey={replayKey}
-        onReplay={() => setReplayKey(key => key + 1)}
+        onReplay={() => {
+          setReplayKey((key) => key + 1)
+          // A replay click is a deliberate request to run the conversation.
+          if (!reduced) setPaused(false)
+        }}
       />
 
       <div
