@@ -166,12 +166,15 @@
   transform: rotateX(var(--neural-tilt-x)) rotateY(var(--neural-tilt-y));
   transition: transform 120ms ease-out;
 }
+/* One pulse per entire edge layer instead of hundreds of animations. */
+.hero-v4-neural-edges {
+  animation: hero-v4-edge-light 3.6s ease-in-out infinite alternate;
+}
 .hero-v4-neural-edges line {
   fill: none;
   stroke-width: 1.55;
   vector-effect: non-scaling-stroke;
-  opacity: .47;
-  animation: hero-v4-edge-light 3.6s ease-in-out infinite alternate;
+  opacity: .63;
 }
 .hero-v4-neural-layer { animation: hero-v4-layer-glimmer 4.7s ease-in-out infinite alternate; }
 .hero-v4-neuron-halo { fill: var(--neural-glow); opacity: .14; }
