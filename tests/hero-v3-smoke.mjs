@@ -147,7 +147,7 @@ async function checkScene({ label, width, height, reduced = false, dark = false,
   }
 
   const oldColor = metrics.background
-  await page.evaluate(() => document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark'))
+  await page.evaluate((nextTheme) => document.documentElement.setAttribute('data-theme', nextTheme), dark ? 'light' : 'dark')
   const secondColor = await page.locator('.hero-v3').evaluate(el => getComputedStyle(el).backgroundColor)
   assert.notEqual(secondColor, oldColor, label + ': dark/light Hero not changing colors')
 
