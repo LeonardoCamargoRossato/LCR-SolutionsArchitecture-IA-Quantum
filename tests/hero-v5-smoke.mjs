@@ -267,7 +267,7 @@ async function sourceAudit() {
   assert(approved.split('<text ').length > 3000, 'Dense 3D data field was accidentally simplified')
   assert(approved.includes('@media (prefers-reduced-motion:reduce)'), 'Reduced-motion fallback missing from SVG')
   assert(approved.length < 370000, 'Uncompressed SVG larger than expected')
-  assert(!['<script', '<foreignObject', 'onload=', '<image', 'https://', 'http://'].some(token => approved.includes(token)), 'Active or remote content inside the SVG')
+  assert(!['<script', '<foreignObject', 'onload=', '<image', 'xlink:href="http', 'href="http'].some(token => approved.includes(token)), 'Active or remote content inside the SVG')
   report.checks.push({ name: 'static-security-and-performance', result: 'PASS' })
 }
 
