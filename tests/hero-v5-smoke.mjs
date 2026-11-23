@@ -42,7 +42,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   }, { dark })
   const pageErrors = []
   page.on('pageerror', e => pageErrors.push(String(e)))
-  await page.goto(BASE + '#/', { waitUntil: 'domcontentloaded' })
+  await page.goto(BASE + '#/?portal=skip', { waitUntil: 'domcontentloaded' })
   await page.locator('.hero-type-title[data-typing-complete="true"]').waitFor({ timeout: 16000 })
   const hero = page.locator('.hero-v3')
   const visual = page.locator('.hero-graph-field')
