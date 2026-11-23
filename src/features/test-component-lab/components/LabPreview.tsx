@@ -1,63 +1,58 @@
 import { Pause, Play, RotateCcw, Copy, Check, Layers3, Sun, Moon } from 'lucide-react'
-import type { LabComponentDefinition } from '../config/component-registry'
-import type { PreviewSurface, WaveSettings } from '../../../components/test-component-lab/particle-wave/particle-wave-types'
-
+import { VisualEditor } from '../editor/VisualEditor'
+import type { CompositionDocument } from '../editor/document-model'
 type Props = {
-  component: LabComponentDefinition
-  settings: WaveSettings
-  running: boolean
-  surface: PreviewSurface
-  copyStatus: string
-  onRunning: () => void
-  onReset: () => void
-  onCopy: () => void
-  onSurface: (surface: PreviewSurface) => void
+  doc:CompositionDocument
+  setDoc:(change:(current:CompositionDocument)=>CompositionDocument)=>void
+  selected:string|null
+  select:(selected:string|null)=>void
+  imageUrl:string|null
+  editing:boolean
+  enterEditing:()=>void
+  zoom:number|null
+  onZoom:(value:number|null)=>void
+  onFitScale:(value:number)=>void
+  onDroppedImage:(file:File)=>void
+  onPasteImage:(file:File)=>void
+  copyStatus:string
+  onRunning:()=>void
+  onReset:()=>void
+  onCopy:()=>void
+  onSurface:(surface:'light'|'dark'|'transparent')=>void
 }
-
-export function LabPreview({ component, settings, running, surface, copyStatus, onRunning, onReset, onCopy, onSurface }: Props) {
-  const Component = component.Component
-  return (
-    <section className="lcr-lab-preview-pane" aria-labelledby="lab-preview-title">
-      <div className="lcr-lab-pane-heading">
-        <div>
-          <h2 id="lab-preview-title">Live Preview</h2>
-          <p>Renderização em tempo real · {component.name}</p>
-        </div>
-        <span className="lcr-lab-renderer-pill">Canvas 2D · Adaptive FPS</span>
+export function LabPreview({
+  doc,setDoc,selected,select,imageUrl,editing,enterEditing,zoom,onZoom,onFitScale,
+  onDroppedImage,onPasteImage,copyStatus,onRunning,onReset,onCopy,onSurface,
+}:Props){
+  return <section className="lcr-lab-preview-pane" aria-labelledby="lab-preview-title">
+    <div className="lcr-lab-pane-heading">
+      <div><h2 id="lab-preview-title">Visual Composition Editor</h2><p>Particle Wave · Live Preview · 2D Canvas</p></div>
+      <span className="lcr-lab-renderer-pill">Virtual {doc.canvas.width} × {doc.canvas.height}</span>
+    </div>
+    <div className="lcr-lab-preview-topbar">
+      <div className="lcr-lab-segmented" role="group" aria-label="Modo de fundo">
+        <button type="button" aria-pressed={doc.surface==='light'} onClick={()=>onSurface('light')}><Sun size={15} aria-hidden="true"/> Claro</button>
+        <button type="button" aria-pressed={doc.surface==='dark'} onClick={()=>onSurface('dark')}><Moon size={15} aria-hidden="true"/> Escuro</button>
+        <button type="button" aria-pressed={doc.surface==='transparent'} onClick={()=>onSurface('transparent')}><Layers3 size={15} aria-hidden="true"/> Transparência</button>
       </div>
-      <div className="lcr-lab-preview-topbar">
-        <div className="lcr-lab-segmented" role="group" aria-label="Modo de fundo">
-          <button type="button" aria-pressed={surface === 'light'} onClick={() => onSurface('light')}><Sun size={15} aria-hidden="true" /> Claro</button>
-          <button type="button" aria-pressed={surface === 'dark'} onClick={() => onSurface('dark')}><Moon size={15} aria-hidden="true" /> Escuro</button>
-          <button type="button" aria-pressed={surface === 'transparent'} onClick={() => onSurface('transparent')}><Layers3 size={15} aria-hidden="true" /> Transparência</button>
-        </div>
+      <span className="lcr-v2-mode-label">{editing?'EDIT MODE · FRAME PAUSED':'PREVIEW MODE · DOUBLE CLICK TO EDIT'}</span>
+    </div>
+    <VisualEditor document={doc} setDocument={setDoc} selected={selected} select={select}
+      imageUrl={imageUrl} onDroppedImage={onDroppedImage} onPasteImage={onPasteImage}
+      editing={editing} enterEditing={enterEditing} zoom={zoom} onZoom={onZoom} onFitScale={onFitScale}/>
+    <div className="lcr-lab-preview-footer">
+      <div className="lcr-lab-action-group">
+        <button className="lcr-lab-action lcr-lab-action--primary" type="button" data-testid="wave-play-pause"
+          aria-label={doc.animation.running?'Pausar animação':'Reproduzir animação'} onClick={onRunning}>
+          {doc.animation.running?<Pause size={16} aria-hidden="true"/>:<Play size={16} aria-hidden="true"/>}
+          {doc.animation.running?'Pause':'Play'}
+        </button>
+        <button className="lcr-lab-action" type="button" data-testid="wave-reset" onClick={onReset}><RotateCcw size={15}/> Reset</button>
+        <button className="lcr-lab-action" type="button" data-testid="wave-copy" onClick={onCopy}>
+          {copyStatus==='Configuração copiada.'?<Check size={15}/>:<Copy size={15}/>} Copy Configuration
+        </button>
       </div>
-      <div className={`lcr-lab-canvas-stage lcr-lab-canvas-stage--${surface}`}
-        data-testid="lab-preview-stage"
-        style={surface === 'transparent' ? undefined : { backgroundColor: settings.background }}>
-        <Component settings={settings} running={running} />
-        <div className="lcr-lab-canvas-caption" aria-hidden="true">
-          <span>Particle Wave / V1</span><span>Procedural field</span>
-        </div>
-      </div>
-      <div className="lcr-lab-preview-footer">
-        <div className="lcr-lab-action-group">
-          <button type="button" className="lcr-lab-action lcr-lab-action--primary"
-            aria-label={running ? 'Pausar animação' : 'Reproduzir animação'}
-            onClick={onRunning} data-testid="wave-play-pause">
-            {running ? <Pause size={17} aria-hidden="true" /> : <Play size={17} aria-hidden="true" />}
-            {running ? 'Pause' : 'Play'}
-          </button>
-          <button type="button" className="lcr-lab-action" onClick={onReset}
-            data-testid="wave-reset"><RotateCcw size={16} aria-hidden="true" /> Reset</button>
-          <button type="button" className="lcr-lab-action" onClick={onCopy}
-            data-testid="wave-copy">
-            {copyStatus === 'Configuração copiada.' ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
-            Copy Configuration
-          </button>
-        </div>
-        <p className="lcr-lab-inline-status" role="status" aria-live="polite">{copyStatus || (running ? 'Animação ativa' : 'Animação pausada')}</p>
-      </div>
-    </section>
-  )
+      <p className="lcr-lab-inline-status" role="status" aria-live="polite">{copyStatus|| (editing?'Edição ativa — animação pausada':doc.animation.running?'Animação ativa':'Animação pausada')}</p>
+    </div>
+  </section>
 }
