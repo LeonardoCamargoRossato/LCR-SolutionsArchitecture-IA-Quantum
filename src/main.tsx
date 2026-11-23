@@ -14,6 +14,7 @@ import './styles/global.css'
 import './styles/visual-refresh.css'
 import './styles/home-motion.css'
 import './estruturas-padroes/carrossel-projetos/carrossel-projetos.css'
+import './components/hero/hero-visual.css'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 if (supabaseUrl) {
