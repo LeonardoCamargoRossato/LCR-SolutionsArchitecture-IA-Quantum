@@ -166,3 +166,10 @@
     line-height: 1.16;
   }
 }
+/* Mid-size tablets need a little extra vertical clearance for the taller
+   two-column assistant card; the compact phone layout remains unchanged. */
+@media (min-width: 601px) and (max-width: 900px) {
+  .portfolio-home .hero-graph-field--v5 .hero-v5-hamnet.hero-v4-hamnet-scene {
+    top: 22%;
+  }
+}
