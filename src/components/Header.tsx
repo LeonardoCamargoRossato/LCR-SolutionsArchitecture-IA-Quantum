@@ -1,21 +1,59 @@
-
-import { Menu, Moon, Sun, UserRound, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { ChevronDown, Menu, Moon, Sun, UserRound, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { externalLinks } from '../config/externalLinks'
 import { useI18n } from '../i18n/I18nProvider'
+import type { Locale } from '../i18n/types'
 import { useSiteContent } from '../providers/SiteContentProvider'
 import { useTheme } from '../providers/ThemeProvider'
+import './header/header-controls.css'
+
+const LANGUAGES: ReadonlyArray<{ locale: Locale; flag: string; label: string }> = [
+  { locale: 'en-US', flag: '🇺🇸', label: 'EN USA' },
+  { locale: 'pt-BR', flag: '🇧🇷', label: 'PT BR' },
+]
 
 export function Header() {
   const [open, setOpen] = useState(false)
+  const [languageOpen, setLanguageOpen] = useState(false)
+  const pickerRef = useRef<HTMLDivElement>(null)
+  const pickerButtonRef = useRef<HTMLButtonElement>(null)
   const location = useLocation()
   const navigate = useNavigate()
   const { content } = useSiteContent()
   const { locale, setLocale, t } = useI18n()
   const { theme, toggleTheme } = useTheme()
+  const selectedLanguage = LANGUAGES.find(option => option.locale === locale) ?? LANGUAGES[0]
 
-  useEffect(() => setOpen(false), [location.pathname])
+  useEffect(() => {
+    setOpen(false)
+    setLanguageOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (!languageOpen) return
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.target instanceof Node && !pickerRef.current?.contains(event.target)) setLanguageOpen(false)
+    }
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setLanguageOpen(false)
+        pickerButtonRef.current?.focus()
+      }
+    }
+    document.addEventListener('pointerdown', onPointerDown)
+    document.addEventListener('keydown', onEscape)
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown)
+      document.removeEventListener('keydown', onEscape)
+    }
+  }, [languageOpen])
+
+  const chooseLanguage = (selected: Locale) => {
+    setLocale(selected)
+    setLanguageOpen(false)
+    pickerButtonRef.current?.focus()
+  }
 
   const goToSection = (sectionId: string) => {
     const scroll = () => {
@@ -50,16 +88,6 @@ export function Header() {
           <span className="brand-name">Leonardo Rossato</span>
         </Link>
 
-        <button
-          type="button"
-          className="menu-button"
-          aria-label="Toggle navigation"
-          aria-expanded={open}
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? <X size={19} /> : <Menu size={19} />}
-        </button>
-
         <nav className={`nav ${open ? 'nav-open' : ''}`} aria-label="Primary navigation">
           <button type="button" onClick={() => goToSection('projects')}>{t('projects')}</button>
           <button type="button" onClick={() => goToSection('experience')}>{t('experienceNav')}</button>
@@ -67,17 +95,42 @@ export function Header() {
           <a href={externalLinks.github} target="_blank" rel="noreferrer">GitHub</a>
           <a href={externalLinks.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
           <button type="button" onClick={() => goToSection('contact')}>{t('contact')}</button>
+        </nav>
 
-          <label className="language-toggle" aria-label="Language">
-            <select
-              value={locale}
-              onChange={(event) => setLocale(event.target.value as 'en-US' | 'pt-BR')}
+        {/* Always visible on desktop and mobile, even when navigation is collapsed. */}
+        <div className="header-controls">
+          <div className="language-picker" ref={pickerRef}>
+            <button
+              ref={pickerButtonRef}
+              type="button"
+              className="language-picker-trigger"
+              aria-label={`Language: ${selectedLanguage.label}. Select language`}
+              aria-haspopup="true"
+              aria-expanded={languageOpen}
+              aria-controls="portfolio-language-options"
+              onClick={() => setLanguageOpen(value => !value)}
             >
-              <option value="en-US">EN-US</option>
-              <option value="pt-BR">PT-BR</option>
-            </select>
-          </label>
-
+              <span className="language-flag" aria-hidden="true">{selectedLanguage.flag}</span>
+              <span className="language-picker-label">{selectedLanguage.label}</span>
+              <ChevronDown size={13} aria-hidden="true" />
+            </button>
+            {languageOpen && (
+              <div className="language-picker-options" id="portfolio-language-options" aria-label="Choose language">
+                {LANGUAGES.map(option => (
+                  <button
+                    type="button"
+                    key={option.locale}
+                    className="language-picker-option"
+                    aria-pressed={locale === option.locale}
+                    onClick={() => chooseLanguage(option.locale)}
+                  >
+                    <span className="language-flag" aria-hidden="true">{option.flag}</span>
+                    <span>{option.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <button
             type="button"
             className="theme-toggle"
@@ -87,7 +140,16 @@ export function Header() {
           >
             {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
-        </nav>
+          <button
+            type="button"
+            className="menu-button"
+            aria-label="Toggle navigation"
+            aria-expanded={open}
+            onClick={() => { setLanguageOpen(false); setOpen(value => !value) }}
+          >
+            {open ? <X size={19} /> : <Menu size={19} />}
+          </button>
+        </div>
       </div>
     </header>
   )
