@@ -101,12 +101,12 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Validate theme-specific SVG contrast, 4 Hero tags, performance and 4 scenes
         run: node tests/hero-v5-smoke.mjs
-      - name: Mobile two-line headline, 44px gap, Hamlet AI label (9 responsive viewports)
+      - name: V11 mobile one-row tags, play-left, centered neural, 3D code/Hamlet and bilingual route audit
+        run: node tests/hero-v11-responsive-i18n-smoke.mjs
+      - name: Mobile two-line headline, compact gap, Hamlet AI label (9 responsive viewports)
         run: node tests/hero-mobile-v9-layout-smoke.mjs
       - name: Header flags, English/dark defaults, desktop tags and mobile scene clearance
         run: node tests/hero-v10-header-smoke.mjs
-      - name: V11 mobile one-row tags, play-left, centered neural, 3D code/Hamlet and bilingual route audit
-        run: node tests/hero-v11-responsive-i18n-smoke.mjs
       - name: Existing Home/SEO/projects regression
         run: node tests/ai-positioning-smoke.mjs
       - name: Browser evidence (desktop, notebook, tablet, mobile)
