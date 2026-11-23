@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - fix/remove-pdf-frequency-analyzer-20261117
+  pull_request:
+    branches: [main]
+    paths:
+      - tests/portfolio-covers-smoke.mjs
+      - src/config/retiredProjects.ts
+      - src/pages/ProjectCaseV1.tsx
+      - .github/workflows/portfolio-retired-project-regression.yml
   workflow_dispatch:
 
 permissions:
@@ -43,7 +50,7 @@ jobs:
         run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
-      - name: Verify eight retained projects and retired route - desktop and mobile
+      - name: Verify seven active projects and all retired routes - desktop and mobile
         run: node tests/portfolio-covers-smoke.mjs
       - name: Save test evidence
         if: always()
