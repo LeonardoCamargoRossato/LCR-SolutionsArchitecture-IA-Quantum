@@ -141,6 +141,9 @@ async function scenario({ name, width, height, reduced, dark, automatic }) {
 
   // Verify reduced-motion manual switching never triggers CSS animations;
   // verify focusable buttons have accessible names and visible focus styles.
+  // Activate keyboard modality first: :focus-visible intentionally does not
+  // appear after mouse-only or script-only focus in Chromium.
+  await page.keyboard.press('Tab')
   await workspace.focus()
   const focusStyle = await workspace.evaluate((el) => ({
     focused: document.activeElement === el,
