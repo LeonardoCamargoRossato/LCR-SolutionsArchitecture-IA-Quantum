@@ -6,13 +6,10 @@ import { citiesComparingSeriesGallery } from '../../data/citiesComparingSeriesGa
 import { ce235Project } from '../../data/ce235Project'
 import { animeFinderProject } from '../../data/animeFinderProject'
 import { metCompBProject } from '../../data/metCompBProject'
+import { RETIRED_PROJECT_SLUGS } from '../../config/retiredProjects'
 
 const defaults = [...defaultProjects, ...defaultMoreProjects]
-const retiredSlugs = new Set([
-  'power-platform',
-  'scientific-analysis',
-  'pdf-frequency-analyzer',
-])
+const retiredSlugs = RETIRED_PROJECT_SLUGS
 
 function canonicalSlug(project: Project) {
   if (project.id === 'city-comparing' || project.slug === 'city-comparing') return 'cities-comparing'
@@ -232,7 +229,7 @@ function sortEditorial(items: Project[]) {
 }
 
 function fallbackDefaults() {
-  return defaults.filter((project) => project.slug !== 'power-platform').map(withEditorialDefaults)
+  return defaults.filter((project) => !retiredSlugs.has(project.slug)).map(withEditorialDefaults)
 }
 
 export class ProjectService {
