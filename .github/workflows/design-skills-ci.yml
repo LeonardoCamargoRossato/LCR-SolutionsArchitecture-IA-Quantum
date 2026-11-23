@@ -1,0 +1,74 @@
+name: LCR Portfolio — Design Skills validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - '.agents/skills/**'
+      - 'docs/design-skills/**'
+      - '.github/workflows/design-skills-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Read source and PR diff
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate only infrastructure files changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          while IFS= read -r path; do
+            case "$path" in
+              AGENTS.md|.agents/skills/*|docs/design-skills/*|.github/workflows/design-skills-ci.yml)
+                ;;
+              *)
+                echo "::error::Out-of-scope application file modified: $path"
+                exit 1
+                ;;
+            esac
+          done < <(git diff --name-only origin/main...HEAD)
+      - name: Inspect all skills and licenses without running third-party executables
+        run: python3 docs/design-skills/validate_install.py
+      - name: Check Python source syntax (no execution)
+        run: |
+          python3 - <<'PY'
+          import ast
+          from pathlib import Path
+          files = sorted(Path('.agents/skills/ui-ux-pro-max/scripts').rglob('*.py'))
+          assert files, "UI UX Pro Max Python scripts missing"
+          for file in files:
+              ast.parse(file.read_text(encoding='utf-8'), filename=str(file))
+          print(f"PASS: {len(files)} Python source files parsed")
+          PY
+      - name: Read-only design-system search smoke
+        run: |
+          mkdir -p test-results
+          python3 .agents/skills/ui-ux-pro-max/scripts/search.py "responsive React component accessibility" --stack react > test-results/ui-ux-react-search.txt
+          test -s test-results/ui-ux-react-search.txt
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install existing pinned portfolio dependencies
+        run: npm ci
+      - name: Existing TypeScript and Vite build
+        run: npm run build
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcr-design-skills-validation
+          path: test-results/
+          if-no-files-found: warn
+          retention-days: 30
