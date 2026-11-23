@@ -74,7 +74,15 @@ async function layoutCheck(width, height, locale, theme) {
   })
   const wide = width >= 1500 && width / height >= 1.7
   const label = width + 'x' + height + ' ' + locale + ' ' + theme
-  near(layout.headerShell.left, layout.heroShell.left, 2, label + ' navbar and Hero left edges must match')
+  if (width > 900) {
+    near(layout.headerShell.left, layout.heroShell.left, 2,
+      label + ' navbar and Hero left edges must match')
+  } else {
+    // Mobile V12 intentionally uses an extra Hero gutter; preserve it.
+    assert(layout.heroShell.left >= layout.headerShell.left + 10 &&
+           layout.heroShell.left <= layout.headerShell.left + 24,
+      label + ' approved mobile Hero gutter changed unexpectedly')
+  }
   assert(layout.overflow <= 2, label + ' horizontal overflow: ' + layout.overflow)
   assert.equal(layout.sceneButtons, 3, label + ' scene controls changed')
   assert.equal(layout.phase, 'neural', label + ' AI Graph must still be the first scene')
