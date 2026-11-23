@@ -1,0 +1,107 @@
+/* LCR Loading Portal V1 | Approved Drawer art, no re-created artwork. */
+.lcr-loading-portal {
+  position: fixed; inset: 0; z-index: 9999;
+  overflow: hidden; isolation: isolate;
+  background: #020913; user-select: none;
+  pointer-events: all; contain: layout paint style;
+}
+.lcr-loading-portal--opening { background: transparent; }
+.lcr-loading-portal__still,
+.lcr-loading-portal__sliding,
+.lcr-loading-portal__art,
+.lcr-loading-portal__energy,
+.lcr-loading-portal__vignette {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
+.lcr-loading-portal__art {
+  object-fit: cover; object-position: center center;
+  will-change: opacity;
+}
+.lcr-loading-portal__energy {
+  z-index: 0; pointer-events: none;
+  background: radial-gradient(circle at 50% 46.8%,rgba(0,190,255,.09),transparent 29%);
+  animation: lcr-portal-breathe 2.4s ease-in-out infinite alternate;
+}
+.lcr-loading-portal__still { z-index: 1; }
+.lcr-loading-portal__sliding { z-index: 2; }
+.lcr-loading-portal__leaf {
+  position: absolute; top: 0; height: 100%; width: 50%; overflow: hidden;
+  transition: transform var(--portal-open-duration,1600ms) cubic-bezier(.65,.03,.18,1);
+  will-change: transform; background: #020913;
+}
+.lcr-loading-portal__leaf--left { left: 0; transform: translateX(0); }
+.lcr-loading-portal__leaf--right { right: 0; transform: translateX(0); }
+.lcr-loading-portal__leaf-art {
+  position: absolute; top: 0; height: 100%; width: 200%; max-width: none;
+  object-fit: cover;
+}
+.lcr-loading-portal__leaf-art--left { left: 0; }
+.lcr-loading-portal__leaf-art--right { right: 0; }
+.lcr-loading-portal--opening .lcr-loading-portal__leaf--left { transform: translateX(-100%); }
+.lcr-loading-portal--opening .lcr-loading-portal__leaf--right { transform: translateX(100%); }
+/* The complete approved lock-core travels with the left half. */
+.lcr-loading-portal__lock-core {
+  position: absolute; z-index: 3; left: 50%; top: 46.8%;
+  width: max(29.67vw,52.71vh); aspect-ratio: 1; object-fit: contain;
+  transform: translate(-50%,-50%);
+  transition: transform var(--portal-open-duration,1600ms) cubic-bezier(.65,.03,.18,1);
+  will-change: transform; pointer-events: none;
+}
+.lcr-loading-portal--opening .lcr-loading-portal__lock-core {
+  transform: translate(calc(-50% - 50vw),-50%);
+}
+.lcr-loading-portal__middle-flare {
+  position: absolute; left: 50%; top: 0; width: 2px; height: 100%;
+  transform: translateX(-50%); background: #91f1ff;
+  box-shadow: 0 0 35px 12px rgba(4,191,255,.65),0 0 110px 25px rgba(4,191,255,.21);
+  opacity: 0; pointer-events: none;
+  animation: lcr-portal-flare var(--portal-open-duration,1600ms) ease-out both;
+  animation-play-state: paused;
+}
+.lcr-loading-portal--opening .lcr-loading-portal__middle-flare { animation-play-state: running; }
+.lcr-loading-portal__counter {
+  position: absolute; z-index: 3; left: 50%; top: 46.8%;
+  transform: translate(-50%,-50%);
+  width: clamp(66px,11vw,187px); height: clamp(44px,7vw,100px);
+  border-radius: 50%; display: grid; place-items: center;
+  font-family: Inter,ui-sans-serif,system-ui,sans-serif;
+  font-size: clamp(18px,2.55vw,45px); font-weight: 700;
+  font-variant-numeric: tabular-nums; letter-spacing: -.045em;
+  line-height: 1; color: #f4fbff;
+  text-shadow: 0 0 9px #63cefa,0 0 23px rgba(0,182,252,.6);
+  pointer-events: none;
+}
+.lcr-loading-portal__counter-value { transform: translateY(-1px); }
+.lcr-loading-portal__vignette {
+  z-index: 4; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 49%,transparent 40%,rgba(0,0,0,.14) 95%);
+}
+@keyframes lcr-portal-breathe { from {opacity:.25;} to {opacity:1;} }
+@keyframes lcr-portal-flare {
+  0%,5% {opacity:0;} 7% {opacity:1;} 28% {opacity:.38;} 100% {opacity:0;}
+}
+@media (max-aspect-ratio:4/3) {
+  .lcr-loading-portal__art {object-fit:cover;}
+  .lcr-loading-portal__counter {font-size:clamp(19px,4.5vw,40px);width:30vw;}
+}
+/* Isolated Lab uses the same portal, composed inside a virtual stage instead
+ * of covering the host UI. These overrides never affect a future Home gate. */
+.lcr-loading-portal--embedded {
+  position: absolute; inset: 0; z-index: 2;
+}
+.lcr-loading-portal--embedded .lcr-loading-portal__lock-core {
+  width: 29.67cqw;
+}
+.lcr-loading-portal--embedded.lcr-loading-portal--opening .lcr-loading-portal__lock-core {
+  transform: translate(calc(-50% - 50cqw),-50%);
+}
+.lcr-loading-portal--embedded .lcr-loading-portal__counter {
+  width: clamp(36px,11cqw,187px);
+  height: clamp(26px,7cqw,100px);
+  font-size: clamp(15px,2.55cqw,45px);
+}
+@media (prefers-reduced-motion:reduce) {
+  .lcr-loading-portal__energy {animation:none;}
+  .lcr-loading-portal__leaf {transition-duration:1ms;}
+  .lcr-loading-portal__middle-flare {animation-duration:1ms;}
+}
