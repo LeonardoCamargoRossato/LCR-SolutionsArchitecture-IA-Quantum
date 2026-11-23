@@ -917,3 +917,68 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-graph-field--v5 .hero-v5-stage-button { transition: none !important; }
 }
+
+/* ───── LCR Hero V6 — transparent animated vector data field ─────
+ * Source: public/assets/home/hero/lcr-hero-blue-code-v1.svg
+ * Replaces the sparse constellation/packet layer as the permanent BACKGROUND;
+ * all 4 interactive foreground scenes remain unchanged.
+ */
+.hero-graph-field--v5 .hero-v6-background {
+  isolation: isolate;
+  background: transparent;
+}
+.hero-graph-field--v5 .hero-v6-backdrop-fabric {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .90;
+  transform: translate3d(var(--fabric-parallax-x), var(--fabric-parallax-y), 0);
+  transform-origin: center center;
+  -webkit-mask-image: none;
+  mask-image: none;
+  filter: none;
+  transition: transform 330ms ease-out;
+}
+.hero-graph-field--v5 .hero-v6-backdrop-svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+}
+[data-theme='dark'] .hero-graph-field--v5 .hero-v6-backdrop-fabric {
+  opacity: 1;
+  filter: saturate(1.16) brightness(1.22);
+}
+[data-theme='light'] .hero-graph-field--v5 .hero-v6-backdrop-fabric {
+  opacity: .70;
+  filter: saturate(1.24) contrast(1.16);
+}
+/* Keep the heading, CTA and four specialization chips readable without
+ * painting a rectangle behind the transparent animated SVG. */
+.hero-graph-field--v5 .hero-v6-background .hero-v5-backdrop-vignette {
+  background: linear-gradient(90deg, var(--section-base, #fff) 0%, var(--section-base, #fff) 16%, transparent 49%);
+  opacity: .44;
+}
+[data-theme='dark'] .hero-graph-field--v5 .hero-v6-background .hero-v5-backdrop-vignette {
+  background: linear-gradient(90deg, #0d1117 0%, #0d1117 18%, transparent 49%);
+  opacity: .86;
+}
+@media (max-width: 900px) {
+  .hero-graph-field--v5 .hero-v6-backdrop-fabric {
+    inset: 0;
+    transform: none !important;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .hero-graph-field--v5 .hero-v6-backdrop-svg { object-position: 85% center; }
+  [data-theme='light'] .hero-graph-field--v5 .hero-v6-backdrop-fabric { opacity: .49; }
+  [data-theme='dark'] .hero-graph-field--v5 .hero-v6-backdrop-fabric { opacity: .66; }
+  .hero-graph-field--v5 .hero-v6-background .hero-v5-backdrop-vignette { opacity: .18; }
+}
+@media (max-width: 600px) {
+  .hero-graph-field--v5 .hero-v6-backdrop-svg { object-position: 83% center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-graph-field--v5 .hero-v6-backdrop-fabric { transition: none !important; transform: none !important; }
+  /* The SVG itself disables CSS and SMIL animations via its own media query. */
+}
