@@ -5,7 +5,7 @@ import { chromium } from 'playwright'
 
 const BASE = 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
 const DIALOGUE = 'AI Hamnet'
-const TAGS = ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Python & Software Engineering', 'Data & Optimization']
+const TAGS = ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Python & Software Engineering', 'Data & Optimization', 'Quantum Computing']
 const report = { checks: [], errors: [] }
 const server = spawn('npm', ['run','dev','--','--host','127.0.0.1','--port','5173','--strictPort'], {
   env: process.env, detached: true, stdio: 'ignore',
@@ -98,6 +98,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
     assert(facts.visWidth >= facts.heroWidth - 2, 'Desktop art must blend into Hero background')
     assert(facts.tagRows[0] === facts.tagRows[1] && facts.tagRows[1] === facts.tagRows[2], 'First 3 tags must share first line')
     assert(facts.tagRows[3] > facts.tagRows[2], 'Fourth tag must occupy an uncluttered second line')
+    assert.equal(facts.tagRows[4], facts.tagRows[3], 'Last 2 specialization tags must share the second row')
   } else {
     assert.equal(facts.mobileVisible, true)
     assert.equal(facts.desktopVisible, false)
