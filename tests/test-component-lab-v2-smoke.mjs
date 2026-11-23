@@ -55,7 +55,7 @@ async function run(name,viewport,reduced=false){
   await page.getByLabel('Grid',{exact:true}).check()
 
   const png=await page.screenshot({type:'png'})
-  await page.getByRole('button',{name:'Add Background'}).click()
+  await page.getByRole('button',{name:'Add Background',exact:true}).click()
   await page.getByRole('dialog',{name:'Add Background'}).waitFor()
   const chooser=page.waitForEvent('filechooser')
   await page.getByRole('button',{name:'Browse Files'}).click()
@@ -181,10 +181,11 @@ async function run(name,viewport,reduced=false){
   await page.getByRole('button',{name:'Apply Background'}).click()
   // Direct modal drag-and-drop is equivalent to Browse Files.
   page.once('dialog',d=>d.accept())
-  await page.getByRole('button',{name:'Add Background'}).click()
+  await page.getByRole('button',{name:'Add Background',exact:true}).click()
   await page.getByRole('dialog',{name:'Add Background'}).waitFor()
   await pasted('.lcr-v2-dropzone','drop')
   await page.getByRole('button',{name:'Apply Background'}).click()
+  await page.getByRole('dialog',{name:'Add Background'}).waitFor({state:'hidden'})
   // Pasting while a text editor has focus must never open background import.
   await page.evaluate((b64)=>{
     const raw=Uint8Array.from(atob(b64),c=>c.charCodeAt(0))
