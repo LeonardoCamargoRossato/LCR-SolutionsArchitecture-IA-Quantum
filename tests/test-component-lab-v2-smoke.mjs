@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import {mkdir,writeFile} from 'node:fs/promises'
+import {mkdir,writeFile,readFile} from 'node:fs/promises'
 import {spawn} from 'node:child_process'
 import {chromium} from 'playwright'
 
@@ -139,6 +139,46 @@ async function run(name,viewport,reduced=false){
   assert(await page.getByText('ImportedComponent.tsx',{exact:false}).count()>0)
   await page.getByRole('button',{name:'Save Files for Review'}).click()
 
+  // Imported code stays inert, but original files must appear in the ZIP.
+  const originalZip=await downloaded(page,page.getByRole('button',{name:'Download Component Package'}))
+  const zipBytes=await readFile(await originalZip.path())
+  assert.equal(zipBytes.subarray(0,4).toString('hex'),'504b0304','Invalid ZIP header')
+  for(const name of ['ParticleWave.tsx','particle-wave.css','particle-wave-types.ts','composition.json',
+    'imported-original/tsx/ImportedComponent.tsx','imported-original/css/imported.css','imported-original/ts/types.ts']){
+    assert(zipBytes.includes(Buffer.from(name)), 'ZIP is missing '+name)
+  }
+  // Paste a screenshot directly on the stage; browser provides it via clipboardData.
+  const screenshotB64=png.toString('base64')
+  const pasted=async(target,type)=>{
+    return page.evaluate(({b64,target,type})=>{
+      const raw=Uint8Array.from(atob(b64),c=>c.charCodeAt(0))
+      const image=new File([raw],type+'.png',{type:'image/png'})
+      const transfer=new DataTransfer()
+      transfer.items.add(image)
+      const element=document.querySelector(target)
+      if(!element)throw Error('No target '+target)
+      const event=type==='paste'
+        ? new ClipboardEvent('paste',{bubbles:true,cancelable:true,clipboardData:transfer})
+        : new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:transfer})
+      element.dispatchEvent(event)
+    },{b64:screenshotB64,target,type})
+  }
+  page.once('dialog',d=>d.accept())
+  await pasted('[data-testid="visual-editor"]','paste')
+  await page.getByRole('dialog',{name:'Add Background'}).waitFor()
+  await page.getByRole('button',{name:'Apply Background'}).click()
+  await page.locator('img.lcr-v2-background').waitFor()
+  page.once('dialog',d=>d.accept())
+  await pasted('[data-testid="visual-editor"]','drop')
+  await page.getByRole('dialog',{name:'Add Background'}).waitFor()
+  await page.getByRole('button',{name:'Apply Background'}).click()
+  // Invalid clipboard (no image) yields feedback, never auto-opens a modal.
+  await page.evaluate(()=>{
+    const data=new DataTransfer()
+    document.querySelector('[data-testid="visual-editor"]').dispatchEvent(
+      new ClipboardEvent('paste',{bubbles:true,cancelable:true,clipboardData:data}))
+  })
+  await page.getByText('Nenhuma imagem encontrada no Ctrl+V.').waitFor()
   await page.screenshot({path:`test-results/v2-${name}-final.png`,fullPage:true})
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+2),false,'Horizontal page overflow')
   assert.equal(errors.length,0,'Browser errors: '+errors.join('; '))
