@@ -11,6 +11,7 @@ import './styles/home-motion.css'
 import './estruturas-padroes/carrossel-projetos/carrossel-projetos.css'
 import './components/hero/hero-visual.css'
 import './components/hero/hero-responsive-v11.css'
+import './components/hero/hero-responsive-v12.css'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 if (supabaseUrl && !window.location.hash.startsWith('#/test-component-lab')) {
