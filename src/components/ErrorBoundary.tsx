@@ -11,12 +11,13 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { hasError
 
   render() {
     if (this.state.hasError) {
+      const pt = document.documentElement.lang === 'pt-BR'
       return (
         <main className="error-boundary">
           <div className="site-container">
-            <h1>Portfolio temporarily unavailable.</h1>
-            <p>An unexpected interface error occurred. Reload the page to try again.</p>
-            <button className="button" onClick={() => window.location.reload()}>Reload</button>
+            <h1>{pt ? 'Portfólio temporariamente indisponível.' : 'Portfolio temporarily unavailable.'}</h1>
+            <p>{pt ? 'Ocorreu um erro inesperado. Recarregue a página para tentar novamente.' : 'An unexpected interface error occurred. Reload the page to try again.'}</p>
+            <button className="button" onClick={() => window.location.reload()}>{pt ? 'Recarregar' : 'Reload'}</button>
           </div>
         </main>
       )
