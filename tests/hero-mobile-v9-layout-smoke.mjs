@@ -66,17 +66,31 @@ async function check(width, height, locale, reduced = true) {
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       phaseNames: [...buttons.querySelectorAll('button')].map(el => el.textContent.trim()),
       mobile,
+      contentLeft: document.querySelector('.hero-v3 .hero-main').getBoundingClientRect().left,
+      contentRight: document.querySelector('.hero-v3 .hero-main').getBoundingClientRect().right,
+      copyLeft: document.querySelector('.hero-v3-content').getBoundingClientRect().left,
+      titleRight: h1.getBoundingClientRect().right,
+      paragraphRight: document.querySelector('.hero-description').getBoundingClientRect().right,
       selectorTouchHeight: Math.min(...[...buttons.querySelectorAll('button')].map(el => el.getBoundingClientRect().height)),
     }
   })
   assert.equal(info.title, 'AI Engineering & Software Development')
-  assert.deepEqual(info.tags.slice(-2), ['Data & Optimization','Quantum Computing'])
+  assert.deepEqual(info.tags, ['LLMs & AI Agents','RAG & Hybrid Retrieval','Data & Optimization','Quantum Computing'])
+  assert.equal(info.tags.includes('Python & Software Engineering'), false, 'Removed skill must not appear')
   assert.equal(info.phaseNames[3], 'Hamlet AI', `${width}px ${locale}: tab must show Hamlet AI`)
   assert.equal(info.phaseNames.length, 4)
   assert(info.overflow <= 2, `${width}px ${locale}: horizontal overflow ${JSON.stringify(info)}`)
   assert(info.tabsWithinScreen, `${width}px ${locale}: tabs clipped ${JSON.stringify(info)}`)
   assert(info.selectorTouchHeight >= 39, 'Stage buttons must remain touch-accessible')
   if (width <= 600) {
+    const minGutter = width * .05
+    const maxGutter = width * .10
+    assert(info.contentLeft >= minGutter-1 && info.contentLeft <= maxGutter+1,
+      `${width}px: left gutter must be 5–10%: ${JSON.stringify(info)}`)
+    assert(width - info.contentRight >= minGutter-1 && width - info.contentRight <= maxGutter+1,
+      `${width}px: right gutter must be 5–10%: ${JSON.stringify(info)}`)
+    assert(info.copyLeft >= minGutter-1 && info.titleRight <= width-minGutter+1 &&
+      info.paragraphRight <= width-minGutter+1, `${width}px: Hero copy touches the viewport edge: ${JSON.stringify(info)}`)
     assert.equal(info.lines, 2, `${width}px ${locale}: visible typed heading must have exactly 2 lines: ${JSON.stringify(info)}`)
     assert.equal(info.reserveLines, 2, `${width}px ${locale}: reserved title height must have exactly 2 lines: ${JSON.stringify(info)}`)
   }
