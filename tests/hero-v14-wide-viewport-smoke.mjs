@@ -110,7 +110,7 @@ async function layoutCheck(width, height, locale, theme) {
     assert(layout.background.height >= layout.hero.height - 2,
       label + ' optimized background does not fill the vertical Hero')
     assert.equal(layout.imageFit, 'cover', label + ' background must scale by height using cover')
-    assert(/^100%(\\s|$)/.test(layout.imagePosition) || /\\bright\\b/.test(layout.imagePosition),
+    assert(layout.imagePosition.startsWith('100%') || layout.imagePosition.includes('right'),
       label + ' keep approved right-side details in frame: ' + layout.imagePosition)
   } else {
     assert(layout.heroShell.width <= 1180 + 2,
