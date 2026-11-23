@@ -186,6 +186,8 @@ async function run(name,viewport,reduced=false){
   await pasted('.lcr-v2-dropzone','drop')
   await page.getByRole('button',{name:'Apply Background'}).click()
   await page.getByRole('dialog',{name:'Add Background'}).waitFor({state:'hidden'})
+  // Loading a preset clears selection; create a new text layer before testing text-field paste.
+  await page.getByRole('button',{name:'Add Text'}).click()
   // Pasting while a text editor has focus must never open background import.
   await page.evaluate((b64)=>{
     const raw=Uint8Array.from(atob(b64),c=>c.charCodeAt(0))
