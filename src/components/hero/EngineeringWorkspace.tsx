@@ -72,7 +72,7 @@ export function EngineeringWorkspace({
             type="button"
             className="hero-v5-bot-replay"
             data-testid="hero-v5-hamnet-replay"
-            aria-label={pt ? 'Reproduzir demonstração de conversa com AI Hamnet' : 'Replay AI Hamnet conversation demo'}
+            aria-label={pt ? 'Reproduzir demonstração de conversa com Hamlet AI' : 'Replay Hamlet AI conversation demo'}
             onPointerMove={onRobotMove}
             onPointerLeave={onRobotLeave}
             onClick={onReplay}
@@ -87,7 +87,7 @@ export function EngineeringWorkspace({
               decoding="async"
             />
           </button>
-          <div className="hero-v4-hamnet-name">AI Hamnet</div>
+          <div className="hero-v4-hamnet-name">Hamlet AI</div>
           <div className="hero-v4-hamnet-state">
             <span aria-hidden="true" /> {pt ? 'Demonstração de assistente de IA' : 'AI assistant concept demo'}
           </div>
@@ -96,12 +96,12 @@ export function EngineeringWorkspace({
         <div className="hero-v4-chat-window hero-v5-chat-window">
           <div className="hero-v4-chat-heading">
             <span className="hero-v4-chat-avatar">AI</span>
-            <strong>AI Hamnet</strong>
+            <strong>Hamlet AI</strong>
             <span className="hero-v5-demo-label">{pt ? 'DEMONSTRAÇÃO' : 'DEMO'}</span>
           </div>
           <div className="hero-v5-conversation" key={replayKey} aria-label={pt ? 'Exemplo de conversa simulada' : 'Simulated conversation example'}>
             <div className="hero-v5-chat-user" data-testid="hero-v5-user-message">
-              Hello, Hamnet.
+              Hello, Hamlet AI.
             </div>
             <div className="hero-v5-chat-thinking" aria-hidden="true">
               <span /><span /><span />
