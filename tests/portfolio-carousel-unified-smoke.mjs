@@ -215,6 +215,9 @@ try {
   browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] })
   const context = await browser.newContext()
   const discovery = await context.newPage()
+  // This legacy regression asserts the explicitly selected LIGHT scrollbar palette.
+  // Product default is now dark; the dedicated Hero V10 test verifies that default.
+  await discovery.addInitScript(() => localStorage.setItem('portfolio-theme', 'light'))
   const slugs = await listProjectSlugs(discovery)
   // Keep the public project data loaded by Home when opening isolated desktop/mobile contexts.
   // Without this, the first case renders stale fallback content before Supabase completes.
