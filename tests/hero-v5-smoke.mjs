@@ -5,7 +5,7 @@ import { chromium } from 'playwright'
 
 const BASE = 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
 const DIALOGUE = 'AI Hamnet'
-const TAGS = ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Python & Software Engineering', 'Data & Optimization', 'Quantum Computing']
+const TAGS = ['LLMs & AI Agents', 'RAG & Hybrid Retrieval', 'Python & Software Engineering', 'Data & Optimization']
 const report = { checks: [], errors: [] }
 const server = spawn('npm', ['run','dev','--','--host','127.0.0.1','--port','5173','--strictPort'], {
   env: process.env, detached: true, stdio: 'ignore',
@@ -109,7 +109,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
     assert.equal(facts.visualPosition, 'absolute')
     assert(facts.visWidth >= facts.heroWidth - 2, 'Desktop art must blend into Hero background')
     assert(facts.tagRows[0] === facts.tagRows[1] && facts.tagRows[1] === facts.tagRows[2], 'First 3 tags must share first line')
-    assert(facts.tagRows[3] > facts.tagRows[2] && facts.tagRows[3] === facts.tagRows[4], 'Last 2 tags must share second line')
+    assert(facts.tagRows[3] > facts.tagRows[2], 'Fourth tag must occupy an uncluttered second line')
   } else {
     assert.equal(facts.mobileVisible, true)
     assert.equal(facts.desktopVisible, false)
@@ -191,6 +191,27 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
       await waitPhase(page, 'scatter', 9000)
       assert.equal(await visual.getAttribute('data-phase'), 'scatter', 'The animation must loop back to dispersed data')
     }
+  }
+
+  // V5.1: users can navigate the complete data → neural → code → Hamnet story.
+  // A manual selection pauses auto-advance until explicitly resumed; reduced
+  // motion users retain full access to each static scene.
+  const stages = page.getByTestId('hero-v5-stage-selector').locator('button')
+  assert.equal(await stages.count(), 4, 'Four accessible manual stage controls required')
+  await stages.nth(2).click()
+  assert.equal(await visual.getAttribute('data-phase'), 'code')
+  assert.equal(await visual.getAttribute('data-playing'), 'false', 'Manual selection must pause scene rotation')
+  assert.equal(await stages.nth(2).getAttribute('aria-pressed'), 'true')
+  await stages.nth(3).click()
+  assert.equal(await visual.getAttribute('data-phase'), 'hamnet')
+  assert.equal(await stages.nth(3).getAttribute('aria-pressed'), 'true')
+  await stages.nth(1).focus()
+  await stages.nth(1).press('Enter')
+  assert.equal(await visual.getAttribute('data-phase'), 'neural', 'Keyboard activation should select the neural scene')
+  assert.equal(await stages.nth(1).getAttribute('aria-pressed'), 'true')
+  if (!reduced) {
+    await toggle.click()
+    assert.equal(await visual.getAttribute('data-playing'), 'true', 'Play must resume rotation after manual selection')
   }
 
   await screenshot(page, name + '-original-theme')
