@@ -6,6 +6,7 @@ import {
   ZoomOut,
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useI18n } from '../i18n/I18nProvider'
 
 type Props = {
   open: boolean
@@ -20,6 +21,8 @@ function withZoom(url: string, zoom: number) {
 }
 
 export function ProjectPdfViewer({ open, url, title, onClose }: Props) {
+  const { locale } = useI18n()
+  const pt = locale === 'pt-BR'
   const modalRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
   const previousFocus = useRef<HTMLElement | null>(null)
@@ -104,8 +107,8 @@ export function ProjectPdfViewer({ open, url, title, onClose }: Props) {
             <button
               type="button"
               onClick={() => setZoom((value) => Math.max(50, value - 10))}
-              aria-label="Zoom out PDF"
-              title="Zoom out"
+              aria-label={pt ? 'Diminuir zoom do PDF' : 'Zoom out PDF'}
+              title={pt ? 'Diminuir zoom' : 'Zoom out'}
             >
               <ZoomOut size={18} />
             </button>
@@ -113,16 +116,16 @@ export function ProjectPdfViewer({ open, url, title, onClose }: Props) {
             <button
               type="button"
               onClick={() => setZoom((value) => Math.min(200, value + 10))}
-              aria-label="Zoom in PDF"
-              title="Zoom in"
+              aria-label={pt ? 'Aumentar zoom do PDF' : 'Zoom in PDF'}
+              title={pt ? 'Aumentar zoom' : 'Zoom in'}
             >
               <ZoomIn size={18} />
             </button>
             <button
               type="button"
               onClick={() => void fullscreen()}
-              aria-label="Fullscreen PDF"
-              title="Fullscreen"
+              aria-label={pt ? 'PDF em tela cheia' : 'Fullscreen PDF'}
+              title={pt ? 'Tela cheia' : 'Fullscreen'}
             >
               <Maximize2 size={18} />
             </button>
@@ -131,8 +134,8 @@ export function ProjectPdfViewer({ open, url, title, onClose }: Props) {
               download
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Download PDF"
-              title="Download"
+              aria-label={pt ? 'Baixar PDF' : 'Download PDF'}
+              title={pt ? 'Baixar' : 'Download'}
             >
               <Download size={18} />
             </a>
@@ -140,8 +143,8 @@ export function ProjectPdfViewer({ open, url, title, onClose }: Props) {
               ref={closeRef}
               type="button"
               onClick={onClose}
-              aria-label="Close PDF"
-              title="Close"
+              aria-label={pt ? 'Fechar PDF' : 'Close PDF'}
+              title={pt ? 'Fechar' : 'Close'}
             >
               <X size={19} />
             </button>

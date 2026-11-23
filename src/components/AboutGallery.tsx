@@ -123,10 +123,10 @@ export function AboutGallery() {
           >
             <LayoutGrid size={19} aria-hidden="true" />
           </button>
-          <button type="button" onClick={() => scroll(-1)} aria-label="Previous images">
+          <button type="button" onClick={() => scroll(-1)} aria-label={locale === 'pt-BR' ? 'Imagens anteriores' : 'Previous images'}>
             <ChevronLeft size={19} />
           </button>
-          <button type="button" onClick={() => scroll(1)} aria-label="Next images">
+          <button type="button" onClick={() => scroll(1)} aria-label={locale === 'pt-BR' ? 'Próximas imagens' : 'Next images'}>
             <ChevronRight size={19} />
           </button>
         </div>

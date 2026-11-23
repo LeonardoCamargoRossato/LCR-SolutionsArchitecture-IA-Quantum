@@ -57,13 +57,13 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
     const sc = document.querySelector('.hero-v4-desktop')
     const sm = document.querySelector('.hero-v4-mobile')
     const hidden = document.querySelector('.hero-v4-visually-hidden')
-    const tags = [...document.querySelectorAll('.hero-v3-actions .hero-specializations span')]
+    const tags = [...document.querySelectorAll('.hero-v3-actions .hero-specializations > span')]
     return {
       title: hero.querySelector('h1')?.getAttribute('aria-label'),
       subtitle: hero.querySelector('.hero-identity-subtitle')?.textContent.trim(),
       description: hero.querySelector('.hero-description')?.textContent.trim(),
       h1count: document.querySelectorAll('h1').length,
-      tags: tags.map(x => x.textContent.trim()),
+      tags: tags.map(x => x.getAttribute('aria-label')),
       tagRows: tags.map(x => Math.round(x.getBoundingClientRect().top)),
       actionHrefs: [...hero.querySelectorAll('.hero-actions a')].map(x => x.getAttribute('href')),
       visualPosition: getComputedStyle(vis).position,
@@ -88,7 +88,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   })
   assert.equal(facts.title, 'AI Engineering & Software Development')
   assert.equal(facts.subtitle, 'Building Intelligent Solutions.')
-  assert.equal(facts.description, 'I design and build intelligent software, combining AI, data, and systems architecture.')
+  assert.equal(facts.description, 'I design and build intelligent software, combining AI, data, hybrid RAG, and systems architecture.')
   assert.equal(facts.h1count, 1)
   assert.deepEqual(facts.tags, TAGS)
   assert.deepEqual(facts.actionHrefs, ['#projects', '#contact'])

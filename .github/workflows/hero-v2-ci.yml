@@ -1,12 +1,23 @@
-name: LCR Hero V10 — Responsive Tags, Header Languages, Dark Default
+name: LCR Hero V11 — Mobile Composition and End-to-End Bilingual QA
 
 on:
   push:
-    branches: [fix/hero-nav-defaults-language-ui-20261123]
+    branches: [feat/hero-v11-mobile-and-bilingual-audit-20261123]
   pull_request:
     branches: [main]
     paths:
       - src/components/hero/**
+      - src/config/portfolioPositioning.ts
+      - src/data/defaultContent.ts
+      - src/data/defaultProjects.ts
+      - src/i18n/**
+      - src/pages/**
+      - src/components/ProjectCard.tsx
+      - src/components/case/CaseHero.tsx
+      - src/components/SeoSync.tsx
+      - src/components/WorkflowManual.tsx
+      - src/App.tsx
+      - tests/hero-v11-responsive-i18n-smoke.mjs
       - src/components/Header.tsx
       - src/components/header/**
       - src/i18n/**
@@ -28,6 +39,7 @@ on:
       - docs/hero-v8/**
       - docs/hero-v9/**
       - docs/hero-v10/**
+      - docs/hero-v11/**
   workflow_dispatch:
 
 permissions:
@@ -61,7 +73,7 @@ jobs:
           files = sorted(p for p in src.rglob('*') if p.is_file())
           total = sum(p.stat().st_size for p in files)
           print(f'Hero component/source bytes: {total:,} across {len(files)} files')
-          assert total < 65_000, 'Hero source grew unexpectedly'
+          assert total < 75_000, 'Hero source grew unexpectedly'
           assert not list(Path('src/components/hero').rglob('*.png')), 'No large images in interactive SVG hero'
           assert not list(Path('src/components/hero').rglob('*.mp4')), 'No video in interactive SVG hero'
           assert not list(Path('src/components/hero').rglob('*.webm')), 'No video in interactive SVG hero'
@@ -89,7 +101,9 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Validate theme-specific SVG contrast, 4 Hero tags, performance and 4 scenes
         run: node tests/hero-v5-smoke.mjs
-      - name: Mobile two-line headline, 44px gap, Hamlet AI label (9 responsive viewports)
+      - name: V11 mobile one-row tags, play-left, centered neural, 3D code/Hamlet and bilingual route audit
+        run: node tests/hero-v11-responsive-i18n-smoke.mjs
+      - name: Mobile two-line headline, compact gap, Hamlet AI label (9 responsive viewports)
         run: node tests/hero-mobile-v9-layout-smoke.mjs
       - name: Header flags, English/dark defaults, desktop tags and mobile scene clearance
         run: node tests/hero-v10-header-smoke.mjs
@@ -99,7 +113,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: lcr-hero-v10-browser-evidence
+          name: lcr-hero-v11-browser-evidence
           path: test-results/
           if-no-files-found: warn
           retention-days: 30

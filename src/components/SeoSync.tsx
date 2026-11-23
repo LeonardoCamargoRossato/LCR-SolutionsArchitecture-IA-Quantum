@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
+import { PORTFOLIO_HERO_CONTENT } from '../config/portfolioPositioning'
 import { localizedProject } from '../i18n/content'
 import { useI18n } from '../i18n/I18nProvider'
 import { useSiteContent } from '../providers/SiteContentProvider'
@@ -19,7 +20,12 @@ export function SeoSync() {
     const caseSource = slug ? projects.find((project) => project.slug === slug && project.visible !== false && project.caseEnabled !== false) : null
     const currentCase = caseSource ? localizedProject(caseSource, locale) : null
     const caseDescription = currentCase?.description?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
-    const title = currentCase ? `${currentCase.title} | Leonardo Camargo Rossato` : (s.siteTitle?.trim() || DEFAULT_TITLE)
+    const localizedHero = PORTFOLIO_HERO_CONTENT[locale]
+    const title = currentCase
+      ? `${currentCase.title} | Leonardo Camargo Rossato`
+      : locale === 'pt-BR'
+        ? `Leonardo Camargo Rossato | ${localizedHero.title}`
+        : (s.siteTitle?.trim() || DEFAULT_TITLE)
     document.title = title
 
     const setMeta = (selector: string, value?: string) => {
@@ -37,9 +43,10 @@ export function SeoSync() {
       element.content = safeValue
     }
 
-    setMeta('meta[name="description"]', caseDescription || s.metaDescription)
-    setMeta('meta[property="og:title"]', currentCase ? title : s.ogTitle)
-    setMeta('meta[property="og:description"]', caseDescription || s.ogDescription)
+    const description = caseDescription || (locale === 'pt-BR' ? localizedHero.description : s.metaDescription)
+    setMeta('meta[name="description"]', description)
+    setMeta('meta[property="og:title"]', currentCase || locale === 'pt-BR' ? title : s.ogTitle)
+    setMeta('meta[property="og:description"]', caseDescription || (locale === 'pt-BR' ? localizedHero.description : s.ogDescription))
     setMeta('meta[property="og:image"]', s.ogImage)
 
     const configuredFavicon = s.faviconUrl?.trim()

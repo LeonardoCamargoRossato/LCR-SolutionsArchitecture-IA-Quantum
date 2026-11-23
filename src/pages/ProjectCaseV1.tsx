@@ -13,7 +13,7 @@ import { CaseSystemFlow } from '../components/case/CaseSystemFlow'
 import { CaseTags } from '../components/case/CaseTags'
 import type { Project } from '../domain/models/Project'
 import type { ProjectInstitution } from '../domain/models/ProjectInstitution'
-import { localizedProject } from '../i18n/content'
+import { localizedProject, localizedProjectStatus } from '../i18n/content'
 import { withAnimeFinderScreenshots } from '../data/animeFinderGallery'
 import { useAnimeFinderAssetsReady } from '../hooks/useAnimeFinderAssetsReady'
 import { useI18n } from '../i18n/I18nProvider'
@@ -146,11 +146,11 @@ export function ProjectCaseV1() {
       }
 
   if (!project && (authLoading || (isAdmin && !adminLookupDone))) {
-    return <main className="loading-page"><div className="site-container">Loading…</div></main>
+    return <main className="loading-page"><div className="site-container">{locale === 'pt-BR' ? 'Carregando…' : 'Loading…'}</div></main>
   }
 
   if (!project || project.caseEnabled === false || (slug && RETIRED_PROJECT_SLUGS.has(slug))) {
-    return <main className="not-found"><div className="site-container"><div className="eyebrow">404</div><h1>Case study not found.</h1><Link className="button" to="/">{t('backProjects')}</Link></div></main>
+    return <main className="not-found"><div className="site-container"><div className="eyebrow">404</div><h1>{locale === 'pt-BR' ? 'Estudo de caso não encontrado.' : 'Case study not found.'}</h1><Link className="button" to="/">{t('backProjects')}</Link></div></main>
   }
 
   const narrative = normalizeCaseSections(project.sections)
@@ -206,7 +206,7 @@ export function ProjectCaseV1() {
     : [
         { label: labels.type, value: project.category ?? '', icon: 'overview' },
         { label: labels.context, value: project.subtitle ?? '', icon: 'academic' },
-        { label: labels.status, value: project.status === 'Private Platform' ? t('privatePlatform') : (project.status ?? ''), icon: 'status' },
+        { label: labels.status, value: localizedProjectStatus(project.status, locale), icon: 'status' },
         { label: labels.stack, value: technologies.slice(0, 3).join(' · '), icon: 'technologies' },
       ]
 

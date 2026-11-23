@@ -1,6 +1,8 @@
 import type { Project } from '../types/project'
+import { useI18n } from '../i18n/I18nProvider'
 
 export function ProjectHero({ project }: { project: Project }) {
+  const { locale, t } = useI18n()
   return (
     <section className={`case-hero ${project.theme === 'dark' ? 'case-hero-dark' : ''}`}>
       <div className="container">
@@ -28,19 +30,19 @@ export function ProjectHero({ project }: { project: Project }) {
                     {link.label} ↗
                   </a>
                 ) : (
-                  <span key={link.label} className="button button-disabled" title="URL not added yet">
+                  <span key={link.label} className="button button-disabled" title={locale === 'pt-BR' ? 'URL ainda não cadastrada' : 'URL not added yet'}>
                     {link.label}
                   </span>
                 ),
               )}
               {project.status === 'Private Platform' && (
-                <span className="button button-disabled">Private Platform</span>
+                <span className="button button-disabled">{t('privatePlatform')}</span>
               )}
             </div>
           </div>
 
           <div className="case-index">
-            <span>Status</span>
+            <span>{t('status')}</span>
             <strong>{project.status}</strong>
           </div>
         </div>
@@ -49,7 +51,7 @@ export function ProjectHero({ project }: { project: Project }) {
           <div className="browser-bar">
             <span /><span /><span />
           </div>
-          <img src={project.coverImage} alt={`${project.title} application interface`} />
+          <img src={project.coverImage} alt={locale === 'pt-BR' ? `Interface da aplicação ${project.title}` : `${project.title} application interface`} />
         </div>
       </div>
     </section>

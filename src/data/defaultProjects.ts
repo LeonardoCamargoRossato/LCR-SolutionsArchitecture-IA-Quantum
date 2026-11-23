@@ -323,6 +323,15 @@ export const defaultMoreProjects: Project[] = [
     category: 'Data Utilities',
     status: 'Case Study in Progress',
     description: 'Collection of focused Python/Streamlit utilities for data processing, analysis and small interactive workflows.',
+    translations: {
+      'pt-BR': {
+        title: 'Ferramentas Streamlit',
+        category: 'Utilitários de Dados',
+        status: 'Case Study in Progress',
+        description: 'Conjunto de utilitários em Python/Streamlit para processamento e análise de dados e pequenos fluxos interativos.',
+        technologies: ['Python', 'Streamlit', 'Aplicações de Dados'],
+      },
+    },
     technologies: ['Python', 'Streamlit', 'Data Applications'],
     coverImage: ph('streamlit-tools', './projects/streamlit-tools.png'),
     imageType: 'illustrative-placeholder',

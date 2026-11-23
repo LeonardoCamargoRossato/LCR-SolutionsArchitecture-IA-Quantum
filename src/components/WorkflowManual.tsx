@@ -86,7 +86,7 @@ export function WorkflowManual({ markdown, locale }: { markdown: string; locale:
   >
     <div className="workflow-manual-header">
       <div>
-        <div className="eyebrow">Markdown · Source of truth</div>
+        <div className="eyebrow">{pt ? 'Markdown · Fonte de referência' : 'Markdown · Source of truth'}</div>
         <h2 id="workflow-manual-title">{pt ? 'Manual de orquestração LCR' : 'LCR orchestration manual'}</h2>
         <p>{pt ? 'Documento vivo que sustenta o diagrama e registra papéis, entradas, ações, artefatos e gates.' : 'The living document behind the diagram, recording roles, inputs, actions, artifacts and gates.'}</p>
       </div>

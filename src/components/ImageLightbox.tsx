@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useEffect, useRef, useState } from 'react'
+import { useI18n } from '../i18n/I18nProvider'
 
 export type ImageLightboxItem = {
   src: string
@@ -34,8 +35,10 @@ export function ImageLightbox({
   onChange,
   allowDownload = false,
   details,
-  ariaLabel = 'Image viewer',
+  ariaLabel,
 }: Props) {
+  const { locale } = useI18n()
+  const pt = locale === 'pt-BR'
   const current = index !== null ? items[index] : undefined
   const modalRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
@@ -140,7 +143,7 @@ export function ImageLightbox({
         className={`image-lightbox${details ? ' has-details' : ''}`}
         role="dialog"
         aria-modal="true"
-        aria-label={ariaLabel}
+        aria-label={ariaLabel ?? (pt ? 'Visualizador de imagens' : 'Image viewer')}
       >
         <div className="image-lightbox-toolbar">
           <div className="image-lightbox-counter">
@@ -151,7 +154,7 @@ export function ImageLightbox({
               type="button"
               onClick={() => setZoom((value) => Math.max(0.5, value - 0.25))}
               disabled={zoom <= 0.5}
-              aria-label="Zoom Out"
+              aria-label={pt ? 'Diminuir zoom' : 'Zoom Out'}
             >
               <ZoomOut size={18} />
             </button>
@@ -160,19 +163,19 @@ export function ImageLightbox({
               type="button"
               onClick={() => setZoom((value) => Math.min(4, value + 0.25))}
               disabled={zoom >= 4}
-              aria-label="Zoom In"
+              aria-label={pt ? 'Aumentar zoom' : 'Zoom In'}
             >
               <ZoomIn size={18} />
             </button>
             {allowDownload && (
-              <button type="button" onClick={() => void download()} aria-label="Download">
+              <button type="button" onClick={() => void download()} aria-label={pt ? 'Baixar imagem' : 'Download'}>
                 <Download size={18} />
               </button>
             )}
-            <button type="button" onClick={() => void fullscreen()} aria-label="Fullscreen">
+            <button type="button" onClick={() => void fullscreen()} aria-label={pt ? 'Tela cheia' : 'Fullscreen'}>
               <Maximize2 size={18} />
             </button>
-            <button ref={closeRef} type="button" onClick={onClose} aria-label="Close">
+            <button ref={closeRef} type="button" onClick={onClose} aria-label={pt ? 'Fechar' : 'Close'}>
               <X size={19} />
             </button>
           </div>
@@ -186,7 +189,7 @@ export function ImageLightbox({
               type="button"
               className="image-lightbox-nav image-lightbox-prev"
               onClick={() => onChange?.((index - 1 + items.length) % items.length)}
-              aria-label="Previous Image"
+              aria-label={pt ? 'Imagem anterior' : 'Previous Image'}
             >
               <ChevronLeft size={22} />
             </button>
@@ -250,7 +253,7 @@ export function ImageLightbox({
               type="button"
               className="image-lightbox-nav image-lightbox-next"
               onClick={() => onChange?.((index + 1) % items.length)}
-              aria-label="Next Image"
+              aria-label={pt ? 'Próxima imagem' : 'Next Image'}
             >
               <ChevronRight size={22} />
             </button>

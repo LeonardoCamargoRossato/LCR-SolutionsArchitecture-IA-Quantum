@@ -58,6 +58,9 @@ async function check(width, height) {
   assert.equal(await page.locator('html').getAttribute('lang'), 'pt-BR')
   assert.equal(await trigger.locator('[data-flag]').getAttribute('data-flag'), 'BR')
   assert.equal(await page.locator('.hero-v5-stage-selector button').first().innerText(), 'Dados')
+  assert.equal(await page.locator('.hero-type-title').getAttribute('aria-label'), 'Engenheiro de IA e Desenvolvimento de Software')
+  assert((await page.locator('.hero-description').innerText()).includes('RAG híbrido'))
+  assert.equal(await page.locator('.hero-identity-subtitle').innerText(), 'Construindo Soluções Inteligentes.')
   await trigger.click()
   await page.getByRole('button',{name:'EN USA',exact:true}).click()
   assert.equal(await page.locator('html').getAttribute('lang'), 'en-US')
@@ -80,7 +83,7 @@ async function check(width, height) {
   assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark')
 
   const facts = await page.evaluate(() => {
-    const tags=[...document.querySelectorAll('.hero-v3-actions .hero-specializations span')]
+    const tags=[...document.querySelectorAll('.hero-v3-actions .hero-specializations > span')]
     const pillRect=tags.map(x=>x.getBoundingClientRect())
     const group=document.querySelector('.hero-v3-actions .hero-specializations').getBoundingClientRect()
     const copy=document.querySelector('.hero-v3-content').getBoundingClientRect()
@@ -88,7 +91,7 @@ async function check(width, height) {
     const buttons=[...document.querySelectorAll('.hero-v3-actions .hero-actions .button')]
     const selector=document.querySelector('.hero-v5-stage-selector').getBoundingClientRect()
     return {
-      tags: tags.map(x=>x.textContent.trim()),
+      tags: tags.map(x=>x.getAttribute('aria-label')),
       rows: pillRect.map(r=>Math.round(r.top)),
       tagRight: Math.max(...pillRect.map(r=>r.right)),
       tagContainerRight:group.right,

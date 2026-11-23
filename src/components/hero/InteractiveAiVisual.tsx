@@ -159,8 +159,8 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
     >
       <HeroBackgroundGraph />
       <div className="hero-v4-art" aria-hidden="true">
-        <div className="hero-v4-desktop"><HeroGraphDesktop /></div>
-        <div className="hero-v4-mobile"><HeroGraphMobile /></div>
+        <div className="hero-v4-desktop"><HeroGraphDesktop locale={locale} /></div>
+        <div className="hero-v4-mobile"><HeroGraphMobile locale={locale} /></div>
       </div>
       <EngineeringWorkspace
         locale={locale}
@@ -211,7 +211,7 @@ export function InteractiveAiVisual({ locale }: { locale: 'pt-BR' | 'en-US' }) {
         ))}
       </div>
       <div className="hero-v4-stage-marker" aria-hidden="true">
-        {phase === 'scatter' ? 'DATA INPUT' : phase === 'neural' ? 'NEURAL ARCHITECTURE' : phase === 'code' ? 'SOFTWARE GENERATION' : 'HAMLET AI'}
+        {phase === 'scatter' ? (pt ? 'ENTRADA DE DADOS' : 'DATA INPUT') : phase === 'neural' ? (pt ? 'ARQUITETURA NEURAL' : 'NEURAL ARCHITECTURE') : phase === 'code' ? (pt ? 'GERAÇÃO DE SOFTWARE' : 'SOFTWARE GENERATION') : 'HAMLET AI'}
         {phase === 'neural' && !reduced ? <span className="hero-v4-drag-hint"> · {pt ? 'ARRASTE PARA EXPLORAR' : 'DRAG TO EXPLORE'}</span> : null}
       </div>
       <button
