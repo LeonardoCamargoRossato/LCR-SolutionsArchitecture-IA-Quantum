@@ -1068,3 +1068,68 @@
     text-wrap: balance;
   }
 }
+/* LCR Hero V10: four readable tags on exactly one desktop line.
+ * Shrink chips, never the whole left column or background graph. */
+@media (min-width: 901px) {
+  .portfolio-home .hero-v3-actions .hero-specializations {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: clamp(3px, .45vw, 8px);
+    width: max-content;
+    max-width: 100%;
+  }
+  .portfolio-home .hero-v3-actions .hero-specializations span {
+    flex: 0 0 auto;
+    min-height: 24px;
+    padding-inline: clamp(4px, .48vw, 7px);
+    font-size: clamp(8px, .75vw, 10px);
+    white-space: nowrap;
+  }
+}
+/* LCR Hero V10 mobile: the controls float above (not over) the 4 scenes. */
+@media (max-width: 900px) {
+  .portfolio-home .hero-graph-field--v5 .hero-v5-stage-selector {
+    top: 2px;
+    right: clamp(8px, 3.5vw, 22px);
+    left: auto;
+    transform: none;
+    max-width: calc(100% - 16px);
+    gap: 2px;
+    padding: 2px;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v5-stage-button {
+    min-height: 39px;
+    font-size: clamp(9px, 1.45vw, 10px);
+    padding-inline: clamp(4px, 1.1vw, 9px);
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-mobile {
+    inset: 21% 1% 3%;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-code-scene { top: 24%; }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-hamnet-scene { top: 22%; }
+}
+@media (max-width: 600px) {
+  .portfolio-home .hero-v3 .hero-description {
+    font-size: clamp(12.5px, 3.5vw, 14px);
+    line-height: 1.58;
+  }
+  .portfolio-home .hero-v3-actions .hero-actions { gap: 8px; }
+  .portfolio-home .hero-v3-actions .hero-actions .button {
+    min-height: 40px;
+    padding-inline: 11px;
+    font-size: clamp(10.5px, 2.8vw, 12px);
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-mobile { inset: 24% 1% 3%; }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-code-scene { top: 26%; }
+  .portfolio-home .hero-graph-field--v5 .hero-v4-hamnet-scene { top: 25%; }
+}
+@media (max-width: 370px) {
+  .portfolio-home .hero-graph-field--v5 .hero-v5-stage-button {
+    font-size: 9px;
+    padding-inline: 4px;
+  }
+}
+
