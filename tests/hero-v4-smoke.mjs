@@ -30,6 +30,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   const context = await browser.newContext({
     viewport: { width, height },
     reducedMotion: reduced ? 'reduce' : 'no-preference',
+    colorScheme: dark ? 'dark' : 'light',
   })
   const page = await context.newPage()
   const pageErrors = []
@@ -39,7 +40,8 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   const hero = page.locator('.hero-v3')
   const visual = page.locator('.hero-graph-field')
   await visual.waitFor({ state: 'attached' })
-  if (dark) await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'))
+  await page.waitForFunction(theme => document.documentElement.dataset.theme === theme,
+    dark ? 'dark' : 'light', { timeout: 4500 })
   await hero.scrollIntoViewIfNeeded()
   const facts = await page.evaluate(() => {
     const hero = document.querySelector('.hero-v3')
@@ -169,9 +171,15 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   }
 
   await screenshot(page, name + '-original-theme')
-  await page.evaluate(mode => document.documentElement.setAttribute('data-theme', mode), dark ? 'light' : 'dark')
-  const newBackground = await hero.evaluate(el => getComputedStyle(el).backgroundColor)
-  assert.notEqual(newBackground, facts.background, 'Theme toggle failed to change Hero background')
+  // Switch through the app's persisted preference, not by racing the React
+  // ThemeProvider effect with a direct DOM attribute mutation.
+  const alternateTheme = dark ? 'light' : 'dark'
+  await page.evaluate(mode => localStorage.setItem('portfolio-theme', mode), alternateTheme)
+  await page.reload({ waitUntil: 'domcontentloaded' })
+  await page.waitForFunction(mode => document.documentElement.dataset.theme === mode,
+    alternateTheme, { timeout: 8000 })
+  const newBackground = await page.locator('.hero-v3').evaluate(el => getComputedStyle(el).backgroundColor)
+  assert.notEqual(newBackground, facts.background, 'Theme preference did not change Hero background')
 
   await screenshot(page, name + '-final')
   assert.deepEqual(pageErrors, [], name + ': runtime errors')
