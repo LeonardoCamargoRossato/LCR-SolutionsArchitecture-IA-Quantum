@@ -41,21 +41,21 @@ export function EngineeringWorkspace({
         <div className="hero-v4-code-architecture">
           <span className="hero-v4-code-icon">TS</span>
           <span>intelligence.pipeline.ts</span>
-          <span className="hero-v4-code-state">GENERATED CODE</span>
+          <span className="hero-v4-code-state">{pt ? 'CÓDIGO GERADO' : 'GENERATED CODE'}</span>
         </div>
         <div className="hero-v4-code-lines">
           {codeLines.map((line, index) => (
             <div className={`hero-v4-code-line hero-v4-code-line--${line.indent}`} key={line.number} style={{ animationDelay: `${index * 125}ms` }}>
               <span className="hero-v4-code-line-number">{line.number}</span>
               <span className="hero-v4-code-keyword">{line.keyword}</span>
-              <span>{line.expression}</span>
+              <span>{pt && line.number === '06' ? ' inteligência torna-se software' : line.expression}</span>
             </div>
           ))}
         </div>
         <div className="hero-v4-code-lower">
           <span className="hero-v4-code-led" />
-          <span>DATA / MODEL / SOFTWARE</span>
-          <span>CONCEPT VISUALIZATION</span>
+          <span>{pt ? 'DADOS / MODELO / SOFTWARE' : 'DATA / MODEL / SOFTWARE'}</span>
+          <span>{pt ? 'VISUALIZAÇÃO CONCEITUAL' : 'CONCEPT VISUALIZATION'}</span>
         </div>
       </div>
 
@@ -95,19 +95,19 @@ export function EngineeringWorkspace({
         </div>
         <div className="hero-v4-chat-window hero-v5-chat-window">
           <div className="hero-v4-chat-heading">
-            <span className="hero-v4-chat-avatar">AI</span>
+            <span className="hero-v4-chat-avatar">{pt ? 'IA' : 'AI'}</span>
             <strong>Hamlet AI</strong>
             <span className="hero-v5-demo-label">{pt ? 'DEMONSTRAÇÃO' : 'DEMO'}</span>
           </div>
           <div className="hero-v5-conversation" key={replayKey} aria-label={pt ? 'Exemplo de conversa simulada' : 'Simulated conversation example'}>
             <div className="hero-v5-chat-user" data-testid="hero-v5-user-message">
-              Hello, Hamlet AI.
+              {pt ? 'Olá, Hamlet AI.' : 'Hello, Hamlet AI.'}
             </div>
             <div className="hero-v5-chat-thinking" aria-hidden="true">
               <span /><span /><span />
             </div>
             <div className="hero-v5-chat-answer" data-testid="hero-v5-assistant-answer">
-              <strong>Hello!</strong>
+              <strong>{pt ? 'Olá!' : 'Hello!'}</strong>
               <p>{pt
                 ? 'Desenvolvo soluções com IA, engenharia de software e dados para transformar problemas complexos em sistemas inteligentes.'
                 : 'I build intelligent systems through AI engineering, software development and data-driven solutions.'}</p>
