@@ -44,6 +44,7 @@ jobs:
           name: social-sharing-preview
           path: |
             dist/index.html
+            dist/assets/branding/social/lcr-portfolio-og.jpg
             dist/assets/branding/social/lcr-portfolio-og.png
             dist/assets/branding/social/lcr-portfolio-og.webp
             docs/branding/SOCIAL_ASSET_INVENTORY.json
