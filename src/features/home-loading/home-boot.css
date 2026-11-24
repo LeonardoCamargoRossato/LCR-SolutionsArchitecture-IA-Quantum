@@ -38,3 +38,34 @@
 @media (prefers-reduced-motion: reduce) {
   .home-boot-recovery { box-shadow: none; }
 }
+
+/* Coordinated entry: only the document scrollbar is visually suppressed.
+ * Wheel, keyboard, touch and anchor scrolling remain native after the gate.
+ * Internal scrollable dialogs and component rails keep their own scrollbars. */
+html { scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
+
+/* One stable, mounted Home, revealed behind the moving leaves.
+ * Use opacity only: no transform, translation or width change at handoff. */
+.home-boot-app:is([data-home-reveal='closed'],[data-home-reveal='revealing'],[data-home-reveal='opened']) .portfolio-home {
+  transition: opacity 1100ms cubic-bezier(.22,.61,.36,1);
+}
+.home-boot-app[data-home-reveal='closed'] .portfolio-home { opacity: 0; }
+.home-boot-app:is([data-home-reveal='revealing'],[data-home-reveal='opened']) .portfolio-home { opacity: 1; }
+.home-boot-app:is([data-home-reveal='closed'],[data-home-reveal='revealing'],[data-home-reveal='opened']) .hero-v3 [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+/* No individually staggered Hero blocks in the portal sequence, on any
+ * breakpoint. The original visual appears more slowly than the name/copy. */
+.home-boot-app:is([data-home-reveal='closed'],[data-home-reveal='revealing'],[data-home-reveal='opened']) .hero-v3 > .hero-graph-field {
+  transition: opacity 2400ms cubic-bezier(.25,.55,.35,1);
+}
+.home-boot-app[data-home-reveal='closed'] .hero-v3 > .hero-graph-field { opacity: 0; }
+.home-boot-app:is([data-home-reveal='revealing'],[data-home-reveal='opened']) .hero-v3 > .hero-graph-field { opacity: 1; }
+.home-boot-app:is([data-home-reveal='revealing'],[data-home-reveal='opened']) .hero-v3 .hero-identity-subtitle { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .home-boot-app:is([data-home-reveal='closed'],[data-home-reveal='revealing'],[data-home-reveal='opened']) .portfolio-home,
+  .home-boot-app:is([data-home-reveal='closed'],[data-home-reveal='revealing'],[data-home-reveal='opened']) .hero-v3 > .hero-graph-field { transition: none; }
+}

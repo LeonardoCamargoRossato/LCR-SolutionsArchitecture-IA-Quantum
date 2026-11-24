@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useHomeMotionEnabled } from '../features/home-loading/HomeMotionContext'
 
 const reducedMotionQuery = '(prefers-reduced-motion: reduce)'
+const TYPE_START_MS = 150
+const TYPE_INTERVAL_MS = 105
 
 export function HeroTypeTitle({ text }: { text: string }) {
   const motionEnabled = useHomeMotionEnabled()
@@ -18,9 +20,9 @@ export function HeroTypeTitle({ text }: { text: string }) {
       if (index >= letters.length) return
       index += 1
       setTyped(letters.slice(0, index).join(''))
-      timer = window.setTimeout(type, 48)
+      timer = window.setTimeout(type, TYPE_INTERVAL_MS)
     }
-    if (!motion.matches) timer = window.setTimeout(type, 180)
+    if (!motion.matches) timer = window.setTimeout(type, TYPE_START_MS)
     const update = () => {
       window.clearTimeout(timer)
       if (motion.matches) setTyped(text)

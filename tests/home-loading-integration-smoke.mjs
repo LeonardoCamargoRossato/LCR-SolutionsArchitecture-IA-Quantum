@@ -82,11 +82,59 @@ async function assertContinuousCount(page) {
   assert(elapsed>=2850,'Visible charging must last about 3 seconds: '+elapsed)
   return {elapsed,first:counts[0].time,last:counts.at(-1).time}
 }
+// Force classic (space-consuming) scrollbars in the browser context where
+// supported. Sampling throughout the actual transition detects a transient
+// gutter or re-centering, not merely the final stable layout.
+async function recordReveal(ctx) {
+  await ctx.addInitScript(()=>{
+    window.__homeReveal=[]
+    const sample=()=>{
+      const app=document.querySelector('[data-testid="home-boot-app"]')
+      const main=document.querySelector('main.portfolio-home')
+      const hero=main?.querySelector('.hero-v3')
+      const name=hero?.querySelector('.hero-v3-copy > .eyebrow')
+      const title=hero?.querySelector('.hero-type-title')
+      const art=hero?.querySelector('.hero-graph-field')
+      if(app&&main&&name&&title&&art){
+        const rect=name.getBoundingClientRect()
+        window.__homeReveal.push({time:performance.now(),phase:app.dataset.homeReveal,
+          gutter:innerWidth-document.documentElement.clientWidth,x:rect.x,width:rect.width,
+          main:Number(getComputedStyle(main).opacity),art:Number(getComputedStyle(art).opacity),
+          name:Number(getComputedStyle(name).opacity),title:Number(getComputedStyle(title.closest('.hero-title-block')).opacity),
+          complete:title.dataset.typingComplete==='true',letters:title.querySelector('.hero-type-text').textContent.length,
+          inert:app.hasAttribute('inert')})
+      }
+      if(performance.now()<22000)requestAnimationFrame(sample)
+    }
+    requestAnimationFrame(sample)
+  })
+}
+async function assertReveal(page) {
+  const frames=await page.evaluate(()=>window.__homeReveal)
+  const during=frames.filter(f=>f.phase==='revealing')
+  const after=frames.filter(f=>f.phase==='opened')
+  assert(during.length>10&&after.length>10,'Sample both opening and post-opening')
+  assert(frames.every(f=>Math.abs(f.gutter)<=1),'Document scrollbar must not reserve width at any sampled frame')
+  const baseline=frames.find(f=>f.phase==='closed'&&f.width>0)
+  assert(baseline,'Capture closed composition geometry')
+  assert([...during,...after].every(f=>Math.abs(f.x-baseline.x)<=1&&Math.abs(f.width-baseline.width)<=1),'No horizontal jump during reveal or unlock')
+  assert(during.every(f=>f.inert),'Interaction stays locked while door opens')
+  assert(after.some(f=>!f.inert),'Interaction is restored')
+  assert(during.some(f=>f.main>.05&&f.main<.95&&f.art>.01&&f.art<.99),'Home and right visual fade together during opening')
+  assert(during.some(f=>f.name===1&&f.title===1&&f.letters>0&&!f.complete),'Name and typing appear together')
+  assert(during.some(f=>f.art>=.99&&!f.complete),'Right visual finishes fading before title')
+  const typed=frames.find(f=>f.complete)
+  const opened=after[0]
+  assert(typed&&typed.time>opened.time+100,'Typing finishes after door opens')
+  assert(after.some(f=>f.complete),'Title finishes normally')
+  return {maxGutter:Math.max(...frames.map(f=>f.gutter)),maxXShift:Math.max(...frames.map(f=>Math.abs(f.x-baseline.x))),typingAfterOpenMs:typed.time-opened.time}
+}
 async function initialVisit() {
   const ctx = await context()
   const page = await ctx.newPage()
   const check = await observe(page, 'first-visit')
   await recordCounter(ctx)
+  await recordReveal(ctx)
   await page.goto(HOME + '?portal=replay', { waitUntil: 'domcontentloaded' })
   await page.getByTestId('loading-portal-v2').waitFor({ timeout: 18000 })
   await page.getByTestId('portal-v2-counter').waitFor({timeout:15000})
@@ -118,6 +166,7 @@ async function initialVisit() {
   await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({ timeout: 20000 })
   assert.equal(await page.getByTestId('loading-portal-v2').count(), 0)
   await page.locator('h1.hero-type-title[data-typing-complete="true"]').waitFor({ timeout: 14000 })
+  await page.waitForTimeout(2300)
   assert.equal(await page.locator('main.portfolio-home').getAttribute('data-home-motion'), 'running')
   assert.equal(await page.getByTestId('home-boot-app').getAttribute('aria-hidden'), null)
   assert.equal(await page.getByTestId('interactive-ai-visual').getAttribute('data-playing'), 'true')
@@ -138,7 +187,11 @@ async function initialVisit() {
   const started = info.entries.find(x => x.name === 'home-animation-started').startTime
   assert(opening >= mounted, 'Door opened before actual Home mount')
   const closed=info.entries.find(x=>x.name==='portal-opened').startTime
-  assert(started >= closed && closed>=opening, 'Home animation started before door completed')
+  assert(started >= opening && started < closed, 'Home animation must begin during the mechanical opening')
+  const interactive=info.entries.find(x=>x.name==='home-interactive').startTime
+  assert(interactive>=closed,'Interaction remains locked until the portal has opened')
+  const reveal=await assertReveal(page)
+  report.timings.push({scenario:'synchronized-desktop',...reveal})
   assert(closed-opening>=2900,'Mechanical opening must take about 3 seconds')
   assert(opening-count.last>=140,'100% must remain visible before opening')
   report.timings.push({scenario:'cinematic-desktop',chargeMs:count.elapsed,openingMs:closed-opening,visibleTotalMs:closed-count.first})
@@ -284,6 +337,7 @@ async function routeCancellationAndResize(){
 async function cinematicMobile() {
   const ctx=await context({viewport:{width:390,height:844}})
   await recordCounter(ctx)
+  await recordReveal(ctx)
   const page=await ctx.newPage()
   await page.goto(HOME+'?portal=replay',{waitUntil:'domcontentloaded'})
   await page.getByTestId('portal-v2-counter').waitFor({timeout:15000})
@@ -297,6 +351,11 @@ async function cinematicMobile() {
   const info=await marks(page), get=name=>info.entries.find(e=>e.name===name).startTime
   assert(get('portal-opened')-get('portal-opening')>=2900)
   report.timings.push({scenario:'cinematic-mobile',chargeMs:count.elapsed,openingMs:get('portal-opened')-get('portal-opening')})
+  await page.locator('h1.hero-type-title[data-typing-complete="true"]').waitFor({timeout:14000})
+  await page.waitForTimeout(1000)
+  report.timings.push({scenario:'synchronized-mobile',...await assertReveal(page)})
+  await page.evaluate(()=>window.scrollTo({top:600,behavior:'instant'}))
+  assert(await page.evaluate(()=>scrollY)>0,'Mobile scroll remains usable after opening')
   await ctx.close()
 }
 
