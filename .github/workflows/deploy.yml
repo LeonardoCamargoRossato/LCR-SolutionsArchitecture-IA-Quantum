@@ -14,15 +14,24 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
+  quality:
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/LCR_TEST_ISOLATION.yml
+
   build:
+    needs: quality
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
 
       - name: Optimize LCR Workflow diagram as WebP
         run: |
@@ -54,6 +63,7 @@ jobs:
         run: |
           npm run build
           python3 tests/isolation/VerifyProductionBuild.py
+          python3 scripts/ci/check_source.py --artifact dist
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
@@ -86,5 +96,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
       - name: Verify public static HTML and compact image within budget
         run: python3 tests/isolation/PublishedSmoke.py

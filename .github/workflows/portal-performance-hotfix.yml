@@ -25,13 +25,13 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - name: Prepare two isolated, identically instrumented production builds
+      - name: Prepare builds from each revision's locked dependencies
         run: |
           git worktree add --detach /tmp/lcr-before 67b4ad471c1ced8790286f6f87d2647bcd9163e0
           git worktree add --detach /tmp/lcr-after HEAD
+          (cd /tmp/lcr-before && npm ci)
+          ln -s "$PWD/node_modules" /tmp/lcr-after/node_modules
           for dir in /tmp/lcr-before /tmp/lcr-after; do
-            cmp package-lock.json "$dir/package-lock.json"
-            ln -s "$PWD/node_modules" "$dir/node_modules"
             node tests/portal-performance-hotfix-instrument.mjs "$dir"
             bash tests/isolation/run.sh bash -c 'cd "$1" && npm run build' bash "$dir"
           done
