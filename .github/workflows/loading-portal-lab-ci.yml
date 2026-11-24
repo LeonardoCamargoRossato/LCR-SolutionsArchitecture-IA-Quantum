@@ -71,6 +71,8 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Lab ready/percentage/door/replay/mobile/reduced-motion tests
         run: node tests/loading-portal-lab-smoke.mjs
+      - name: Entrance door motion editor controls and reversible motion
+        run: node tests/portal-motion-editor-smoke.mjs
       - name: Evidence
         if: always()
         uses: actions/upload-artifact@v4

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { LoadingPortal } from '../../../components/loading-portal/LoadingPortal'
 import './loading-portal-lab.css'
 import { LoadingPortalV2Lab } from './LoadingPortalV2Lab'
+import { PortalMotionEditor } from './PortalMotionEditor'
 
 type Viewport = 'desktop' | 'tablet' | 'mobile'
 const VIEWPORTS: Record<Viewport, { label: string; width: number; height: number }> = {
@@ -174,12 +175,13 @@ function LoadingPortalV1Lab() {
 
 /** Keep the proven V1 preview and tests available while the V2 awaits approval. */
 export function LoadingPortalLab() {
-  const [version,setVersion] = useState<'v1'|'v2'>('v1')
+  const [version,setVersion] = useState<'v1'|'v2'|'editor'>('editor')
   return <>
     <div className="lcr-lab-component-switch" role="group" aria-label="Versão do Loading Portal">
-      <button type="button" aria-pressed={version==='v1'} onClick={()=>setVersion('v1')}>Portal V1 · histórico</button>
+      <button type="button" data-testid="portal-editor-tab" aria-pressed={version==='editor'} onClick={()=>setVersion('editor')}>Porta de entrada · Editor</button>
+      <button type="button" data-testid="portal-v1-preview" aria-pressed={version==='v1'} onClick={()=>setVersion('v1')}>Portal V1 · histórico</button>
       <button type="button" data-testid="portal-v2-preview" aria-pressed={version==='v2'} onClick={()=>setVersion('v2')}>Portal V2 · prévia</button>
     </div>
-    {version==='v1' ? <LoadingPortalV1Lab/> : <LoadingPortalV2Lab/>}
+    {version==='editor' ? <PortalMotionEditor/> : version==='v1' ? <LoadingPortalV1Lab/> : <LoadingPortalV2Lab/>}
   </>
 }

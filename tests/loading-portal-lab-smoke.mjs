@@ -48,6 +48,7 @@ async function inspect(name, width, height, reduced) {
   assert.equal(await page.getByTestId('particle-wave-canvas').count(), 1,
     'Default Particle Wave editor must remain the initial experience')
   await switcher.getByRole('button', { name: 'Loading Portal' }).click()
+  await page.getByTestId('portal-v1-preview').click()
   const portal = page.getByTestId('loading-portal')
   await portal.waitFor()
   assert.equal(await page.getByTestId('particle-wave-canvas').count(), 0,
@@ -128,6 +129,7 @@ async function inspect(name, width, height, reduced) {
   await switcher.getByRole('button', { name: 'Particle Wave' }).click()
   await page.getByTestId('particle-wave-canvas').waitFor()
   await switcher.getByRole('button', { name: 'Loading Portal' }).click()
+  await page.getByTestId('portal-v1-preview').click()
   assert.equal(await portal.getAttribute('data-phase'), 'charging',
     'Switching components should not retain a disposed door animation')
   assert.deepEqual(remote, [], 'Lab must not contact Supabase')
