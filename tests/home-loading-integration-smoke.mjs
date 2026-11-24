@@ -262,34 +262,50 @@ async function slowNetwork() {
   const page = await ctx.newPage()
   let released = false, unblock
   const blocked=new Promise(resolve=>{unblock=resolve})
-  await page.route('**/assets/home/loading-portal/mechanical/*/door-right.webp', async route => {
+  const routePattern=/\/assets\/home\/loading-portal\/mechanical\/[^/]+\/door-right\.webp(?:\?.*)?$/
+  // Observe the held request from navigation commit, not from DOMContentLoaded.
+  // A slow runner must not spend the entire 12s asset timeout waiting for
+  // document readiness before the test begins observing the gate.
+  await page.route(routePattern, async route => {
     await blocked
     released = true
     try { await route.continue() } catch { /* navigation aborted */ }
   })
-  await page.goto(HOME + '?portal=replay', { waitUntil: 'domcontentloaded' })
-  await page.getByTestId('loading-portal-v2').waitFor({ timeout: 12000 })
-  await page.locator('main.portfolio-home').waitFor({ timeout: 16000 })
-  assert.equal(await page.locator('main.portfolio-home').getAttribute('data-home-motion'), 'paused')
-  await page.waitForTimeout(500)
-  assert.equal(await page.getByTestId('loading-portal-v2').getAttribute('data-phase'),'loading','blocked art must keep door closed')
-  await page.getByTestId('portal-v2-counter').waitFor({timeout:8000})
-  const number=await page.getByTestId('portal-v2-counter').getAttribute('aria-valuenow')
-  assert(Number(number)<100,'never show 100 while mechanical resource is pending')
-  await page.waitForFunction(()=>document.querySelector('[data-testid="portal-v2-counter"]')?.getAttribute('aria-valuenow')==='99',null,{timeout:10000})
-  await page.waitForTimeout(250)
-  assert.equal(await page.getByTestId('portal-v2-counter').getAttribute('aria-valuenow'),'99','99 remains held until real readiness')
-  assert.equal(await page.getByTestId('loading-portal-v2').getAttribute('data-phase'),'loading')
-  unblock()
-  await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({ timeout: 22000 })
-  assert(released, 'The deferred door image request should actually be resolved')
-  const data = await marks(page)
-  const artReady = data.entries.find(e => e.name === 'home-boot:door-art:ok')?.startTime
-  const opening = data.entries.find(e => e.name === 'portal-opening')?.startTime
-  assert(artReady && opening && opening >= artReady, 'Door started while opening artwork was loading')
-  report.scenarios.push('slow resource: door does not open before real artwork decode')
-  report.timings.push({ scenario: 'slow-door-art', ...data.timings, marks: data.entries })
-  await ctx.close()
+  try {
+    const request=page.waitForRequest(routePattern,{timeout:12000})
+    await page.goto(HOME + '?portal=replay', { waitUntil: 'commit' })
+    await request
+    await page.getByTestId('portal-v2-counter').waitFor({timeout:8000})
+    await page.locator('main.portfolio-home').waitFor({state:'attached',timeout:8000})
+    const pending=await page.evaluate(()=>({
+      phase:document.querySelector('[data-testid="loading-portal-v2"]')?.getAttribute('data-phase'),
+      motion:document.querySelector('main.portfolio-home')?.getAttribute('data-home-motion'),
+      ready:document.querySelector('[data-testid="loading-portal-v2"]')?.getAttribute('data-real-ready'),
+      marks:performance.getEntriesByType('mark').map(e=>e.name),
+    }))
+    assert.equal(pending.phase,'loading','blocked art keeps door closed: '+JSON.stringify(pending))
+    assert.equal(pending.motion,'paused','Home animation must wait for real readiness')
+    assert.equal(pending.ready,'false')
+    const number=await page.getByTestId('portal-v2-counter').getAttribute('aria-valuenow')
+    assert(Number(number)<100,'never show 100 while mechanical resource is pending')
+    await page.waitForFunction(()=>document.querySelector('[data-testid="portal-v2-counter"]')?.getAttribute('aria-valuenow')==='99',null,{timeout:8500})
+    await page.waitForTimeout(150)
+    assert.equal(await page.getByTestId('portal-v2-counter').getAttribute('aria-valuenow'),'99','99 remains held until real readiness')
+    assert.equal(await page.getByTestId('loading-portal-v2').getAttribute('data-phase'),'loading')
+    unblock()
+    await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({ timeout: 22000 })
+    assert(released, 'The deferred door image request should actually be resolved')
+    assert.equal(await page.getByTestId('home-boot-app').getAttribute('data-boot-outcome'),'mechanical')
+    const data = await marks(page)
+    const artReady = data.entries.find(e => e.name === 'home-boot:door-art:ok')?.startTime
+    const opening = data.entries.find(e => e.name === 'portal-opening')?.startTime
+    assert(artReady && opening && opening >= artReady, 'Door started while opening artwork was loading')
+    report.scenarios.push('slow resource: door does not open before real artwork decode')
+    report.timings.push({ scenario: 'slow-door-art', ...data.timings, marks: data.entries })
+  } finally {
+    unblock()
+    await ctx.close()
+  }
 }
 
 async function imageFallback() {
