@@ -175,6 +175,10 @@ async function initialVisit() {
   assert.equal(await page.locator('h1.hero-type-title').getAttribute('data-typing-complete'), 'false')
   assert.equal(await page.locator('.hero-v5-stage-selector button').count(), 3)
   await page.screenshot({ path: 'test-results/home-portal-v2-first-frame.png' })
+  // Capture accumulated light before the mechanical transition, without
+  // waiting for a decorative timer or slowing the actual sequence.
+  await page.waitForFunction(()=>Number(document.querySelector('[data-testid="portal-energy-flow"]')?.dataset.energyLevel)>=7,{},{timeout:8000})
+  await page.screenshot({ path: 'test-results/home-portal-v2-energy-charged.png' })
   // The backing layer must be transparent as the two real leaves depart.
   // Otherwise the doors open to a black rectangle, not the React Home.
   await page.locator('[data-testid="loading-portal-v2"][data-phase="opening"]').waitFor({ timeout: 16000 })
