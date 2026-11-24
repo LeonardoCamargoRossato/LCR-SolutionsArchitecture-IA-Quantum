@@ -92,6 +92,36 @@ def check_png(data):
     assert hashlib.sha256(data).hexdigest() == INVENTORY['sha256'], 'inventory hash mismatch'
     assert len(data) == INVENTORY['bytes'], 'inventory byte count mismatch'
 
+def check_webp(data):
+    expected = INVENTORY['optimized']
+    assert len(data) == expected['bytes'], 'WebP inventory byte count mismatch'
+    assert hashlib.sha256(data).hexdigest() == expected['sha256'], 'WebP inventory hash mismatch'
+    assert data[:4] == b'RIFF' and data[8:12] == b'WEBP', 'not a WebP'
+    assert struct.unpack_from('<I', data, 4)[0] + 8 == len(data), 'invalid RIFF size'
+    pos = 12
+    dimensions = []
+    while pos < len(data):
+        assert pos + 8 <= len(data), 'truncated WebP chunk'
+        kind = data[pos:pos+4]
+        size = struct.unpack_from('<I', data, pos+4)[0]
+        end = pos + 8 + size
+        assert end <= len(data), 'truncated WebP payload'
+        payload = data[pos+8:end]
+        if kind == b'VP8X':
+            assert len(payload) == 10, 'invalid VP8X header'
+            dimensions.append((1 + int.from_bytes(payload[4:7], 'little'), 1 + int.from_bytes(payload[7:10], 'little')))
+        elif kind == b'VP8 ':
+            assert len(payload) >= 10 and payload[3:6] == b'\x9d\x01\x2a', 'invalid VP8 frame header'
+            w, h = struct.unpack_from('<HH', payload, 6)
+            dimensions.append((w & 0x3fff, h & 0x3fff))
+        elif kind == b'VP8L':
+            assert len(payload) >= 5 and payload[0] == 0x2f, 'invalid VP8L header'
+            bits = int.from_bytes(payload[1:5], 'little')
+            dimensions.append(((bits & 0x3fff) + 1, ((bits >> 14) & 0x3fff) + 1))
+        pos = end + (size & 1)
+    assert pos == len(data), 'invalid WebP padding'
+    assert dimensions and all(d == (1200, 630) for d in dimensions), dimensions
+
 def fetch(url, ua):
     with urlopen(Request(url, headers={'User-Agent':ua,'Accept':'*/*'}),timeout=30) as response:
         assert response.status == 200, response.status
@@ -106,9 +136,14 @@ def main():
     if not a.live:
         d=ROOT / a.dist
         check_html((d/'index.html').read_text())
+        assert (d/ASSET).is_file(), 'Approved Drawer PNG missing'
         check_png((d/ASSET).read_bytes())
+        if 'optimized' in INVENTORY:
+            webp = d / INVENTORY['optimized']['path'].removeprefix('public/')
+            assert webp.is_file(), 'Approved Drawer WebP missing: ' + str(webp)
+            check_webp(webp.read_bytes())
         assert (d/'og-cover.svg').read_bytes()==(ROOT/'public/og-cover.svg').read_bytes()
-        print('PASS: build HTML, HTTPS absolute URLs, PNG dimensions/CRC/hash, legacy SVG preserved')
+        print('PASS: build HTML, HTTPS absolute URLs, PNG dimensions/CRC/hash, optimized WebP (when configured), legacy SVG preserved')
         return
     for ua in ('WhatsApp/2.24.17.79','LinkedInBot/1.0','Twitterbot/1.0'):
         html, typ, headers=fetch(BASE,ua)
@@ -118,6 +153,12 @@ def main():
         assert typ=='image/png',typ
         check_png(data)
         print('PASS',ua,'200 HTML + PNG',len(data),'bytes; Cache-Control:',headers.get('Cache-Control',headers.get('cache-control','not supplied')))
+        if 'optimized' in INVENTORY:
+            webp_url = BASE + INVENTORY['optimized']['path'].removeprefix('public/') + '?v=' + str(INVENTORY['cache_version'])
+            webp_data, webp_type, _ = fetch(webp_url, ua)
+            assert webp_type == 'image/webp', webp_type
+            check_webp(webp_data)
+            print('PASS', ua, '200 WebP', len(webp_data), 'bytes; exact approved SHA-256 and 1200x630')
     print('Crawler HTTP simulation only; actual platform previews/caches require native app or Post Inspector.')
 
 if __name__=='__main__': main()

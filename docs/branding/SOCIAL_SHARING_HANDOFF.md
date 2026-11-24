@@ -1,23 +1,21 @@
-# Social sharing — handoff Builder → ChatDrawer
+# Social sharing — official artwork V2
 
-**Status:** infrastructure implemented; artwork provisional until approved. The previous `public/og-cover.svg` remains byte-identical. The new PNG is solely a rasterized compatibility derivative, not a ChatDrawer design. The source and SHA-256 are recorded in SOCIAL_ASSET_INVENTORY.json (LCR_ASSET_ORGANIZATION_STANDARD v1.0, 2026-11-16).
+**Visual approval:** 2026-11-24, Drawer Chat 1, reported by owner. **Release gate:** both exact approved binaries must pass CI before merge. Do not regenerate or re-encode. The owner supplied the original 1672×941 PNG. Builder reproduced both approved outputs exactly (same byte sizes and SHA-256) without generative modification. The current production V1 remains intact until the verified replacement is merged.
 
 ## Contract
 
-- Target: `public/assets/branding/social/lcr-portfolio-og.png`, PNG, 1200 × 630 px, <= 1 MB recommended project budget.
-- Public URL: `https://leonardocamargorossato.github.io/LCR-SolutionsArchitecture-IA-Quantum/assets/branding/social/lcr-portfolio-og.png?v=1`. Share the root URL, without hash/replay parameters.
-- All Open Graph and Twitter Card fields are static in index.html, with HTTPS absolute URLs; Vite copies the public file into dist. SeoSync no longer overwrites the site-wide Open Graph card after hydration; localized page title, description and favicon remain unchanged. Admin SEO social fields are retained for compatibility but are not used to override the static card. Hash routes share one canonical preview.
-- Temporary PNG uses the entire original 16:9 SVG, centered at 1120 × 630 with 40 px matching margins. Original artwork is not retouched.
+- Official PNG: `public/assets/branding/social/lcr-portfolio-og.png`, 1200 × 630, 976095 bytes, SHA-256 `5b140d90e3c03fac7518784dea7fb4ce7a61b9e73175ff11bdf254cf3bb324cb`.
+- Optimized WebP: `public/assets/branding/social/lcr-portfolio-og.webp`, 1200 × 630, 137928 bytes, SHA-256 `fc85e54e320df31bc7f28f8a86916ba328af784c13ddd50de097c941c39a59db`.
+- PNG is the only Open Graph/Twitter Card image; both absolute URLs use `?v=2`. WebP is an optimized asset, not a crawler fallback or an additional Home request.
+- Original provisional PNG is recoverable from commit 9e507eb5db8d5445bc9b98d6eef4e421f4ca518d; original `public/og-cover.svg` remains unchanged.
+- Governance: LCR_ASSET_ORGANIZATION_STANDARD v1.0, 2026-11-16, verified in Drive. The inventory records approval, source, exact target sizes and hashes and previous release. No new dependencies.
 
-## When ChatDrawer supplies the approved image
+## Release procedure
 
-1. Preserve the provisional PNG in Git history/acervo; replace the target file with the approved 1200 × 630 PNG, without altering the old SVG.
-2. Record source/provenance, rights, approval, SHA-256, size, alt text and update date in SOCIAL_ASSET_INVENTORY.json. Keep the file name stable. Increment cache_version and BOTH image URL query versions in index.html; update alt text if needed. Some platforms ignore query strings: if necessary, use a new versioned filename and update both URLs and inventory together.
-3. npm ci; npm run build; python3 tests/social-sharing-smoke.py --dist dist. Review the preview at native size.
-4. Open PR, pass CI, obtain approval before publishing final artwork. Verify public URLs return HTTP 200, image/png and correct bytes using python3 tests/social-sharing-smoke.py --live.
-The Pages deploy workflow now runs a read-only verification job after deployment. The Social Sharing CI can also be dispatched on main with verify_live=true after Pages deployment to record independent HTTP evidence.
-5. Use LinkedIn Post Inspector (https://www.linkedin.com/post-inspector/) for a fresh scrape of the root URL; verify title, description and image in a new post draft (do not publish).
-6. WhatsApp: send/share the root URL in a self-chat or test conversation; wait for preview. Old messages do not necessarily refresh. For a fresh test, try a unique page query parameter before the hash (e.g. ?share=v2). Do not claim cache purge or force changes on users' devices.
-7. Verify native previews on actual mobile/desktop. Simulated crawler user-agent requests only validate network/metadata access, not a platform's proprietary rendering or caches.
+1. The original was resized proportionally to 1119×630 with LANCZOS; 40/41 px edge-extended side margins preserve the entire composition. PNG optimize=True; WebP quality=91, method=6. Both output hashes exactly match the Drawer handoff. The verified files are archived in Drive under LCR Apps/LCR-SolutionsArchitecture-IA-Quantum/branding/social, without changing sharing permissions. CI must confirm the repository and built bytes.
+2. Run `npm ci`, `npm run build`, `python3 tests/social-sharing-smoke.py --dist dist`. CI also validates the legacy SVG and captures published preview assets as evidence.
+3. Merge only after all required checks pass. The deploy workflow runs `python3 tests/social-sharing-smoke.py --live` after publication, checking the static HTML, both files, HTTP 200, MIME type, dimensions and SHA-256 for simulated WhatsApp, LinkedIn and Twitter crawler user agents.
+4. Share the canonical root URL (no hash/replay parameters). Use LinkedIn Post Inspector (https://www.linkedin.com/post-inspector/) to rescrape the root; verify actual draft preview without posting. Test WhatsApp in self-chat, optionally share `?share=v2` if a previous preview is cached. Native app cache/rendering is not proven by HTTP simulation.
+5. Roll back by reverting the approved-artwork commit; original provisional bytes and v1 metadata remain available in Git history.
 
-No changes to Home, portal animations, runtime dependencies, or deployment base.
+No modifications to Home, loading portal, animations, routes or runtime dependencies.
