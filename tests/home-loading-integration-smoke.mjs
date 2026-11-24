@@ -156,7 +156,12 @@ async function initialVisit() {
   await page.waitForTimeout(850)
   const decoration=page.locator('.portal-v2-decoration')
   assert.equal(await decoration.getAttribute('data-inactive'),'true','Invisible illumination must stop')
-  assert.equal(await decoration.locator('.pcl-hot').first().evaluate(el=>getComputedStyle(el).animationPlayState),'paused, paused')
+  const lightStates=await decoration.locator('.pcl-hot,.pcl-halo').evaluateAll(nodes=>nodes.map(el=>({
+    css:getComputedStyle(el).animationPlayState.split(',').map(v=>v.trim()),
+    animations:el.getAnimations().map(a=>a.playState),
+  })))
+  assert.equal(lightStates.length,38,'All 19 paired light paths preserved')
+  assert(lightStates.every(x=>x.css.every(v=>v==='paused')&&x.animations.every(v=>v==='paused'||v==='finished')),'Every invisible light animation must be stopped')
   const first=await page.locator('.pdo-left').evaluate(el=>new DOMMatrixReadOnly(getComputedStyle(el).transform).m41)
   await page.screenshot({ path: 'test-results/home-portal-v2-door-opening.png' })
   await page.waitForTimeout(650)

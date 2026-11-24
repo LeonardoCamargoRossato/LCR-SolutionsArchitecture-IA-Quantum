@@ -38,5 +38,5 @@ export function createDoorMotion(root, options = {}) {
   anim(glow,[{opacity:0,offset:0},{opacity:.55,offset:.075},{opacity:.15,offset:.12},{opacity:0,offset:.22},{opacity:0,offset:1}]);
   anim(seam,[{opacity:0,offset:0},{opacity:0,offset:.06},{opacity:.7,offset:.12},{opacity:0,offset:.30},{opacity:0,offset:1}]);
   lead.finished.then(finish,()=>{});
-  return {pause(){animations.forEach(a=>a.pause());},play(){animations.forEach(a=>a.play());},cancel(){cancelled=true;restore();}};
+  return {pause(){animations.forEach(a=>{if(a.playState!=='finished')a.pause();});},play(){animations.forEach(a=>{if(a.playState!=='finished')a.play();});},cancel(){cancelled=true;restore();}};
 }
