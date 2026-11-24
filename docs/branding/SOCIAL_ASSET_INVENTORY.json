@@ -1,8 +1,8 @@
 {
   "asset_id": "lcr-portfolio-og",
-  "description": "Official artwork V2 approved by the owner; exact binary verification required before publication",
+  "description": "Official artwork V2 approved by owner; exact approved PNG and WebP regenerated from supplied original and verified",
   "function": "branding/social sharing",
-  "source": "Drawer Chat 1 — AI-assisted composition based on owner-provided references",
+  "source": "Drawer Chat 1 — Leonardo Rossato AI Portfolio Showcase(3).png, 1672 × 941 RGBA, supplied by owner",
   "source_git_blob": null,
   "derivative": "public/assets/branding/social/lcr-portfolio-og.png",
   "format": "PNG",
@@ -10,10 +10,10 @@
   "height": 630,
   "bytes": 976095,
   "sha256": "5b140d90e3c03fac7518784dea7fb4ce7a61b9e73175ff11bdf254cf3bb324cb",
-  "origin": "Drawer Chat 1, AI-assisted composition based on references supplied by the owner. Integrate both exact approved files, without re-encoding or reinterpretation.",
-  "approval": "Human visual approval reported in handoff, 2026-11-24; byte identity must be proven by CI",
+  "origin": "Drawer Chat 1, AI-assisted composition based on owner-provided references. Reproduced bit-identical PNG/WebP from uploaded original: RGB, LANCZOS contain 1119×630, 40/41 px side margins via edge extension (no cropping or distortion), PNG optimize=True, WebP quality=91 method=6. Both hashes match approved handoff.",
+  "approval": "Human visual approval 2026-11-24; reproduced binaries locally verified against exact approved SHA-256; build/live checks required",
   "rights": "Owner-approved public use for portfolio social sharing, per handoff; no independent third-party rights assessment",
-  "drive_path": null,
+  "drive_path": "LCR Apps/LCR-SolutionsArchitecture-IA-Quantum/branding/social",
   "access": "public",
   "references": [
     "index.html: og:image, twitter:image"
@@ -26,7 +26,9 @@
     "width": 1200,
     "height": 630,
     "bytes": 137928,
-    "sha256": "fc85e54e320df31bc7f28f8a86916ba328af784c13ddd50de097c941c39a59db"
+    "sha256": "fc85e54e320df31bc7f28f8a86916ba328af784c13ddd50de097c941c39a59db",
+    "git_blob": "35ca034adc9b08499f6bf7ed930a69a8b5a379e1",
+    "drive_file_id": "1TrmSGW7WPzyr5Vgm52W6UGqutfVElgxY"
   },
   "approval_date": "2026-11-24",
   "previous": {
@@ -38,5 +40,10 @@
     "source_git_blob": "19d5d3112ac5a8e73a04fbc7e4eec12fddecb6a9",
     "cache_version": 1
   },
-  "standard": "LCR_ASSET_ORGANIZATION_STANDARD v1.0 (2026-11-16)"
+  "standard": "LCR_ASSET_ORGANIZATION_STANDARD v1.0 (2026-11-16)",
+  "source_sha256": "100db168bdbf4af03ed63548992e79f58d2a25d8227dc054bcc29e765c299585",
+  "source_bytes": 3023543,
+  "drive_folder_id": "1hVxtpw6J8A9HkcqJVyb5lO1pM2v-GsKd",
+  "git_blob": "20a90a3ce4f362097b501af4e10b8963c0526613",
+  "drive_file_id": "1Seb0d5dSofPeaWYhoraXWhPWBDQOI5Oj"
 }

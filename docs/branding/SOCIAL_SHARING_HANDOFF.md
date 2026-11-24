@@ -1,6 +1,6 @@
 # Social sharing — official artwork V2
 
-**Visual approval:** 2026-11-24, Drawer Chat 1, reported by owner. **Release gate:** both exact approved binaries must pass CI before merge. Do not regenerate or re-encode. The V2 contract is staged in this branch; the current production V1 remains intact until the verified replacement is merged.
+**Visual approval:** 2026-11-24, Drawer Chat 1, reported by owner. **Release gate:** both exact approved binaries must pass CI before merge. Do not regenerate or re-encode. The owner supplied the original 1672×941 PNG. Builder reproduced both approved outputs exactly (same byte sizes and SHA-256) without generative modification. The current production V1 remains intact until the verified replacement is merged.
 
 ## Contract
 
@@ -12,7 +12,7 @@
 
 ## Release procedure
 
-1. Import the two approved files unchanged. Confirm bytes, hashes and dimensions before approval.
+1. The original was resized proportionally to 1119×630 with LANCZOS; 40/41 px edge-extended side margins preserve the entire composition. PNG optimize=True; WebP quality=91, method=6. Both output hashes exactly match the Drawer handoff. The verified files are archived in Drive under LCR Apps/LCR-SolutionsArchitecture-IA-Quantum/branding/social, without changing sharing permissions. CI must confirm the repository and built bytes.
 2. Run `npm ci`, `npm run build`, `python3 tests/social-sharing-smoke.py --dist dist`. CI also validates the legacy SVG and captures published preview assets as evidence.
 3. Merge only after all required checks pass. The deploy workflow runs `python3 tests/social-sharing-smoke.py --live` after publication, checking the static HTML, both files, HTTP 200, MIME type, dimensions and SHA-256 for simulated WhatsApp, LinkedIn and Twitter crawler user agents.
 4. Share the canonical root URL (no hash/replay parameters). Use LinkedIn Post Inspector (https://www.linkedin.com/post-inspector/) to rescrape the root; verify actual draft preview without posting. Test WhatsApp in self-chat, optionally share `?share=v2` if a previous preview is cached. Native app cache/rendering is not proven by HTTP simulation.
