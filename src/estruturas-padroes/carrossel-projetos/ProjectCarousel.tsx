@@ -50,16 +50,7 @@ export function ProjectCarousel({ projectTitle, images }: Props) {
   const hasCarousel = images.length > 1
   const current = images[index] ?? images[0]
 
-  useEffect(() => {
-    if (!hasCarousel) return
-    for (const adjacent of [
-      images[(index - 1 + images.length) % images.length],
-      images[(index + 1) % images.length],
-    ]) {
-      const preload = new Image()
-      preload.src = adjacent.src
-    }
-  }, [images, index, hasCarousel])
+  // Adjacent slides must not bypass the visibility gate with speculative preloads.
 
   // Keep the highlighted miniature centered when changing slides via arrows,
   // dots, thumbnails, swipe or the lightbox. Scroll only the thumbnail rail,
