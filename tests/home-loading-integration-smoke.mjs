@@ -263,9 +263,12 @@ async function slowNetwork() {
   let released = false, unblock
   const blocked=new Promise(resolve=>{unblock=resolve})
   const routePattern=/\/assets\/home\/loading-portal\/mechanical\/[^/]+\/door-right\.webp(?:\?.*)?$/
-  // Observe the held request from navigation commit, not from DOMContentLoaded.
-  // A slow runner must not spend the entire 12s asset timeout waiting for
-  // document readiness before the test begins observing the gate.
+  // Isolate delayed mechanical assets from a cold Vite module graph:
+  // initialVisit covers cold navigation; this scenario starts with real
+  // mounted Home and no portal assets requested, then explicitly replays.
+  await page.goto(HOME+'?portal=skip',{waitUntil:'domcontentloaded'})
+  await page.locator('main.portfolio-home').waitFor({state:'attached',timeout:20000})
+  await page.getByTestId('interactive-ai-visual').waitFor({state:'attached'})
   await page.route(routePattern, async route => {
     await blocked
     released = true
@@ -273,7 +276,7 @@ async function slowNetwork() {
   })
   try {
     const request=page.waitForRequest(routePattern,{timeout:12000})
-    await page.goto(HOME + '?portal=replay', { waitUntil: 'commit' })
+    await page.evaluate(()=>{location.hash='#/?portal=replay'})
     await request
     await page.getByTestId('portal-v2-counter').waitFor({timeout:8000})
     await page.locator('main.portfolio-home').waitFor({state:'attached',timeout:8000})
