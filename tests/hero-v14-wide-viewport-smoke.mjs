@@ -136,12 +136,12 @@ async function portalCoverage() {
   const errors = []
   page.on('pageerror', error => errors.push(String(error)))
   await page.goto(BASE + '#/?portal=replay', { waitUntil: 'domcontentloaded' })
-  const portal = page.getByTestId('loading-portal')
+  const portal = page.getByTestId('loading-portal-v2')
   await portal.waitFor({ state: 'visible', timeout: 14000 })
   const geometry = await page.evaluate(() => {
-    const door = document.querySelector('[data-testid="loading-portal"]')
+    const door = document.querySelector('[data-testid="loading-portal-v2"]')
     const r = door.getBoundingClientRect()
-    const picture = door.querySelector('.lcr-loading-portal__art')
+    const picture = door.querySelector('.portal-v2-background')
     return {
       x: r.x, y: r.y, width: r.width, height: r.height,
       viewportWidth: innerWidth, viewportHeight: innerHeight,
@@ -152,8 +152,8 @@ async function portalCoverage() {
   near(geometry.y, 0, 1, 'portal top')
   near(geometry.width, geometry.viewportWidth, 1, 'portal width')
   near(geometry.height, geometry.viewportHeight, 1, 'portal height')
-  if (geometry.fit) assert.equal(geometry.fit, 'cover', 'original portal frame uses full-bleed cover')
-  await portal.locator('.lcr-loading-portal__counter').waitFor({ state: 'visible', timeout: 10000 })
+  if (geometry.fit) assert.equal(geometry.fit, 'fill', 'shared uniform cover plane owns sizing; image fills that plane')
+  await portal.locator('.portal-v2-counter').waitFor({ state: 'visible', timeout: 10000 })
   await page.screenshot({ path: 'test-results/hero-v14-portal-wide.png', fullPage: false })
   await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({ timeout: 20000 })
   assert.deepEqual(errors, [], 'Portal replay browser errors')
