@@ -1,0 +1,675 @@
+{
+  "schemaVersion": 1,
+  "masterSha256": "0a053f4ce21bf53adc571104c8be8fbf5311f8806312f0addad04523edd5d56c",
+  "masterSize": [
+    1672,
+    941
+  ],
+  "masterCorePolygon": [
+    [
+      835,
+      232
+    ],
+    [
+      860,
+      235
+    ],
+    [
+      893,
+      242
+    ],
+    [
+      927,
+      254
+    ],
+    [
+      958,
+      273
+    ],
+    [
+      986,
+      298
+    ],
+    [
+      1011,
+      325
+    ],
+    [
+      1032,
+      356
+    ],
+    [
+      1049,
+      391
+    ],
+    [
+      1058,
+      417
+    ],
+    [
+      1068,
+      421
+    ],
+    [
+      1072,
+      430
+    ],
+    [
+      1072,
+      453
+    ],
+    [
+      1064,
+      460
+    ],
+    [
+      1059,
+      460
+    ],
+    [
+      1054,
+      493
+    ],
+    [
+      1041,
+      529
+    ],
+    [
+      1021,
+      563
+    ],
+    [
+      995,
+      593
+    ],
+    [
+      965,
+      618
+    ],
+    [
+      930,
+      638
+    ],
+    [
+      894,
+      650
+    ],
+    [
+      860,
+      657
+    ],
+    [
+      839,
+      660
+    ],
+    [
+      814,
+      657
+    ],
+    [
+      780,
+      651
+    ],
+    [
+      744,
+      638
+    ],
+    [
+      710,
+      619
+    ],
+    [
+      680,
+      594
+    ],
+    [
+      653,
+      564
+    ],
+    [
+      633,
+      531
+    ],
+    [
+      619,
+      496
+    ],
+    [
+      611,
+      461
+    ],
+    [
+      603,
+      458
+    ],
+    [
+      601,
+      429
+    ],
+    [
+      606,
+      420
+    ],
+    [
+      616,
+      418
+    ],
+    [
+      625,
+      389
+    ],
+    [
+      642,
+      356
+    ],
+    [
+      664,
+      325
+    ],
+    [
+      690,
+      297
+    ],
+    [
+      719,
+      273
+    ],
+    [
+      750,
+      255
+    ],
+    [
+      783,
+      242
+    ],
+    [
+      811,
+      235
+    ]
+  ],
+  "variants": {
+    "16x9": {
+      "width": 1672,
+      "height": 941,
+      "reference": "loading-portal-base-16x9.webp",
+      "referenceSha256": "0a053f4ce21bf53adc571104c8be8fbf5311f8806312f0addad04523edd5d56c",
+      "splitX": 836,
+      "coreCenter": [
+        839.5,
+        445.5
+      ],
+      "coreRadius": [
+        236,
+        214
+      ],
+      "transform": {
+        "scale_x": 1,
+        "scale_y": 1,
+        "translate_x": 0,
+        "translate_y": 0
+      },
+      "left": {
+        "path": "mechanical/16x9/door-left.webp",
+        "bbox": [
+          0,
+          0,
+          1672,
+          941
+        ],
+        "contentBbox": [
+          0,
+          0,
+          836,
+          941
+        ],
+        "sha256": "825050afb6c193bed550b8e1bc34e957357ee28214210eda052cef2178af090e"
+      },
+      "right": {
+        "path": "mechanical/16x9/door-right.webp",
+        "bbox": [
+          0,
+          0,
+          1672,
+          941
+        ],
+        "contentBbox": [
+          836,
+          0,
+          1672,
+          941
+        ],
+        "sha256": "9e04acfb3b18ad0651a366e55b9330b2aa273504adfa93abae55d98cbe7691ab"
+      },
+      "core": {
+        "path": "mechanical/16x9/door-core.webp",
+        "bbox": [
+          0,
+          0,
+          1672,
+          941
+        ],
+        "contentBbox": [
+          601,
+          232,
+          1073,
+          661
+        ],
+        "sha256": "f1a271ad98be31129b292b7efcdde539d70a28a0cc8ef0faf71f851c365dfcca"
+      }
+    },
+    "16x10": {
+      "width": 1600,
+      "height": 1000,
+      "reference": "loading-portal-base-16x10.webp",
+      "referenceSha256": "98a2a40127885eb1a632099d87e4c3fb90fe2fa4f45a3af864551e64febe50d4",
+      "splitX": 800,
+      "coreCenter": [
+        803.7184594953519,
+        473.43251859723694
+      ],
+      "coreRadius": [
+        250.73041168658696,
+        227.41764080765142
+      ],
+      "transform": {
+        "scale_x": 1.0624169986719787,
+        "scale_y": 1.0626992561105206,
+        "translate_x": -88.18061088977423,
+        "translate_y": 0
+      },
+      "left": {
+        "path": "mechanical/16x10/door-left.webp",
+        "bbox": [
+          0,
+          0,
+          1600,
+          1000
+        ],
+        "contentBbox": [
+          0,
+          0,
+          800,
+          1000
+        ],
+        "sha256": "198a9dcd7e08b6ab7f9680cb011a0b9e1e06d3f5fd01561af5927ce40249bf33"
+      },
+      "right": {
+        "path": "mechanical/16x10/door-right.webp",
+        "bbox": [
+          0,
+          0,
+          1600,
+          1000
+        ],
+        "contentBbox": [
+          800,
+          0,
+          1600,
+          1000
+        ],
+        "sha256": "4982fe36bd040f961c3d550a8a631dc593c70558e87dbd8b4437526e2fd34b7c"
+      },
+      "core": {
+        "path": "mechanical/16x10/door-core.webp",
+        "bbox": [
+          0,
+          0,
+          1600,
+          1000
+        ],
+        "contentBbox": [
+          550,
+          247,
+          1052,
+          702
+        ],
+        "sha256": "d74a10254ed5b00658c055ad6ffc930f9602a4049d01e3caab4ced3f3d8a1311"
+      }
+    },
+    "21x9": {
+      "width": 2520,
+      "height": 1080,
+      "reference": "loading-portal-base-21x9.webp",
+      "referenceSha256": "4c8c113653b75724d6026ce716d0f4275c9cfb3107e706e5ee2152490e4b491b",
+      "splitX": 1259,
+      "coreCenter": [
+        1263.5069075451647,
+        511.3071200850159
+      ],
+      "coreRadius": [
+        270.86078639744954,
+        245.61105207226356
+      ],
+      "transform": {
+        "scale_x": 1.1477151965993624,
+        "scale_y": 1.1477151965993624,
+        "translate_x": 300,
+        "translate_y": 0
+      },
+      "left": {
+        "path": "mechanical/21x9/door-left.webp",
+        "bbox": [
+          0,
+          0,
+          2520,
+          1080
+        ],
+        "contentBbox": [
+          0,
+          0,
+          1259,
+          1080
+        ],
+        "sha256": "957d37382298d41108d2e4d13fca7351c5beea28e4fa222543db481e91a58dd2"
+      },
+      "right": {
+        "path": "mechanical/21x9/door-right.webp",
+        "bbox": [
+          0,
+          0,
+          2520,
+          1080
+        ],
+        "contentBbox": [
+          1259,
+          0,
+          2520,
+          1080
+        ],
+        "sha256": "3216ac2c5035b35209dbd5a009869fab2b2d4f4fe82620a93f512b06158c7440"
+      },
+      "core": {
+        "path": "mechanical/21x9/door-core.webp",
+        "bbox": [
+          0,
+          0,
+          2520,
+          1080
+        ],
+        "contentBbox": [
+          990,
+          266,
+          1531,
+          758
+        ],
+        "sha256": "2eadfdd81b1af648511aac7bd405c608bc97c21998a24215fa4b93a9ece8e37e"
+      }
+    },
+    "3x4": {
+      "width": 900,
+      "height": 1200,
+      "reference": "loading-portal-base-3x4.webp",
+      "referenceSha256": "735c435def7f21da483b3cff9892239f0d0e698eebd057b83aa0a2238e404b77",
+      "splitX": 450,
+      "coreCenter": [
+        454.46175637393765,
+        568.1190223166843
+      ],
+      "coreRadius": [
+        300.8498583569405,
+        272.9011689691817
+      ],
+      "transform": {
+        "scale_x": 1.274787535410765,
+        "scale_y": 1.2752391073326248,
+        "translate_x": -615.7223796033994,
+        "translate_y": 0
+      },
+      "left": {
+        "path": "mechanical/3x4/door-left.webp",
+        "bbox": [
+          0,
+          0,
+          900,
+          1200
+        ],
+        "contentBbox": [
+          0,
+          0,
+          450,
+          1200
+        ],
+        "sha256": "5a9cf728d991f26108bb7b9c5e09dcb9748cbc78288180d566524e3b804f87e0"
+      },
+      "right": {
+        "path": "mechanical/3x4/door-right.webp",
+        "bbox": [
+          0,
+          0,
+          900,
+          1200
+        ],
+        "contentBbox": [
+          450,
+          0,
+          900,
+          1200
+        ],
+        "sha256": "ad4b5fa14f45213b309b24f21e9851f22ef90952d2376c4903694dc538b2b3b3"
+      },
+      "core": {
+        "path": "mechanical/3x4/door-core.webp",
+        "bbox": [
+          0,
+          0,
+          900,
+          1200
+        ],
+        "contentBbox": [
+          150,
+          296,
+          752,
+          843
+        ],
+        "sha256": "6c975a56c3d224506ed23f52fb19671060fc35f87ecce8b434fddffa25da3898"
+      }
+    },
+    "9x16": {
+      "width": 1080,
+      "height": 1920,
+      "reference": "loading-portal-base-9x16.webp",
+      "referenceSha256": "29be585bf2d21e46b4f9f7942c6b02b2c4a5ada1d3cafbdcb9c74c89ee456961",
+      "splitX": 540,
+      "coreCenter": [
+        547.132075471698,
+        908.990435706695
+      ],
+      "coreRadius": [
+        480.9056603773585,
+        436.6418703506908
+      ],
+      "transform": {
+        "scale_x": 2.0377358490566038,
+        "scale_y": 2.0403825717322,
+        "translate_x": -1163.5471698113208,
+        "translate_y": 0
+      },
+      "left": {
+        "path": "mechanical/9x16/door-left.webp",
+        "bbox": [
+          0,
+          0,
+          1080,
+          1920
+        ],
+        "contentBbox": [
+          0,
+          0,
+          540,
+          1920
+        ],
+        "sha256": "2ca5ecb92a7e8be2c9bf79785dd89f6182923736c1ed671bf4e267ec181ea733"
+      },
+      "right": {
+        "path": "mechanical/9x16/door-right.webp",
+        "bbox": [
+          0,
+          0,
+          1080,
+          1920
+        ],
+        "contentBbox": [
+          540,
+          0,
+          1080,
+          1920
+        ],
+        "sha256": "ab7633465de36000f4ca46f7ad3698833d147d243e2181347dc67ec6828daa6b"
+      },
+      "core": {
+        "path": "mechanical/9x16/door-core.webp",
+        "bbox": [
+          0,
+          0,
+          1080,
+          1920
+        ],
+        "contentBbox": [
+          61,
+          473,
+          1022,
+          1348
+        ],
+        "sha256": "2b4806063cc459dc9cdf265131971a78081184e64c17bc68213fffd87d4bd3b0"
+      }
+    },
+    "9x19_5": {
+      "width": 1080,
+      "height": 2340,
+      "reference": "loading-portal-base-9x19_5.webp",
+      "referenceSha256": "9f06315f63009e6dd76fd3e6b052a7ba3e4f92a91b8cbec9d308215f07d2d399",
+      "splitX": 540,
+      "coreCenter": [
+        548.7096774193546,
+        1107.8320935175345
+      ],
+      "coreRadius": [
+        587.2811059907834,
+        532.1572794899043
+      ],
+      "transform": {
+        "scale_x": 2.488479262672811,
+        "scale_y": 2.4867162592986185,
+        "translate_x": -1540.36866359447,
+        "translate_y": 0
+      },
+      "left": {
+        "path": "mechanical/9x19_5/door-left.webp",
+        "bbox": [
+          0,
+          0,
+          1080,
+          2340
+        ],
+        "contentBbox": [
+          0,
+          0,
+          540,
+          2340
+        ],
+        "sha256": "119be1abbaf09df33783705f4b6690578429afcf0a57c72397ba7e986ad0227c"
+      },
+      "right": {
+        "path": "mechanical/9x19_5/door-right.webp",
+        "bbox": [
+          0,
+          0,
+          1080,
+          2340
+        ],
+        "contentBbox": [
+          540,
+          0,
+          1080,
+          2340
+        ],
+        "sha256": "8c524d77d092872cffdee706520f72efbe5b45fbb25466e7235837d4b9e5e02e"
+      },
+      "core": {
+        "path": "mechanical/9x19_5/door-core.webp",
+        "bbox": [
+          0,
+          0,
+          1080,
+          2340
+        ],
+        "contentBbox": [
+          0,
+          577,
+          1080,
+          1642
+        ],
+        "sha256": "c86dfeb623fa18b2218d624262547f1f8872f68aa0d77ba21b43c9bb29954349"
+      }
+    },
+    "4x3": {
+      "width": 1200,
+      "height": 900,
+      "reference": "loading-portal-base-4x3.webp",
+      "referenceSha256": "d9237a4cc6b25e5fbc3c89d297b6c107923adc19935aeff929c5c0595b4b6312",
+      "splitX": 600,
+      "coreCenter": [
+        603.8247011952192,
+        426.0892667375133
+      ],
+      "coreRadius": [
+        225.65737051792829,
+        204.6758767268863
+      ],
+      "transform": {
+        "scale_x": 0.9561752988047809,
+        "scale_y": 0.9564293304994687,
+        "translate_x": -198.88446215139442,
+        "translate_y": 0
+      },
+      "left": {
+        "path": "mechanical/4x3/door-left.webp",
+        "bbox": [
+          0,
+          0,
+          1200,
+          900
+        ],
+        "contentBbox": [
+          0,
+          0,
+          600,
+          900
+        ],
+        "sha256": "a7e9450d9b590af48234d100ec3594d959dd8de372abe5c1bf2c011f3af68b4d"
+      },
+      "right": {
+        "path": "mechanical/4x3/door-right.webp",
+        "bbox": [
+          0,
+          0,
+          1200,
+          900
+        ],
+        "contentBbox": [
+          600,
+          0,
+          1200,
+          900
+        ],
+        "sha256": "2e5e1d5dd137a9716dae7f430ce921bc90af1f315405e05fad88be37be938453"
+      },
+      "core": {
+        "path": "mechanical/4x3/door-core.webp",
+        "bbox": [
+          0,
+          0,
+          1200,
+          900
+        ],
+        "contentBbox": [
+          376,
+          222,
+          827,
+          632
+        ],
+        "sha256": "f4dd216664792cad00eabd36ebf69ca42d8a14f151f9bee89dbacf3d1c75f48a"
+      }
+    }
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "masterSha256": "0a053f4ce21bf53adc571104c8be8fbf5311f8806312f0addad04523edd5d56c",
+  "paths": [
+    {
+      "id": "outer-left-top",
+      "kind": "outer",
+      "d": "M245 49 L176 49 L99 125 L99 300 L144 344",
+      "delay": 0,
+      "durationFactor": 1.3
+    },
+    {
+      "id": "outer-left-bottom",
+      "kind": "outer",
+      "d": "M145 546 L103 591 L103 737 L145 779",
+      "delay": -1.7,
+      "durationFactor": 1.26
+    },
+    {
+      "id": "outer-right-top",
+      "kind": "outer",
+      "d": "M1407 49 L1475 49 L1552 125 L1552 300 L1507 344",
+      "delay": -1.25,
+      "durationFactor": 1.32
+    },
+    {
+      "id": "outer-right-bottom",
+      "kind": "outer",
+      "d": "M1508 546 L1547 591 L1547 736 L1507 780",
+      "delay": -2.55,
+      "durationFactor": 1.26
+    },
+    {
+      "id": "circuit-left-upper",
+      "kind": "circuit",
+      "d": "M242 359 H397 L454 417 H608",
+      "delay": -0.5,
+      "durationFactor": 0.96
+    },
+    {
+      "id": "circuit-left-middle",
+      "kind": "circuit",
+      "d": "M244 484 H397 L432 452 H600",
+      "delay": -2,
+      "durationFactor": 0.94
+    },
+    {
+      "id": "circuit-left-lower",
+      "kind": "circuit",
+      "d": "M243 518 H483 L541 459 H600",
+      "delay": -3.2,
+      "durationFactor": 1.04
+    },
+    {
+      "id": "circuit-right-upper",
+      "kind": "circuit",
+      "d": "M1427 359 H1254 L1198 417 H1051",
+      "delay": -1.8,
+      "durationFactor": 0.99
+    },
+    {
+      "id": "circuit-right-middle",
+      "kind": "circuit",
+      "d": "M1427 484 H1249 L1214 452 H1054",
+      "delay": -3.55,
+      "durationFactor": 0.92
+    },
+    {
+      "id": "circuit-right-lower",
+      "kind": "circuit",
+      "d": "M1428 518 H1170 L1110 459 H1054",
+      "delay": -2.15,
+      "durationFactor": 1.02
+    },
+    {
+      "id": "fissure-upper-left",
+      "kind": "fissure",
+      "d": "M471 175 H572 L710 296",
+      "delay": -4.3,
+      "durationFactor": 1.52
+    },
+    {
+      "id": "fissure-upper-right",
+      "kind": "fissure",
+      "d": "M1180 175 H1075 L943 296",
+      "delay": -5,
+      "durationFactor": 1.57
+    },
+    {
+      "id": "fissure-lower-left",
+      "kind": "fissure",
+      "d": "M475 713 H568 L688 594",
+      "delay": -4.85,
+      "durationFactor": 1.65
+    },
+    {
+      "id": "fissure-lower-right",
+      "kind": "fissure",
+      "d": "M1180 713 H1094 L974 594",
+      "delay": -4.05,
+      "durationFactor": 1.6
+    },
+    {
+      "id": "ring-side-left",
+      "kind": "ring",
+      "d": "M645 403 Q639 438 646 467",
+      "delay": -0.6,
+      "durationFactor": 1.05
+    },
+    {
+      "id": "ring-side-right",
+      "kind": "ring",
+      "d": "M1009 404 Q1016 439 1010 467",
+      "delay": -2.5,
+      "durationFactor": 1.02
+    },
+    {
+      "id": "ring-bottom-left",
+      "kind": "ring",
+      "d": "M729 587 Q755 607 781 613",
+      "delay": -1.3,
+      "durationFactor": 1.28
+    },
+    {
+      "id": "ring-bottom-right",
+      "kind": "ring",
+      "d": "M873 613 Q900 606 925 589",
+      "delay": -2.7,
+      "durationFactor": 1.32
+    },
+    {
+      "id": "ring-inner-ticks",
+      "kind": "ring-inner",
+      "d": "M839.5 350.5 A95 95 0 1 1 839.5 540.5 A95 95 0 1 1 839.5 350.5",
+      "delay": -3,
+      "durationFactor": 1.68
+    }
+  ]
+}

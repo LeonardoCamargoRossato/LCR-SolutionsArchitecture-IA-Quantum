@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { LoadingPortal } from '../../../components/loading-portal/LoadingPortal'
 import './loading-portal-lab.css'
+import { LoadingPortalV2Lab } from './LoadingPortalV2Lab'
 
 type Viewport = 'desktop' | 'tablet' | 'mobile'
 const VIEWPORTS: Record<Viewport, { label: string; width: number; height: number }> = {
@@ -15,7 +16,7 @@ const DEMO_DURATION = 5600
  * Lab progress is explicitly simulated; the production boot coordinator will
  * supply measurable tasks in a separately approved follow-up PR.
  */
-export function LoadingPortalLab() {
+function LoadingPortalV1Lab() {
   const [progress, setProgress] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [ready, setReady] = useState(false)
@@ -169,4 +170,16 @@ export function LoadingPortalLab() {
       </div>
     </section>
   )
+}
+
+/** Keep the proven V1 preview and tests available while the V2 awaits approval. */
+export function LoadingPortalLab() {
+  const [version,setVersion] = useState<'v1'|'v2'>('v1')
+  return <>
+    <div className="lcr-lab-component-switch" role="group" aria-label="Versão do Loading Portal">
+      <button type="button" aria-pressed={version==='v1'} onClick={()=>setVersion('v1')}>Portal V1 · histórico</button>
+      <button type="button" data-testid="portal-v2-preview" aria-pressed={version==='v2'} onClick={()=>setVersion('v2')}>Portal V2 · prévia</button>
+    </div>
+    {version==='v1' ? <LoadingPortalV1Lab/> : <LoadingPortalV2Lab/>}
+  </>
 }
