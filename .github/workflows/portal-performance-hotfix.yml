@@ -1,0 +1,49 @@
+name: LCR Portal V2 — performance hotfix comparison
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/components/loading-portal/v2/**'
+      - 'src/features/home-loading/**'
+      - 'tests/portal-performance-hotfix*'
+      - '.github/workflows/portal-performance-hotfix.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  hotfix-comparison:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Prepare two isolated, identically instrumented production builds
+        run: |
+          git worktree add --detach /tmp/lcr-before 5284cc9e3adf0eedcfc77af39ef1ea2ca8394ae7
+          git worktree add --detach /tmp/lcr-after HEAD
+          for dir in /tmp/lcr-before /tmp/lcr-after; do
+            cmp package-lock.json "$dir/package-lock.json"
+            ln -s "$PWD/node_modules" "$dir/node_modules"
+            node tests/portal-performance-hotfix-instrument.mjs "$dir"
+            (cd "$dir" && npm run build)
+          done
+      - run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Compare V2 before and after with render counts and trace
+        env:
+          LCR_BEFORE: /tmp/lcr-before
+          LCR_AFTER: /tmp/lcr-after
+        run: node tests/portal-performance-hotfix-benchmark.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: portal-performance-hotfix-evidence
+          path: test-results/portal-performance-hotfix.json
+          retention-days: 30
