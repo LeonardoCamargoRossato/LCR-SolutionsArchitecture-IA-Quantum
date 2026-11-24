@@ -165,6 +165,9 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
     setRun(p=>p.serial===serial?{...p,phase:'opening'}:p)
   },[serial])
 
+  const onVisualComplete=useCallback(()=>markHomeBoot('portal-progress-complete'),[])
+  const onOpened=useCallback(()=>finish('mechanical'),[finish])
+  const onFallback=useCallback(()=>finish('fallback'),[finish])
   return <HomeMotionProvider enabled={motionEnabled}>
     <div className="home-boot-app" data-testid="home-boot-app"
       data-home-reveal={revealPhase}
@@ -177,10 +180,10 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
     </div>
     {showPortal&&<div className="home-boot-overlay" data-testid="home-boot-overlay" data-boot-state={run.phase}>
       <LoadingPortalV2 key={serial} progress={progress} cinematic
-        onVisualComplete={()=>markHomeBoot('portal-progress-complete')}
+        onVisualComplete={onVisualComplete}
         ready={ready&&(run.phase==='ready'||run.phase==='degraded'||run.phase==='activating'||run.phase==='opening')}
         allowFallback={homeSafe} onAssetState={onAssetState} onOpening={onOpening}
-        onOpened={()=>finish('mechanical')} onFallback={()=>finish('fallback')}/>
+        onOpened={onOpened} onFallback={onFallback}/>
       {(run.slow||run.phase==='error'||run.tasks['door-art'].state==='failed')&&run.phase!=='opening'&&
         <div className="home-boot-recovery" role="status" aria-live="polite">
           <p>{run.phase==='error'?'Não foi possível preparar a capa automaticamente.':run.tasks['door-art'].state==='failed'?

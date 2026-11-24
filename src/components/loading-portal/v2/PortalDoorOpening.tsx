@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties, type RefObject } from 'react'
+import { memo, useEffect, useRef, type CSSProperties, type RefObject } from 'react'
 import { createDoorMotion, type DoorMotion } from './door-motion.js'
 import { PORTAL_ASSET_BASE, PORTAL_GEOMETRY, type PortalVariant } from './portalGeometry'
 
@@ -20,7 +20,7 @@ export interface PortalDoorOpeningProps {
 
 /** Sprites are already decoded by the single variant loader. The core is
  * a child of the left leaf and uses exactly its transform. */
-export function PortalDoorOpening(props: PortalDoorOpeningProps) {
+export const PortalDoorOpening = memo(function PortalDoorOpening(props: PortalDoorOpeningProps) {
   const { stage, variant, open, paused = false } = props
   const motion = useRef<DoorMotion | null>(null)
   const current = useRef(props)
@@ -69,4 +69,4 @@ export function PortalDoorOpening(props: PortalDoorOpeningProps) {
     <div className="pdo-glow" aria-hidden="true" style={sprite([cx-rx*.78,cy-ry*.78,cx+rx*.78,cy+ry*.78],w,h)}/>
     <div className="pdo-seam" aria-hidden="true" style={{left:v.splitX/w*100+'%'}}/>
   </>
-}
+})

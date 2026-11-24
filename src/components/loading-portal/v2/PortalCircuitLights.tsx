@@ -1,4 +1,4 @@
-import { type CSSProperties } from 'react'
+import { memo, type CSSProperties } from 'react'
 import geometry from './portal-circuit-paths.json'
 import { PORTAL_GEOMETRY, type PortalVariant } from './portalGeometry'
 import './portal-circuit-lights.css'
@@ -16,7 +16,7 @@ const clamp = (value: number, min: number, max: number) =>
 
 /** Drawer paths in master coordinates. The shared mechanical geometry also
  * covers 4:3; never independently select or transform the background. */
-export function PortalCircuitLights({
+export const PortalCircuitLights = memo(function PortalCircuitLights({
   playing = true, speed = 1, intensity = .72, ready = false, reducedMotion = false, variant,
 }: PortalCircuitLightsProps) {
   const geo = PORTAL_GEOMETRY[variant]
@@ -41,4 +41,4 @@ export function PortalCircuitLights({
       })}
     </g>
   </svg>
-}
+})

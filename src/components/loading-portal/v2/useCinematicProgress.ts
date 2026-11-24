@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export const PORTAL_CHARGE_MS = 3000
+export const PORTAL_CHARGE_MS = 2000
 export const PORTAL_OPENING_MS = 3000
 const STEP_MS = PORTAL_CHARGE_MS / 100
 const COMPLETE_HOLD_MS = 180
