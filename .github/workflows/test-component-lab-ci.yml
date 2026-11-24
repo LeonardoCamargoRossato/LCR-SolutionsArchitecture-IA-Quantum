@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'tests/isolation/**'
+      - 'vite.config.ts'
       - 'src/RootRouteGate.tsx'
       - 'src/PortfolioExperience.tsx'
       - 'src/main.tsx'
@@ -35,7 +37,7 @@ jobs:
       - name: Install pinned dependencies
         run: npm ci
       - name: TypeScript and Vite production build
-        run: npm run build
+        run: bash tests/isolation/run.sh npm run build
       - name: Check route splitting, scope and rendering safety
         run: |
           python3 - <<'PY'
@@ -64,7 +66,7 @@ jobs:
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
       - name: Browser smoke tests — Lab and unchanged Home
-        run: node tests/test-component-lab-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/test-component-lab-smoke.mjs
       - name: Upload desktop/mobile/screenshots and JSON evidence
         if: always()
         uses: actions/upload-artifact@v4

@@ -10,7 +10,7 @@ const { outputText } = typescript.transpileModule(source, {
 const { resolveAboutGalleryMedia: resolve } = await import(
   'data:text/javascript;base64,' + Buffer.from(outputText).toString('base64')
 )
-const root = 'https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/'
+const root = 'https://fixture-project.supabase.co/storage/v1/object/public/portfolio-media/'
 const jpg = root + 'about/gallery/123-photo-9.jpg'
 const r = resolve(jpg, 'about/gallery/123-photo-9.jpg')
 assert.equal(r.card, root + 'about/gallery/WebP/123-photo-9.webp')

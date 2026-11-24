@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
-import { chromium } from 'playwright'
+import { chromium } from './isolation/Browser.mjs'
 
 const BASE='http://127.0.0.1:5195/LCR-SolutionsArchitecture-IA-Quantum/'
 const geometry=JSON.parse(await readFile('src/components/loading-portal/v2/portal-door-geometry.json','utf8'))

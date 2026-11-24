@@ -7,6 +7,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'tests/isolation/**'
+      - 'vite.config.ts'
       - tests/institution-logos-browser-smoke.mjs
       - src/config/retiredProjects.ts
       - src/pages/ProjectCaseV1.tsx
@@ -20,10 +22,6 @@ jobs:
   check:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
-    env:
-      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-      VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node 22
@@ -34,15 +32,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Verify vector integrity, SHA-256 and transparency
-        run: node tests/institution-logos-integrity.test.mjs
+        run: bash tests/isolation/run.sh node tests/institution-logos-integrity.test.mjs
       - name: TypeScript and production build
-        run: npm run build
+        run: bash tests/isolation/run.sh npm run build
       - name: Install Playwright
         run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
       - name: Desktop/mobile active institution marks, retired case and raster fallback
-        run: node tests/institution-logos-browser-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/institution-logos-browser-smoke.mjs
       - name: Preserve screenshots and JSON audit
         if: always()
         uses: actions/upload-artifact@v4

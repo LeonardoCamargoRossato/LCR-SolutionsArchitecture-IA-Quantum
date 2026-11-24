@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { mkdir, writeFile } from 'node:fs/promises'
-import { chromium } from 'playwright'
+import { chromium } from './isolation/Browser.mjs'
 
 const BASE='http://127.0.0.1:5193/LCR-SolutionsArchitecture-IA-Quantum/'
 const server=spawn('npm',['run','dev','--','--host','127.0.0.1','--port','5193','--strictPort'],{env:process.env,stdio:'ignore',detached:true})

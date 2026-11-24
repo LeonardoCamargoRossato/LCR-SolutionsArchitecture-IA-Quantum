@@ -242,6 +242,8 @@ def audit(key: str, mode: str, report_path: str) -> None:
 
 
 if __name__ == "__main__":
+    if os.getenv("LCR_APPROVED_MIGRATION") != "1" or os.getenv("LCR_TEST_MODE") == "1":
+        raise SystemExit("Real migration suspended: separate authorized environment and budget required.")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=["apply", "verify", "dry-run"])
     parser.add_argument("--report", default="about-gallery-png-webp-report.json")

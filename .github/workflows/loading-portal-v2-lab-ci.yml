@@ -3,6 +3,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'tests/isolation/**'
+      - 'vite.config.ts'
       - 'src/components/loading-portal/v2/**'
       - 'src/features/test-component-lab/loading-portal/**'
       - 'public/assets/home/loading-portal/**'
@@ -32,11 +34,11 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - run: bash tests/isolation/run.sh npm run build
       - run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
-      - run: node tests/loading-portal-v2-lab-smoke.mjs
+      - run: bash tests/isolation/run.sh node tests/loading-portal-v2-lab-smoke.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

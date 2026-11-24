@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import {mkdir,writeFile,readFile} from 'node:fs/promises'
 import {spawn} from 'node:child_process'
-import {chromium} from 'playwright'
+import {chromium} from './isolation/Browser.mjs'
 
 const BASE='http://127.0.0.1:5188/LCR-SolutionsArchitecture-IA-Quantum/'
 const LAB=BASE+'#/test-component-lab'

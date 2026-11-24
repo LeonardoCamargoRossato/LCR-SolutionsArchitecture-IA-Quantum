@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - feat/portfolio-cover-webp-20261117
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tests/isolation/**'
+      - '.github/workflows/portfolio-cover-browser.yml'
   workflow_dispatch:
 
 permissions:
@@ -24,21 +29,13 @@ jobs:
       - name: Install application
         run: npm ci
       - name: TypeScript and Vite build
-        run: npm run build
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-          VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
+        run: bash tests/isolation/run.sh npm run build
       - name: Install pinned Playwright for CI only
         run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
       - name: Run browser checks against live public CMS and Storage
-        run: node tests/portfolio-covers-smoke.mjs
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-          VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
+        run: bash tests/isolation/run.sh node tests/portfolio-covers-smoke.mjs
       - name: Upload browser evidence
         if: always()
         uses: actions/upload-artifact@v4

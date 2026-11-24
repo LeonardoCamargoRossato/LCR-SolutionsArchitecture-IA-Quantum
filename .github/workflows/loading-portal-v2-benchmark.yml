@@ -3,6 +3,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'tests/isolation/**'
+      - 'vite.config.ts'
       - 'src/features/home-loading/**'
       - 'src/components/loading-portal/v2/**'
       - 'tests/loading-portal-v2-benchmark.mjs'
@@ -23,23 +25,23 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - run: bash tests/isolation/run.sh npm run build
       - name: Build immutable V1 baseline
         run: |
           git worktree add --detach /tmp/lcr-v1-baseline e092227db021a2a9e1ddadf7d5f76440aa36b67a
           cmp package-lock.json /tmp/lcr-v1-baseline/package-lock.json
           ln -s "$PWD/node_modules" /tmp/lcr-v1-baseline/node_modules
-          cd /tmp/lcr-v1-baseline && npm run build
+          bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-v1-baseline && npm run build'
       - run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
       - name: Compare production builds, cold and warm, desktop/mobile and constrained conditions
         env:
           LCR_V1_BASELINE: /tmp/lcr-v1-baseline
-        run: node tests/loading-portal-v2-benchmark.mjs
+        run: bash tests/isolation/run.sh node tests/loading-portal-v2-benchmark.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: loading-portal-v2-performance-evidence
-          path: test-results/loading-portal-v2-benchmark.json
+          path: test-results/
           retention-days: 30

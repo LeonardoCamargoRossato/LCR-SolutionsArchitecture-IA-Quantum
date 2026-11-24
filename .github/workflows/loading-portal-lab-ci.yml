@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'tests/isolation/**'
+      - 'vite.config.ts'
       - 'src/components/loading-portal/**'
       - 'src/features/test-component-lab/loading-portal/**'
       - 'src/pages/TestComponentLab.tsx'
@@ -30,7 +32,7 @@ jobs:
       - name: Locked install
         run: npm ci
       - name: TypeScript and Vite production build
-        run: npm run build
+        run: bash tests/isolation/run.sh npm run build
       - name: Isolation and provenance safeguards
         run: |
           python3 - <<'PY'
@@ -70,9 +72,9 @@ jobs:
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
       - name: Lab ready/percentage/door/replay/mobile/reduced-motion tests
-        run: node tests/loading-portal-lab-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/loading-portal-lab-smoke.mjs
       - name: Entrance door motion editor controls and reversible motion
-        run: node tests/portal-motion-editor-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/portal-motion-editor-smoke.mjs
       - name: Evidence
         if: always()
         uses: actions/upload-artifact@v4
