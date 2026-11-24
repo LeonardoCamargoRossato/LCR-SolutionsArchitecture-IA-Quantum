@@ -6,7 +6,7 @@
 
 - Target: `public/assets/branding/social/lcr-portfolio-og.png`, PNG, 1200 × 630 px, <= 1 MB recommended project budget.
 - Public URL: `https://leonardocamargorossato.github.io/LCR-SolutionsArchitecture-IA-Quantum/assets/branding/social/lcr-portfolio-og.png?v=1`. Share the root URL, without hash/replay parameters.
-- All Open Graph and Twitter Card fields are static in index.html, with HTTPS absolute URLs; Vite copies the public file into dist. No React change.
+- All Open Graph and Twitter Card fields are static in index.html, with HTTPS absolute URLs; Vite copies the public file into dist. SeoSync no longer overwrites the site-wide Open Graph card after hydration; localized page title, description and favicon remain unchanged. Admin SEO social fields are retained for compatibility but are not used to override the static card. Hash routes share one canonical preview.
 - Temporary PNG uses the entire original 16:9 SVG, centered at 1120 × 630 with 40 px matching margins. Original artwork is not retouched.
 
 ## When ChatDrawer supplies the approved image
