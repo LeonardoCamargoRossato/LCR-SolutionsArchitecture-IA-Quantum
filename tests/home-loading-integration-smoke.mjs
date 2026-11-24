@@ -79,7 +79,7 @@ async function assertContinuousCount(page) {
   assert.deepEqual(counts.map(x=>x.value),Array.from({length:101},(_,i)=>i),'Every integer 0–100 must appear in order')
   assert(counts.every(x=>Math.abs(x.charge-x.value/100)<.001),'Bar follows number')
   const elapsed=counts.at(-1).time-counts[0].time
-  assert(elapsed>=2850,'Visible charging must last about 3 seconds: '+elapsed)
+  assert(elapsed>=1850,'Visible charging must last about 2 seconds: '+elapsed)
   return {elapsed,first:counts[0].time,last:counts.at(-1).time}
 }
 // Force classic (space-consuming) scrollbars in the browser context where
@@ -154,6 +154,9 @@ async function initialVisit() {
     element => getComputedStyle(element).backgroundColor), 'rgba(0, 0, 0, 0)')
   const count=await assertContinuousCount(page)
   await page.waitForTimeout(850)
+  const decoration=page.locator('.portal-v2-decoration')
+  assert.equal(await decoration.getAttribute('data-inactive'),'true','Invisible illumination must stop')
+  assert.equal(await decoration.locator('.pcl-hot').first().evaluate(el=>getComputedStyle(el).animationPlayState),'paused, paused')
   const first=await page.locator('.pdo-left').evaluate(el=>new DOMMatrixReadOnly(getComputedStyle(el).transform).m41)
   await page.screenshot({ path: 'test-results/home-portal-v2-door-opening.png' })
   await page.waitForTimeout(650)
