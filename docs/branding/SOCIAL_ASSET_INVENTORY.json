@@ -1,23 +1,42 @@
 {
   "asset_id": "lcr-portfolio-og",
-  "description": "Provisional raster of legacy cover; exclusive ChatDrawer artwork pending",
+  "description": "Official artwork V2 approved by the owner; exact binary verification required before publication",
   "function": "branding/social sharing",
-  "source": "public/og-cover.svg",
-  "source_git_blob": "19d5d3112ac5a8e73a04fbc7e4eec12fddecb6a9",
+  "source": "Drawer Chat 1 — AI-assisted composition based on owner-provided references",
+  "source_git_blob": null,
   "derivative": "public/assets/branding/social/lcr-portfolio-og.png",
   "format": "PNG",
   "width": 1200,
   "height": 630,
-  "bytes": 7580,
-  "sha256": "85487754ef453a331829e576a9fc378f8ebb55e2c1f602b79b54783682ade658",
-  "origin": "Existing repository cover; CairoSVG 2.8.2 rasterized to 1120×630 then centered on 1200×630 with matching background; 64-color palette PNG",
-  "approval": "provisional compatibility derivative; final artwork pending human approval",
-  "rights": "Existing repository artwork; no external imagery introduced. Original authorship/license not independently established.",
+  "bytes": 976095,
+  "sha256": "5b140d90e3c03fac7518784dea7fb4ce7a61b9e73175ff11bdf254cf3bb324cb",
+  "origin": "Drawer Chat 1, AI-assisted composition based on references supplied by the owner. Integrate both exact approved files, without re-encoding or reinterpretation.",
+  "approval": "Human visual approval reported in handoff, 2026-11-24; byte identity must be proven by CI",
+  "rights": "Owner-approved public use for portfolio social sharing, per handoff; no independent third-party rights assessment",
   "drive_path": null,
   "access": "public",
   "references": [
     "index.html: og:image, twitter:image"
   ],
-  "cache_version": 1,
-  "updated": "2026-11-24"
+  "cache_version": 2,
+  "updated": "2026-11-24",
+  "optimized": {
+    "path": "public/assets/branding/social/lcr-portfolio-og.webp",
+    "format": "WebP",
+    "width": 1200,
+    "height": 630,
+    "bytes": 137928,
+    "sha256": "fc85e54e320df31bc7f28f8a86916ba328af784c13ddd50de097c941c39a59db"
+  },
+  "approval_date": "2026-11-24",
+  "previous": {
+    "commit": "9e507eb5db8d5445bc9b98d6eef4e421f4ca518d",
+    "path": "public/assets/branding/social/lcr-portfolio-og.png",
+    "bytes": 7580,
+    "sha256": "85487754ef453a331829e576a9fc378f8ebb55e2c1f602b79b54783682ade658",
+    "source": "public/og-cover.svg",
+    "source_git_blob": "19d5d3112ac5a8e73a04fbc7e4eec12fddecb6a9",
+    "cache_version": 1
+  },
+  "standard": "LCR_ASSET_ORGANIZATION_STANDARD v1.0 (2026-11-16)"
 }
