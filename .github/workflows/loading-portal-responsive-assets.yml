@@ -1,0 +1,44 @@
+name: Loading Portal V2 — Generate static responsive WebP
+
+on:
+  push:
+    branches:
+      - feat/loading-portal-responsive-static-v2-20261123
+    paths:
+      - scripts/generate-loading-portal-static-assets.py
+      - scripts/check-loading-portal-static-assets.py
+      - .github/workflows/loading-portal-responsive-assets.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-static-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install image processing dependency
+        run: python -m pip install 'Pillow>=11,<13'
+      - name: Generate six responsive backgrounds
+        run: python scripts/generate-loading-portal-static-assets.py
+      - name: Validate size, hashes, core position and source preservation
+        run: python scripts/check-loading-portal-static-assets.py
+      - name: Commit the generated WebP and metadata to this feature branch
+        run: |
+          git add public/assets/home/loading-portal/loading-portal-base-*.webp
+          git add public/assets/home/loading-portal/loading-portal-variants.metadata.json
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'assets: render six LCR static responsive portal backgrounds [skip ci]'
+            git push origin HEAD:feat/loading-portal-responsive-static-v2-20261123
+          else
+            echo 'All static variants already up to date.'
+          fi
