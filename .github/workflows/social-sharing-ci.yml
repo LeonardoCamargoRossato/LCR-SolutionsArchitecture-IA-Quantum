@@ -11,6 +11,7 @@ on:
       - 'docs/branding/**'
       - 'tests/social-sharing-smoke.py'
       - '.github/workflows/social-sharing-ci.yml'
+      - '.github/workflows/deploy.yml'
       - 'vite.config.ts'
       - 'package*.json'
   workflow_dispatch:
