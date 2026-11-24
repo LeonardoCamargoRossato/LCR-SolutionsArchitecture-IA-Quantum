@@ -10,6 +10,7 @@ on:
       - 'public/assets/branding/social/**'
       - 'docs/branding/**'
       - 'tests/social-sharing-smoke.py'
+      - 'scripts/generate-mobile-social-preview.py'
       - '.github/workflows/social-sharing-ci.yml'
       - '.github/workflows/deploy.yml'
       - 'vite.config.ts'
@@ -44,6 +45,8 @@ jobs:
           name: social-sharing-preview
           path: |
             dist/index.html
+            dist/assets/branding/social/lcr-portfolio-og-wa.jpg
+            dist/assets/branding/social/lcr-portfolio-og-wa.webp
             dist/assets/branding/social/lcr-portfolio-og.jpg
             dist/assets/branding/social/lcr-portfolio-og.png
             dist/assets/branding/social/lcr-portfolio-og.webp

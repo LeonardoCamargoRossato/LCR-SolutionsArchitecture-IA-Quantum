@@ -15,28 +15,29 @@ import struct
 import zlib
 
 BASE = 'https://leonardocamargorossato.github.io/LCR-SolutionsArchitecture-IA-Quantum/'
-ASSET = 'assets/branding/social/lcr-portfolio-og.jpg'
+ASSET = 'assets/branding/social/lcr-portfolio-og-wa.jpg'
 PNG_ASSET = 'assets/branding/social/lcr-portfolio-og.png'
 TITLE = "Leonardo Rossato | AI Engineer & Software Developer Portfolio"
 DESCRIPTION = "Building intelligent solutions through AI engineering, software development, AI agents, LLMs, RAG, hybrid retrieval and systems architecture."
 ROOT = Path(__file__).resolve().parents[1]
 INVENTORY = json.loads((ROOT / 'docs/branding/SOCIAL_ASSET_INVENTORY.json').read_text())
-IMAGE = BASE + ASSET + '?v=' + str(INVENTORY['cache_version'])
+IMAGE = BASE + ASSET
 EXPECTED = {
   "og:title": "Leonardo Rossato | AI Engineer & Software Developer Portfolio",
   "og:description": "Building intelligent solutions through AI engineering, software development, AI agents, LLMs, RAG, hybrid retrieval and systems architecture.",
   "og:type": "website",
   "og:site_name": "LCR Portfolio",
   "og:url": "https://leonardocamargorossato.github.io/LCR-SolutionsArchitecture-IA-Quantum/",
-  "og:image": "https://leonardocamargorossato.github.io/LCR-SolutionsArchitecture-IA-Quantum/assets/branding/social/lcr-portfolio-og.jpg?v=3",
-  "og:image:width": "1200",
-  "og:image:height": "630",
+  "og:image": "https://leonardocamargorossato.github.io/LCR-SolutionsArchitecture-IA-Quantum/assets/branding/social/lcr-portfolio-og-wa.jpg",
+  "og:image:secure_url": IMAGE,
+  "og:image:width": "600",
+  "og:image:height": "315",
   "og:image:type": "image/jpeg",
   "og:image:alt": "Leonardo Rossato portfolio preview",
   "twitter:card": "summary_large_image",
   "twitter:title": "Leonardo Rossato | AI Engineer & Software Developer Portfolio",
   "twitter:description": "Building intelligent solutions through AI engineering, software development, AI agents, LLMs, RAG, hybrid retrieval and systems architecture.",
-  "twitter:image": "https://leonardocamargorossato.github.io/LCR-SolutionsArchitecture-IA-Quantum/assets/branding/social/lcr-portfolio-og.jpg?v=3",
+  "twitter:image": "https://leonardocamargorossato.github.io/LCR-SolutionsArchitecture-IA-Quantum/assets/branding/social/lcr-portfolio-og-wa.jpg",
   "twitter:image:alt": "Leonardo Rossato portfolio preview"
 }
 EXPECTED['og:image'] = EXPECTED['twitter:image'] = IMAGE
@@ -69,9 +70,9 @@ def check_html(html):
     head.feed(html)
     assert head.meta == EXPECTED, {k: (head.meta.get(k),v) for k,v in EXPECTED.items() if head.meta.get(k)!=v}
     assert head.canon == [BASE], head.canon
-    for key in ('og:url','og:image','twitter:image'):
+    for key in ('og:url','og:image','og:image:secure_url','twitter:image'):
         u = urlsplit(head.meta[key])
-        assert u.scheme == 'https' and u.netloc == urlsplit(BASE).netloc and u.path.startswith(urlsplit(BASE).path) and not u.fragment, key
+        assert u.scheme == 'https' and u.netloc == urlsplit(BASE).netloc and u.path.startswith(urlsplit(BASE).path) and not u.fragment and not u.query, key
 
 def check_png(data):
     assert data[:8] == b'\x89PNG\r\n\x1a\n', 'not a PNG'
@@ -94,9 +95,9 @@ def check_png(data):
     assert hashlib.sha256(data).hexdigest() == INVENTORY['sha256'], 'inventory hash mismatch'
     assert len(data) == INVENTORY['bytes'], 'inventory byte count mismatch'
 
-def check_jpeg(data):
-    expected = INVENTORY['social_preview']
-    assert 0 < len(data) < 300_000, 'social JPEG exceeds 300 KB compatibility budget'
+def check_jpeg(data, expected=None):
+    expected = expected or INVENTORY['social_preview']
+    assert 0 < len(data) < expected['budget_bytes_exclusive'], 'JPEG exceeds its compatibility budget'
     assert len(data) == expected['bytes'], 'JPEG inventory byte count mismatch'
     assert hashlib.sha256(data).hexdigest() == expected['sha256'], 'JPEG inventory hash mismatch'
     assert data[:2] == b'\xff\xd8' and data[-2:] == b'\xff\xd9', 'invalid JPEG markers'
@@ -118,11 +119,13 @@ def check_jpeg(data):
             dimensions = (width, height)
         assert marker != 0xc2, 'progressive JPEG not permitted for this compatibility asset'
         pos += size
-    assert dimensions == (1200, 630), f'wrong JPEG dimensions: {dimensions}'
+    assert dimensions == (expected['width'], expected['height']), f'wrong JPEG dimensions: {dimensions}'
     assert dimensions[0] >= 300 and dimensions[0] <= 4 * dimensions[1], 'WhatsApp dimensions'
 
-def check_webp(data):
-    expected = INVENTORY['optimized']
+def check_webp(data, expected=None):
+    expected = expected or INVENTORY['optimized']
+    if 'budget_bytes_exclusive' in expected:
+        assert 0 < len(data) < expected['budget_bytes_exclusive'], 'mobile WebP exceeds budget'
     assert len(data) == expected['bytes'], 'WebP inventory byte count mismatch'
     assert hashlib.sha256(data).hexdigest() == expected['sha256'], 'WebP inventory hash mismatch'
     assert data[:4] == b'RIFF' and data[8:12] == b'WEBP', 'not a WebP'
@@ -149,7 +152,7 @@ def check_webp(data):
             dimensions.append(((bits & 0x3fff) + 1, ((bits >> 14) & 0x3fff) + 1))
         pos = end + (size & 1)
     assert pos == len(data), 'invalid WebP padding'
-    assert dimensions and all(d == (1200, 630) for d in dimensions), dimensions
+    assert dimensions and all(d == (expected['width'], expected['height']) for d in dimensions), dimensions
 
 def fetch(url, ua):
     with urlopen(Request(url, headers={'User-Agent':ua,'Accept':'*/*'}),timeout=30) as response:
@@ -167,6 +170,9 @@ def main():
         check_html((d/'index.html').read_text())
         assert (d/ASSET).is_file(), 'Social JPEG missing'
         check_jpeg((d/ASSET).read_bytes())
+        for key, checker in (('previous_social_preview_v3', check_jpeg), ('mobile_webp', check_webp)):
+            asset = INVENTORY[key]
+            checker((d / asset['path'].removeprefix('public/')).read_bytes(), asset)
         assert (d/PNG_ASSET).is_file(), 'Approved Drawer PNG missing'
         check_png((d/PNG_ASSET).read_bytes())
         if 'optimized' in INVENTORY:
@@ -174,7 +180,7 @@ def main():
             assert webp.is_file(), 'Approved Drawer WebP missing: ' + str(webp)
             check_webp(webp.read_bytes())
         assert (d/'og-cover.svg').read_bytes()==(ROOT/'public/og-cover.svg').read_bytes()
-        print('PASS: build HTML, HTTPS absolute URLs, JPEG dimensions/hash/under 300 KB, approved PNG and WebP hashes, legacy SVG preserved')
+        print('PASS: build HTML, HTTPS absolute URLs, mobile JPEG <50 KB, mobile WebP <20 KB, all preserved asset hashes, legacy SVG preserved')
         return
     for ua in ('WhatsApp/2.22.20.72 A','WhatsApp/2.22.19.78 I','WhatsApp/2.2236.3 N','LinkedInBot/1.0','Twitterbot/1.0'):
         html, typ, headers = fetch(BASE, ua)
@@ -183,7 +189,15 @@ def main():
         data, typ, headers = fetch(IMAGE, ua)
         assert typ == 'image/jpeg', typ
         check_jpeg(data)
-        print('PASS', ua, '200 HTML + JPEG', len(data), 'bytes; exact SHA-256; 1200x630; under 300 KB')
+        print('PASS', ua, '200 HTML + JPEG', len(data), 'bytes; exact SHA-256; 600x315; under 50 KB')
+    fresh, typ, _ = fetch(BASE + '?share=v4', 'WhatsApp/2.22.20.72 A')
+    assert typ == 'text/html'
+    check_html(fresh.decode('utf-8'))
+    mobile = INVENTORY['mobile_webp']
+    data, typ, _ = fetch(BASE + mobile['path'].removeprefix('public/'), 'WhatsApp/2.22.20.72 A')
+    assert typ == 'image/webp', typ
+    check_webp(data, mobile)
+    print('PASS fresh share URL and mobile WebP', len(data), 'bytes')
     # Verify retained derivatives once; no repeated heavy PNG transfer per crawler.
     png, typ, _ = fetch(BASE + PNG_ASSET, 'WhatsApp/2.22.20.72 A')
     assert typ == 'image/png', typ

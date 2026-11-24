@@ -18,7 +18,7 @@
   "references": [
     "index.html: og:image, twitter:image"
   ],
-  "cache_version": 3,
+  "cache_version": 4,
   "updated": "2026-11-24",
   "optimized": {
     "path": "public/assets/branding/social/lcr-portfolio-og.webp",
@@ -54,6 +54,27 @@
     "cache_version": 2
   },
   "social_preview": {
+    "name": "lcr-portfolio-og-wa.jpg",
+    "bytes": 40303,
+    "sha256": "8257715ef682aa239331ca3c72cb31e20911299751ed5f320e55bdab0dbbeae9",
+    "quality": 80,
+    "width": 600,
+    "height": 315,
+    "budget": 50000,
+    "path": "public/assets/branding/social/lcr-portfolio-og-wa.jpg",
+    "git_blob": "898e670242183a82bf79e72618161688000f3b99",
+    "format": "JPEG",
+    "mime_type": "image/jpeg",
+    "budget_bytes_exclusive": 50000,
+    "source": "public/assets/branding/social/lcr-portfolio-og.png",
+    "encoder": "Pillow 12.0.0",
+    "generator": "scripts/generate-mobile-social-preview.py",
+    "source_sha256": "5b140d90e3c03fac7518784dea7fb4ce7a61b9e73175ff11bdf254cf3bb324cb",
+    "progressive": false,
+    "subsampling": 2,
+    "approval": "Same approved composition downscaled; native WhatsApp validation pending"
+  },
+  "previous_social_preview_v3": {
     "path": "public/assets/branding/social/lcr-portfolio-og.jpg",
     "format": "JPEG",
     "mime_type": "image/jpeg",
@@ -71,6 +92,27 @@
     "encoder": "Pillow 12.0.0",
     "generator": "scripts/generate-social-preview.py",
     "function": "Open Graph and Twitter card delivery; preserve approved PNG and WebP unchanged",
-    "approval": "Derived without crop, resize or generative edits; native WhatsApp preview verification pending"
+    "approval": "Derived without crop, resize or generative edits; native WhatsApp preview verification pending",
+    "commit": "481f15c3b167c24302a77691fd648b1ab868b538",
+    "cache_version": 3
+  },
+  "mobile_webp": {
+    "name": "lcr-portfolio-og-wa.webp",
+    "bytes": 19644,
+    "sha256": "c63c4b55ba1b201bc907af96dd32553326a930003a9b4d8ed6727a8255437b9b",
+    "quality": 50,
+    "width": 600,
+    "height": 315,
+    "budget": 20000,
+    "path": "public/assets/branding/social/lcr-portfolio-og-wa.webp",
+    "git_blob": "3f47114e01a07eefd170485bb70ed4badf1f63c2",
+    "format": "WebP",
+    "mime_type": "image/webp",
+    "budget_bytes_exclusive": 20000,
+    "source": "public/assets/branding/social/lcr-portfolio-og.png",
+    "encoder": "Pillow 12.0.0",
+    "generator": "scripts/generate-mobile-social-preview.py",
+    "source_sha256": "5b140d90e3c03fac7518784dea7fb4ce7a61b9e73175ff11bdf254cf3bb324cb",
+    "function": "Optional ultralight mobile derivative, not preloaded or advertised as primary OG image"
   }
 }
