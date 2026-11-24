@@ -1,0 +1,57 @@
+name: LCR Social Sharing — Static Open Graph QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'src/components/SeoSync.tsx'
+      - 'tests/ai-positioning-smoke.mjs'
+      - 'public/og-cover.svg'
+      - 'public/assets/branding/social/**'
+      - 'docs/branding/**'
+      - 'tests/social-sharing-smoke.py'
+      - '.github/workflows/social-sharing-ci.yml'
+      - '.github/workflows/deploy.yml'
+      - 'vite.config.ts'
+      - 'package*.json'
+  workflow_dispatch:
+    inputs:
+      verify_live:
+        description: Verify the already-deployed main preview over HTTPS
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  static-social-preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: python3 tests/social-sharing-smoke.py --dist dist
+      - name: Preserve legacy SVG source
+        run: git diff --exit-code dc7bc88c709ef46ea039e47c4d5c08630420df19 -- public/og-cover.svg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: social-sharing-preview
+          path: |
+            dist/index.html
+            dist/assets/branding/social/lcr-portfolio-og.png
+            docs/branding/SOCIAL_ASSET_INVENTORY.json
+          retention-days: 30
+      - name: Verify deployed crawler-facing HTML and image
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.verify_live
+        run: |
+          for attempt in 1 2 3 4 5; do
+            if python3 tests/social-sharing-smoke.py --live; then exit 0; fi
+            if [ "$attempt" -lt 5 ]; then sleep 15; fi
+          done
+          exit 1

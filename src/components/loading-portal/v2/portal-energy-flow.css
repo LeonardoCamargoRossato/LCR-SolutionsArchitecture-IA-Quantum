@@ -1,0 +1,18 @@
+/* The sprite itself is tiny; only translate3d is animated on each orbit.
+ * Intensity changes at ten charge boundaries, not on every frame. */
+.portal-energy-flow{position:absolute;inset:0;overflow:hidden;pointer-events:none;isolation:isolate;contain:layout paint}
+.portal-energy-flow .pe-sprite{position:absolute;left:0;top:0;width:1px;height:1px;will-change:transform;pointer-events:none}
+.portal-energy-flow .pe-sprite i{position:absolute;display:block;left:50%;top:50%;width:var(--pe-spark);height:var(--pe-spark);border-radius:50%;transform:translate(-50%,-50%);background:#eaffff;box-shadow:0 0 4px 2px #61eaff,0 0 10px 4px #26bbff;opacity:var(--pe-incoming);transition:opacity 100ms linear,width 100ms linear,height 100ms linear}
+.portal-energy-flow .pe-orbit i{width:calc(var(--pe-spark) * 1.15);height:calc(var(--pe-spark) * 1.15);opacity:var(--pe-orbit);box-shadow:0 0 5px 2px #b8f8ff,0 0 13px 5px #26bbff}
+.portal-energy-flow .pe-core-glow{position:absolute;left:var(--pe-core-x);top:var(--pe-core-y);width:var(--pe-core-w);height:var(--pe-core-h);transform:translate(-50%,-50%);background:radial-gradient(ellipse at center,transparent 52%,rgba(32,184,245,.09) 68%,rgba(66,213,255,.48) 72%,rgba(32,184,245,.16) 78%,transparent 90%);opacity:var(--pe-core);transition:opacity 120ms linear}
+.portal-energy-flow[data-energy-reduced="true"]{display:none}
+.portal-v2-decoration[data-inactive="true"] .portal-energy-flow{visibility:hidden}
+@media(prefers-reduced-motion:reduce){.portal-energy-flow{display:none}}
+
+/* Charge crescendo: fixed gradients, animated opacity/scale only. The
+ * percentage remains readable in the transparent center of the ring. */
+.portal-energy-flow .pe-core-glow{background:radial-gradient(ellipse at center,transparent 45%,rgba(32,184,245,.14) 56%,rgba(55,217,255,.48) 63%,rgba(218,253,255,.94) 69%,rgba(66,213,255,.6) 74%,rgba(32,184,245,.22) 83%,transparent 100%)}
+.portal-energy-flow .pe-core-heat{position:absolute;left:var(--pe-core-x);top:var(--pe-core-y);width:calc(var(--pe-core-w) * 2.05);height:calc(var(--pe-core-h) * 2.05);transform:translate(-50%,-50%) scale(.85);background:radial-gradient(ellipse,transparent 22%,rgba(39,184,255,.08) 30%,rgba(61,218,255,.48) 37%,rgba(164,247,255,.8) 42%,rgba(35,180,255,.24) 55%,transparent 73%);opacity:0;pointer-events:none}
+.portal-energy-flow[data-energy-charged="true"] .pe-core-heat{animation:pe-heat-up var(--pe-hold-ms) ease-in-out both;will-change:opacity,transform}
+.portal-energy-flow[data-energy-active="false"] .pe-core-heat{animation-play-state:paused}
+@keyframes pe-heat-up{0%{opacity:.15;transform:translate(-50%,-50%) scale(.85)}40%{opacity:.65;transform:translate(-50%,-50%) scale(1)}60%{opacity:.5;transform:translate(-50%,-50%) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%) scale(1.13)}}

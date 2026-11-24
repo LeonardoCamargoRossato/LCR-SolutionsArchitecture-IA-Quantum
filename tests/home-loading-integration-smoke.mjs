@@ -72,14 +72,42 @@ async function recordCounter(ctx) {
     }
     new MutationObserver(sample).observe(document,{subtree:true,childList:true,attributes:true,attributeFilter:['aria-valuenow']})
     sample()
+    window.__energySamples=[]
+    let last=0
+    const sampleEnergy=now=>{
+      const root=document.querySelector('[data-testid="portal-energy-flow"]')
+      const route=root?.querySelector('[data-energy-route="north-west"]')
+      const orbit=root?.querySelector('[data-energy-orbit="0"]')
+      if(root&&route&&orbit&&now-last>=70){
+        const a=route.getAnimations()[0],b=orbit.getAnimations()[0]
+        if(a&&b)window.__energySamples.push({level:Number(root.dataset.energyLevel),rate:a.playbackRate,orbitRate:b.playbackRate,
+          incoming:route.getBoundingClientRect().x,orbitX:orbit.getBoundingClientRect().x,orbitY:orbit.getBoundingClientRect().y,
+          power:Number(root.style.getPropertyValue('--pe-orbit')),active:root.dataset.energyActive})
+        last=now
+      }
+      if(now<20000)requestAnimationFrame(sampleEnergy)
+    }
+    requestAnimationFrame(sampleEnergy)
   })
+}
+async function assertEnergy(page){
+  const samples=await page.evaluate(()=>window.__energySamples)
+  const early=samples.filter(x=>x.level<4),late=samples.filter(x=>x.level>=7&&x.active==='true')
+  assert(early.length>1&&late.length>1,'Sample early and late energy')
+  assert(Math.max(...late.map(x=>x.rate))>Math.min(...early.map(x=>x.rate)),'Incoming light accelerates')
+  assert(Math.max(...late.map(x=>x.orbitRate))>Math.min(...early.map(x=>x.orbitRate)),'Orbit accelerates')
+  assert(Math.max(...late.map(x=>x.power))>Math.max(...early.map(x=>x.power)),'Energy accumulates at center')
+  assert(new Set(late.map(x=>Math.round(x.orbitX)+','+Math.round(x.orbitY))).size>2,'Orbit truly travels around center')
+  assert(new Set(samples.map(x=>Math.round(x.incoming))).size>2,'Incoming lights move')
+  assert(samples.some(x=>x.active==='false'&&x.level===10),'Invisible energy is stopped')
+  return {earlyRate:early[0].rate,lateRate:late.at(-1).rate,earlyOrbitPower:early[0].power,lateOrbitPower:late.at(-1).power}
 }
 async function assertContinuousCount(page) {
   const counts=await page.evaluate(()=>window.__portalCount)
   assert.deepEqual(counts.map(x=>x.value),Array.from({length:101},(_,i)=>i),'Every integer 0–100 must appear in order')
   assert(counts.every(x=>Math.abs(x.charge-x.value/100)<.001),'Bar follows number')
   const elapsed=counts.at(-1).time-counts[0].time
-  assert(elapsed>=2850,'Visible charging must last about 3 seconds: '+elapsed)
+  assert(elapsed>=1850,'Visible charging must last about 2 seconds: '+elapsed)
   return {elapsed,first:counts[0].time,last:counts.at(-1).time}
 }
 // Force classic (space-consuming) scrollbars in the browser context where
@@ -125,7 +153,7 @@ async function assertReveal(page) {
   assert(during.some(f=>f.art>=.99&&!f.complete),'Right visual finishes fading before title')
   const typed=frames.find(f=>f.complete)
   const opened=after[0]
-  assert(typed&&typed.time>opened.time+100,'Typing finishes after door opens')
+  assert(typed&&typed.time>during[0].time+100,'Title completes after reveal begins; mobile bounded motion may intentionally outlast typing')
   assert(after.some(f=>f.complete),'Title finishes normally')
   return {maxGutter:Math.max(...frames.map(f=>f.gutter)),maxXShift:Math.max(...frames.map(f=>Math.abs(f.x-baseline.x))),typingAfterOpenMs:typed.time-opened.time}
 }
@@ -147,6 +175,15 @@ async function initialVisit() {
   assert.equal(await page.locator('h1.hero-type-title').getAttribute('data-typing-complete'), 'false')
   assert.equal(await page.locator('.hero-v5-stage-selector button').count(), 3)
   await page.screenshot({ path: 'test-results/home-portal-v2-first-frame.png' })
+  // Capture accumulated light before the mechanical transition, without
+  // waiting for a decorative timer or slowing the actual sequence.
+  await page.waitForFunction(()=>Number(document.querySelector('[data-testid="portal-energy-flow"]')?.dataset.energyLevel)>=7,{},{timeout:8000})
+  await page.screenshot({ path: 'test-results/home-portal-v2-energy-charged.png' })
+  await page.locator('[data-testid="loading-portal-v2"][data-phase="charged"]').waitFor()
+  await page.waitForTimeout(350)
+  assert.equal(await page.getByTestId('portal-v2-counter').getAttribute('aria-valuenow'),'100')
+  assert(Number(await page.getByTestId('portal-core-heat').evaluate(el=>getComputedStyle(el).opacity))>.25)
+  await page.screenshot({path:'test-results/home-portal-v2-heating.png'})
   // The backing layer must be transparent as the two real leaves depart.
   // Otherwise the doors open to a black rectangle, not the React Home.
   await page.locator('[data-testid="loading-portal-v2"][data-phase="opening"]').waitFor({ timeout: 16000 })
@@ -154,6 +191,18 @@ async function initialVisit() {
     element => getComputedStyle(element).backgroundColor), 'rgba(0, 0, 0, 0)')
   const count=await assertContinuousCount(page)
   await page.waitForTimeout(850)
+  const decoration=page.locator('.portal-v2-decoration')
+  assert.equal(await decoration.getAttribute('data-inactive'),'true','Invisible illumination must stop')
+  assert.equal(await decoration.getByTestId('portal-energy-flow').getAttribute('data-energy-active'),'false')
+  assert.equal(await decoration.locator('[data-energy-route]').count(),8)
+  assert.equal(await decoration.locator('[data-energy-orbit]').count(),5)
+  assert(await decoration.getByTestId('portal-energy-flow').evaluate(el=>el.getAnimations({subtree:true}).every(a=>a.playState==='paused'||a.playState==='finished')))
+  const lightStates=await decoration.locator('.pcl-hot,.pcl-halo').evaluateAll(nodes=>nodes.map(el=>({
+    css:getComputedStyle(el).animationPlayState.split(',').map(v=>v.trim()),
+    animations:el.getAnimations().map(a=>a.playState),
+  })))
+  assert.equal(lightStates.length,38,'All 19 paired light paths preserved')
+  assert(lightStates.every(x=>x.css.every(v=>v==='paused')&&x.animations.every(v=>v==='paused'||v==='finished')),'Every invisible light animation must be stopped')
   const first=await page.locator('.pdo-left').evaluate(el=>new DOMMatrixReadOnly(getComputedStyle(el).transform).m41)
   await page.screenshot({ path: 'test-results/home-portal-v2-door-opening.png' })
   await page.waitForTimeout(650)
@@ -190,10 +239,11 @@ async function initialVisit() {
   assert(started >= opening && started < closed, 'Home animation must begin during the mechanical opening')
   const interactive=info.entries.find(x=>x.name==='home-interactive').startTime
   assert(interactive>=closed,'Interaction remains locked until the portal has opened')
+  report.timings.push({scenario:'energy-desktop',...await assertEnergy(page)})
   const reveal=await assertReveal(page)
   report.timings.push({scenario:'synchronized-desktop',...reveal})
   assert(closed-opening>=2900,'Mechanical opening must take about 3 seconds')
-  assert(opening-count.last>=140,'100% must remain visible before opening')
+  assert(opening-count.last>=740,'Desktop core must heat for about 780ms at 100%')
   report.timings.push({scenario:'cinematic-desktop',chargeMs:count.elapsed,openingMs:closed-opening,visibleTotalMs:closed-count.first})
   await page.locator('.hero-v3-actions .hero-actions .button').first().click()
   await page.waitForFunction(() => {
@@ -364,14 +414,29 @@ async function cinematicMobile() {
   await page.screenshot({path:'test-results/home-portal-v2-mobile-charging.png'})
   await page.locator('[data-testid="loading-portal-v2"][data-phase="opening"]').waitFor({timeout:18000})
   const count=await assertContinuousCount(page)
-  await page.waitForTimeout(1400)
+  assert.equal(await page.getByTestId('loading-portal-v2').getAttribute('data-motion-profile'),'mobile')
+  await page.waitForTimeout(950)
+  // Simulate the device stalling while the mechanical movement is in progress.
+  // The shared bounded clock must not jump forward by the blocked 400ms.
+  const stall=await page.evaluate(async()=>{
+    const leaf=document.querySelector('.pdo-left'),a=leaf.getAnimations()[0]
+    const before=Number(a.currentTime)
+    const until=performance.now()+400
+    while(performance.now()<until){}
+    await new Promise(requestAnimationFrame)
+    return {before,after:Number(a.currentTime)}
+  })
+  assert(stall.after-stall.before<=68,'Mobile opening must not catch up after a stalled frame: '+JSON.stringify(stall))
+  report.timings.push({scenario:'mobile-stall',...stall})
   await page.screenshot({path:'test-results/home-portal-v2-mobile-opening.png'})
   await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({timeout:16000})
   const info=await marks(page), get=name=>info.entries.find(e=>e.name===name).startTime
-  assert(get('portal-opened')-get('portal-opening')>=2900)
+  assert(get('portal-opened')-get('portal-opening')>=3500,'Mobile opening must be slower than desktop')
+  assert(get('portal-opening')-count.last>=900,'Mobile core must heat for about 950ms')
   report.timings.push({scenario:'cinematic-mobile',chargeMs:count.elapsed,openingMs:get('portal-opened')-get('portal-opening')})
   await page.locator('h1.hero-type-title[data-typing-complete="true"]').waitFor({timeout:14000})
   await page.waitForTimeout(1000)
+  report.timings.push({scenario:'energy-mobile',...await assertEnergy(page)})
   report.timings.push({scenario:'synchronized-mobile',...await assertReveal(page)})
   await page.evaluate(()=>window.scrollTo({top:600,behavior:'instant'}))
   assert(await page.evaluate(()=>scrollY)>0,'Mobile scroll remains usable after opening')

@@ -45,9 +45,9 @@ export function SeoSync() {
 
     const description = caseDescription || (locale === 'pt-BR' ? localizedHero.description : s.metaDescription)
     setMeta('meta[name="description"]', description)
-    setMeta('meta[property="og:title"]', currentCase || locale === 'pt-BR' ? title : s.ogTitle)
-    setMeta('meta[property="og:description"]', caseDescription || (locale === 'pt-BR' ? localizedHero.description : s.ogDescription))
-    setMeta('meta[property="og:image"]', s.ogImage)
+    // Social crawlers receive index.html, including hash routes. Keep the
+    // canonical portfolio card identical before and after hydration. The
+    // localized browser title, description and favicon remain dynamic.
 
     const configuredFavicon = s.faviconUrl?.trim()
     const faviconSource = configuredFavicon || DEFAULT_FAVICON
