@@ -1,13 +1,13 @@
 // Isolated, repeatable request timeline. No routing for normal scenarios (HTTP cache remains enabled).
 import assert from 'node:assert/strict'
-import { spawn } from 'node:child_process'
+import { spawn,execFileSync } from 'node:child_process'
 import { mkdir,writeFile } from 'node:fs/promises'
 import { chromium } from './isolation/Browser.mjs'
 const BASE='http://127.0.0.1:5188/LCR-SolutionsArchitecture-IA-Quantum/'
 const sourceDir=process.argv.includes('--baseline') ? (process.env.LCR_BEFORE || process.cwd()) : process.cwd()
 const baseline=process.argv.includes('--baseline')
 const server=spawn('npm',['run','dev','--','--host','127.0.0.1','--port','5188','--strictPort'],{cwd:sourceDir,stdio:'ignore',detached:true})
-const report={sha:process.env.GITHUB_SHA,baseline,scenarios:[]}
+const report={sha:execFileSync('git',['rev-parse','HEAD'],{cwd:sourceDir,encoding:'utf8'}).trim(),baseline,scenarios:[]}
 let browser
 const dir='test-results/image-demand'
 await mkdir(dir,{recursive:true})
@@ -95,8 +95,11 @@ async function run(viewport){
   if(!baseline){
     net.setPhase('theme-language')
     const oldSrc=await cards.first().locator('img.progressive-image-main').getAttribute('src')
-    // Exercise state without selecting other photos; the separate legacy bilingual/theme suite tests the controls.
-    await page.evaluate(()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'})
+    await page.locator('.theme-toggle').click()
+    await page.getByRole('button',{name:/^Language:/}).click()
+    await page.locator('.language-picker-option').filter({hasText:'PT BR'}).click()
+    await page.waitForFunction(()=>document.documentElement.lang==='pt-BR')
+    await cards.first().scrollIntoViewIfNeeded()
     await wait(150)
     assert.equal(await cards.first().locator('img.progressive-image-main').getAttribute('src'),oldSrc)
     assert.equal(net.entries.filter(e=>e.phase==='theme-language'&&e.url===firstUrl).length,0)
@@ -127,6 +130,45 @@ async function extraScenarios(){
     await loaded(page,'.about-gallery-card:first-child img.progressive-image-main')
     assert.equal(net.entries.filter(zoom).length,0)
     report.scenarios.push({scenario:noObserver?'without-observer':'320px',requests:net.entries})
+    console.log('DEMAND PASS',noObserver?'without-observer':'320px')
+    await ctx.close()
+  }
+  for(const viewport of [{width:768,height:1024},{width:1920,height:1080}]){
+    const ctx=await browser.newContext({viewport,reducedMotion:'reduce'})
+    const page=await ctx.newPage(),net=await instrument(page)
+    await page.goto(BASE+'#/?portal=skip')
+    await page.locator('.about-gallery-card').first().waitFor({state:'attached'})
+    await loaded(page,'[data-testid="hero-v6-blue-code"]')
+    await wait(350)
+    assert.equal(net.entries.filter(gallery).length,(await geometry(page)).filter(x=>x.visible).length)
+    assert.equal(net.entries.filter(zoom).length,0)
+    report.scenarios.push({scenario:'initial-'+viewport.width,requests:net.entries})
+    await ctx.close()
+  }
+  for(const offline of [false,true]){
+    const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'})
+    const page=await ctx.newPage(),net=await instrument(page)
+    await page.goto(BASE+'#/?portal=skip')
+    const cards=page.locator('.about-gallery-card')
+    await cards.first().waitFor({state:'attached'})
+    await loaded(page,'[data-testid="hero-v6-blue-code"]')
+    assert.equal(net.entries.filter(gallery).length,0)
+    net.setPhase(offline?'offline':'slow')
+    if(offline)await ctx.setOffline(true)
+    else await net.cdp.send('Network.emulateNetworkConditions',{offline:false,latency:300,downloadThroughput:100000,uploadThroughput:100000})
+    await cards.first().scrollIntoViewIfNeeded()
+    if(offline)await cards.first().locator('.image-fallback').waitFor({timeout:15000})
+    else await loaded(page,'.about-gallery-card:first-child img.progressive-image-main')
+    await wait(500)
+    assert.equal(net.entries.filter(e=>e.url.includes('fixture-photo-01')).length,1)
+    assert.equal(net.entries.filter(zoom).length,0)
+    if(offline)await ctx.setOffline(false)
+    else await net.cdp.send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1})
+    await cards.last().scrollIntoViewIfNeeded()
+    await cards.last().locator('img.progressive-image-main').waitFor({state:'visible'})
+    await page.waitForFunction(()=>{const img=document.querySelector('.about-gallery-card:last-child img.progressive-image-main');return img?.complete&&img?.naturalWidth>0})
+    report.scenarios.push({scenario:offline?'offline-recovery':'slow-network',requests:net.entries})
+    console.log('DEMAND PASS',offline?'offline-recovery':'slow-network')
     await ctx.close()
   }
   const errorCtx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'})

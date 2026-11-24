@@ -203,12 +203,7 @@ export function ProjectInstitutionsAdmin({
                 ? <DemandImage
                     src={resolveInstitutionLogo(item.institutionLogoUrl).src}
                     alt=""
-                    onError={(event) => {
-                      const fallback = item.institutionLogoUrl
-                      if (fallback && event.currentTarget.src !== fallback) {
-                        event.currentTarget.src = fallback
-                      }
-                    }}
+                    fallbackSrc={item.institutionLogoUrl}
                   />
                 : <span>{item.institutionName.slice(0, 2).toUpperCase()}</span>}
             </div>

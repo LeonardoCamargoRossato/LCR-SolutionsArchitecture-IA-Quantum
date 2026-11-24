@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
 import { portalAssetUrls, selectPortalVariant, type PortalVariant } from './portalGeometry'
 
 export type PortalAssetState = 'loading' | 'ready' | 'failed'
-type Prepared = { variant: PortalVariant; status: PortalAssetState }
+type AssetMode = 'full' | 'background' | 'lights' | 'counter' | 'door'
+type Prepared = { variant: PortalVariant; status: PortalAssetState; mode: AssetMode }
 
 
 // All layers use the same candidate. Cache decoded resources only for this
@@ -35,7 +36,7 @@ function decode(cache: Map<string, HTMLImageElement>, url: string, signal: Abort
 }
 
 export function usePortalVariant(
-  container: RefObject<HTMLDivElement | null>, forced: PortalVariant | undefined, locked: boolean,
+  container: RefObject<HTMLDivElement | null>, forced: PortalVariant | undefined, locked: boolean, mode: AssetMode = 'full',
 ) {
   const cache = useRef(new Map<string, HTMLImageElement>())
   useEffect(() => () => cache.current.clear(), [])
@@ -62,10 +63,15 @@ export function usePortalVariant(
   }, [container, forced, locked])
 
   useEffect(() => {
-    if (!desired || locked || (selectedRef.current?.variant === desired && selectedRef.current.status === 'ready')) return
+    if (!desired || locked || (selectedRef.current?.variant === desired && selectedRef.current.status === 'ready' && selectedRef.current.mode === mode)) return
     const controller = new AbortController()
     const { signal } = controller
     const [background, ...mechanical] = portalAssetUrls(desired)
+    if (mode === 'lights' || mode === 'counter') {
+      setPrepared({ variant: desired, status: 'ready', mode })
+      return () => controller.abort()
+    }
+    const requiredMechanical = mode === 'background' ? [] : mechanical
     // Background first. Initial visit can show the static art as soon as it
     // is decoded; a subsequent resize keeps the old complete plane until
     // the replacement set is fully available.
@@ -73,21 +79,21 @@ export function usePortalVariant(
       try {
         await decode(cache.current, background, signal)
         if (signal.aborted || lockRef.current) return
-        setPrepared(previous => previous?.status === 'ready' ? previous : { variant: desired, status: 'loading' })
-        await Promise.all(mechanical.map(url => decode(cache.current, url, signal)))
+        setPrepared(previous => previous?.status === 'ready' && previous.mode === mode ? previous : { variant: desired, status: 'loading', mode })
+        await Promise.all(requiredMechanical.map(url => decode(cache.current, url, signal)))
         if (!signal.aborted && !lockRef.current) {
-          const keep = new Set([background, ...mechanical])
+          const keep = new Set([background, ...requiredMechanical])
           for (const url of cache.current.keys()) if (!keep.has(url)) cache.current.delete(url)
-          setPrepared({ variant: desired, status: 'ready' })
+          setPrepared({ variant: desired, status: 'ready', mode })
         }
       } catch {
         if (!signal.aborted && !lockRef.current) {
-          setPrepared(previous => previous?.status === 'ready' ? previous : { variant: desired, status: 'failed' })
+          setPrepared(previous => previous?.status === 'ready' && previous.mode === mode ? previous : { variant: desired, status: 'failed', mode })
         }
       }
     })()
     return () => controller.abort()
-  }, [desired, locked])
+  }, [desired, locked, mode])
 
-  return prepared
+  return prepared?.mode === mode ? prepared : undefined
 }

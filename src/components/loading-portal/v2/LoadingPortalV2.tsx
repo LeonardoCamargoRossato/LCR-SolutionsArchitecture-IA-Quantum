@@ -41,7 +41,7 @@ export const LoadingPortalV2 = memo(function LoadingPortalV2({
   const [hidden,setHidden] = useState(() => document.hidden)
   const [systemReduced,setSystemReduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const [freeze,setFreeze] = useState(false)
-  const result = usePortalVariant(root,variant,freeze || phase !== 'loading')
+  const result = usePortalVariant(root,variant,freeze || phase !== 'loading',mode)
   const callback = useRef({onOpening,onOpened,onFallback,onAssetState})
   callback.current = {onOpening,onOpened,onFallback,onAssetState}
   const completed = useRef(false)

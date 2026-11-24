@@ -57,6 +57,7 @@ jobs:
               print('BEFORE_AFTER',new['viewport'],old['initialGalleryRequests'],'->',new['initialGalleryRequests'],'requests;',old['initialGalleryBytes'],'->',new['initialGalleryBytes'],'encoded bytes; whole scenario',old['imageEncodedBytes'],'->',new['imageEncodedBytes'])
           PY
       - name: Inventory image surfaces
+        if: always()
         run: |
           mkdir -p test-results/image-demand
           git grep -n -E '<img|<picture|<source|srcSet|backgroundImage|background-image|new Image|rel=.preload|url[(]' -- src index.html > test-results/image-demand/source-inventory.txt || test "$?" = 1

@@ -144,14 +144,26 @@ export function ParticleWave({ settings, running, direction = 'forward' }: Parti
       motionReduced = reduced.matches
       refresh()
     }
-    const observer = new IntersectionObserver(([entry]) => {
+    // Older browsers must keep the renderer usable without IntersectionObserver.
+    const updateVisibility = () => {
+      const r = canvas.getBoundingClientRect()
+      const next = r.width > 0 && r.height > 0 && r.right > 0 && r.bottom > 0 &&
+        r.left < window.innerWidth && r.top < window.innerHeight
+      if (next !== visible) { visible = next; refresh() }
+    }
+    const observer = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting
       refresh()
     }, { threshold: .01 })
     const resize = new ResizeObserver(setSize)
 
     resize.observe(canvas)
-    observer.observe(canvas)
+    if (observer) observer.observe(canvas)
+    else {
+      updateVisibility()
+      window.addEventListener('scroll', updateVisibility, true)
+      window.addEventListener('resize', updateVisibility)
+    }
     document.addEventListener('visibilitychange', refresh)
     reduced.addEventListener('change', onReduced)
     setSize()
@@ -160,7 +172,9 @@ export function ParticleWave({ settings, running, direction = 'forward' }: Parti
       disposed = true
       if (raf) cancelAnimationFrame(raf)
       resize.disconnect()
-      observer.disconnect()
+      observer?.disconnect()
+      window.removeEventListener('scroll', updateVisibility, true)
+      window.removeEventListener('resize', updateVisibility)
       document.removeEventListener('visibilitychange', refresh)
       reduced.removeEventListener('change', onReduced)
       canvas.dataset.ready = 'false'

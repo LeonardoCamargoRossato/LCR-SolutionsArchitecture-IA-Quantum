@@ -16,6 +16,7 @@ export function imageIsVisible(node: Element, allowPortalReveal = false): boolea
   let left = Math.max(0, r.left), top = Math.max(0, r.top)
   let right = Math.min(document.documentElement.clientWidth, r.right)
   let bottom = Math.min(document.documentElement.clientHeight, r.bottom)
+  if (right <= left || bottom <= top) return false
   for (let el: Element | null = node; el; el = el.parentElement) {
     const style = getComputedStyle(el)
     if (style.display === 'none' || style.visibility === 'hidden' ||
