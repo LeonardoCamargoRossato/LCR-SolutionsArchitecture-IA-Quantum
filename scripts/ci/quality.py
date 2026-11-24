@@ -127,12 +127,13 @@ done""")
         after_steps = copy.deepcopy(after)
         old_step = next(s for job in old_steps.values() for s in job.get("steps", [])
                         if s.get("name") == step_name)
+        new_step_name = ("Prepare builds from each revision's locked dependencies"
+                         if name == "portal-performance-hotfix" else step_name)
         new_step = next(s for job in after_steps["jobs"].values() for s in job.get("steps", [])
-                        if s.get("name") == step_name)
+                        if s.get("name") == new_step_name)
         assert old_step["run"].strip() == expected_old
         assert new_step["run"].strip() == expected_new
         if name == "portal-performance-hotfix":
-            assert new_step.get("name") == "Prepare builds from each revision's locked dependencies"
             new_step["name"] = step_name
         new_step["run"] = old_step["run"]
         assert after_steps == before, f"Unexpected benchmark workflow change: {name}"
