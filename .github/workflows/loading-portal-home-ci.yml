@@ -49,13 +49,17 @@ jobs:
           assert 'sessionStorage' in source
           assert 'portal' in source and 'homeSafe' in source and 'onOpened' in source
           assert 'waitForHomeDom' in preload and 'waitForHeroMedia' in preload
-          assert 'waitForOpeningArt' in preload
+          assert 'waitForCanvas' in preload and 'confirmedBootProgress' in preload
+          assert 'LoadingPortalV2' in source and 'onAssetState' in source
+          assert 'requestAnimationFrame' not in source, 'No continuous progress loop'
+          assert 'AbortController' in source and 'portal-fallback' in source
           assert 'VITE_SUPABASE' not in source and "from '../../infrastructure/supabase" not in preload
           assert 'useHomeMotionEnabled' in home and hero
           assert 'data-home-motion' in home
           assert Path('src/components/loading-portal/LoadingPortal.tsx').exists()
           assert Path('public/assets/home/loading-portal/portal-000.webp').exists()
-          assert Path('public/assets/home/loading-portal/door-open-base.webp').exists()
+          assert Path('public/assets/home/loading-portal/door-open-base.webp').exists() # historic V1
+          assert Path('public/assets/home/loading-portal/mechanical/16x9/door-core.webp').exists()
           assert not list(Path('dist/assets').glob('*background-original.png'))
           print('PASS: runtime safe, Home is real, Lab isolated, approved assets preserved')
           PY
@@ -65,6 +69,8 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Test first visit, readiness, CSS/Canvas motion synchronization, sessions, routes and safe fallback
         run: node tests/home-loading-integration-smoke.mjs
+      - name: Verify original Hero V13 particle wave on production-compatible route
+        run: node tests/hero-v13-particle-wave-smoke.mjs
       - name: Upload screenshots and performance evidence
         if: always()
         uses: actions/upload-artifact@v4

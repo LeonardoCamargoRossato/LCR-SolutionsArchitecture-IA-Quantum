@@ -1,0 +1,45 @@
+name: LCR Loading Portal — V1 versus V2 performance evidence
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/features/home-loading/**'
+      - 'src/components/loading-portal/v2/**'
+      - 'tests/loading-portal-v2-benchmark.mjs'
+      - '.github/workflows/loading-portal-v2-benchmark.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Build immutable V1 baseline
+        run: |
+          git worktree add --detach /tmp/lcr-v1-baseline e092227db021a2a9e1ddadf7d5f76440aa36b67a
+          cmp package-lock.json /tmp/lcr-v1-baseline/package-lock.json
+          ln -s "$PWD/node_modules" /tmp/lcr-v1-baseline/node_modules
+          cd /tmp/lcr-v1-baseline && npm run build
+      - run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Compare production builds, cold and warm, desktop/mobile and constrained conditions
+        env:
+          LCR_V1_BASELINE: /tmp/lcr-v1-baseline
+        run: node tests/loading-portal-v2-benchmark.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: loading-portal-v2-performance-evidence
+          path: test-results/loading-portal-v2-benchmark.json
+          retention-days: 30

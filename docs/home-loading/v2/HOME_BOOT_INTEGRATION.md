@@ -1,0 +1,8 @@
+# V2 real Home boot
+The owner explicitly authorized proceeding with visual validation and final integration. The V2 component from the Lab is reused without redrawing. Original standalone preview evidence reviewed in desktop and mobile; full integrated browser checks remain required.
+## Readiness
+The one existing HomeBootCoordinator now tracks real completed or usable fallback tasks: DOM 40%, SVG 15%, Canvas 15%, fonts 10%, selected portal assets 20%. A failed mandatory resource is not successful readiness; decorative Home media may use the actual graph/base/system-font fallback. Door-art failure reveals only an actually mounted Home, with explicit fallback outcome. Percentage updates only on task events, floors and clamps to 99 until ready. No simulated progress or frame loop. Canvas prepares its initial frame while motion is paused.
+## Navigation and observability
+First Home per V2 session, explicit replay and skip; no portal on other routes. Abort old DOM observers/timeouts when navigating, no reset of real Home subtree. Mark real Home mount, asset readiness, progress completion, opening, opened, fallback and animation release. Task records expose durations locally only. No third-party telemetry. Reduced motion skips travel.
+## QA / rollback
+Existing Home smoke is adapted to V2 and adds actual Canvas progress after release, one variant for a stable viewport, held mechanical request and fallback outcome. V14 checks the same full-screen shell and shared cover plane. Old V1 artwork and Lab remain available. Revert the Home PR to restore V1. Performance matrix and visual integrated evidence are not yet certified; use exact-head CI and final release report.

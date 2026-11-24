@@ -22,6 +22,7 @@ export interface LoadingPortalV2Props {
   onOpening?: () => void
   onOpened?: () => void
   onFallback?: () => void
+  allowFallback?: boolean
   onAssetState?: (state: PortalAssetState, variant?: PortalVariant) => void
 }
 
@@ -29,7 +30,7 @@ export interface LoadingPortalV2Props {
  * has no progress timer, remote service, route logic, or second boot coordinator. */
 export function LoadingPortalV2({
   progress, ready, variant, playing = true, paused = false, speed = 1, intensity = .72,
-  duration = 1800, reducedMotion = false, mode = 'full', onOpening, onOpened, onFallback, onAssetState,
+  duration = 1800, reducedMotion = false, mode = 'full', allowFallback = true, onOpening, onOpened, onFallback, onAssetState,
 }: LoadingPortalV2Props) {
   const root = useRef<HTMLDivElement>(null), plane = useRef<HTMLDivElement>(null)
   const [phase, setPhase] = useState<'loading' | 'opening' | 'opened' | 'fallback'>('loading')
@@ -91,7 +92,7 @@ export function LoadingPortalV2({
     {!selected && <p className="portal-v2-resource-status" role="status">Preparando a porta…</p>}
     {result?.status === 'failed' && <div className="portal-v2-resource-status" role="status">
       Não foi possível preparar os recursos da porta.
-      <button type="button" onClick={() => end(true)}>Continuar sem animação</button>
+      {allowFallback && <button type="button" onClick={() => end(true)}>Continuar sem animação</button>}
     </div>}
   </div>
 }
