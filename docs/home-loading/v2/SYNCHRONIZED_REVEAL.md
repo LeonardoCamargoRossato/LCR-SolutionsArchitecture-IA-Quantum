@@ -1,0 +1,6 @@
+# Synchronized Home reveal
+User feedback: a scrollbar appeared on portal handoff and moved the composition sideways. The lower mobile visual was already rendered while the upper copy was still entering; title typing was too fast.
+- Hide only the root scrollbar consistently, retaining native scrolling outside the portal. Lock and restore root/body overflow via layout effect. No resizing or gutter compensation.
+- Keep the existing 3s charge, ready gate, 100% hold and 3s door motion. Home remains mounted, but its opacity fades as one group during the mechanical opening (1100ms). Name and title start together; right visual fades over 2400ms. No individual Hero translations or stagger. Existing lower sections continue intersection-based reveals.
+- Home motion starts when the actual opening starts, not when the overlay is removed. Inert and pointer access remain gated until completion. Reduced motion, fallback, skip and session behavior remain. Typewriter uses 150ms start and 105ms per character; title finishes after the opening. Geometry is reserved by the full text as before. No new assets or dependencies.
+- Browser QA samples document gutter, name position/width, group opacity, typing, interaction gate and mobile scroll throughout the transition. Regression tests retain exact counter, leaf movement, particle animation, readiness, failure and routes.
