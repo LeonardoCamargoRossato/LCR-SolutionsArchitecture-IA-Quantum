@@ -1,0 +1,193 @@
+{
+  "asset_id": "lcr-portfolio-loading-portal-static-v2",
+  "master_path": "public/assets/home/loading-portal/portal-000.webp",
+  "master_sha256": "0a053f4ce21bf53adc571104c8be8fbf5311f8806312f0addad04523edd5d56c",
+  "master_dimensions_px": [
+    1672,
+    941
+  ],
+  "reference_master_png": "LCR_Loading_Portal_V1_Arquivos.zip :: assets/originais/portal-000.png",
+  "geometry_px": {
+    "split_axis_x": 835.5,
+    "core_center": [
+      835.5,
+      440.0
+    ]
+  },
+  "strategy": "One unmodified source. 16:9 exact bytes; 16:10 cropped; 21:9 extended horizontally; portrait cropped without deformation.",
+  "variants": [
+    {
+      "aspect": "16x9",
+      "name": "loading-portal-base-16x9.webp",
+      "size_px": [
+        1672,
+        941
+      ],
+      "mode": "original",
+      "bytes": 61164,
+      "sha256": "0a053f4ce21bf53adc571104c8be8fbf5311f8806312f0addad04523edd5d56c",
+      "source_crop_box_px": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "transform": {
+        "scale_x": 1.0,
+        "scale_y": 1.0,
+        "translate_x": 0.0,
+        "translate_y": 0.0
+      },
+      "core_output_px": [
+        835.5,
+        440.0
+      ],
+      "split_axis_x_output_px": 835.5
+    },
+    {
+      "aspect": "16x10",
+      "name": "loading-portal-base-16x10.webp",
+      "size_px": [
+        1600,
+        1000
+      ],
+      "mode": "crop",
+      "bytes": 79774,
+      "sha256": "98a2a40127885eb1a632099d87e4c3fb90fe2fa4f45a3af864551e64febe50d4",
+      "source_crop_box_px": [
+        83,
+        0,
+        1589,
+        941
+      ],
+      "transform": {
+        "scale_x": 1.0624169986719787,
+        "scale_y": 1.0626992561105206,
+        "translate_x": -88.18061088977423,
+        "translate_y": 0.0
+      },
+      "core_output_px": [
+        799.47,
+        467.59
+      ],
+      "split_axis_x_output_px": 799.47
+    },
+    {
+      "aspect": "21x9",
+      "name": "loading-portal-base-21x9.webp",
+      "size_px": [
+        2520,
+        1080
+      ],
+      "mode": "extend",
+      "bytes": 95456,
+      "sha256": "4c8c113653b75724d6026ce716d0f4275c9cfb3107e706e5ee2152490e4b491b",
+      "source_crop_box_px": [
+        0,
+        0,
+        1672,
+        941
+      ],
+      "transform": {
+        "scale_x": 1.1477151965993624,
+        "scale_y": 1.1477151965993624,
+        "translate_x": 300,
+        "translate_y": 0
+      },
+      "core_output_px": [
+        1258.92,
+        504.99
+      ],
+      "split_axis_x_output_px": 1258.92,
+      "ambient_extension": {
+        "left_px": 300,
+        "right_px": 301
+      }
+    },
+    {
+      "aspect": "3x4",
+      "name": "loading-portal-base-3x4.webp",
+      "size_px": [
+        900,
+        1200
+      ],
+      "mode": "crop",
+      "bytes": 58070,
+      "sha256": "735c435def7f21da483b3cff9892239f0d0e698eebd057b83aa0a2238e404b77",
+      "source_crop_box_px": [
+        483,
+        0,
+        1189,
+        941
+      ],
+      "transform": {
+        "scale_x": 1.274787535410765,
+        "scale_y": 1.2752391073326248,
+        "translate_x": -615.7223796033994,
+        "translate_y": 0.0
+      },
+      "core_output_px": [
+        449.36,
+        561.11
+      ],
+      "split_axis_x_output_px": 449.36
+    },
+    {
+      "aspect": "9x16",
+      "name": "loading-portal-base-9x16.webp",
+      "size_px": [
+        1080,
+        1920
+      ],
+      "mode": "crop",
+      "bytes": 83942,
+      "sha256": "29be585bf2d21e46b4f9f7942c6b02b2c4a5ada1d3cafbdcb9c74c89ee456961",
+      "source_crop_box_px": [
+        571,
+        0,
+        1101,
+        941
+      ],
+      "transform": {
+        "scale_x": 2.0377358490566038,
+        "scale_y": 2.0403825717322,
+        "translate_x": -1163.5471698113208,
+        "translate_y": 0.0
+      },
+      "core_output_px": [
+        538.98,
+        897.77
+      ],
+      "split_axis_x_output_px": 538.98
+    },
+    {
+      "aspect": "9x19_5",
+      "name": "loading-portal-base-9x19_5.webp",
+      "size_px": [
+        1080,
+        2340
+      ],
+      "mode": "crop",
+      "bytes": 96738,
+      "sha256": "9f06315f63009e6dd76fd3e6b052a7ba3e4f92a91b8cbec9d308215f07d2d399",
+      "source_crop_box_px": [
+        619,
+        0,
+        1053,
+        941
+      ],
+      "transform": {
+        "scale_x": 2.488479262672811,
+        "scale_y": 2.4867162592986185,
+        "translate_x": -1540.36866359447,
+        "translate_y": 0.0
+      },
+      "core_output_px": [
+        538.76,
+        1094.16
+      ],
+      "split_axis_x_output_px": 538.76
+    }
+  ],
+  "note": "Static WebP assets only. Future animated SVG overlays must use each variant's recorded geometry transform."
+}
