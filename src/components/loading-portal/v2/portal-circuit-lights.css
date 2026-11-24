@@ -26,3 +26,7 @@
 @keyframes pcl-hot-opacity{0%,100%{opacity:0}10%,78%{opacity:calc(.84 * var(--pcl-intensity) * var(--pcl-ready-boost))}91%{opacity:0}}
 @keyframes pcl-halo-opacity{0%,100%{opacity:0}12%,78%{opacity:calc(.26 * var(--pcl-intensity) * var(--pcl-ready-boost))}91%{opacity:0}}
 @media (prefers-reduced-motion:reduce){.pcl-overlay .pcl-hot,.pcl-overlay .pcl-halo{animation:none!important;opacity:0!important}.pcl-overlay .pcl-track{opacity:.09!important}.pcl-overlay .pcl-strand[data-kind="fissure"] .pcl-track{opacity:.015!important}}
+
+/* Cinematic production replaces moving dash repaints with compositor sprites.
+ * All 19 canonical track geometries remain; historical Lab mode is unchanged. */
+.pcl-overlay[data-energy-flow="true"] .pcl-hot,.pcl-overlay[data-energy-flow="true"] .pcl-halo{animation:none;opacity:0}

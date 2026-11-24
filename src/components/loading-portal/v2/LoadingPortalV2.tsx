@@ -110,10 +110,10 @@ export const LoadingPortalV2 = memo(function LoadingPortalV2({
       {showBackground && <PortalStaticBackground variant={selected}/>}
       <div className="portal-v2-decoration">
         {(mode === 'full' || mode === 'lights') && <PortalCircuitLights variant={selected} playing={playing && !paused && !hidden} speed={speed}
-          intensity={intensity} ready={realReady && displayHundred} reducedMotion={reduced}/>}
+          intensity={intensity} ready={realReady && displayHundred} reducedMotion={reduced} energyFlow={cinematicActive}/>}
         {cinematicActive ? <CinematicPortalCounter variant={selected} ready={realReady}
           visible={result?.status !== 'failed'} paused={paused || hidden} reducedMotion={reduced}
-          onHundred={onHundred} onComplete={onComplete}/> :
+          onHundred={onHundred} onComplete={onComplete} speed={speed} intensity={intensity} playing={playing}/> :
           (mode === 'full' || mode === 'counter') && <PortalProgressCounter variant={selected} progress={progress} ready={realReady} cinematic={cinematic}/>}
       </div>
     </div>}

@@ -1,5 +1,6 @@
 import { memo, useEffect, type CSSProperties } from 'react'
 import { useCinematicProgress } from './useCinematicProgress'
+import { PortalEnergyFlow } from './PortalEnergyFlow'
 import { PORTAL_GEOMETRY, type PortalVariant } from './portalGeometry'
 
 export function confirmedPortalPercent(progress: number, ready: boolean): number {
@@ -31,9 +32,9 @@ export const PortalProgressCounter = memo(function PortalProgressCounter({
 /** The presentation clock lives here, not in the shared scene. Only the two
  * boundary notifications leave this subtree; 0–99 never render its siblings. */
 export const CinematicPortalCounter = memo(function CinematicPortalCounter({
-  ready, variant, visible, paused, reducedMotion, onHundred, onComplete,
+  ready, variant, visible, paused, reducedMotion, onHundred, onComplete, speed, intensity, playing,
 }: { ready: boolean; variant: PortalVariant; visible: boolean; paused: boolean; reducedMotion: boolean;
-  onHundred: () => void; onComplete: () => void }) {
+  onHundred: () => void; onComplete: () => void; speed:number; intensity:number; playing:boolean }) {
   const visual = useCinematicProgress({enabled:true, visible, ready, paused, reducedMotion})
   useEffect(() => {
     if (ready && visual.percent === 100) onHundred()
@@ -41,5 +42,9 @@ export const CinematicPortalCounter = memo(function CinematicPortalCounter({
   useEffect(() => {
     if (visual.complete) onComplete()
   }, [visual.complete, onComplete])
-  return <PortalProgressCounter variant={variant} progress={visual.percent} ready={ready} cinematic/>
+  return <>
+    <PortalEnergyFlow variant={variant} level={Math.floor(visual.percent/10)} paused={paused || !playing || !visible}
+      reducedMotion={reducedMotion} speed={speed} intensity={intensity}/>
+    <PortalProgressCounter variant={variant} progress={visual.percent} ready={ready} cinematic/>
+  </>
 })

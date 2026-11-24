@@ -10,6 +10,7 @@ export interface PortalCircuitLightsProps {
   ready?: boolean
   reducedMotion?: boolean
   variant: PortalVariant
+  energyFlow?: boolean
 }
 const clamp = (value: number, min: number, max: number) =>
   Number.isFinite(value) ? Math.max(min, Math.min(max, value)) : min
@@ -17,7 +18,7 @@ const clamp = (value: number, min: number, max: number) =>
 /** Drawer paths in master coordinates. The shared mechanical geometry also
  * covers 4:3; never independently select or transform the background. */
 export const PortalCircuitLights = memo(function PortalCircuitLights({
-  playing = true, speed = 1, intensity = .72, ready = false, reducedMotion = false, variant,
+  playing = true, speed = 1, intensity = .72, ready = false, reducedMotion = false, variant, energyFlow = false,
 }: PortalCircuitLightsProps) {
   const geo = PORTAL_GEOMETRY[variant]
   const { scale_x, scale_y, translate_x, translate_y } = geo.transform
@@ -29,7 +30,7 @@ export const PortalCircuitLights = memo(function PortalCircuitLights({
   return <svg className="pcl-overlay" xmlns="http://www.w3.org/2000/svg"
     viewBox={'0 0 ' + geo.width + ' ' + geo.height} preserveAspectRatio="xMidYMid meet"
     data-playing={playing && !reducedMotion ? 'true' : 'false'} data-ready={ready ? 'true' : 'false'}
-    data-reduced={reducedMotion ? 'true' : 'false'} aria-hidden="true" focusable="false" style={style}>
+    data-energy-flow={energyFlow ? 'true' : 'false'} data-reduced={reducedMotion ? 'true' : 'false'} aria-hidden="true" focusable="false" style={style}>
     <g transform={transform}>
       {geometry.paths.map(path => {
         const dashStyle = { '--pcl-delay': Math.round(path.delay * 1000) + 'ms', '--pcl-duration-factor': path.durationFactor } as CSSProperties
