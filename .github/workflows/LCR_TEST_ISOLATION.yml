@@ -57,3 +57,100 @@ jobs:
           path: test-results/
           retention-days: 30
           if-no-files-found: error
+
+  quality-plan:
+    name: Quality transition inventory
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    outputs:
+      compare: ${{ steps.scope.outputs.compare }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: scope
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT" = workflow_dispatch ] || git diff --name-only "$BASE_SHA" HEAD | grep -E '^(.github/workflows/|scripts/ci/|package(-lock)?\.json$)'; then
+            echo "compare=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "compare=false" >> "$GITHUB_OUTPUT"
+          fi
+      - run: python3 scripts/ci/quality.py
+      - run: python3 scripts/ci/check_source.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quality-inventory
+          path: test-results/quality/
+          retention-days: 30
+  quality-shadow:
+    name: Quality shadow / ${{ matrix.shard }}
+    needs: quality-plan
+    if: needs.quality-plan.outputs.compare == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [hero, portfolio, lab, performance, static]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@v5
+        if: matrix.shard == 'lab'
+        with:
+          python-version: '3.13'
+      - run: npm ci
+      - if: matrix.shard == 'lab'
+        run: python -m pip install Pillow==12.3.0 numpy==2.3.5
+      - if: matrix.shard != 'static'
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - run: python3 scripts/ci/quality.py --shard "${{ matrix.shard }}"
+      - if: matrix.shard == 'static'
+        run: python3 scripts/ci/check_source.py --artifact dist
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quality-${{ matrix.shard }}
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: error
+  quality-parity:
+    name: Quality transition parity
+    needs: [quality-plan, quality-shadow, isolation]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Require successful plan and isolation
+        env:
+          PLAN: ${{ needs.quality-plan.result }}
+          CORE: ${{ needs.isolation.result }}
+        run: test "$PLAN" = success && test "$CORE" = success
+      - name: Require all comparison shards
+        if: needs.quality-plan.outputs.compare == 'true'
+        env:
+          RESULT: ${{ needs.quality-shadow.result }}
+        run: test "$RESULT" = success
+      - uses: actions/download-artifact@v4
+        if: needs.quality-plan.outputs.compare == 'true'
+        with:
+          pattern: quality-*
+          path: /tmp/lcr-quality-evidence
+      - if: needs.quality-plan.outputs.compare == 'true'
+        run: python3 scripts/ci/quality.py --verify /tmp/lcr-quality-evidence
+      - if: needs.quality-plan.outputs.compare != 'true'
+        run: echo 'Transition comparison not requested; all legacy gates remain active.'
