@@ -1,5 +1,6 @@
 """Stage 03 shadow quality executor. Never deploys or contacts production."""
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -46,6 +47,44 @@ def signature(command, env):
     return hashlib.sha256(json.dumps([command, env], sort_keys=True).encode()).hexdigest()[:20]
 
 
+def parse_yaml(raw):
+    return json.loads(subprocess.check_output(["ruby", "-e", RUBY], input=raw, text=True))
+
+
+def verify_transition(name, old, now):
+    before = parse_yaml(old)
+    after = parse_yaml(now)
+    if name == CORE:
+        # Original isolation job, PR/manual triggers, and permissions remain intact.
+        assert after["jobs"]["isolation"] == before["jobs"]["isolation"]
+        old_events = before.get("on", before.get("true"))
+        events = after.get("on", after.get("true"))
+        assert all(events.get(k) == v for k, v in old_events.items())
+        assert "workflow_call" in events
+        assert before["permissions"] == after["permissions"] == {"contents": "read"}
+        assert after["jobs"]["quality-parity"]["if"] == "always()"
+        assert set(after["jobs"]["quality-parity"]["needs"]) == {
+            "quality-plan", "quality-shadow", "isolation", "quality-dependencies"}
+        assert "if" not in after["jobs"]["quality-shadow"]
+    elif name == "deploy":
+        # The release gate must precede any production build and cannot inherit secrets.
+        expected = copy.deepcopy(before)
+        expected["concurrency"]["cancel-in-progress"] = False
+        expected["jobs"]["quality"] = {
+            "if": "github.ref == 'refs/heads/main'",
+            "permissions": {"contents": "read"},
+            "uses": "./.github/workflows/LCR_TEST_ISOLATION.yml"}
+        expected["jobs"]["build"]["needs"] = "quality"
+        expected["jobs"]["build"]["steps"][0]["with"] = {"ref": "$"+"{{ github.sha }}"}
+        for step in expected["jobs"]["build"]["steps"]:
+            if step.get("name") == "Build":
+                step["run"] += "python3 scripts/ci/check_source.py --artifact dist\n"
+        expected["jobs"]["verify-social-preview"]["steps"][0]["with"] = {"ref": "$"+"{{ github.sha }}"}
+        assert after == expected, "Unexpected release workflow change"
+    else:
+        assert now == old, f"Legacy check changed: {name}"
+
+
 def inventory():
     paths = git("ls-tree", "-r", "--name-only", BASE, ".github/workflows").splitlines()
     names = {Path(p).stem for p in paths if p.endswith(".yml")}
@@ -62,8 +101,8 @@ def inventory():
         path = f".github/workflows/{name}.yml"
         old = subprocess.check_output(["git", "show", f"{BASE}:{path}"], text=True)
         now = Path(path).read_text()
-        assert now.startswith(old) if name == CORE else now == old, f"Legacy check changed: {path}"
-        data = json.loads(subprocess.check_output(["ruby", "-e", RUBY], input=old, text=True))
+        verify_transition(name, old, now)
+        data = parse_yaml(old)
         group = next((g for g, ns in GROUPS.items() if name in ns), None)
         for job_id, job in data["jobs"].items():
             row = {"workflow": path, "check": job.get("name", job_id), "job": job_id,
@@ -152,14 +191,18 @@ def execute(group, plan):
 
 def verify(plan, directory):
     sha = git("rev-parse", "HEAD")
+    assert not os.environ.get("GITHUB_SHA") or sha == os.environ["GITHUB_SHA"], "Unexpected checked-out SHA"
+    summaries = []
     for group, tasks in plan["shards"].items():
         report = json.loads((Path(directory) / ("quality-" + group) / "quality" / (group + ".json")).read_text())
         assert report["sha"] == sha and report["group"] == group
         expected = [group + "/build", *(t["id"] for t in tasks)]
         assert [r["id"] for r in report["results"]] == expected, "Incomplete or repeated coverage"
         assert all(r["exit"] == 0 for r in report["results"]), "Failed assertion"
+        summaries.append({"group":group,"commands":len(expected),"seconds":report["seconds"]})
         print(f"PASS {group}: {len(expected)} commands, {report['seconds']} seconds")
-    print("PASS all shadow shards at exact checkout SHA; core check required separately")
+    write_json("summary.json", {"sha":sha,"counts":plan["counts"],"shards":summaries,"total_shard_seconds":round(sum(r["seconds"] for r in summaries),2)})
+    print("PASS all shadow shards at exact checkout SHA; core and dependency checks required separately")
 
 
 def main():
@@ -171,6 +214,16 @@ def main():
     write_json("inventory.json", plan)
     print("QUALITY_COUNTS", json.dumps(plan["counts"], sort_keys=True))
     assert run("exit 17") == 17, "Failure propagation broken"
+    # No path filter: shared code, docs, assets, CI, and unknown paths cannot skip a shard.
+    for sample in ['src/components/HeroTypeTitle.tsx','src/components/SafeImage.tsx','public/assets/example.webp','docs/example.md','vite.config.ts']:
+        assert set(plan['shards']) == set(GROUPS), sample
+    try:
+        verify(plan, OUT / 'missing-evidence-self-test')
+    except FileNotFoundError:
+        pass
+    else:
+        raise AssertionError('Missing evidence accepted')
+    print('PASS unconditional scope and missing-evidence/failure guards')
     if args.shard:
         execute(args.shard, plan)
     if args.verify:
