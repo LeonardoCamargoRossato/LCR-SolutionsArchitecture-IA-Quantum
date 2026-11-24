@@ -1,0 +1,68 @@
+import assert from 'node:assert/strict'
+import { spawn } from 'node:child_process'
+import { mkdir, writeFile } from 'node:fs/promises'
+import { chromium } from 'playwright'
+const base='http://127.0.0.1:5199/LCR-SolutionsArchitecture-IA-Quantum/'
+const server=spawn('npm',['run','dev','--','--host','127.0.0.1','--port','5199','--strictPort'],{detached:true,stdio:'ignore'})
+let browser
+const errors=[]
+async function range(page,selector,value){
+  await page.locator(selector).evaluate((el,v)=>{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(el,String(v));el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}))},value)
+}
+try {
+  for(let i=0;i<100;i++){try{if((await fetch(base)).ok)break}catch{}await new Promise(r=>setTimeout(r,250))}
+  browser=await chromium.launch({headless:true,args:['--no-sandbox']})
+  const context=await browser.newContext({viewport:{width:1440,height:900},acceptDownloads:true})
+  const page=await context.newPage()
+  page.on('pageerror',e=>errors.push(String(e)))
+  page.on('response',r=>{if(r.status()>=400&&r.url().includes('/loading-portal/'))errors.push('asset '+r.url())})
+  await page.goto(base+'#/test-component-lab')
+  await page.getByTestId('particle-wave-canvas').waitFor()
+  await page.getByTestId('lab-component-switch').getByRole('button',{name:'Loading Portal',exact:true}).click()
+  const editor=page.getByTestId('portal-motion-editor'), portal=page.getByTestId('portal-editor-preview')
+  await editor.waitFor();await portal.waitFor()
+  assert.equal(await page.getByTestId('particle-wave-canvas').count(),0)
+  assert.equal(await portal.getAttribute('data-position'),'0.0000')
+  assert.equal(await portal.locator('.pcl-strand').count(),19)
+  assert.equal(await portal.locator('.pme-left [data-testid="portal-editor-core"]').count(),1)
+  const src=await page.getByTestId('portal-editor-background').getAttribute('src')
+  await range(page,'[aria-label="Intensidade das luzes"]',0)
+  assert.equal(await portal.evaluate(el=>el.style.getPropertyValue('--pme-light-intensity')),'0')
+  await range(page,'[aria-label="Velocidade das luzes"]',2)
+  assert.equal(await portal.locator('svg').evaluate(el=>el.style.getPropertyValue('--pcl-cycle')),'3250ms')
+  await range(page,'[aria-label="Pulso de ativação"]',0)
+  await range(page,'[aria-label="Duração da abertura"]',3000)
+  await page.getByTestId('portal-editor-open').click()
+  await page.waitForFunction(()=>Number(document.querySelector('[data-testid="portal-editor-preview"]').dataset.position)>.12)
+  await page.getByTestId('portal-editor-pause').click()
+  const paused=await portal.getAttribute('data-position');await page.waitForTimeout(250);assert.equal(await portal.getAttribute('data-position'),paused)
+  await page.getByTestId('portal-editor-close').click()
+  await page.waitForFunction(()=>document.querySelector('[data-testid="portal-editor-preview"]').dataset.position==='0.0000')
+  assert.equal(await page.getByTestId('portal-editor-background').getAttribute('src'),src)
+  await range(page,'[data-testid="portal-editor-position"]',50)
+  assert.equal(await portal.getAttribute('data-position'),'0.5000')
+  await page.getByLabel('Movimento reduzido',{exact:true}).check()
+  await page.getByTestId('portal-editor-open').click()
+  await page.waitForFunction(()=>document.querySelector('[data-testid="portal-editor-preview"]').dataset.position==='1.0000')
+  await page.getByRole('button',{name:'Testar interação (0)',exact:true}).click()
+  await page.getByRole('button',{name:'Testar interação (1)',exact:true}).waitFor()
+  await page.getByTestId('portal-editor-close').click()
+  await page.waitForFunction(()=>document.querySelector('[data-testid="portal-editor-preview"]').dataset.position==='0.0000')
+  const [download]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:'Exportar configuração JSON'}).click()])
+  assert.equal(download.suggestedFilename(),'loading-portal-motion-preset.json')
+  await page.getByLabel('Formato do portão').selectOption('9x16')
+  await portal.waitFor();await page.waitForFunction(()=>document.querySelector('[data-testid="portal-editor-background"]')?.src.endsWith('9x16.webp'))
+  await page.setViewportSize({width:390,height:844})
+  assert((await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth))<=2)
+  await page.getByRole('button',{name:'Restaurar padrão'}).click()
+  await page.getByLabel('Movimento reduzido',{exact:true}).check()
+  await range(page,'[aria-label="Carregamento simulado"]',500)
+  await range(page,'[aria-label="Tempo aberta no ciclo"]',1000)
+  await page.getByTestId('portal-editor-run').click()
+  await page.waitForFunction(()=>document.querySelector('[data-testid="portal-editor-preview"]').dataset.position==='1.0000')
+  await page.waitForFunction(()=>document.querySelector('[data-testid="portal-editor-preview"]').dataset.position==='0.0000')
+  await mkdir('test-results',{recursive:true})
+  await page.screenshot({path:'test-results/portal-motion-editor-mobile.png',fullPage:true})
+  assert.deepEqual(errors,[])
+  console.log('PASS motion editor: controls, reversible motion, pause, scrub, cycle, export, mobile and original particle tab')
+}finally{await browser?.close();try{process.kill(-server.pid,'SIGTERM')}catch{server.kill('SIGTERM')}}
