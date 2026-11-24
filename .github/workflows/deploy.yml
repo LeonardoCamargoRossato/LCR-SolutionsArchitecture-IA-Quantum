@@ -84,7 +84,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - name: Verify public static HTML and PNG as social crawlers
+      - name: Verify public static HTML and compact image as social crawlers
         run: |
           for attempt in 1 2 3 4 5; do
             if python3 tests/social-sharing-smoke.py --live; then exit 0; fi
