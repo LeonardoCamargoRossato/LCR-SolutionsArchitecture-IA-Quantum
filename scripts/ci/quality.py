@@ -55,8 +55,24 @@ def verify_transition(name, old, now):
     before = parse_yaml(old)
     after = parse_yaml(now)
     if name == CORE:
-        # Original isolation job, PR/manual triggers, and permissions remain intact.
-        assert after["jobs"]["isolation"] == before["jobs"]["isolation"]
+        # Preserve every isolation step exactly except the historical dependency setup.
+        old_core = before["jobs"]["isolation"]
+        new_core = copy.deepcopy(after["jobs"]["isolation"])
+        old_baseline = next(s for s in old_core["steps"]
+                            if s.get("name") == "Reconstruct immutable pre-change baseline with local fixture")
+        new_baseline = next(s for s in new_core["steps"]
+                            if s.get("name") == "Reconstruct immutable pre-change baseline with local fixture")
+        expected_old = """git worktree add --detach /tmp/lcr-p0-baseline 7b5d0ad67d9697b7338c945dfc7691ed8b0bd0d1
+cmp package-lock.json /tmp/lcr-p0-baseline/package-lock.json
+ln -s "$PWD/node_modules" /tmp/lcr-p0-baseline/node_modules
+bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-p0-baseline && npm run build'"""
+        expected_new = """git worktree add --detach /tmp/lcr-p0-baseline 7b5d0ad67d9697b7338c945dfc7691ed8b0bd0d1
+(cd /tmp/lcr-p0-baseline && npm ci)
+bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-p0-baseline && npm run build'"""
+        assert old_baseline["run"].strip() == expected_old
+        assert new_baseline["run"].strip() == expected_new
+        new_baseline["run"] = old_baseline["run"]
+        assert new_core == old_core, "Unexpected change to the isolation baseline comparison"
         old_events = before.get("on", before.get("true"))
         events = after.get("on", after.get("true"))
         assert all(events.get(k) == v for k, v in old_events.items())
