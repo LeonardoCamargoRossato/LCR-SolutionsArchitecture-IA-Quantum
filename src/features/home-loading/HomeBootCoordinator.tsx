@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import { LoadingPortalV2 } from '../../components/loading-portal/v2/LoadingPortalV2'
 import type { PortalAssetState } from '../../components/loading-portal/v2/usePortalVariant'
@@ -23,8 +23,8 @@ function makeRun(route:string,serial:number,gate:boolean):Run{
 }
 
 /** Real Home stays mounted behind the one shared V2 composition.
- * The counter only advances on verified task outcomes. No RAF progress loop.
- * The isolated Lab owns its own simulation, never imported here. */
+ * Real task outcomes alone authorize opening. The shared portal owns a
+ * separate, bounded cinematic presentation clock, not network progress. */
 export function HomeBootCoordinator({children}:{children:ReactNode}){
   const location=useLocation(), home=location.pathname==='/'
   const force=new URLSearchParams(location.search).get('portal')
@@ -36,6 +36,8 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
   const serial=run.serial
   const active=home&&force!=='skip'&&run.gate&&run.route===route
   const showPortal=active&&run.phase!=='opened'
+  const revealPhase = !active ? 'bypassed' : run.phase==='opening' ? 'revealing' : run.phase==='opened' ? 'opened' : 'closed'
+  const motionEnabled = !showPortal || revealPhase==='revealing'
   const homeSafe=run.tasks['home-render'].state==='completed'
   const assetsReady=run.tasks['door-art'].state==='completed'
   const homePrepared=homeSafe&&(['hero-media','canvas','fonts'] as HomeBootTask[]).every(t=>isUsableTask(run.tasks[t]))
@@ -96,7 +98,7 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
       return
     }
     if(ready&&run.phase!=='ready'&&run.phase!=='degraded'){
-      markHomeBoot('home-critical-resources-ready');markHomeBoot('portal-progress-complete')
+      markHomeBoot('home-critical-resources-ready')
       const degraded=BOOT_TASKS.some(t=>run.tasks[t].state==='fallback')
       setRun(p=>({...p,phase:degraded?'degraded':'ready'}))
     }
@@ -126,16 +128,24 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
   },[showPortal,homePrepared,run.tasks,finish])
   useEffect(()=>{
     if(run.phase!=='opened'||!run.release||released.current===serial)return
-    released.current=serial;markHomeBoot('home-animation-started');markHomeBoot('home-interactive')
+    released.current=serial
+    if(opening.current!==serial)markHomeBoot('home-animation-started')
+    markHomeBoot('home-interactive')
   },[run.phase,run.release,serial])
 
-  useEffect(()=>{
+  useLayoutEffect(()=>{
     if(!showPortal)return
-    const previous=document.body.style.overflow
+    const root=document.documentElement
+    const previousRoot=root.style.overflowY
+    const previousBody=document.body.style.overflow
     priorFocus.current=document.activeElement instanceof HTMLElement?document.activeElement:null
+    // Lock scrolling, not the document width. The root scrollbar is hidden
+    // consistently in CSS before, during and after this lock.
+    root.style.overflowY='hidden'
     document.body.style.overflow='hidden'
     return ()=>{
-      document.body.style.overflow=previous
+      root.style.overflowY=previousRoot
+      document.body.style.overflow=previousBody
       const focus=priorFocus.current
       if(focus?.isConnected&&focus!==document.body)focus.focus({preventScroll:true})
       priorFocus.current=null
@@ -151,12 +161,13 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
   },[report,serial])
   const onOpening=useCallback(()=>{
     if(!activeRef.current||current.current.serial!==serial||opening.current===serial||finished.current===serial)return
-    opening.current=serial;markHomeBoot('portal-opening')
+    opening.current=serial;markHomeBoot('portal-opening');markHomeBoot('home-animation-started')
     setRun(p=>p.serial===serial?{...p,phase:'opening'}:p)
   },[serial])
 
-  return <HomeMotionProvider enabled={!showPortal}>
+  return <HomeMotionProvider enabled={motionEnabled}>
     <div className="home-boot-app" data-testid="home-boot-app"
+      data-home-reveal={revealPhase}
       data-boot-state={active?run.phase:'bypassed'} data-home-ready={homeSafe?'true':'false'}
       data-boot-outcome={run.release}
       data-boot-tasks={JSON.stringify(run.tasks)}
@@ -165,7 +176,8 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
       {children}
     </div>
     {showPortal&&<div className="home-boot-overlay" data-testid="home-boot-overlay" data-boot-state={run.phase}>
-      <LoadingPortalV2 key={serial} progress={progress}
+      <LoadingPortalV2 key={serial} progress={progress} cinematic
+        onVisualComplete={()=>markHomeBoot('portal-progress-complete')}
         ready={ready&&(run.phase==='ready'||run.phase==='degraded'||run.phase==='activating'||run.phase==='opening')}
         allowFallback={homeSafe} onAssetState={onAssetState} onOpening={onOpening}
         onOpened={()=>finish('mechanical')} onFallback={()=>finish('fallback')}/>

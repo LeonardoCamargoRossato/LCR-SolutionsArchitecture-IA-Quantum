@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { LoadingPortalV2, type PortalPreviewMode } from '../../../components/loading-portal/v2/LoadingPortalV2'
 import { PORTAL_GEOMETRY, PORTAL_VARIANTS, type PortalVariant } from '../../../components/loading-portal/v2/portalGeometry'
 import { type PortalAssetState } from '../../../components/loading-portal/v2/usePortalVariant'
+import { PORTAL_OPENING_MS } from '../../../components/loading-portal/v2/useCinematicProgress'
 import './loading-portal-v2-lab.css'
 
 const MODES: {id:PortalPreviewMode; label:string}[] = [
@@ -30,7 +31,7 @@ export function LoadingPortalV2Lab() {
   const [reduced,setReduced] = useState(false)
   const [speed,setSpeed] = useState(1)
   const [intensity,setIntensity] = useState(.72)
-  const [duration,setDuration] = useState(1800)
+  const [duration,setDuration] = useState(PORTAL_OPENING_MS)
   const [assetState,setAssetState] = useState<PortalAssetState>('loading')
   const [phase,setPhase] = useState<'loading'|'opening'|'opened'|'fallback'>('loading')
   const geo = PORTAL_GEOMETRY[variant]
@@ -79,7 +80,7 @@ export function LoadingPortalV2Lab() {
         data-testid="portal-v2-lab-stage" style={{aspectRatio:geo.width+' / '+geo.height}}>
         <div className="lcr-portal-lab-underlay" data-testid="portal-v2-underlay" aria-label="Aplicação real de demonstração React">
           <span>LIVE REACT PREVIEW</span><strong>LCR Portfolio</strong>
-          <p>Este conteúdo React já está montado atrás da porta. A Home pública permanece na V1 até a aprovação.</p>
+          <p>Este conteúdo React já está montado atrás da porta. A Home pública reutiliza esta composição com a sequência visual de três segundos.</p>
           <button type="button" onClick={()=>setPlaying(false)}>Interação disponível após abertura</button>
         </div>
         {phase!=='opened' && phase!=='fallback' && <LoadingPortalV2 key={cycle}
@@ -128,7 +129,7 @@ export function LoadingPortalV2Lab() {
         </label>
         <label>Duração da abertura (ms)
           <input type="number" min="250" max="12000" step="50" value={duration} disabled={opening}
-            onChange={e=>setDuration(Math.max(250,Math.min(12000,Number(e.target.value)||1800)))}/>
+            onChange={e=>setDuration(Math.max(250,Math.min(12000,Number(e.target.value)||PORTAL_OPENING_MS)))}/>
         </label>
       </div>
       <p className="lcr-portal-lab-hint">100% exige Ready e os assets decodificados. A velocidade das luzes não interfere na simulação. Os recortes da V2 são os mesmos que serão reutilizados na Home.</p>
