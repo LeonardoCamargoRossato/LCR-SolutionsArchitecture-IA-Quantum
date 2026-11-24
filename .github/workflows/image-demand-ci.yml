@@ -33,8 +33,7 @@ jobs:
       - name: Reconstruct immutable baseline
         run: |
           git worktree add --detach /tmp/lcr-demand-before 63adb1332ad41b55f08281cc7be1a2bb6e2aaf71
-          cmp package-lock.json /tmp/lcr-demand-before/package-lock.json
-          ln -s "$PWD/node_modules" /tmp/lcr-demand-before/node_modules
+          (cd /tmp/lcr-demand-before && npm ci)
           bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-demand-before && npm run build'
       - name: Record baseline network and screenshots
         env:

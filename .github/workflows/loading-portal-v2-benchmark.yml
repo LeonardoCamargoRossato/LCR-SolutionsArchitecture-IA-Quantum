@@ -29,8 +29,7 @@ jobs:
       - name: Build immutable V1 baseline
         run: |
           git worktree add --detach /tmp/lcr-v1-baseline e092227db021a2a9e1ddadf7d5f76440aa36b67a
-          cmp package-lock.json /tmp/lcr-v1-baseline/package-lock.json
-          ln -s "$PWD/node_modules" /tmp/lcr-v1-baseline/node_modules
+          (cd /tmp/lcr-v1-baseline && npm ci)
           bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-v1-baseline && npm run build'
       - run: |
           npm install --no-save --ignore-scripts playwright@1.56.1

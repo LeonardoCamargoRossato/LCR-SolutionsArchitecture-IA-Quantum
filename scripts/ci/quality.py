@@ -82,6 +82,60 @@ bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-p0-baseline && npm run build'""
         assert set(after["jobs"]["quality-parity"]["needs"]) == {
             "quality-plan", "quality-shadow", "isolation", "quality-dependencies"}
         assert "if" not in after["jobs"]["quality-shadow"]
+    elif name in {"image-demand-ci", "loading-portal-v2-benchmark", "portal-performance-hotfix"}:
+        # Retain each immutable benchmark and every assertion; only install its historical lock separately.
+        specs = {
+            "image-demand-ci": (
+                "Reconstruct immutable baseline",
+                """git worktree add --detach /tmp/lcr-demand-before 63adb1332ad41b55f08281cc7be1a2bb6e2aaf71
+cmp package-lock.json /tmp/lcr-demand-before/package-lock.json
+ln -s "$PWD/node_modules" /tmp/lcr-demand-before/node_modules
+bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-demand-before && npm run build'""",
+                """git worktree add --detach /tmp/lcr-demand-before 63adb1332ad41b55f08281cc7be1a2bb6e2aaf71
+(cd /tmp/lcr-demand-before && npm ci)
+bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-demand-before && npm run build'"""),
+            "loading-portal-v2-benchmark": (
+                "Build immutable V1 baseline",
+                """git worktree add --detach /tmp/lcr-v1-baseline e092227db021a2a9e1ddadf7d5f76440aa36b67a
+cmp package-lock.json /tmp/lcr-v1-baseline/package-lock.json
+ln -s "$PWD/node_modules" /tmp/lcr-v1-baseline/node_modules
+bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-v1-baseline && npm run build'""",
+                """git worktree add --detach /tmp/lcr-v1-baseline e092227db021a2a9e1ddadf7d5f76440aa36b67a
+(cd /tmp/lcr-v1-baseline && npm ci)
+bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-v1-baseline && npm run build'"""),
+            "portal-performance-hotfix": (
+                "Prepare two isolated, identically instrumented production builds",
+                """git worktree add --detach /tmp/lcr-before 67b4ad471c1ced8790286f6f87d2647bcd9163e0
+git worktree add --detach /tmp/lcr-after HEAD
+for dir in /tmp/lcr-before /tmp/lcr-after; do
+  cmp package-lock.json "$dir/package-lock.json"
+  ln -s "$PWD/node_modules" "$dir/node_modules"
+  node tests/portal-performance-hotfix-instrument.mjs "$dir"
+  bash tests/isolation/run.sh bash -c 'cd "$1" && npm run build' bash "$dir"
+done""",
+                """git worktree add --detach /tmp/lcr-before 67b4ad471c1ced8790286f6f87d2647bcd9163e0
+git worktree add --detach /tmp/lcr-after HEAD
+(cd /tmp/lcr-before && npm ci)
+ln -s "$PWD/node_modules" /tmp/lcr-after/node_modules
+for dir in /tmp/lcr-before /tmp/lcr-after; do
+  node tests/portal-performance-hotfix-instrument.mjs "$dir"
+  bash tests/isolation/run.sh bash -c 'cd "$1" && npm run build' bash "$dir"
+done""")
+        }
+        step_name, expected_old, expected_new = specs[name]
+        old_steps = before["jobs"]
+        after_steps = copy.deepcopy(after)
+        old_step = next(s for job in old_steps.values() for s in job.get("steps", [])
+                        if s.get("name") == step_name)
+        new_step = next(s for job in after_steps["jobs"].values() for s in job.get("steps", [])
+                        if s.get("name") == step_name)
+        assert old_step["run"].strip() == expected_old
+        assert new_step["run"].strip() == expected_new
+        if name == "portal-performance-hotfix":
+            assert new_step.get("name") == "Prepare builds from each revision's locked dependencies"
+            new_step["name"] = step_name
+        new_step["run"] = old_step["run"]
+        assert after_steps == before, f"Unexpected benchmark workflow change: {name}"
     elif name == "deploy":
         # The release gate must precede any production build and cannot inherit secrets.
         expected = copy.deepcopy(before)
