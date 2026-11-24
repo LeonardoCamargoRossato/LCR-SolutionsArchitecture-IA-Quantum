@@ -66,6 +66,7 @@ async function initialVisit() {
   const check = await observe(page, 'first-visit')
   await page.goto(HOME + '?portal=replay', { waitUntil: 'domcontentloaded' })
   await page.getByTestId('loading-portal-v2').waitFor({ timeout: 18000 })
+  await page.getByTestId('portal-v2-counter').waitFor({timeout:15000})
   assert.equal(await page.getByTestId('home-boot-app').getAttribute('aria-hidden'), 'true')
   await page.locator('main.portfolio-home .hero-v3').waitFor({ timeout: 18000 })
   await page.getByTestId('interactive-ai-visual').waitFor()
@@ -103,7 +104,8 @@ async function initialVisit() {
   const mounted = info.entries.find(x => x.name === 'home-render-ready').startTime
   const started = info.entries.find(x => x.name === 'home-animation-started').startTime
   assert(opening >= mounted, 'Door opened before actual Home mount')
-  assert(started >= opening, 'Home animation started before door opening')
+  const closed=info.entries.find(x=>x.name==='portal-opened').startTime
+  assert(started >= closed && closed>=opening, 'Home animation started before door completed')
   await page.locator('.hero-v3-actions .hero-actions .button').first().click()
   await page.waitForFunction(() => {
     const selected = document.getElementById('projects')
@@ -169,9 +171,10 @@ async function reducedAndMobile() {
 async function slowNetwork() {
   const ctx = await context()
   const page = await ctx.newPage()
-  let released = false
+  let released = false, unblock
+  const blocked=new Promise(resolve=>{unblock=resolve})
   await page.route('**/assets/home/loading-portal/mechanical/*/door-right.webp', async route => {
-    await new Promise(resolve => setTimeout(resolve, 1700))
+    await blocked
     released = true
     try { await route.continue() } catch { /* navigation aborted */ }
   })
@@ -181,8 +184,10 @@ async function slowNetwork() {
   assert.equal(await page.locator('main.portfolio-home').getAttribute('data-home-motion'), 'paused')
   await page.waitForTimeout(500)
   assert.equal(await page.getByTestId('loading-portal-v2').getAttribute('data-phase'),'loading','blocked art must keep door closed')
+  await page.getByTestId('portal-v2-counter').waitFor({timeout:8000})
   const number=await page.getByTestId('portal-v2-counter').getAttribute('aria-valuenow')
   assert(Number(number)<100,'never show 100 while mechanical resource is pending')
+  unblock()
   await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({ timeout: 22000 })
   assert(released, 'The deferred door image request should actually be resolved')
   const data = await marks(page)
@@ -211,6 +216,31 @@ async function imageFallback() {
   await ctx.close()
 }
 
+async function routeCancellationAndResize(){
+  const ctx=await context({viewport:{width:1200,height:900}})
+  const page=await ctx.newPage()
+  let unblock
+  const held=new Promise(resolve=>{unblock=resolve})
+  await page.route('**/loading-portal/mechanical/4x3/door-core.webp',async route=>{await held;try{await route.continue()}catch{}})
+  await page.goto(HOME+'?portal=replay',{waitUntil:'domcontentloaded'})
+  await page.locator('[data-testid="loading-portal-v2"][data-variant="4x3"]').waitFor({timeout:12000})
+  await page.setViewportSize({width:390,height:844})
+  await page.locator('[data-testid="loading-portal-v2"][data-variant="9x19_5"][data-assets="ready"]').waitFor({timeout:18000})
+  await page.locator('[data-testid="loading-portal-v2"][data-phase="opening"]').waitFor({timeout:12000})
+  await page.setViewportSize({width:1440,height:900})
+  assert.equal(await page.getByTestId('loading-portal-v2').getAttribute('data-variant'),'9x19_5','freeze active variant during mechanical opening')
+  unblock()
+  await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({timeout:18000})
+  await page.evaluate(()=>{location.hash='#/workflow'})
+  await page.locator('header.site-header').waitFor()
+  assert.equal(await page.getByTestId('home-boot-overlay').count(),0)
+  await page.evaluate(()=>{location.hash='#/?portal=skip'})
+  await page.locator('main.portfolio-home').waitFor()
+  assert.equal(await page.getByTestId('home-boot-overlay').count(),0)
+  report.scenarios.push('rotation during loading swaps decoded plane; resize during opening freezes variant; route return respects skip')
+  await ctx.close()
+}
+
 try {
   await mkdir('test-results', { recursive: true })
   await ready()
@@ -220,6 +250,7 @@ try {
   await reducedAndMobile()
   await slowNetwork()
   await imageFallback()
+  await routeCancellationAndResize()
   console.log('PASS Loading Portal Home Boot: ' + report.scenarios.join('; '))
 } catch (e) {
   report.errors.push(String(e?.stack || e))
