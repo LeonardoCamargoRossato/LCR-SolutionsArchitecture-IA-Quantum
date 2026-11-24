@@ -25,3 +25,10 @@
 /* No hidden SVG dash repaint after the unchanged decoration fade. */
 .portal-v2-decoration[data-inactive="true"]{visibility:hidden}
 .portal-v2-decoration[data-inactive="true"] .pcl-hot,.portal-v2-decoration[data-inactive="true"] .pcl-halo{animation-play-state:paused!important}
+
+/* Activation glow is a pre-painted gradient; WAAPI changes opacity only.
+ * It peaks before travel and follows the opening seam as the leaves separate. */
+.pdo-activation-flare{position:absolute;pointer-events:none;z-index:5;opacity:0;background:radial-gradient(ellipse at center,rgba(183,250,255,.24) 0%,rgba(79,224,255,.28) 23%,rgba(203,253,255,.76) 36%,rgba(50,198,255,.48) 47%,rgba(27,136,225,.16) 65%,transparent 83%);will-change:opacity}
+.portal-v2-shell[data-motion-profile] .pdo-seam{will-change:opacity}
+.portal-v2-plane:has(.pdo-activation-flare) .pdo-seam{width:5px;background:linear-gradient(transparent,#45cfff 15%,#d9ffff 39%,#fff 50%,#d9ffff 61%,#45cfff 85%,transparent);box-shadow:0 0 8px 3px #76ebff,0 0 23px 7px rgba(36,178,255,.65)}
+@media(prefers-reduced-motion:reduce){.pdo-activation-flare{display:none}}

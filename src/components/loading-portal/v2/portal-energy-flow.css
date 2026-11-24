@@ -8,3 +8,11 @@
 .portal-energy-flow[data-energy-reduced="true"]{display:none}
 .portal-v2-decoration[data-inactive="true"] .portal-energy-flow{visibility:hidden}
 @media(prefers-reduced-motion:reduce){.portal-energy-flow{display:none}}
+
+/* Charge crescendo: fixed gradients, animated opacity/scale only. The
+ * percentage remains readable in the transparent center of the ring. */
+.portal-energy-flow .pe-core-glow{background:radial-gradient(ellipse at center,transparent 45%,rgba(32,184,245,.14) 56%,rgba(55,217,255,.48) 63%,rgba(218,253,255,.94) 69%,rgba(66,213,255,.6) 74%,rgba(32,184,245,.22) 83%,transparent 100%)}
+.portal-energy-flow .pe-core-heat{position:absolute;left:var(--pe-core-x);top:var(--pe-core-y);width:calc(var(--pe-core-w) * 2.05);height:calc(var(--pe-core-h) * 2.05);transform:translate(-50%,-50%) scale(.85);background:radial-gradient(ellipse,transparent 22%,rgba(39,184,255,.08) 30%,rgba(61,218,255,.48) 37%,rgba(164,247,255,.8) 42%,rgba(35,180,255,.24) 55%,transparent 73%);opacity:0;pointer-events:none}
+.portal-energy-flow[data-energy-charged="true"] .pe-core-heat{animation:pe-heat-up var(--pe-hold-ms) ease-in-out both;will-change:opacity,transform}
+.portal-energy-flow[data-energy-active="false"] .pe-core-heat{animation-play-state:paused}
+@keyframes pe-heat-up{0%{opacity:.15;transform:translate(-50%,-50%) scale(.85)}40%{opacity:.65;transform:translate(-50%,-50%) scale(1)}60%{opacity:.5;transform:translate(-50%,-50%) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%) scale(1.13)}}

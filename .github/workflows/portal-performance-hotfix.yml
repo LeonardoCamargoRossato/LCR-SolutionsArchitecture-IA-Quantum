@@ -25,7 +25,7 @@ jobs:
       - run: npm ci
       - name: Prepare two isolated, identically instrumented production builds
         run: |
-          git worktree add --detach /tmp/lcr-before 5d22db466f1cc2d7254701b67cf427a2735686e3
+          git worktree add --detach /tmp/lcr-before 67b4ad471c1ced8790286f6f87d2647bcd9163e0
           git worktree add --detach /tmp/lcr-after HEAD
           for dir in /tmp/lcr-before /tmp/lcr-after; do
             cmp package-lock.json "$dir/package-lock.json"

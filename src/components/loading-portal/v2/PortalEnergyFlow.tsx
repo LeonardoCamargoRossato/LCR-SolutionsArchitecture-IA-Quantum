@@ -19,22 +19,22 @@ function routeFrames(points:EnergyPoint[]):Keyframe[]{
     return [{transform:pointTransform(p),offset,opacity:1}]
   })
 }
-type Props={variant:PortalVariant; level:number; paused:boolean; reducedMotion:boolean; speed:number; intensity:number}
+type Props={variant:PortalVariant; level:number; paused:boolean; reducedMotion:boolean; speed:number; intensity:number; charged:boolean; holdMs:number}
 /** Lightweight HTML sprite transforms; no per-frame JS, SVG dash-offset
  * repaint, canvas redraw, external assets or updates to the portal parent.
  * The only clock adjustment is on each 10% charge band. */
-export const PortalEnergyFlow=memo(function PortalEnergyFlow({variant,level,paused,reducedMotion,speed,intensity}:Props){
+export const PortalEnergyFlow=memo(function PortalEnergyFlow({variant,level,paused,reducedMotion,speed,intensity,charged,holdMs}:Props){
   const root=useRef<HTMLDivElement>(null)
   const animations=useRef<{animation:Animation;orbit:boolean}[]>([])
-  const current=useRef({level,paused,reducedMotion,speed})
-  current.current={level,paused,reducedMotion,speed}
+  const current=useRef({level,paused,reducedMotion,speed,charged})
+  current.current={level,paused,reducedMotion,speed,charged}
   const apply=()=>{
     const el=root.current
     if(!el)return
     const c=current.current,p=clamp(c.level,0,10)/10
     const inactive=el.parentElement?.dataset.inactive==='true'
     for(const {animation,orbit} of animations.current){
-      const rate=(orbit?.55+1.75*p:.65+1.5*p)*clamp(c.speed,.25,3)
+      const rate=(orbit ? .55+1.75*p+(c.charged?.85:0) : .65+1.5*p)*clamp(c.speed,.25,3)
       if(Math.abs(animation.playbackRate-rate)>.001)animation.updatePlaybackRate(rate)
       if(inactive||c.paused||c.reducedMotion||(orbit&&p<.2))animation.pause()
       else if(animation.playState==='paused'||animation.playState==='idle')animation.play()
@@ -81,17 +81,21 @@ export const PortalEnergyFlow=memo(function PortalEnergyFlow({variant,level,paus
     if(el.parentElement)inactive.observe(el.parentElement,{attributes:true,attributeFilter:['data-inactive']})
     return ()=>{resize.disconnect();inactive.disconnect();animations.current.forEach(x=>x.animation.cancel());animations.current=[]}
   },[variant,reducedMotion])
-  useLayoutEffect(apply,[level,paused,reducedMotion,speed])
+  useLayoutEffect(apply,[level,paused,reducedMotion,speed,charged])
   const g=PORTAL_GEOMETRY[variant],p=clamp(level,0,10)/10
   const power=clamp(intensity,0,1)
-  const style={'--pe-incoming':(.34+.66*p)*power,'--pe-orbit':Math.max(0,(p-.15)/.85)*power,
-    '--pe-core':Math.max(0,(p-.2)/.8)*power,'--pe-spark':clamp(3+3*p,3,6)+'px',
+  const finalBoost=Math.max(0,(p-.7)/.3)
+  const style={'--pe-incoming':Math.min(1,(.34+.66*p+.38*finalBoost)*power),
+    '--pe-orbit':Math.min(1,Math.max(0,(p-.15)/.85)*power*(1+.65*finalBoost)),
+    '--pe-core':Math.min(1,Math.max(0,(p-.2)/.8)*power*(1+.8*finalBoost)),
+    '--pe-spark':(3+3*p+3*finalBoost)+'px','--pe-hold-ms':holdMs+'ms',
     '--pe-core-x':g.coreCenter[0]/g.width*100+'%','--pe-core-y':g.coreCenter[1]/g.height*100+'%',
     '--pe-core-w':190*g.transform.scale_x/g.width*100+'%','--pe-core-h':190*g.transform.scale_y/g.height*100+'%',
   } as CSSProperties
   return <div ref={root} className="portal-energy-flow" data-testid="portal-energy-flow"
-    data-energy-level={level} data-energy-reduced={String(reducedMotion)} style={style} aria-hidden="true">
+    data-energy-level={level} data-energy-charged={String(charged)} data-energy-reduced={String(reducedMotion)} style={style} aria-hidden="true">
     <div className="pe-core-glow"/>
+    <div className="pe-core-heat" data-testid="portal-core-heat"/>
     {ENERGY_ROUTES.map(r=><span key={r.id} className="pe-sprite pe-incoming" data-energy-route={r.id}><i/></span>)}
     {Array.from({length:ORBS},(_,i)=><span key={i} className="pe-sprite pe-orbit" data-energy-orbit={i}><i/></span>)}
   </div>

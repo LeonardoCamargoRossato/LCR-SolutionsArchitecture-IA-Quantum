@@ -5,7 +5,7 @@ import { PortalStaticBackground } from './PortalStaticBackground'
 import { PortalDoorOpening } from './PortalDoorOpening'
 import { PORTAL_GEOMETRY, type PortalVariant } from './portalGeometry'
 import { usePortalVariant, type PortalAssetState } from './usePortalVariant'
-import { PORTAL_OPENING_MS } from './useCinematicProgress'
+import { PORTAL_OPENING_MS, PORTAL_CHARGED_MS, PORTAL_MOBILE_CHARGED_MS, PORTAL_MOBILE_OPENING_MS } from './useCinematicProgress'
 import './loading-portal-v2.css'
 
 export type PortalPreviewMode = 'full' | 'background' | 'lights' | 'counter' | 'door'
@@ -90,6 +90,10 @@ export const LoadingPortalV2 = memo(function LoadingPortalV2({
   const notifyOpened = useCallback(() => end(false),[end])
   const notifyFallback = useCallback(() => end(true),[end])
   const selected = result?.variant, geo = selected ? PORTAL_GEOMETRY[selected] : null
+  // Keep manual Lab duration intact. Production portrait variants use a separate motion clock.
+  const mobile = cinematicActive && (selected === '9x16' || selected === '9x19_5' || selected === '3x4' || window.matchMedia('(pointer: coarse) and (max-width: 1000px)').matches)
+  const holdMs = mobile ? PORTAL_MOBILE_CHARGED_MS : PORTAL_CHARGED_MS
+  const openingMs = mobile ? PORTAL_MOBILE_OPENING_MS : duration
   const style = useMemo(() => geo ? {
     '--pdo-ratio': geo.width / geo.height,
     '--pdo-exit-left': '-'+(Math.max(geo.left.contentBbox[2],geo.core.contentBbox[2])/geo.width*100+2)+'%',
@@ -100,11 +104,11 @@ export const LoadingPortalV2 = memo(function LoadingPortalV2({
   const showBackground = mode !== 'lights' && mode !== 'counter'
   const showDoor = mode === 'full' || mode === 'door'
   return <div className="portal-v2-shell" ref={root} data-testid="loading-portal-v2"
-    data-phase={phase} data-assets={result?.status ?? 'loading'} data-variant={selected}
+    data-phase={phase === 'loading' && cinematicActive && realReady && displayHundred ? 'charged' : phase} data-motion-profile={mobile ? "mobile" : "desktop"} data-assets={result?.status ?? 'loading'} data-variant={selected}
     data-real-ready={realReady ? 'true' : 'false'}>
     {selected && geo && <div className="portal-v2-plane" ref={plane} style={style} data-state="closed" data-motion-prepared={prepared && realReady && displayHundred ? "true" : "false"}>
       {prepared && showDoor && <PortalDoorOpening stage={plane} variant={selected} open={open}
-        duration={duration} paused={paused || hidden} reducedMotion={reduced}
+        duration={openingMs} cinematic={cinematicActive} mobile={mobile} paused={paused || hidden} reducedMotion={reduced}
         onOpening={notifyOpening}
         onOpened={notifyOpened} onFallback={notifyFallback} />}
       {showBackground && <PortalStaticBackground variant={selected}/>}
@@ -113,7 +117,7 @@ export const LoadingPortalV2 = memo(function LoadingPortalV2({
           intensity={intensity} ready={realReady && displayHundred} reducedMotion={reduced} energyFlow={cinematicActive}/>}
         {cinematicActive ? <CinematicPortalCounter variant={selected} ready={realReady}
           visible={result?.status !== 'failed'} paused={paused || hidden} reducedMotion={reduced}
-          onHundred={onHundred} onComplete={onComplete} speed={speed} intensity={intensity} playing={playing}/> :
+          onHundred={onHundred} onComplete={onComplete} speed={speed} intensity={intensity} playing={playing} holdMs={holdMs}/> :
           (mode === 'full' || mode === 'counter') && <PortalProgressCounter variant={selected} progress={progress} ready={realReady} cinematic={cinematic}/>}
       </div>
     </div>}
