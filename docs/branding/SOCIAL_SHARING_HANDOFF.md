@@ -15,6 +15,7 @@
 2. Record source/provenance, rights, approval, SHA-256, size, alt text and update date in SOCIAL_ASSET_INVENTORY.json. Keep the file name stable. Increment cache_version and BOTH image URL query versions in index.html; update alt text if needed. Some platforms ignore query strings: if necessary, use a new versioned filename and update both URLs and inventory together.
 3. npm ci; npm run build; python3 tests/social-sharing-smoke.py --dist dist. Review the preview at native size.
 4. Open PR, pass CI, obtain approval before publishing final artwork. Verify public URLs return HTTP 200, image/png and correct bytes using python3 tests/social-sharing-smoke.py --live.
+The Social Sharing CI can also be dispatched on main with verify_live=true after Pages deployment to record independent HTTP evidence.
 5. Use LinkedIn Post Inspector (https://www.linkedin.com/post-inspector/) for a fresh scrape of the root URL; verify title, description and image in a new post draft (do not publish).
 6. WhatsApp: send/share the root URL in a self-chat or test conversation; wait for preview. Old messages do not necessarily refresh. For a fresh test, try a unique page query parameter before the hash (e.g. ?share=v2). Do not claim cache purge or force changes on users' devices.
 7. Verify native previews on actual mobile/desktop. Simulated crawler user-agent requests only validate network/metadata access, not a platform's proprietary rendering or caches.
