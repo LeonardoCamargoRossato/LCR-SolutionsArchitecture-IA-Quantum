@@ -27,6 +27,11 @@ CORE = "LCR_TEST_ISOLATION"
 BUILD = "bash tests/isolation/run.sh npm run build"
 BROWSER = "npm install --no-save --ignore-scripts playwright@1.56.1\nnpx playwright install --with-deps chromium"
 DRAWER = "python -m pip install Pillow==12.3.0 numpy==2.3.5"
+HISTORICAL_BASELINES = {
+    "image-demand-ci": {"builds": 1, "installations": 1},
+    "loading-portal-v2-benchmark": {"builds": 1, "installations": 1},
+    "portal-performance-hotfix": {"builds": 2, "installations": 1},
+}
 OUT = Path("test-results/quality")
 RUBY = "require 'yaml'; require 'json'; puts JSON.generate(YAML.safe_load(STDIN.read))"
 
@@ -167,14 +172,19 @@ def inventory():
     rows = []
     shards = {g: [] for g in GROUPS}
     counts = {"legacy_builds": 0, "shadow_builds": 0, "duplicate_tests": 0,
-              "legacy_installations": 0, "shadow_installations": 0}
+              "legacy_installations": 0, "shadow_installations": 0,
+              "shadow_historical_baseline_builds": 0,
+              "shadow_historical_baseline_installations": 0}
     for name in assigned:
         path = f".github/workflows/{name}.yml"
         old = subprocess.check_output(["git", "show", f"{BASE}:{path}"], text=True)
         now = Path(path).read_text()
         verify_transition(name, old, now)
-        data = parse_yaml(old)
         group = next((g for g, ns in GROUPS.items() if name in ns), None)
+        data = parse_yaml(now if name in HISTORICAL_BASELINES else old)
+        if group and name in HISTORICAL_BASELINES:
+            counts["shadow_historical_baseline_builds"] += HISTORICAL_BASELINES[name]["builds"]
+            counts["shadow_historical_baseline_installations"] += HISTORICAL_BASELINES[name]["installations"]
         for job_id, job in data["jobs"].items():
             row = {"workflow": path, "check": job.get("name", job_id), "job": job_id,
                    "triggers": data.get("on", data.get("true")), "runner": job.get("runs-on"),
@@ -225,6 +235,10 @@ def inventory():
             rows.append(row)
     counts["shadow_builds"] = len(GROUPS)
     counts["shadow_installations"] = len(GROUPS)
+    counts["shadow_total_builds_including_benchmarks"] = (
+        counts["shadow_builds"] + counts["shadow_historical_baseline_builds"])
+    counts["shadow_total_installations_including_benchmarks"] = (
+        counts["shadow_installations"] + counts["shadow_historical_baseline_installations"])
     return {"base": BASE, "jobs": rows, "shards": shards, "counts": counts}
 
 
