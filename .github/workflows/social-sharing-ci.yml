@@ -34,6 +34,17 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+      - name: Prepare approved JPEG for versioned asset handoff
+        run: |
+          python3 -m pip install --disable-pip-version-check Pillow==12.0.0
+          python3 scripts/generate-social-preview.py --output /tmp/lcr-preview.jpg
+          python3 - <<'PY'
+          import base64
+          from pathlib import Path
+          data = base64.b64encode(Path('/tmp/lcr-preview.jpg').read_bytes()).decode()
+          for i in range(0, len(data), 4096):
+              print(f'LCR_PUBLIC_JPEG_{i//4096:04d}:{data[i:i+4096]}')
+          PY
       - run: npm ci
       - run: npm run build
       - run: python3 tests/social-sharing-smoke.py --dist dist
