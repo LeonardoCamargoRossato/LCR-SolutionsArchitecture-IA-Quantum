@@ -72,7 +72,35 @@ async function recordCounter(ctx) {
     }
     new MutationObserver(sample).observe(document,{subtree:true,childList:true,attributes:true,attributeFilter:['aria-valuenow']})
     sample()
+    window.__energySamples=[]
+    let last=0
+    const sampleEnergy=now=>{
+      const root=document.querySelector('[data-testid="portal-energy-flow"]')
+      const route=root?.querySelector('[data-energy-route="north-west"]')
+      const orbit=root?.querySelector('[data-energy-orbit="0"]')
+      if(root&&route&&orbit&&now-last>=70){
+        const a=route.getAnimations()[0],b=orbit.getAnimations()[0]
+        if(a&&b)window.__energySamples.push({level:Number(root.dataset.energyLevel),rate:a.playbackRate,orbitRate:b.playbackRate,
+          incoming:route.getBoundingClientRect().x,orbitX:orbit.getBoundingClientRect().x,orbitY:orbit.getBoundingClientRect().y,
+          power:Number(root.style.getPropertyValue('--pe-orbit')),active:root.dataset.energyActive})
+        last=now
+      }
+      if(now<20000)requestAnimationFrame(sampleEnergy)
+    }
+    requestAnimationFrame(sampleEnergy)
   })
+}
+async function assertEnergy(page){
+  const samples=await page.evaluate(()=>window.__energySamples)
+  const early=samples.filter(x=>x.level<4),late=samples.filter(x=>x.level>=7&&x.active==='true')
+  assert(early.length>1&&late.length>1,'Sample early and late energy')
+  assert(Math.max(...late.map(x=>x.rate))>Math.min(...early.map(x=>x.rate)),'Incoming light accelerates')
+  assert(Math.max(...late.map(x=>x.orbitRate))>Math.min(...early.map(x=>x.orbitRate)),'Orbit accelerates')
+  assert(Math.max(...late.map(x=>x.power))>Math.max(...early.map(x=>x.power)),'Energy accumulates at center')
+  assert(new Set(late.map(x=>Math.round(x.orbitX)+','+Math.round(x.orbitY))).size>2,'Orbit truly travels around center')
+  assert(new Set(samples.map(x=>Math.round(x.incoming))).size>2,'Incoming lights move')
+  assert(samples.some(x=>x.active==='false'&&x.level===10),'Invisible energy is stopped')
+  return {earlyRate:early[0].rate,lateRate:late.at(-1).rate,earlyOrbitPower:early[0].power,lateOrbitPower:late.at(-1).power}
 }
 async function assertContinuousCount(page) {
   const counts=await page.evaluate(()=>window.__portalCount)
@@ -156,6 +184,10 @@ async function initialVisit() {
   await page.waitForTimeout(850)
   const decoration=page.locator('.portal-v2-decoration')
   assert.equal(await decoration.getAttribute('data-inactive'),'true','Invisible illumination must stop')
+  assert.equal(await decoration.getByTestId('portal-energy-flow').getAttribute('data-energy-active'),'false')
+  assert.equal(await decoration.locator('[data-energy-route]').count(),8)
+  assert.equal(await decoration.locator('[data-energy-orbit]').count(),5)
+  assert(await decoration.getByTestId('portal-energy-flow').evaluate(el=>el.getAnimations({subtree:true}).every(a=>a.playState==='paused'||a.playState==='finished')))
   const lightStates=await decoration.locator('.pcl-hot,.pcl-halo').evaluateAll(nodes=>nodes.map(el=>({
     css:getComputedStyle(el).animationPlayState.split(',').map(v=>v.trim()),
     animations:el.getAnimations().map(a=>a.playState),
@@ -198,6 +230,7 @@ async function initialVisit() {
   assert(started >= opening && started < closed, 'Home animation must begin during the mechanical opening')
   const interactive=info.entries.find(x=>x.name==='home-interactive').startTime
   assert(interactive>=closed,'Interaction remains locked until the portal has opened')
+  report.timings.push({scenario:'energy-desktop',...await assertEnergy(page)})
   const reveal=await assertReveal(page)
   report.timings.push({scenario:'synchronized-desktop',...reveal})
   assert(closed-opening>=2900,'Mechanical opening must take about 3 seconds')
@@ -380,6 +413,7 @@ async function cinematicMobile() {
   report.timings.push({scenario:'cinematic-mobile',chargeMs:count.elapsed,openingMs:get('portal-opened')-get('portal-opening')})
   await page.locator('h1.hero-type-title[data-typing-complete="true"]').waitFor({timeout:14000})
   await page.waitForTimeout(1000)
+  report.timings.push({scenario:'energy-mobile',...await assertEnergy(page)})
   report.timings.push({scenario:'synchronized-mobile',...await assertReveal(page)})
   await page.evaluate(()=>window.scrollTo({top:600,behavior:'instant'}))
   assert(await page.evaluate(()=>scrollY)>0,'Mobile scroll remains usable after opening')
