@@ -1,3 +1,4 @@
+import { DemandImage } from '../../../components/DemandImage'
 import { useEffect, useRef, useState, type DragEvent, type PointerEvent } from 'react'
 import { Move, RotateCw } from 'lucide-react'
 import { ParticleWave } from '../../../components/test-component-lab/particle-wave/ParticleWave'
@@ -177,7 +178,7 @@ export function VisualEditor({
           onDoubleClick={e=>{if(e.target===e.currentTarget)select(null)}}
         >
           {doc.background&&imageUrl&&visible('background')&&
-            <img src={imageUrl} alt="" draggable={false} className="lcr-v2-background"
+            <DemandImage src={imageUrl} alt="" draggable={false} className="lcr-v2-background"
               style={{opacity:doc.background.opacity,objectFit:doc.background.fit==='original'?'none':doc.background.fit}} />}
           {layers.map(drawLayer)}
           {doc.gridVisible&&visible('guides')&&<div className="lcr-v2-grid" aria-hidden="true"

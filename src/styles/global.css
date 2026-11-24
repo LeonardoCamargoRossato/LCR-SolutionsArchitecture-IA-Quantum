@@ -6547,3 +6547,7 @@ a.case-institution-logo:hover {
   }
   .about-details-dialog-header { padding-inline: 16px; }
 }
+
+/* Native demand images keep their existing box but do not display broken-image
+   icons or text before an actual viewport admission. */
+img[data-demand-pending='true'] { opacity: 0; }

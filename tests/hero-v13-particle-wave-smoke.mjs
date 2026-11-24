@@ -37,7 +37,7 @@ async function verifyScene(name, width, height, theme, reduced) {
   const canvas = page.getByTestId('particle-wave-canvas')
   await page.waitForFunction(() => document.querySelector('.hero-v13-particle-wave canvas')?.dataset.ready === 'true',
     null, { timeout: 15000 })
-  await page.getByTestId('hero-v6-blue-code').evaluate(img => img.decode())
+  await page.waitForFunction(()=>{const img=document.querySelector('[data-testid="hero-v6-blue-code"]');return img?.complete&&img?.naturalWidth>0})
 
   assert.equal(await wave.count(), 1, 'Home must contain exactly one particle field')
   assert.equal(await canvas.count(), 1, 'Only one Canvas 2D renderer should be mounted')

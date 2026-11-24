@@ -1,3 +1,4 @@
+import { DemandImage } from '../DemandImage'
 import type { ProjectInstitution } from '../../domain/models/ProjectInstitution'
 import { resolveInstitutionLogo } from '../../data/institutionLogoAssets'
 
@@ -14,18 +15,13 @@ export function CaseInstitutionLogos({
       {visible.map((institution) => {
         const logo = resolveInstitutionLogo(institution.institutionLogoUrl)
         const content = logo.src ? (
-          <img
+          <DemandImage
             src={logo.src}
             alt={institution.institutionName}
             title={institution.institutionName}
             loading="lazy"
             decoding="async"
-            onError={(event) => {
-              // Keep the source supplied by Supabase if a vector fails to load.
-              if (logo.fallback && event.currentTarget.src !== logo.fallback) {
-                event.currentTarget.src = logo.fallback
-              }
-            }}
+            fallbackSrc={logo.fallback}
           />
         ) : (
           <span title={institution.institutionName}>

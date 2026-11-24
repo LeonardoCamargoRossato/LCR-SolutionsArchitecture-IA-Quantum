@@ -148,7 +148,6 @@ export function ProjectCarousel({ projectTitle, images }: Props) {
           src={current.src}
           previewSrc={current.previewSrc}
           alt={current.alt}
-          eager={index === 0}
           sizes="(max-width: 980px) 100vw, 48vw"
         />
         <span className="image-zoom-indicator" aria-hidden="true">

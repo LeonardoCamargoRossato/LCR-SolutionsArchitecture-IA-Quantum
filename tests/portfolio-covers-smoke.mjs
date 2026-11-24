@@ -64,6 +64,7 @@ async function testViewport(label,width,height) {
     console.log('BROWSER',label,slug,'begin')
     await page.goto(BASE+'#/projects/'+slug,{waitUntil:'domcontentloaded'})
     await page.locator('.case-story-cover').waitFor({state:'visible',timeout:30000})
+    await page.locator('.case-story-cover').scrollIntoViewIfNeeded()
     await imageLoaded(page,'.case-story-cover img.progressive-image-main','/WebP/')
     await page.locator('.case-story-cover').click()
     const dialog=page.locator('.image-lightbox[role="dialog"]')

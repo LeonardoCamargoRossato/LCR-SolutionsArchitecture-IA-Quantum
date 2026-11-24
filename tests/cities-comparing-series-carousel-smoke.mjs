@@ -20,6 +20,7 @@ async function waitForServer() {
 }
 
 async function waitForImage(page, selector, mustContain) {
+  if(selector.startsWith('.case-story-cover')) await page.locator('.case-story-cover').scrollIntoViewIfNeeded()
   await page.waitForFunction(({ selector, mustContain }) => {
     const image = document.querySelector(selector)
     return image instanceof HTMLImageElement &&

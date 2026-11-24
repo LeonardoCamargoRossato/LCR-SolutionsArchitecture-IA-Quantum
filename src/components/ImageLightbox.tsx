@@ -44,7 +44,8 @@ export function ImageLightbox({
   const closeRef = useRef<HTMLButtonElement>(null)
   const previousFocus = useRef<HTMLElement | null>(null)
 
-  const [showFallback, setShowFallback] = useState(false)
+  const [failedSource, setFailedSource] = useState<string>()
+  const showFallback = Boolean(current && failedSource === current.src)
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [dragging, setDragging] = useState(false)
@@ -55,7 +56,6 @@ export function ImageLightbox({
   useEffect(() => {
     if (!current) return
     setZoom(1)
-    setShowFallback(false)
     setPan({ x: 0, y: 0 })
     setDragging(false)
     previousFocus.current = document.activeElement as HTMLElement | null
@@ -241,7 +241,7 @@ export function ImageLightbox({
             <img
               key={current.src}
               src={showFallback && current.fallbackSrc ? current.fallbackSrc : current.src}
-              onError={() => { if (current.fallbackSrc && !showFallback) setShowFallback(true) }}
+              onError={() => { if (current.fallbackSrc && !showFallback) setFailedSource(current.src) }}
               alt={current.alt}
               draggable={false}
               style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})` }}

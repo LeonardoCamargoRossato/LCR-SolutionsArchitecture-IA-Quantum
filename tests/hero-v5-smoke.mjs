@@ -97,6 +97,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   // V7: the fast static transparent derivative persists BEHIND all three active scenes.
   const bg = page.locator('[data-testid="hero-v5-background"]')
   assert.equal(await bg.count(), 1, 'Only one persistent Hero background is allowed')
+  await page.waitForFunction(()=>{const img=document.querySelector('[data-testid="hero-v6-blue-code"]');return img?.complete&&img?.naturalWidth>0})
   const imgStatus = await page.getByTestId('hero-v6-blue-code').evaluate(img => ({
     source: img.getAttribute('src'),
     loaded: img.complete && img.naturalWidth === 1440 && img.naturalHeight === 800,
@@ -185,6 +186,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
       await page.waitForTimeout(1150)
       assert((await page.locator('.hero-v4-hamnet-scene').innerText()).includes(DIALOGUE))
       assert((await page.locator('.hero-v4-hamnet-scene').innerText()).includes('Hello!'))
+      await page.waitForFunction(()=>{const img=document.querySelector('.hero-v4-bot-art');return img?.complete&&img?.naturalWidth>0})
       const image = await page.locator('.hero-v4-bot-art').evaluate(el => ({
         loaded: el.complete && el.naturalWidth > 0,
         width: el.naturalWidth,
@@ -243,7 +245,7 @@ async function scenario({ name, width, height, reduced = false, dark = false, al
   await page.reload({ waitUntil: 'domcontentloaded' })
   await page.waitForFunction(mode => document.documentElement.dataset.theme === mode,
     alternateTheme, { timeout: 8000 })
-  await page.getByTestId('hero-v6-blue-code').evaluate(img => img.decode())
+  await page.waitForFunction(()=>{const img=document.querySelector('[data-testid="hero-v6-blue-code"]');return img?.complete&&img?.naturalWidth>0})
   const alternateSource = await page.getByTestId('hero-v6-blue-code').getAttribute('src')
   assert(alternateSource.includes(alternateTheme === 'dark'
     ? 'lcr-hero-blue-code-v7-lite.svg' : 'lcr-hero-blue-code-v8-light-navy.svg'),

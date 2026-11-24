@@ -68,6 +68,11 @@ export function waitForHomeDom(signal:AbortSignal,timeoutMs=12000):Promise<BootO
 }
 export async function waitForHeroMedia(signal:AbortSignal):Promise<BootOutcome>{
   const image=document.querySelector<HTMLImageElement>('[data-testid="hero-v6-blue-code"]')
+  // The real Home is mounted but hidden by the portal. Its decorative SVG
+  // must not block the mechanical opening; CSS/graph is the existing fallback.
+  // The image is admitted by viewport visibility when the leaves start revealing.
+  if (image && !image.getAttribute('src') && isHomeDomReady() &&
+      image.closest('.home-boot-app[data-home-reveal="closed"]')) return 'fallback'
   const result=image?await bounded(image.decode().then(()=>image.naturalWidth>0),signal,3200):'failed'
   // Hero's CSS base and graph remain usable if the decorative SVG fails.
   return result==='failed'&&isHomeDomReady()?'fallback':result

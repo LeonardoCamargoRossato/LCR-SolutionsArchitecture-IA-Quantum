@@ -1,3 +1,4 @@
+import { DemandImage } from '../DemandImage'
 import {
   ChevronDown,
   ChevronUp,
@@ -199,7 +200,7 @@ export function ProjectInstitutionsAdmin({
           >
             <div className="project-institution-admin-logo">
               {item.institutionLogoUrl
-                ? <img
+                ? <DemandImage
                     src={resolveInstitutionLogo(item.institutionLogoUrl).src}
                     alt=""
                     onError={(event) => {

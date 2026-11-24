@@ -1,3 +1,4 @@
+import { DemandImage } from '../DemandImage'
 import type { PointerEvent } from 'react'
 
 /** The terminal and the assistant are authored demos, never live services.
@@ -78,7 +79,8 @@ export function EngineeringWorkspace({
             onClick={onReplay}
             title={pt ? 'Clique para repetir a demonstração' : 'Click to replay the demo'}
           >
-            <img
+            <DemandImage
+              enabled={active}
               src={`${import.meta.env.BASE_URL}assets/home/hero/ai-hamnet-enterprise-v2.svg`}
               alt=""
               className="hero-v4-bot-art"

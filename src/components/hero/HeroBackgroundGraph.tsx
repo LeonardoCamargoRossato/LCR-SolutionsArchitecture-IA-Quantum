@@ -1,3 +1,4 @@
+import { DemandImage } from '../DemandImage'
 /**
  * Persistent, decorative background for all four Home Hero scenes.
  *
@@ -23,23 +24,17 @@ export function HeroBackgroundGraph() {
   return (
     <div className="hero-v5-background hero-v6-background hero-v7-background" data-testid="hero-v5-background" aria-hidden="true">
       <div className="hero-v5-backdrop-fabric hero-v6-backdrop-fabric hero-v7-backdrop-fabric">
-        <img
+        <DemandImage
           className="hero-v5-backdrop-svg hero-v6-backdrop-svg"
           data-testid="hero-v6-blue-code"
-          key={theme}
           src={source}
           alt=""
           width="1440"
           height="800"
           decoding="async"
           fetchPriority="high"
-          onError={(event) => {
-            const image = event.currentTarget
-            if (!image.dataset.fallback) {
-              image.dataset.fallback = 'true'
-              image.src = fallback
-            }
-          }}
+          fallbackSrc={fallback}
+          allowPortalReveal
         />
         <span className="hero-v7-light-trace" aria-hidden="true" />
       </div>
