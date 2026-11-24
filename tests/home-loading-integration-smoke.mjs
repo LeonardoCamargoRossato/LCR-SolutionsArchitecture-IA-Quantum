@@ -60,10 +60,33 @@ async function marks(page) {
   })
 }
 
+async function recordCounter(ctx) {
+  await ctx.addInitScript(()=>{
+    window.__portalCount = []
+    const sample=()=>{
+      const node=document.querySelector('[data-testid="portal-v2-counter"]')
+      if(!node)return
+      const value=Number(node.getAttribute('aria-valuenow'))
+      if(window.__portalCount.at(-1)?.value!==value)window.__portalCount.push({value,time:performance.now(),
+        charge:Number(node.querySelector('[data-testid="portal-v2-charge-fill"]')?.style.getPropertyValue('--charge'))})
+    }
+    new MutationObserver(sample).observe(document,{subtree:true,childList:true,attributes:true,attributeFilter:['aria-valuenow']})
+    sample()
+  })
+}
+async function assertContinuousCount(page) {
+  const counts=await page.evaluate(()=>window.__portalCount)
+  assert.deepEqual(counts.map(x=>x.value),Array.from({length:101},(_,i)=>i),'Every integer 0–100 must appear in order')
+  assert(counts.every(x=>Math.abs(x.charge-x.value/100)<.001),'Bar follows number')
+  const elapsed=counts.at(-1).time-counts[0].time
+  assert(elapsed>=2850,'Visible charging must last about 3 seconds: '+elapsed)
+  return {elapsed,first:counts[0].time,last:counts.at(-1).time}
+}
 async function initialVisit() {
   const ctx = await context()
   const page = await ctx.newPage()
   const check = await observe(page, 'first-visit')
+  await recordCounter(ctx)
   await page.goto(HOME + '?portal=replay', { waitUntil: 'domcontentloaded' })
   await page.getByTestId('loading-portal-v2').waitFor({ timeout: 18000 })
   await page.getByTestId('portal-v2-counter').waitFor({timeout:15000})
@@ -81,7 +104,17 @@ async function initialVisit() {
   await page.locator('[data-testid="loading-portal-v2"][data-phase="opening"]').waitFor({ timeout: 16000 })
   assert.equal(await page.locator('.home-boot-overlay').evaluate(
     element => getComputedStyle(element).backgroundColor), 'rgba(0, 0, 0, 0)')
+  const count=await assertContinuousCount(page)
+  await page.waitForTimeout(850)
+  const first=await page.locator('.pdo-left').evaluate(el=>new DOMMatrixReadOnly(getComputedStyle(el).transform).m41)
   await page.screenshot({ path: 'test-results/home-portal-v2-door-opening.png' })
+  await page.waitForTimeout(650)
+  const second=await page.locator('.pdo-left').evaluate(el=>new DOMMatrixReadOnly(getComputedStyle(el).transform).m41)
+  assert(first<0 && second<first,'Left leaf moves continuously rather than jumping')
+  const right=await page.locator('.pdo-right').evaluate(el=>new DOMMatrixReadOnly(getComputedStyle(el).transform).m41)
+  assert(right>0,'Right leaf moves in opposite direction')
+  assert.equal(await page.locator('.pdo-left [data-testid="portal-v2-core"]').count(),1)
+  await page.screenshot({ path: 'test-results/home-portal-v2-door-midpoint.png' })
   await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({ timeout: 20000 })
   assert.equal(await page.getByTestId('loading-portal-v2').count(), 0)
   await page.locator('h1.hero-type-title[data-typing-complete="true"]').waitFor({ timeout: 14000 })
@@ -106,6 +139,9 @@ async function initialVisit() {
   assert(opening >= mounted, 'Door opened before actual Home mount')
   const closed=info.entries.find(x=>x.name==='portal-opened').startTime
   assert(started >= closed && closed>=opening, 'Home animation started before door completed')
+  assert(closed-opening>=2900,'Mechanical opening must take about 3 seconds')
+  assert(opening-count.last>=140,'100% must remain visible before opening')
+  report.timings.push({scenario:'cinematic-desktop',chargeMs:count.elapsed,openingMs:closed-opening,visibleTotalMs:closed-count.first})
   await page.locator('.hero-v3-actions .hero-actions .button').first().click()
   await page.waitForFunction(() => {
     const selected = document.getElementById('projects')
@@ -187,6 +223,10 @@ async function slowNetwork() {
   await page.getByTestId('portal-v2-counter').waitFor({timeout:8000})
   const number=await page.getByTestId('portal-v2-counter').getAttribute('aria-valuenow')
   assert(Number(number)<100,'never show 100 while mechanical resource is pending')
+  await page.waitForFunction(()=>document.querySelector('[data-testid="portal-v2-counter"]')?.getAttribute('aria-valuenow')==='99',null,{timeout:10000})
+  await page.waitForTimeout(250)
+  assert.equal(await page.getByTestId('portal-v2-counter').getAttribute('aria-valuenow'),'99','99 remains held until real readiness')
+  assert.equal(await page.getByTestId('loading-portal-v2').getAttribute('data-phase'),'loading')
   unblock()
   await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({ timeout: 22000 })
   assert(released, 'The deferred door image request should actually be resolved')
@@ -241,6 +281,25 @@ async function routeCancellationAndResize(){
   await ctx.close()
 }
 
+async function cinematicMobile() {
+  const ctx=await context({viewport:{width:390,height:844}})
+  await recordCounter(ctx)
+  const page=await ctx.newPage()
+  await page.goto(HOME+'?portal=replay',{waitUntil:'domcontentloaded'})
+  await page.getByTestId('portal-v2-counter').waitFor({timeout:15000})
+  await page.waitForFunction(()=>Number(document.querySelector('[data-testid="portal-v2-counter"]')?.getAttribute('aria-valuenow'))>=45)
+  await page.screenshot({path:'test-results/home-portal-v2-mobile-charging.png'})
+  await page.locator('[data-testid="loading-portal-v2"][data-phase="opening"]').waitFor({timeout:18000})
+  const count=await assertContinuousCount(page)
+  await page.waitForTimeout(1400)
+  await page.screenshot({path:'test-results/home-portal-v2-mobile-opening.png'})
+  await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({timeout:16000})
+  const info=await marks(page), get=name=>info.entries.find(e=>e.name===name).startTime
+  assert(get('portal-opened')-get('portal-opening')>=2900)
+  report.timings.push({scenario:'cinematic-mobile',chargeMs:count.elapsed,openingMs:get('portal-opened')-get('portal-opening')})
+  await ctx.close()
+}
+
 try {
   await mkdir('test-results', { recursive: true })
   await ready()
@@ -248,6 +307,7 @@ try {
   await initialVisit()
   await sessionAndRoutes()
   await reducedAndMobile()
+  await cinematicMobile()
   await slowNetwork()
   await imageFallback()
   await routeCancellationAndResize()

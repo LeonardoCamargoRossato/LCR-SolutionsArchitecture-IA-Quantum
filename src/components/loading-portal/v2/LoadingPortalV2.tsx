@@ -5,6 +5,7 @@ import { PortalStaticBackground } from './PortalStaticBackground'
 import { PortalDoorOpening } from './PortalDoorOpening'
 import { PORTAL_GEOMETRY, type PortalVariant } from './portalGeometry'
 import { usePortalVariant, type PortalAssetState } from './usePortalVariant'
+import { useCinematicProgress, PORTAL_OPENING_MS } from './useCinematicProgress'
 import './loading-portal-v2.css'
 
 export type PortalPreviewMode = 'full' | 'background' | 'lights' | 'counter' | 'door'
@@ -23,6 +24,9 @@ export interface LoadingPortalV2Props {
   onOpened?: () => void
   onFallback?: () => void
   allowFallback?: boolean
+  /** Presentation-only count; never authorizes readiness. */
+  cinematic?: boolean
+  onVisualComplete?: () => void
   onAssetState?: (state: PortalAssetState, variant?: PortalVariant) => void
 }
 
@@ -30,7 +34,7 @@ export interface LoadingPortalV2Props {
  * has no progress timer, remote service, route logic, or second boot coordinator. */
 export function LoadingPortalV2({
   progress, ready, variant, playing = true, paused = false, speed = 1, intensity = .72,
-  duration = 1800, reducedMotion = false, mode = 'full', allowFallback = true, onOpening, onOpened, onFallback, onAssetState,
+  duration = PORTAL_OPENING_MS, reducedMotion = false, mode = 'full', allowFallback = true, cinematic = false, onVisualComplete, onOpening, onOpened, onFallback, onAssetState,
 }: LoadingPortalV2Props) {
   const root = useRef<HTMLDivElement>(null), plane = useRef<HTMLDivElement>(null)
   const [phase, setPhase] = useState<'loading' | 'opening' | 'opened' | 'fallback'>('loading')
@@ -41,10 +45,26 @@ export function LoadingPortalV2({
   const callback = useRef({onOpening,onOpened,onFallback,onAssetState})
   callback.current = {onOpening,onOpened,onFallback,onAssetState}
   const completed = useRef(false)
-  const requested = (mode === 'full' || mode === 'door') && ready && confirmedPortalPercent(progress,ready) === 100
   const prepared = result?.status === 'ready'
-  const open = freeze || (requested && prepared)
   const reduced = systemReduced || reducedMotion
+  const realReady = ready && prepared && confirmedPortalPercent(progress,ready) === 100
+  const visual = useCinematicProgress({
+    enabled: cinematic && mode === 'full', visible: Boolean(result?.variant) && result?.status !== 'failed',
+    ready: realReady, paused: paused || hidden, reducedMotion: reduced,
+  })
+  const displayProgress = cinematic && mode === 'full' ? visual.percent : progress
+  const requested = (mode === 'full' || mode === 'door') && realReady &&
+    (!cinematic || mode !== 'full' || visual.complete)
+  const open = freeze || requested
+  const visualCallback = useRef(onVisualComplete)
+  visualCallback.current = onVisualComplete
+  const visualReported = useRef(false)
+  useEffect(() => {
+    if (realReady && displayProgress === 100 && !visualReported.current) {
+      visualReported.current = true
+      visualCallback.current?.()
+    }
+  }, [realReady, displayProgress])
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
     const update = () => setSystemReduced(media.matches)
@@ -76,7 +96,8 @@ export function LoadingPortalV2({
   const showBackground = mode !== 'lights' && mode !== 'counter'
   const showDoor = mode === 'full' || mode === 'door'
   return <div className="portal-v2-shell" ref={root} data-testid="loading-portal-v2"
-    data-phase={phase} data-assets={result?.status ?? 'loading'} data-variant={selected}>
+    data-phase={phase} data-assets={result?.status ?? 'loading'} data-variant={selected}
+    data-real-ready={realReady ? 'true' : 'false'}>
     {selected && geo && <div className="portal-v2-plane" ref={plane} style={style} data-state="closed">
       {prepared && showDoor && <PortalDoorOpening stage={plane} variant={selected} open={open}
         duration={duration} paused={paused || hidden} reducedMotion={reduced}
@@ -85,8 +106,8 @@ export function LoadingPortalV2({
       {showBackground && <PortalStaticBackground variant={selected}/>}
       <div className="portal-v2-decoration">
         {(mode === 'full' || mode === 'lights') && <PortalCircuitLights variant={selected} playing={playing && !paused && !hidden} speed={speed}
-          intensity={intensity} ready={ready && prepared} reducedMotion={reduced}/>}
-        {(mode === 'full' || mode === 'counter') && <PortalProgressCounter variant={selected} progress={progress} ready={ready && prepared}/>}
+          intensity={intensity} ready={realReady && displayProgress === 100} reducedMotion={reduced}/>}
+        {(mode === 'full' || mode === 'counter') && <PortalProgressCounter variant={selected} progress={displayProgress} ready={realReady} cinematic={cinematic}/>}
       </div>
     </div>}
     {!selected && <p className="portal-v2-resource-status" role="status">Preparando a porta…</p>}
