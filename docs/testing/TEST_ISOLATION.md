@@ -21,3 +21,6 @@ Base: 7b5d0ad67d9697b7338c945dfc7691ed8b0bd0d1. Último deploy saudável: Action
 
 ## Evidência e rollback
 Relatórios de namespace, tentativas bloqueadas e artefatos CI vinculados ao SHA; resultados somente após execução. Quantificar egress real via painel autorizado, sem inferir economia faturada. Rollback por PR para base validada; manter isolamento ou suspender automações se reverter. Nenhum dado/bucket/RLS alterado.
+
+### Verificação complementar
+O baseline imutável é reconstruído retrospectivamente no namespace, sem tráfego real. Compara conteúdo/capa/overflow e produz screenshots dos casos AnimeFinder e CE235 (desktop e mobile), além das suítes de regressão. Guardrail prova bloqueio de socket CLI com endereço reservado para documentação; Auth usa login fictício inválido, sessão não-admin e logout.

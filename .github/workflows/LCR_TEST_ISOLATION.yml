@@ -14,6 +14,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -34,6 +36,18 @@ jobs:
         run: npm run test:preflight
       - name: Build using fixture mode
         run: npm run test:isolated -- npm run build
+      - name: Validate simulated sign-in and restricted admin
+        run: npm run test:isolated -- node tests/isolation/AuthContract.test.mjs
+      - name: Reconstruct immutable pre-change baseline with local fixture
+        run: |
+          git worktree add --detach /tmp/lcr-p0-baseline 7b5d0ad67d9697b7338c945dfc7691ed8b0bd0d1
+          cmp package-lock.json /tmp/lcr-p0-baseline/package-lock.json
+          ln -s "$PWD/node_modules" /tmp/lcr-p0-baseline/node_modules
+          bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-p0-baseline && npm run build'
+      - name: Compare baseline and candidate screenshots and case content
+        env:
+          LCR_BEFORE: /tmp/lcr-p0-baseline
+        run: npm run test:isolated -- node tests/isolation/BaselineComparison.test.mjs
       - name: Verify static metadata and preserved assets
         run: npm run test:isolated -- python3 tests/social-sharing-smoke.py --dist dist
       - uses: actions/upload-artifact@v4

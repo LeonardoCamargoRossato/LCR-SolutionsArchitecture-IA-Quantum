@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
+import { readFile,appendFile } from 'node:fs/promises'
+import { spawnSync } from 'node:child_process'
 import { chromium } from './Browser.mjs'
 import { assertIsolated,FIXTURE_URL } from './Environment.mjs'
 assertIsolated()
@@ -17,6 +18,9 @@ for(const [path,mime] of [['PNG/fixture-photo-01.png','image/png'],['WebP/fixtur
   assert.equal(image.headers.get('content-type'),mime)
   assert((await image.arrayBuffer()).byteLength>100)
 }
+const raw=spawnSync('python3',['-c','import socket; s=socket.socket(); s.settimeout(2); code=s.connect_ex(("192.0.2.1",443)); assert code != 0; print(code)'],{encoding:'utf8'})
+assert.equal(raw.status,0,raw.stderr)
+await appendFile(process.env.LCR_NETWORK_LOG,JSON.stringify({event:'blocked',origin:'https://192.0.2.1',transport:'cli-native-socket',expected:true,scenario:process.env.LCR_SCENARIO,errno:Number(raw.stdout.trim())})+'\n')
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']})
 try{
   const page=await browser.newPage()
