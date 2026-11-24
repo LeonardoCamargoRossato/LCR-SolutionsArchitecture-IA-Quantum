@@ -23,8 +23,8 @@ function makeRun(route:string,serial:number,gate:boolean):Run{
 }
 
 /** Real Home stays mounted behind the one shared V2 composition.
- * The counter only advances on verified task outcomes. No RAF progress loop.
- * The isolated Lab owns its own simulation, never imported here. */
+ * Real task outcomes alone authorize opening. The shared portal owns a
+ * separate, bounded cinematic presentation clock, not network progress. */
 export function HomeBootCoordinator({children}:{children:ReactNode}){
   const location=useLocation(), home=location.pathname==='/'
   const force=new URLSearchParams(location.search).get('portal')
@@ -96,7 +96,7 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
       return
     }
     if(ready&&run.phase!=='ready'&&run.phase!=='degraded'){
-      markHomeBoot('home-critical-resources-ready');markHomeBoot('portal-progress-complete')
+      markHomeBoot('home-critical-resources-ready')
       const degraded=BOOT_TASKS.some(t=>run.tasks[t].state==='fallback')
       setRun(p=>({...p,phase:degraded?'degraded':'ready'}))
     }
@@ -165,7 +165,8 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
       {children}
     </div>
     {showPortal&&<div className="home-boot-overlay" data-testid="home-boot-overlay" data-boot-state={run.phase}>
-      <LoadingPortalV2 key={serial} progress={progress}
+      <LoadingPortalV2 key={serial} progress={progress} cinematic
+        onVisualComplete={()=>markHomeBoot('portal-progress-complete')}
         ready={ready&&(run.phase==='ready'||run.phase==='degraded'||run.phase==='activating'||run.phase==='opening')}
         allowFallback={homeSafe} onAssetState={onAssetState} onOpening={onOpening}
         onOpened={()=>finish('mechanical')} onFallback={()=>finish('fallback')}/>
