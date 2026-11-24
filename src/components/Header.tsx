@@ -1,3 +1,4 @@
+import { DemandImage } from './DemandImage'
 import { ChevronDown, Menu, Moon, Sun, UserRound, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
@@ -81,7 +82,7 @@ export function Header() {
         <Link to="/" className="brand" aria-label={locale === 'pt-BR' ? 'Início — Leonardo Rossato' : 'Leonardo Rossato home'}>
           <span className="brand-avatar">
             {content.about.profileImage?.url ? (
-              <img src={content.about.profileImage.url} alt="" aria-hidden="true" />
+              <DemandImage src={content.about.profileImage.url} alt="" aria-hidden="true" />
             ) : (
               <UserRound size={17} aria-hidden="true" />
             )}

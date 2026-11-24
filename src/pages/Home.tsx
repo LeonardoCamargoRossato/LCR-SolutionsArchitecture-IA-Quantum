@@ -1,3 +1,4 @@
+import { DemandImage } from '../components/DemandImage'
 import { FileText, Mail } from 'lucide-react'
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { AboutGallery } from '../components/AboutGallery'
@@ -197,7 +198,7 @@ export function Home() {
           <div className="about-media" data-reveal="right" ref={aboutMediaRef}>
             <div className="profile-frame">
               {about.profileImage?.url ? (
-                <img src={about.profileImage.url} alt="Leonardo Rossato" />
+                <DemandImage src={about.profileImage.url} alt="Leonardo Rossato" />
               ) : (
                 <div className="profile-placeholder" aria-label="Profile image placeholder">LR</div>
               )}

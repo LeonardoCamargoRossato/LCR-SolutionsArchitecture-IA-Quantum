@@ -65,7 +65,7 @@ export function SeoSync() {
         : 'image/png'
 
       favicon.href = configuredFavicon
-        ? `${configuredFavicon}${configuredFavicon.includes('?') ? '&' : '?'}v=${Date.now()}`
+        ? configuredFavicon
         : DEFAULT_FAVICON
 
       favicon.dataset.source = faviconSource

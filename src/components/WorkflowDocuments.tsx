@@ -1,3 +1,4 @@
+import { DemandImage } from './DemandImage'
 import { ChevronLeft, ChevronRight, Maximize2, MoveHorizontal } from 'lucide-react'
 import { useMemo, useRef, useState, type PointerEvent } from 'react'
 import type { Locale } from '../i18n/types'
@@ -91,7 +92,7 @@ export function WorkflowDocuments({ locale }: { locale: Locale }) {
                 onClick={onImageClick}
                 aria-label={pt ? `Abrir imagem: ${active.text.title}` : `Open image: ${active.text.title}`}
               >
-                <img
+                <DemandImage
                   src={`${import.meta.env.BASE_URL}${active.item.publicPath}`}
                   alt={active.text.title}
                   width={active.item.width}

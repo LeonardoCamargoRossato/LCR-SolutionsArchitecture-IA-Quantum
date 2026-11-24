@@ -19,6 +19,7 @@ async function waitForServer(){
   throw Error('App did not start')
 }
 async function imageReady(page,selector,expectedSuffix){
+  if(selector.startsWith('.case-story-cover')) await page.locator('.case-story-cover').scrollIntoViewIfNeeded()
   await page.waitForFunction(({selector,expectedSuffix})=>{
     const el=document.querySelector(selector)
     return el instanceof HTMLImageElement && el.complete && el.naturalWidth>0 &&

@@ -1,3 +1,4 @@
+import { DemandImage } from '../DemandImage'
 import {
   ChevronDown,
   ChevronUp,
@@ -319,7 +320,6 @@ export function AboutGalleryAdmin() {
             >
               <SafeImage
                 src={resolveAboutGalleryMedia(item.imageUrl, item.storagePath).card}
-                fallbackSrc={item.imageUrl}
                 alt={item.titleEn || item.titlePt || ''}
                 loading="lazy"
               />
@@ -455,9 +455,9 @@ export function AboutGalleryAdmin() {
             </div>
 
             <div className="about-gallery-editor-scroll">
-              <img
+              <DemandImage
                 className="about-gallery-editor-image"
-                src={editing.imageUrl}
+                src={resolveAboutGalleryMedia(editing.imageUrl, editing.storagePath).card}
                 alt={editing.titleEn || editing.titlePt || ''}
               />
 

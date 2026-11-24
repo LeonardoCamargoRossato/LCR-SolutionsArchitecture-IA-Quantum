@@ -55,6 +55,8 @@ async function viewportTest(mode, dimensions) {
     const logos = page.locator('.case-institution-logos img')
     // Institution data arrives in a separate async Supabase request after the
     // project title. Wait for this case's exact SVG set, not the previous list.
+    await page.waitForFunction(n => document.querySelectorAll('.case-institution-logos img').length === n, expected, { timeout: 30000 })
+    for (const logo of await logos.all()) await logo.scrollIntoViewIfNeeded()
     await page.waitForFunction(names => {
       const current = [...document.querySelectorAll('.case-institution-logos img')]
       return current.length === names.length && names.every(name =>
@@ -114,6 +116,7 @@ async function testFallback() {
   const page = await context.newPage()
   await page.route('**/assets/institutions/svg/instituto-pense-mais.svg', route => route.abort())
   await page.goto(base + '#/projects/cities-comparing', { waitUntil: 'domcontentloaded' })
+  await page.locator('.case-institution-logo--extra-wide').scrollIntoViewIfNeeded()
   await page.waitForFunction(() => {
     const img = document.querySelector('.case-institution-logo--extra-wide img')
     return img instanceof HTMLImageElement && img.complete && img.naturalWidth > 0 &&

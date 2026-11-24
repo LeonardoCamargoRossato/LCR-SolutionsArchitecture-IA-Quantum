@@ -1,3 +1,4 @@
+import { DemandImage } from './DemandImage'
 import type { Project } from '../types/project'
 import { useI18n } from '../i18n/I18nProvider'
 
@@ -16,10 +17,10 @@ export function ProjectGallery({ project }: { project: Project }) {
               <figure className="gallery-item" key={`${item.label}-${index}`}>
                 <div className="gallery-placeholder">
                   {item.image ? (
-                    <img src={item.image} alt={`${project.title} — ${item.label}`} />
+                    <DemandImage src={item.image} alt={`${project.title} — ${item.label}`} />
                   ) : (
                     <>
-                      <img src={project.coverImage} alt="" aria-hidden="true" />
+                      <DemandImage src={project.coverImage} alt="" aria-hidden="true" />
                       <div className="gallery-overlay">{locale === 'pt-BR' ? 'Espaço para captura de tela' : 'Screenshot slot'}</div>
                     </>
                   )}

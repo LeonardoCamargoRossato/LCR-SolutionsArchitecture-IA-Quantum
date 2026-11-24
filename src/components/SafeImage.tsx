@@ -1,94 +1,59 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
+import { useImageDemand } from '../hooks/useImageDemand'
 
 type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
   fallbackLabel?: string
   previewSrc?: string
   fallbackSrc?: string
+  /** Legacy priority hint; never bypasses visibility. */
   eager?: boolean
 }
 
-export function SafeImage({
-  fallbackLabel = 'Image unavailable',
-  previewSrc,
-  fallbackSrc,
-  eager = false,
-  onError,
-  className,
-  alt = '',
-  ...props
+export function SafeImage(props: Props) {
+  // Asset changes reset only the resource lifecycle, not on scroll/theme/locale.
+  return <SafeImageResource key={props.src ?? props.srcSet ?? ''} {...props} />
+}
+
+function SafeImageResource({
+  fallbackLabel = 'Image unavailable', previewSrc, fallbackSrc, eager = false,
+  onError, className, alt = '', src, srcSet, ...props
 }: Props) {
   const [failed, setFailed] = useState(false)
   const [loaded, setLoaded] = useState(false)
-  const [visible, setVisible] = useState(eager)
   const [attempt, setAttempt] = useState(0)
   const rootRef = useRef<HTMLSpanElement>(null)
   const imageRef = useRef<HTMLImageElement>(null)
-  const previousSrc = useRef(props.src)
-
-  useEffect(() => {
-    if (previousSrc.current === props.src) return
-    previousSrc.current = props.src
-    setFailed(false)
-    setLoaded(false)
-    setAttempt(0)
-  }, [props.src])
+  const visible = useImageDemand(rootRef, src || srcSet)
+  // A preview failure must not silently download a heavy PNG/JPEG original.
+  // SVG / WebP / AVIF fallback remains available for legacy branded placeholders.
+  const safeFallback = fallbackSrc && fallbackSrc !== src &&
+    /\.(?:svg|webp|avif)(?:[?#]|$)/i.test(fallbackSrc) ? fallbackSrc : undefined
 
   useLayoutEffect(() => {
     const image = imageRef.current
     if (image?.complete && image.naturalWidth > 0) setLoaded(true)
-  }, [props.src, attempt, visible])
+  }, [src, attempt, visible])
 
-  useEffect(() => {
-    if (eager || visible || typeof IntersectionObserver === 'undefined') {
-      setVisible(true)
-      return
-    }
-    const node = rootRef.current
-    if (!node) return
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setVisible(true)
-        observer.disconnect()
-      }
-    }, { rootMargin: '240px 0px' })
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [eager, visible])
-
-  if (failed || !props.src) {
-    return (
-      <span className={`image-fallback ${className ?? ''}`} role="img" aria-label={fallbackLabel}>
-        {fallbackLabel}
-      </span>
-    )
+  if (failed || (!src && !srcSet)) {
+    return <span className={`image-fallback ${className ?? ''}`} role="img" aria-label={fallbackLabel}>{fallbackLabel}</span>
   }
-
+  const preview = visible && previewSrc && previewSrc !== src &&
+    !/\.(?:png|jpe?g)(?:[?#]|$)/i.test(previewSrc) ? previewSrc : undefined
   return (
-    <span ref={rootRef} className={`progressive-image ${loaded ? 'is-loaded' : ''} ${className ?? ''}`}>
-      {previewSrc && <img className="progressive-image-preview" src={previewSrc} alt="" aria-hidden="true" />}
-      {visible && (
-        <img
-          ref={imageRef}
-          key={`${props.src}-${attempt}`}
-          {...props}
-          src={attempt > 0 && fallbackSrc ? fallbackSrc : props.src}
-          className="progressive-image-main"
-          alt={alt}
-          loading={eager ? 'eager' : (props.loading ?? 'lazy')}
-          decoding={props.decoding ?? 'async'}
-          fetchPriority={eager ? 'high' : props.fetchPriority}
-          onLoad={() => setLoaded(true)}
-          onError={(event) => {
-            if (attempt === 0) {
-              setAttempt(1)
-              return
-            }
-            setFailed(true)
-            onError?.(event)
-          }}
-        />
-      )}
-      {!previewSrc && !loaded && <span className="progressive-image-skeleton" aria-hidden="true" />}
+    <span ref={rootRef} className={`progressive-image ${loaded ? 'is-loaded' : ''} ${className ?? ''}`}
+      data-demand-pending={visible ? undefined : 'true'}>
+      {preview && <img className="progressive-image-preview" src={preview} alt="" aria-hidden="true" />}
+      {visible && <img ref={imageRef} key={attempt} {...props}
+        src={attempt > 0 ? safeFallback : src}
+        srcSet={attempt > 0 ? undefined : srcSet}
+        className="progressive-image-main" alt={alt} loading="eager"
+        decoding={props.decoding ?? 'async'} fetchPriority={eager ? 'high' : props.fetchPriority}
+        onLoad={() => setLoaded(true)}
+        onError={event => {
+          if (attempt === 0 && safeFallback) { setAttempt(1); return }
+          setFailed(true); onError?.(event)
+        }} />}
+      {!preview && !loaded && <span className="progressive-image-skeleton" aria-hidden="true" />}
     </span>
   )
 }

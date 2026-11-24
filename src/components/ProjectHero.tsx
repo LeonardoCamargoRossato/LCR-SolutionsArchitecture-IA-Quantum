@@ -1,3 +1,4 @@
+import { DemandImage } from './DemandImage'
 import type { Project } from '../types/project'
 import { useI18n } from '../i18n/I18nProvider'
 
@@ -51,7 +52,7 @@ export function ProjectHero({ project }: { project: Project }) {
           <div className="browser-bar">
             <span /><span /><span />
           </div>
-          <img src={project.coverImage} alt={locale === 'pt-BR' ? `Interface da aplicação ${project.title}` : `${project.title} application interface`} />
+          <DemandImage src={project.coverImage} alt={locale === 'pt-BR' ? `Interface da aplicação ${project.title}` : `${project.title} application interface`} />
         </div>
       </div>
     </section>

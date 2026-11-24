@@ -1,3 +1,4 @@
+import { DemandImage } from '../DemandImage'
 
 import { useEffect, useState } from 'react'
 import { ImageUp } from 'lucide-react'
@@ -83,7 +84,7 @@ export function ImageUploader({
 
       <div className="upload-preview">
         {preview || currentUrl ? (
-          <img src={preview || currentUrl} alt={`${label} preview`} />
+          <DemandImage src={preview || currentUrl} alt={`${label} preview`} />
         ) : (
           <div className="empty-media">No image</div>
         )}

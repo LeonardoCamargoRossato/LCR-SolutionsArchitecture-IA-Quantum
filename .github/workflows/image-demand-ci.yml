@@ -1,0 +1,70 @@
+name: LCR demand-driven image QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'tests/image-demand*'
+      - '.github/workflows/image-demand-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: image-demand-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  demand-regression:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Build candidate
+        run: npm run test:isolated -- npm run build
+      - name: Reconstruct immutable baseline
+        run: |
+          git worktree add --detach /tmp/lcr-demand-before 63adb1332ad41b55f08281cc7be1a2bb6e2aaf71
+          cmp package-lock.json /tmp/lcr-demand-before/package-lock.json
+          ln -s "$PWD/node_modules" /tmp/lcr-demand-before/node_modules
+          bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-demand-before && npm run build'
+      - name: Record baseline network and screenshots
+        env:
+          LCR_BEFORE: /tmp/lcr-demand-before
+        run: npm run test:isolated -- node tests/image-demand-smoke.mjs --baseline
+      - name: Candidate demand, fallback and visual regression
+        run: npm run test:isolated -- node tests/image-demand-smoke.mjs
+      - name: Compare before and after
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=Path('test-results/image-demand')
+          a=json.loads((d/'baseline.json').read_text())['scenarios']
+          b=json.loads((d/'candidate.json').read_text())['scenarios']
+          for old,new in zip(a,b):
+              assert old['viewport']==new['viewport']
+              assert new['initialGalleryRequests']==0
+              assert new['initialGalleryBytes']==0
+              print('BEFORE_AFTER',new['viewport'],old['initialGalleryRequests'],'->',new['initialGalleryRequests'],'requests;',old['initialGalleryBytes'],'->',new['initialGalleryBytes'],'encoded bytes; whole scenario',old['imageEncodedBytes'],'->',new['imageEncodedBytes'])
+          PY
+      - name: Inventory image surfaces
+        if: always()
+        run: |
+          mkdir -p test-results/image-demand
+          git grep -n -E '<img|<picture|<source|srcSet|backgroundImage|background-image|new Image|rel=.preload|url[(]' -- src index.html > test-results/image-demand/source-inventory.txt || test "$?" = 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: image-demand-before-after
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: error

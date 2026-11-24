@@ -151,10 +151,8 @@ export function AboutGallery() {
             >
               <SafeImage
                 src={media.card}
-                fallbackSrc={media.hasVariants ? media.original : undefined}
                 alt={alt}
-                eager={index < 3}
-                loading={index < 3 ? 'eager' : 'lazy'}
+                loading="lazy"
                 sizes="(max-width: 680px) 86vw, 380px"
               />
               <span className="about-gallery-card-copy">
@@ -183,7 +181,6 @@ export function AboutGallery() {
               >
                 <SafeImage
                   src={media.card}
-                  fallbackSrc={media.hasVariants ? media.original : undefined}
                   loading="lazy"
                   sizes="(max-width: 560px) 44vw, (max-width: 900px) 31vw, 220px"
                   alt={entry.title || `Gallery image ${index + 1}`}

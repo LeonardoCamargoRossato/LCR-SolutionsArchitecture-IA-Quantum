@@ -93,9 +93,11 @@ async function check(page, label) {
   const assetManifest = manifestResponse.ok() && (manifestResponse.headers()['content-type'] ?? '').includes('application/json')
     ? await manifestResponse.json().catch(() => null)
     : null
+  await page.locator('.case-story-cover').scrollIntoViewIfNeeded()
   if (Array.isArray(assetManifest?.assets) && assetManifest.assets.length === 16) {
     await page.waitForFunction(() => document.querySelectorAll('.case-hero-thumbnails button').length === 16, null, { timeout: 15000 })
     const picture = page.locator('.case-story-cover .progressive-image-main')
+    await picture.waitFor({state:'visible', timeout:15000})
     const coverSource = await picture.getAttribute('src')
     assert(coverSource.includes('/WebP/animefinder-01-landing-page.webp'))
     await page.locator('.case-story-cover').click()
