@@ -11,7 +11,7 @@ const servers=modes.map(s=>({...s,proc:spawn('npm',['run','preview','--','--host
 const sleep=ms=>new Promise(r=>setTimeout(r,ms))
 async function waitServer(port){for(let i=0;i<100;i++){try{if((await fetch('http://127.0.0.1:'+port+BASE)).ok)return}catch{}await sleep(250)}throw Error('Preview unavailable '+port)}
 const scenarios=[{id:'desktop',viewport:{width:1440,height:900},slow:false},{id:'mobile',viewport:{width:390,height:844},slow:false},{id:'mobile-constrained',viewport:{width:390,height:844},slow:true}]
-const result={baseline:'5d22db466f1cc2d7254701b67cf427a2735686e3',notes:['Chromium headless Linux, one paired cold/warm sample per condition; not a physical-device GPU or FPS guarantee.','Identical lightweight render-function counters inserted in isolated benchmark worktrees only; calls include discarded renders, not React commits.','CDP TaskDuration is main-thread task time proxy for CPU; frame intervals are requestAnimationFrame observations, not compositor presentation timestamps. Trace timings sum main-thread Paint/Layout/UpdateLayoutTree events during opening; trace collection itself has overhead.','Mobile constrained: 4x CPU, 100ms latency, 1.5Mbps down, 750kbps up.'],rows:[]}
+const result={baseline:'67b4ad471c1ced8790286f6f87d2647bcd9163e0',notes:['Chromium headless Linux, one paired cold/warm sample per condition; not a physical-device GPU or FPS guarantee.','Identical lightweight render-function counters inserted in isolated benchmark worktrees only; calls include discarded renders, not React commits.','CDP TaskDuration is main-thread task time proxy for CPU; frame intervals are requestAnimationFrame observations, not compositor presentation timestamps. Trace timings sum main-thread Paint/Layout/UpdateLayoutTree events during opening; trace collection itself has overhead.','Mobile constrained: 4x CPU, 100ms latency, 1.5Mbps down, 750kbps up.'],rows:[]}
 let browser
 try{
  await Promise.all(servers.map(s=>waitServer(s.port)))
@@ -71,7 +71,7 @@ try{
    const row={scenario:scenario.id,mode:mode.id,cache,...data,taskDurationMs:Math.max(0,(b.TaskDuration-a.TaskDuration)*1000),scriptDurationMs:Math.max(0,(b.ScriptDuration-a.ScriptDuration)*1000),openingTrace:opening&&opened?paint:null}
    result.rows.push(row);console.log('HOTFIX',JSON.stringify(row))
    assert.equal(data.outcome,'mechanical','Benchmark must exercise actual mechanical opening')
-   assert(data.openingMs>=2900,'Preserve three-second door travel')
+   assert(data.openingMs>=(mode.id==='after'&&scenario.id!=='desktop'?3500:2900),'Preserve desktop travel and slower mobile profile')
    if(mode.id==='after'){
     assert(data.renderCalls.counter>=101,'Retain continuous integer counter')
     assert(data.renderCalls.scene<35&&data.renderCalls.lights<15&&data.renderCalls.leaves<15&&data.renderCalls.background<15,'Counter must not re-render scene or static layers')

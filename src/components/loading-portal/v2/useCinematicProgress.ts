@@ -3,16 +3,18 @@ import { useEffect, useState } from 'react'
 export const PORTAL_CHARGE_MS = 2000
 export const PORTAL_OPENING_MS = 3000
 const STEP_MS = PORTAL_CHARGE_MS / 100
-const COMPLETE_HOLD_MS = 180
+export const PORTAL_CHARGED_MS = 780
+export const PORTAL_MOBILE_CHARGED_MS = 950
+export const PORTAL_MOBILE_OPENING_MS = 3600
 
-type Options = { enabled: boolean; visible: boolean; ready: boolean; paused: boolean; reducedMotion: boolean }
+type Options = { enabled: boolean; visible: boolean; ready: boolean; paused: boolean; reducedMotion: boolean; holdMs: number }
 
 /** Presentation clock, deliberately separate from verified resource readiness.
  * One committed integer per tick; no catch-up jumps after a stalled frame.
  * Begin only when the counter is visible. Hold at 99 until real readiness.
  * No timer remains running after the sequence, on unmount or in a hidden tab.
  */
-export function useCinematicProgress({enabled, visible, ready, paused, reducedMotion}:Options) {
+export function useCinematicProgress({enabled, visible, ready, paused, reducedMotion, holdMs}:Options) {
   const [percent,setPercent] = useState(0)
   const [held,setHeld] = useState(false)
   useEffect(() => {
@@ -21,9 +23,9 @@ export function useCinematicProgress({enabled, visible, ready, paused, reducedMo
     const timer = window.setTimeout(() => {
       if (percent === 100) setHeld(true)
       else setPercent(p => Math.min(100,p+1))
-    }, percent === 100 ? COMPLETE_HOLD_MS : STEP_MS)
+    }, percent === 100 ? holdMs : STEP_MS)
     return () => window.clearTimeout(timer)
-  }, [enabled,visible,ready,paused,reducedMotion,percent,held])
+  }, [enabled,visible,ready,paused,reducedMotion,percent,held,holdMs])
   // Reduced motion bypasses the purely decorative delay, not real readiness.
   if (reducedMotion) return {percent: ready ? 100 : 0, complete: ready}
   return {percent, complete: held && ready}

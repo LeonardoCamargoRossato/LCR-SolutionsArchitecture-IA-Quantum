@@ -153,7 +153,7 @@ async function assertReveal(page) {
   assert(during.some(f=>f.art>=.99&&!f.complete),'Right visual finishes fading before title')
   const typed=frames.find(f=>f.complete)
   const opened=after[0]
-  assert(typed&&typed.time>opened.time+100,'Typing finishes after door opens')
+  assert(typed&&typed.time>during[0].time+100,'Title completes after reveal begins; mobile bounded motion may intentionally outlast typing')
   assert(after.some(f=>f.complete),'Title finishes normally')
   return {maxGutter:Math.max(...frames.map(f=>f.gutter)),maxXShift:Math.max(...frames.map(f=>Math.abs(f.x-baseline.x))),typingAfterOpenMs:typed.time-opened.time}
 }
@@ -179,6 +179,11 @@ async function initialVisit() {
   // waiting for a decorative timer or slowing the actual sequence.
   await page.waitForFunction(()=>Number(document.querySelector('[data-testid="portal-energy-flow"]')?.dataset.energyLevel)>=7,{},{timeout:8000})
   await page.screenshot({ path: 'test-results/home-portal-v2-energy-charged.png' })
+  await page.locator('[data-testid="loading-portal-v2"][data-phase="charged"]').waitFor()
+  await page.waitForTimeout(350)
+  assert.equal(await page.getByTestId('portal-v2-counter').getAttribute('aria-valuenow'),'100')
+  assert(Number(await page.getByTestId('portal-core-heat').evaluate(el=>getComputedStyle(el).opacity))>.25)
+  await page.screenshot({path:'test-results/home-portal-v2-heating.png'})
   // The backing layer must be transparent as the two real leaves depart.
   // Otherwise the doors open to a black rectangle, not the React Home.
   await page.locator('[data-testid="loading-portal-v2"][data-phase="opening"]').waitFor({ timeout: 16000 })
@@ -238,7 +243,7 @@ async function initialVisit() {
   const reveal=await assertReveal(page)
   report.timings.push({scenario:'synchronized-desktop',...reveal})
   assert(closed-opening>=2900,'Mechanical opening must take about 3 seconds')
-  assert(opening-count.last>=140,'100% must remain visible before opening')
+  assert(opening-count.last>=740,'Desktop core must heat for about 780ms at 100%')
   report.timings.push({scenario:'cinematic-desktop',chargeMs:count.elapsed,openingMs:closed-opening,visibleTotalMs:closed-count.first})
   await page.locator('.hero-v3-actions .hero-actions .button').first().click()
   await page.waitForFunction(() => {
@@ -409,11 +414,25 @@ async function cinematicMobile() {
   await page.screenshot({path:'test-results/home-portal-v2-mobile-charging.png'})
   await page.locator('[data-testid="loading-portal-v2"][data-phase="opening"]').waitFor({timeout:18000})
   const count=await assertContinuousCount(page)
-  await page.waitForTimeout(1400)
+  assert.equal(await page.getByTestId('loading-portal-v2').getAttribute('data-motion-profile'),'mobile')
+  await page.waitForTimeout(950)
+  // Simulate the device stalling while the mechanical movement is in progress.
+  // The shared bounded clock must not jump forward by the blocked 400ms.
+  const stall=await page.evaluate(async()=>{
+    const leaf=document.querySelector('.pdo-left'),a=leaf.getAnimations()[0]
+    const before=Number(a.currentTime)
+    const until=performance.now()+400
+    while(performance.now()<until){}
+    await new Promise(requestAnimationFrame)
+    return {before,after:Number(a.currentTime)}
+  })
+  assert(stall.after-stall.before<=68,'Mobile opening must not catch up after a stalled frame: '+JSON.stringify(stall))
+  report.timings.push({scenario:'mobile-stall',...stall})
   await page.screenshot({path:'test-results/home-portal-v2-mobile-opening.png'})
   await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({timeout:16000})
   const info=await marks(page), get=name=>info.entries.find(e=>e.name===name).startTime
-  assert(get('portal-opened')-get('portal-opening')>=2900)
+  assert(get('portal-opened')-get('portal-opening')>=3500,'Mobile opening must be slower than desktop')
+  assert(get('portal-opening')-count.last>=900,'Mobile core must heat for about 950ms')
   report.timings.push({scenario:'cinematic-mobile',chargeMs:count.elapsed,openingMs:get('portal-opened')-get('portal-opening')})
   await page.locator('h1.hero-type-title[data-typing-complete="true"]').waitFor({timeout:14000})
   await page.waitForTimeout(1000)

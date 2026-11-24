@@ -11,6 +11,8 @@ export interface PortalDoorOpeningProps {
   variant: PortalVariant
   open: boolean
   duration?: number
+  cinematic?: boolean
+  mobile?: boolean
   paused?: boolean
   reducedMotion?: boolean
   onOpening?: () => void
@@ -36,7 +38,7 @@ export const PortalDoorOpening = memo(function PortalDoorOpening(props: PortalDo
       const options = current.current
       try {
         controller = createDoorMotion(el, {
-          duration: options.duration, reducedMotion: options.reducedMotion,
+          duration: options.duration, cinematic: options.cinematic, mobile: options.mobile, reducedMotion: options.reducedMotion,
           onOpening: () => current.current.onOpening?.(),
           onOpened: () => current.current.onOpened?.(),
           onFallback: () => current.current.onFallback?.(),
@@ -68,5 +70,6 @@ export const PortalDoorOpening = memo(function PortalDoorOpening(props: PortalDo
     </div>
     <div className="pdo-glow" aria-hidden="true" style={sprite([cx-rx*.78,cy-ry*.78,cx+rx*.78,cy+ry*.78],w,h)}/>
     <div className="pdo-seam" aria-hidden="true" style={{left:v.splitX/w*100+'%'}}/>
+    {props.cinematic && <div className="pdo-activation-flare" data-testid="portal-opening-flare" aria-hidden="true" style={sprite([cx-rx*1.12,cy-ry*1.12,cx+rx*1.12,cy+ry*1.12],w,h)}/>}
   </>
 })
