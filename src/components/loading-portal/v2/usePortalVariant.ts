@@ -3,11 +3,11 @@ import { portalAssetUrls, selectPortalVariant, type PortalVariant } from './port
 
 export type PortalAssetState = 'loading' | 'ready' | 'failed'
 type Prepared = { variant: PortalVariant; status: PortalAssetState }
-const cache = new Map<string, HTMLImageElement>()
+
 
 // All layers use the same candidate. Cache decoded resources only for this
 // document and never load unrelated sizes on a stable viewport.
-function decode(url: string, signal: AbortSignal): Promise<HTMLImageElement> {
+function decode(cache: Map<string, HTMLImageElement>, url: string, signal: AbortSignal): Promise<HTMLImageElement> {
   const existing = cache.get(url)
   if (existing?.complete && existing.naturalWidth) return Promise.resolve(existing)
   return new Promise((resolve, reject) => {
@@ -37,6 +37,8 @@ function decode(url: string, signal: AbortSignal): Promise<HTMLImageElement> {
 export function usePortalVariant(
   container: RefObject<HTMLDivElement | null>, forced: PortalVariant | undefined, locked: boolean,
 ) {
+  const cache = useRef(new Map<string, HTMLImageElement>())
+  useEffect(() => () => cache.current.clear(), [])
   const [desired, setDesired] = useState<PortalVariant | undefined>(forced)
   const [prepared, setPrepared] = useState<Prepared>()
   const lockRef = useRef(locked)
@@ -69,11 +71,15 @@ export function usePortalVariant(
     // the replacement set is fully available.
     void (async () => {
       try {
-        await decode(background, signal)
+        await decode(cache.current, background, signal)
         if (signal.aborted || lockRef.current) return
         setPrepared(previous => previous?.status === 'ready' ? previous : { variant: desired, status: 'loading' })
-        await Promise.all(mechanical.map(url => decode(url, signal)))
-        if (!signal.aborted && !lockRef.current) setPrepared({ variant: desired, status: 'ready' })
+        await Promise.all(mechanical.map(url => decode(cache.current, url, signal)))
+        if (!signal.aborted && !lockRef.current) {
+          const keep = new Set([background, ...mechanical])
+          for (const url of cache.current.keys()) if (!keep.has(url)) cache.current.delete(url)
+          setPrepared({ variant: desired, status: 'ready' })
+        }
       } catch {
         if (!signal.aborted && !lockRef.current) {
           setPrepared(previous => previous?.status === 'ready' ? previous : { variant: desired, status: 'failed' })

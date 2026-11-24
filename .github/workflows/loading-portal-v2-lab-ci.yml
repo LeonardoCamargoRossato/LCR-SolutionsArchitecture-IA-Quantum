@@ -1,0 +1,45 @@
+name: LCR Loading Portal V2 — Seven Variants & Lab QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/components/loading-portal/v2/**'
+      - 'src/features/test-component-lab/loading-portal/**'
+      - 'public/assets/home/loading-portal/**'
+      - 'scripts/build_loading_portal_v2_mechanical.py'
+      - 'tests/loading-portal-v2-lab-smoke.mjs'
+      - '.github/workflows/loading-portal-v2-lab-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  drawer-integrity:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install Pillow==12.3.0 numpy==2.3.5
+      - run: python scripts/build_loading_portal_v2_mechanical.py --check
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - run: node tests/loading-portal-v2-lab-smoke.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: loading-portal-v2-lab-evidence
+          path: test-results/
+          retention-days: 30
