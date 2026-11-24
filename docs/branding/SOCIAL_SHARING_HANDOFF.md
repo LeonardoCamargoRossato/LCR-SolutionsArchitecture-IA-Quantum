@@ -19,3 +19,12 @@
 5. Roll back by reverting the approved-artwork commit; original provisional bytes and v1 metadata remain available in Git history.
 
 No modifications to Home, loading portal, animations, routes or runtime dependencies.
+
+## V3 — WhatsApp compatibility hotfix (2026-11-24)
+
+The owner's native WhatsApp test displayed text but no image. The approved PNG (976095 bytes) exceeded Meta's documented 600 KB thumbnail recommendation; the previous HTTP smoke test incorrectly accepted up to 1 MB. Source: https://developers.facebook.com/documentation/business-messaging/whatsapp/link-previews/ . The V2 description above is historical.
+
+- Primary Open Graph and Twitter image: `public/assets/branding/social/lcr-portfolio-og.jpg` (1200×630, 260603 bytes, SHA-256 `6b06f48081d7d8bac09c296a79b5d1ae7018791b3b52d2ad69590015642bf7fa`, baseline JPEG, quality 92, Pillow 12.0.0). No change to composition, dimensions, PNG, or WebP. JPEG is an explicitly derived delivery asset; PNG and WebP remain versioned and public. No new runtime dependency or Home request.
+- Static tags use absolute HTTPS JPEG URL with `?v=3`, MIME `image/jpeg`. Canonical page URL unchanged.
+- Reproduce only when needed: install Pillow==12.0.0 in an isolated environment and run `python3 scripts/generate-social-preview.py`. The checked-in JPEG is the deployed artifact; CI checks exact digest, baseline markers, size strictly below 300 KB, dimensions, and preserved approved assets. Public check exercises the documented Android/iOS/web WhatsApp user agents plus LinkedIn and X. Native platform rendering remains a separate manual acceptance.
+- Re-test canonical link; if cached, share a new message using `?share=v3` and wait for the preview before sending. Governance: LCR_ASSET_ORGANIZATION_STANDARD v1.1 and LCR_PERFORMANCE_STANDARD. Rollback: revert the V3 commit without deleting approved source assets.
