@@ -39,11 +39,10 @@ jobs:
         run: npm run test:isolated -- npm run build
       - name: Validate simulated sign-in and restricted admin
         run: npm run test:isolated -- node tests/isolation/AuthContract.test.mjs
-      - name: Reconstruct immutable pre-change baseline with local fixture
+      - name: Reconstruct immutable pre-change baseline with its locked dependencies
         run: |
           git worktree add --detach /tmp/lcr-p0-baseline 7b5d0ad67d9697b7338c945dfc7691ed8b0bd0d1
-          cmp package-lock.json /tmp/lcr-p0-baseline/package-lock.json
-          ln -s "$PWD/node_modules" /tmp/lcr-p0-baseline/node_modules
+          (cd /tmp/lcr-p0-baseline && npm ci)
           bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-p0-baseline && npm run build'
       - name: Compare baseline and candidate screenshots and case content
         env:
