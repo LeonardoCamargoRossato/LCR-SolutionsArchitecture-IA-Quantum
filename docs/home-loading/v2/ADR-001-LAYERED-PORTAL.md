@@ -1,0 +1,4 @@
+# ADR 001 — A static door, independent light/counter, mechanical opening
+Status: proposed / implemented in isolated Lab branch; visual approval and Home integration pending.
+The V1 interpolated distinct images, producing geometry instability. V2 uses the same approved static reference in each variant with 19 SVG trajectories, accessible DOM percent, and 3 lossless mechanical sprites. The same centered cover plane determines all positions. Closed reference remains visible until activation; nucleus is a child of the left leaf. All assets share one catalog and must match Drawer hashes. No new JS dependency.
+The host supplies confirmed readiness and progress. The shared component neither simulates progress nor accesses CMS/auth. Lab has an explicitly labeled simulation; production boot remains V1 until approved. Keep V1 originals, tests, and working public experience for rollback.

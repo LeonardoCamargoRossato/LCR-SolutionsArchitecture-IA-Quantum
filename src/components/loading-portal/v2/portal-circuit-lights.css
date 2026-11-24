@@ -1,0 +1,28 @@
+/* Original Drawer light strokes: transparent, no background mutation. */
+.pcl-overlay{display:block;width:100%;height:100%;pointer-events:none;overflow:visible;user-select:none;--pcl-cycle:6500ms;--pcl-intensity:.70;--pcl-ready-boost:1;}
+.pcl-overlay .pcl-track,.pcl-overlay .pcl-hot,.pcl-overlay .pcl-halo{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;}
+.pcl-overlay .pcl-track{stroke:#32bbdf;stroke-width:1.1px;opacity:0.12;}
+.pcl-overlay .pcl-strand[data-kind="outer"] .pcl-track{opacity:.11;}
+.pcl-overlay .pcl-strand[data-kind="fissure"] .pcl-track{opacity:.02;}
+.pcl-overlay .pcl-strand[data-kind="ring"] .pcl-track{opacity:.045;}
+.pcl-overlay .pcl-strand[data-kind="ring-inner"] .pcl-track{opacity:0;}
+.pcl-overlay .pcl-hot,.pcl-overlay .pcl-halo{stroke-dasharray:5 113;stroke-dashoffset:109;animation:pcl-flow calc(var(--pcl-cycle) * var(--pcl-duration-factor, 1)) linear infinite,pcl-pulse-opacity calc(var(--pcl-cycle) * var(--pcl-duration-factor, 1)) ease-in-out infinite;animation-delay:var(--pcl-delay, 0ms);animation-play-state:running;}
+.pcl-overlay .pcl-halo{stroke:#39d9ff;stroke-width:5px;opacity:0;}
+.pcl-overlay .pcl-hot{stroke:#b6f6ff;stroke-width:1.8px;opacity:0;}
+.pcl-overlay .pcl-strand[data-kind="fissure"] .pcl-hot{stroke-width:1.0px;}
+.pcl-overlay .pcl-strand[data-kind="fissure"] .pcl-halo{stroke-width:2.6px;}
+.pcl-overlay .pcl-strand[data-kind="ring-inner"] .pcl-hot{stroke-width:1.15px;}
+.pcl-overlay .pcl-strand[data-kind="ring-inner"] .pcl-halo{stroke-width:3.2px;}
+.pcl-overlay .pcl-hot{animation-name:pcl-flow,pcl-hot-opacity;}
+.pcl-overlay .pcl-halo{animation-name:pcl-flow,pcl-halo-opacity;}
+.pcl-overlay[data-playing="false"] .pcl-hot,.pcl-overlay[data-playing="false"] .pcl-halo{animation-play-state:paused;}
+.pcl-overlay[data-ready="true"]{--pcl-ready-boost:1.5;}
+.pcl-overlay[data-ready="true"] .pcl-strand[data-kind="ring"] .pcl-track{opacity:.16;}
+.pcl-overlay[data-ready="true"] .pcl-strand[data-kind="ring-inner"] .pcl-track{opacity:.1;}
+.pcl-overlay[data-reduced="true"] .pcl-hot,.pcl-overlay[data-reduced="true"] .pcl-halo{animation:none;opacity:0;}
+.pcl-overlay[data-reduced="true"] .pcl-track{opacity:.09;}
+.pcl-overlay[data-reduced="true"] .pcl-strand[data-kind="fissure"] .pcl-track{opacity:.015;}
+@keyframes pcl-flow{from{stroke-dashoffset:109;}to{stroke-dashoffset:-6;}}
+@keyframes pcl-hot-opacity{0%,100%{opacity:0}10%,78%{opacity:calc(.84 * var(--pcl-intensity) * var(--pcl-ready-boost))}91%{opacity:0}}
+@keyframes pcl-halo-opacity{0%,100%{opacity:0}12%,78%{opacity:calc(.26 * var(--pcl-intensity) * var(--pcl-ready-boost))}91%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.pcl-overlay .pcl-hot,.pcl-overlay .pcl-halo{animation:none!important;opacity:0!important}.pcl-overlay .pcl-track{opacity:.09!important}.pcl-overlay .pcl-strand[data-kind="fissure"] .pcl-track{opacity:.015!important}}
