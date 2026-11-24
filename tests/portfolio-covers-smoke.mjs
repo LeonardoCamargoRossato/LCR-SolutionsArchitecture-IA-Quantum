@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import fs from 'node:fs/promises'
-import { chromium } from 'playwright'
+import { chromium } from './isolation/Browser.mjs'
 
 // Test-only browser harness. No privileged keys are used by the browser.
 const PUBLIC_BASE = process.env.PORTFOLIO_TEST_BASE_URL?.trim()

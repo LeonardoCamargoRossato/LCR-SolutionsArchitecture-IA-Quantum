@@ -36,8 +36,8 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: npm run build
-      - run: python3 tests/social-sharing-smoke.py --dist dist
+      - run: bash tests/isolation/run.sh npm run build
+      - run: bash tests/isolation/run.sh python3 tests/social-sharing-smoke.py --dist dist
       - name: Preserve legacy SVG source
         run: git diff --exit-code dc7bc88c709ef46ea039e47c4d5c08630420df19 -- public/og-cover.svg
       - uses: actions/upload-artifact@v4
@@ -54,9 +54,4 @@ jobs:
           retention-days: 30
       - name: Verify deployed crawler-facing HTML and image
         if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.verify_live
-        run: |
-          for attempt in 1 2 3 4 5; do
-            if python3 tests/social-sharing-smoke.py --live; then exit 0; fi
-            if [ "$attempt" -lt 5 ]; then sleep 15; fi
-          done
-          exit 1
+        run: python3 tests/isolation/PublishedSmoke.py

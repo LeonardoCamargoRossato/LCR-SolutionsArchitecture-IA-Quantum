@@ -3,6 +3,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'tests/isolation/**'
+      - 'vite.config.ts'
       - 'src/components/loading-portal/v2/**'
       - 'src/features/home-loading/**'
       - 'tests/portal-performance-hotfix*'
@@ -31,7 +33,7 @@ jobs:
             cmp package-lock.json "$dir/package-lock.json"
             ln -s "$PWD/node_modules" "$dir/node_modules"
             node tests/portal-performance-hotfix-instrument.mjs "$dir"
-            (cd "$dir" && npm run build)
+            bash tests/isolation/run.sh bash -c 'cd "$1" && npm run build' bash "$dir"
           done
       - run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
@@ -40,7 +42,7 @@ jobs:
         env:
           LCR_BEFORE: /tmp/lcr-before
           LCR_AFTER: /tmp/lcr-after
-        run: node tests/portal-performance-hotfix-benchmark.mjs
+        run: bash tests/isolation/run.sh node tests/portal-performance-hotfix-benchmark.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

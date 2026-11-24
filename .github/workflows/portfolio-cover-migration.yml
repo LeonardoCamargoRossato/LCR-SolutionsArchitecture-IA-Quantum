@@ -1,108 +1,20 @@
-name: Portfolio covers PNG/WebP - gated migration
-
+name: LCR migration source validation — migrate_portfolio_covers.py
 on:
-  push:
-    branches:
-      - feat/portfolio-cover-webp-20261117
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/migrate_portfolio_covers.py'
+      - '.github/workflows/portfolio-cover-migration.yml'
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   validate:
-    name: TypeScript build and migration syntax
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
     steps:
-      - name: Checkout branch
-        uses: actions/checkout@v4
-      - name: Setup Node 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
-      - name: npm ci
-        run: npm ci
-      - name: TypeScript and Vite build
-        run: npm run build
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-          VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
-      - name: Compile migration script
+      - uses: actions/checkout@v4
+      - name: Compile migration source without contacting any backend
         run: python3 -m py_compile scripts/migrate_portfolio_covers.py
-      - name: Setup Python for read-only image audit
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install pinned image processor
-        run: python -m pip install --disable-pip-version-check -r scripts/requirements-migration.txt
-      - name: Dry-run nine covers without credentials
-        run: python scripts/migrate_portfolio_covers.py --report portfolio-cover-dryrun-report.json
-      - name: Print image savings audit
-        run: |
-          python - <<'PY'
-          import json
-          report = json.load(open('portfolio-cover-dryrun-report.json', encoding='utf-8'))
-          images = report['assets']
-          assert len(images) == 9
-          for image in images:
-              print(f"{image['project']}: {image['original_bytes']} PNG -> {image['webp_bytes']} WebP, saving {image['reduction_percent']}%")
-              print(f"SHA256 {image['project']} {image['sha256_original']}")
-          before = sum(x['original_bytes'] for x in images)
-          after = sum(x['webp_bytes'] for x in images)
-          print(f"TOTAL {before} PNG -> {after} WebP; saved {100*(before-after)/before:.2f}%")
-          PY
-      - name: Preserve dry-run evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: portfolio-cover-dryrun-evidence
-          if-no-files-found: warn
-          retention-days: 30
-          path: portfolio-cover-dryrun-report.json
-
-  migrate:
-    name: Upload, verify and update editorial URLs
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/feat/portfolio-cover-webp-20261117'
-    needs: validate
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    env:
-      SUPABASE_URL: https://wdjffhfnzydudmhhekmk.supabase.co
-      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-    steps:
-      - name: Check protected credentials
-        run: |
-          if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
-            echo "::error::SUPABASE_SERVICE_ROLE_KEY secret is not configured. No migration performed."
-            exit 1
-          fi
-      - name: Checkout branch
-        uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install pinned Pillow
-        run: python -m pip install --disable-pip-version-check -r scripts/requirements-migration.txt
-      - name: Execute audited migration (no deletions)
-        run: |
-          python scripts/migrate_portfolio_covers.py --apply \
-            --backup portfolio-cover-editorial-backup.json \
-            --report portfolio-cover-migration-report.json
-      - name: Independent read-back (18 objects + 9 CMS URLs)
-        run: |
-          python scripts/migrate_portfolio_covers.py --verify \
-            --report portfolio-cover-verification-report.json
-      - name: Retain evidence and rollback backup
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: portfolio-cover-migration-evidence
-          if-no-files-found: warn
-          retention-days: 30
-          path: |
-            portfolio-cover-editorial-backup.json
-            portfolio-cover-migration-report.json
-            portfolio-cover-verification-report.json
+      - name: Record integration status
+        run: echo "Real migration and read-back suspended; separate authorization and budget required."

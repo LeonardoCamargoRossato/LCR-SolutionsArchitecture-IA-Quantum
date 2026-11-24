@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'tests/isolation/**'
+      - 'vite.config.ts'
       - 'src/pages/TestComponentLab.tsx'
       - 'src/features/test-component-lab/**'
       - 'src/components/test-component-lab/**'
@@ -31,7 +33,7 @@ jobs:
       - name: Install pinned production dependencies
         run: npm ci
       - name: TypeScript and Vite build
-        run: npm run build
+        run: bash tests/isolation/run.sh npm run build
       - name: Security and preservation assertions
         run: |
           python3 - <<'PY'
@@ -56,9 +58,9 @@ jobs:
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
       - name: V2 editor functional browser tests
-        run: node tests/test-component-lab-v2-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/test-component-lab-v2-smoke.mjs
       - name: V1 controls/regression compatibility
-        run: node tests/test-component-lab-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/test-component-lab-smoke.mjs
       - name: Upload screenshots and evidence
         if: always()
         uses: actions/upload-artifact@v4

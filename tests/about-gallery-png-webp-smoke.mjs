@@ -6,7 +6,7 @@
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { mkdir, writeFile } from 'node:fs/promises'
-import { chromium } from 'playwright'
+import { chromium } from './isolation/Browser.mjs'
 
 const PUBLIC_BASE = process.env.GALLERY_SMOKE_BASE_URL?.trim()
 const BASE = PUBLIC_BASE ? (PUBLIC_BASE.endsWith('/') ? PUBLIC_BASE : PUBLIC_BASE + '/') : 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'

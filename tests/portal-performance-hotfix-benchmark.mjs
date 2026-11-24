@@ -1,6 +1,6 @@
 import {spawn} from 'node:child_process'
 import {mkdir,writeFile} from 'node:fs/promises'
-import {chromium} from 'playwright'
+import {chromium} from './isolation/Browser.mjs'
 import assert from 'node:assert/strict'
 const BASE='/LCR-SolutionsArchitecture-IA-Quantum/'
 const baseline=process.env.LCR_BEFORE

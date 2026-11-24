@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'tests/isolation/**'
+      - 'vite.config.ts'
       - src/components/hero/**
       - src/components/test-component-lab/particle-wave/**
       - src/config/heroParticleWave.ts
@@ -55,10 +57,6 @@ jobs:
   verify-hero:
     runs-on: ubuntu-24.04
     timeout-minutes: 25
-    env:
-      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-      VITE_SUPABASE_MEDIA_BUCKET: ${{ secrets.VITE_SUPABASE_MEDIA_BUCKET }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -70,7 +68,7 @@ jobs:
       - name: Locked dependency install
         run: npm ci
       - name: TypeScript and production Vite build
-        run: npm run build
+        run: bash tests/isolation/run.sh npm run build
       - name: Check Hero visual asset/code budgets
         run: |
           python3 - <<'PY'
@@ -106,19 +104,19 @@ jobs:
           npm install --no-save --ignore-scripts playwright@1.56.1
           npx playwright install --with-deps chromium
       - name: Validate theme-specific SVG contrast, 4 Hero tags, performance and 3 scenes
-        run: node tests/hero-v5-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/hero-v5-smoke.mjs
       - name: V11 responsive and public bilingual route regression
-        run: node tests/hero-v11-responsive-i18n-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/hero-v11-responsive-i18n-smoke.mjs
       - name: V12 three-scene navigation, readable left-aligned tags, compact controls and raised desktop neural view
-        run: node tests/hero-v12-composition-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/hero-v12-composition-smoke.mjs
       - name: V13 shared Lab particle Canvas, reference geometry, original SVG, pause and reduced motion
-        run: node tests/hero-v13-particle-wave-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/hero-v13-particle-wave-smoke.mjs
       - name: Mobile two-line headline, compact gap, Hamlet AI label (9 responsive viewports)
-        run: node tests/hero-mobile-v9-layout-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/hero-mobile-v9-layout-smoke.mjs
       - name: Header flags, English/dark defaults, desktop tags and mobile scene clearance
-        run: node tests/hero-v10-header-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/hero-v10-header-smoke.mjs
       - name: Existing Home/SEO/projects regression
-        run: node tests/ai-positioning-smoke.mjs
+        run: bash tests/isolation/run.sh node tests/ai-positioning-smoke.mjs
       - name: Browser evidence (desktop, notebook, tablet, mobile)
         if: always()
         uses: actions/upload-artifact@v4

@@ -33,7 +33,8 @@ export function resolveAboutGalleryMedia(imageUrl: string, storagePath?: string)
     return unchanged
   }
   // No guessing for data from other providers or unrelated Storage paths.
-  if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(parsed.origin)) return unchanged
+  const localFixture = import.meta.env?.VITE_LCR_TEST_MODE === '1' && parsed.origin === 'http://127.0.0.1:54321'
+  if (!localFixture && !/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(parsed.origin)) return unchanged
 
   const markerPos = parsed.pathname.indexOf(PUBLIC_MARKER)
   if (markerPos === -1) return unchanged

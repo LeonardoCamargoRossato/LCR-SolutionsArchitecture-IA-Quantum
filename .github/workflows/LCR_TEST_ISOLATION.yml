@@ -1,0 +1,45 @@
+name: LCR test isolation gate
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: isolation-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  isolation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: |
+          npm install --no-save --ignore-scripts playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Inventory and workflow policy
+        run: python3 tests/isolation/CheckWorkflows.py
+      - name: Reject unauthorized test endpoint before startup
+        run: |
+          if VITE_SUPABASE_URL=https://unauthorized.invalid bash tests/isolation/run.sh node -e 'process.exit(0)'; then
+            echo 'ERROR: unauthorized endpoint accepted'
+            exit 1
+          fi
+      - name: Prove egress isolation
+        run: npm run test:preflight
+      - name: Build using fixture mode
+        run: npm run test:isolated -- npm run build
+      - name: Verify static metadata and preserved assets
+        run: npm run test:isolated -- python3 tests/social-sharing-smoke.py --dist dist
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lcr-isolation-evidence
+          path: test-results/
+          retention-days: 30
+          if-no-files-found: error

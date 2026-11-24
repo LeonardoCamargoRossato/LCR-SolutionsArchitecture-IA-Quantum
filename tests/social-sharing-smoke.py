@@ -182,29 +182,6 @@ def main():
         assert (d/'og-cover.svg').read_bytes()==(ROOT/'public/og-cover.svg').read_bytes()
         print('PASS: build HTML, HTTPS absolute URLs, mobile JPEG <50 KB, mobile WebP <20 KB, all preserved asset hashes, legacy SVG preserved')
         return
-    for ua in ('WhatsApp/2.22.20.72 A','WhatsApp/2.22.19.78 I','WhatsApp/2.2236.3 N','LinkedInBot/1.0','Twitterbot/1.0'):
-        html, typ, headers = fetch(BASE, ua)
-        assert typ == 'text/html', typ
-        check_html(html.decode('utf-8'))
-        data, typ, headers = fetch(IMAGE, ua)
-        assert typ == 'image/jpeg', typ
-        check_jpeg(data)
-        print('PASS', ua, '200 HTML + JPEG', len(data), 'bytes; exact SHA-256; 600x315; under 50 KB')
-    fresh, typ, _ = fetch(BASE + '?share=v4', 'WhatsApp/2.22.20.72 A')
-    assert typ == 'text/html'
-    check_html(fresh.decode('utf-8'))
-    mobile = INVENTORY['mobile_webp']
-    data, typ, _ = fetch(BASE + mobile['path'].removeprefix('public/'), 'WhatsApp/2.22.20.72 A')
-    assert typ == 'image/webp', typ
-    check_webp(data, mobile)
-    print('PASS fresh share URL and mobile WebP', len(data), 'bytes')
-    # Verify retained derivatives once; no repeated heavy PNG transfer per crawler.
-    png, typ, _ = fetch(BASE + PNG_ASSET, 'WhatsApp/2.22.20.72 A')
-    assert typ == 'image/png', typ
-    check_png(png)
-    webp, typ, _ = fetch(BASE + INVENTORY['optimized']['path'].removeprefix('public/'), 'WhatsApp/2.22.20.72 A')
-    assert typ == 'image/webp', typ
-    check_webp(webp)
-    print('PASS preserved approved PNG and WebP; native app preview/cache still requires human verification.')
+    raise SystemExit('Use the bounded published smoke: python3 tests/isolation/PublishedSmoke.py')
 
 if __name__=='__main__': main()

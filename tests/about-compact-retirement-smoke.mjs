@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { spawn } from 'node:child_process'
-import { chromium } from 'playwright'
+import { chromium } from './isolation/Browser.mjs'
 
 const base = 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
 const report = { checkedAt: new Date().toISOString(), checks: [], failures: [] }
