@@ -83,15 +83,38 @@ async function run(name,viewport,reduced=false){
   await page.getByRole('button',{name:'Flip Horizontal'}).click()
   await page.getByRole('button',{name:'Flip Vertical'}).click()
   assert.equal(await page.getByRole('button',{name:'Flip Horizontal'}).getAttribute('aria-pressed'),'true')
-  const rect=await page.locator('[data-layer-id="wave"]').boundingBox()
-  await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2)
-  await page.mouse.down();await page.mouse.move(rect.x+rect.width/2+16,rect.y+rect.height/2+12,{steps:3});await page.mouse.up()
+  // The property controls may scroll the document (particularly on shorter
+  // desktops). Playwright's raw mouse does not scroll or check hit targets.
+  const waveLayer=page.locator('[data-layer-id="wave"]')
+  await waveLayer.scrollIntoViewIfNeeded()
+  const point=await waveLayer.evaluate(el=>{
+    const r=el.getBoundingClientRect(),s=el.closest('[data-testid="lab-preview-stage"]').getBoundingClientRect()
+    const left=Math.max(r.left,s.left,0),right=Math.min(r.right,s.right,innerWidth)
+    const top=Math.max(r.top,s.top,0),bottom=Math.min(r.bottom,s.bottom,innerHeight)
+    for(const fx of [.5,.35,.65,.2,.8])for(const fy of [.5,.35,.65,.2,.8]){
+      const x=left+(right-left)*fx,y=top+(bottom-top)*fy
+      const hit=document.elementFromPoint(x,y)
+      if(hit&&(hit===el||el.contains(hit))&&!hit.closest('[data-handle]')&&x+16<innerWidth&&y+12<innerHeight)return {x,y}
+    }
+    throw Error('No visible interior hit target for selected Wave: '+JSON.stringify({left,right,top,bottom}))
+  })
+  await page.mouse.move(point.x,point.y)
+  await page.mouse.down();await page.mouse.move(point.x+16,point.y+12,{steps:3});await page.mouse.up()
+  await page.waitForFunction(()=>Number(document.querySelector('input[aria-label="Object x"]')?.value)>4 ||
+    [...document.querySelectorAll('label')].some(label=>label.textContent.trim()==='Object x'&&Number(label.querySelector('input')?.value)>4),null,{timeout:4000}).catch(async error=>{
+      const actual=await page.getByLabel('Object x').inputValue()
+      if(Number(actual)<=4)throw error
+    })
   const x2=Number(await page.getByLabel('Object x').inputValue())
   assert(x2>4,'Move must update virtual X')
-  const corner=await page.locator('[data-handle="se"]').boundingBox()
-  await page.mouse.move(corner.x+7,corner.y+7);await page.mouse.down();await page.mouse.move(corner.x+32,corner.y+25);await page.mouse.up()
+  const cornerHandle=page.locator('[data-handle="se"]')
+  await cornerHandle.scrollIntoViewIfNeeded()
+  const corner=await cornerHandle.boundingBox()
+  await page.mouse.move(corner.x+corner.width/2,corner.y+corner.height/2);await page.mouse.down();await page.mouse.move(corner.x+32,corner.y+25);await page.mouse.up()
   assert.equal(await page.locator('[data-handle="se"]').count(),1)
-  const rot=await page.locator('[data-handle="rotate"]').boundingBox()
+  const rotateHandle=page.locator('[data-handle="rotate"]')
+  await rotateHandle.scrollIntoViewIfNeeded()
+  const rot=await rotateHandle.boundingBox()
   await page.mouse.move(rot.x+rot.width/2,rot.y+rot.height/2);await page.mouse.down()
   await page.mouse.move(rot.x+rot.width/2+28,rot.y+rot.height/2+18);await page.mouse.up()
   assert.notEqual(await page.getByLabel('Rotation (degrees)').inputValue(),'0')

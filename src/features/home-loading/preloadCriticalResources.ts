@@ -63,8 +63,8 @@ function bounded(promise:Promise<boolean>,signal:AbortSignal,ms:number):Promise<
     void promise.then(ok=>finish(ok?'ok':'failed'),()=>finish('failed'))
   })
 }
-export function waitForHomeDom(signal:AbortSignal):Promise<BootOutcome>{
-  return observeReady(isHomeDomReady,signal,12000)
+export function waitForHomeDom(signal:AbortSignal,timeoutMs=12000):Promise<BootOutcome>{
+  return observeReady(isHomeDomReady,signal,timeoutMs)
 }
 export async function waitForHeroMedia(signal:AbortSignal):Promise<BootOutcome>{
   const image=document.querySelector<HTMLImageElement>('[data-testid="hero-v6-blue-code"]')

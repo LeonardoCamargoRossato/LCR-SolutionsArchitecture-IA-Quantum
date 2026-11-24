@@ -56,7 +56,8 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
       if(previous.serial!==serial||previous.phase==='opened')return previous
       const old=previous.tasks[task]
       if(old.state===state)return previous
-      return {...previous,tasks:{...previous.tasks,[task]:{...old,state,durationMs:Math.round(performance.now()-old.startedAt)}}}
+      return {...previous,phase:task==='home-render'&&state==='completed'&&previous.phase==='error'?'loading':previous.phase,
+        tasks:{...previous.tasks,[task]:{...old,state,durationMs:Math.round(performance.now()-old.startedAt)}}}
     })
   },[serial])
 
@@ -67,16 +68,23 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
     setRun(previous=>previous.serial===serial?{...previous,phase:previous.phase==='initializing'?'loading':previous.phase,
       tasks:Object.fromEntries(BOOT_TASKS.map(t=>[t,previous.tasks[t].state==='pending'?{...previous.tasks[t],state:'running',startedAt:performance.now()}:previous.tasks[t]])) as Run['tasks']}:previous)
     void waitForFonts(signal).then(result=>report('fonts',result))
-    void waitForHomeDom(signal).then(result=>{
+    void (async()=>{
+      let result=await waitForHomeDom(signal)
       if(signal.aborted)return
       report('home-render',result)
+      if(result==='failed'){
+        report('hero-media','failed');report('canvas','failed')
+        // Keep observing for a bounded second chance on genuinely slow loads.
+        // Recovery is still driven by the actual DOM, never the timeout.
+        result=await waitForHomeDom(signal,18000)
+        if(signal.aborted)return
+        report('home-render',result)
+      }
       if(result==='ok'){
         void waitForHeroMedia(signal).then(outcome=>report('hero-media',outcome))
         void waitForCanvas(signal).then(outcome=>report('canvas',outcome))
-      }else{
-        report('hero-media','failed');report('canvas','failed')
       }
-    })
+    })()
     const timer=window.setTimeout(()=>{if(!signal.aborted)setRun(p=>p.serial===serial?{...p,slow:true}:p)},7000)
     return ()=>{controller.abort();window.clearTimeout(timer)}
   },[serial,showPortal,report])
@@ -87,15 +95,16 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
       if(run.phase!=='error')setRun(p=>({...p,phase:'error'}))
       return
     }
-    if(ready&&run.phase!=='ready'){
+    if(ready&&run.phase!=='ready'&&run.phase!=='degraded'){
       markHomeBoot('home-critical-resources-ready');markHomeBoot('portal-progress-complete')
-      setRun(p=>({...p,phase:'ready'}))
+      const degraded=BOOT_TASKS.some(t=>run.tasks[t].state==='fallback')
+      setRun(p=>({...p,phase:degraded?'degraded':'ready'}))
     }
   },[showPortal,ready,run.phase,run.tasks])
 
   useEffect(()=>{
-    if(!showPortal||run.phase!=='ready')return
-    setRun(p=>p.phase==='ready'?{...p,phase:'activating'}:p)
+    if(!showPortal||(run.phase!=='ready'&&run.phase!=='degraded'))return
+    setRun(p=>p.phase==='ready'||p.phase==='degraded'?{...p,phase:'activating'}:p)
   },[showPortal,run.phase])
 
   const finish=useCallback((release:Release)=>{
@@ -136,9 +145,9 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
   const onAssetState=useCallback((state:PortalAssetState,variant?:PortalVariant)=>{
     if(!activeRef.current||current.current.serial!==serial)return
     if(variant)markHomeBoot('portal-variant-selected:'+variant)
-    if(state==='ready'){
-      markHomeBoot('portal-background-decoded');report('door-art','ok')
-    }else if(state==='failed')report('door-art','failed')
+    if(variant&&(state==='loading'||state==='ready'))markHomeBoot('portal-background-decoded')
+    if(state==='ready')report('door-art','ok')
+    else if(state==='failed')report('door-art','failed')
   },[report,serial])
   const onOpening=useCallback(()=>{
     if(!activeRef.current||current.current.serial!==serial||opening.current===serial||finished.current===serial)return
@@ -157,14 +166,14 @@ export function HomeBootCoordinator({children}:{children:ReactNode}){
     </div>
     {showPortal&&<div className="home-boot-overlay" data-testid="home-boot-overlay" data-boot-state={run.phase}>
       <LoadingPortalV2 key={serial} progress={progress}
-        ready={ready&&(run.phase==='ready'||run.phase==='activating'||run.phase==='opening')}
+        ready={ready&&(run.phase==='ready'||run.phase==='degraded'||run.phase==='activating'||run.phase==='opening')}
         allowFallback={homeSafe} onAssetState={onAssetState} onOpening={onOpening}
         onOpened={()=>finish('mechanical')} onFallback={()=>finish('fallback')}/>
       {(run.slow||run.phase==='error'||run.tasks['door-art'].state==='failed')&&run.phase!=='opening'&&
         <div className="home-boot-recovery" role="status" aria-live="polite">
           <p>{run.phase==='error'?'Não foi possível preparar a capa automaticamente.':run.tasks['door-art'].state==='failed'?
             'A animação da porta não pôde ser carregada.':'O carregamento está demorando mais que o esperado.'}</p>
-          {(homeSafe||run.phase==='error')&&<button type="button" data-testid="home-boot-continue" onClick={()=>finish('fallback')}>Abrir portfólio</button>}
+          {homeSafe&&<button type="button" data-testid="home-boot-continue" onClick={()=>finish('fallback')}>Abrir portfólio</button>}
           <button type="button" onClick={()=>window.location.reload()}>Tentar novamente</button>
         </div>}
     </div>}

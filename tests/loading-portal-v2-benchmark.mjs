@@ -42,7 +42,8 @@ try{
     }
     for(const cache of ['cold','warm']){
       const initial=await cdp.send('Performance.getMetrics')
-      await page.goto('http://127.0.0.1:'+mode.port+BASE+'#/?portal='+mode.query,{waitUntil:'domcontentloaded',timeout:60000})
+      if(cache==='warm')await page.reload({waitUntil:'domcontentloaded',timeout:60000})
+      else await page.goto('http://127.0.0.1:'+mode.port+BASE+'#/?portal='+mode.query,{waitUntil:'domcontentloaded',timeout:60000})
       await page.locator('main.portfolio-home .hero-v3').waitFor({timeout:40000})
       if(mode.id!=='bypass')await page.locator('[data-testid="home-boot-app"][data-boot-state="opened"]').waitFor({timeout:40000})
       await page.waitForFunction(()=>document.querySelector('main.portfolio-home')?.getAttribute('data-home-motion')==='running',null,{timeout:15000})
