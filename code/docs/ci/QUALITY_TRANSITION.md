@@ -5,10 +5,10 @@ Base: cf273ae6026c48e264c3ef80863abf458dc61fc4; last healthy deploy: [4549192172
 The 32 original workflows are retained. The central executor inventories every original workflow, trigger, job, command, environment, action and artifact configuration against the pinned base, rejects unmapped workflows or changed legacy definitions, and executes five groups with one isolated build each. It deduplicates only identical isolated commands with identical explicit environments. Baseline comparison builds and all unique assertions remain. The core isolation job is unchanged; published smokes stay separate. The proposed deploy calls the same isolated gate at the actual main SHA before the production build; this remains unactivated until reviewed and merged. For this controlled PR, all changes run the complete shadow matrix without path filtering, including shared components, assets, docs and configuration. Temporary duplication is intentional for parity evidence, not the steady-state architecture.
 
 ## Commands
-- `python3 scripts/ci/quality.py`: inventory and failure-propagation self-test.
-- `python3 scripts/ci/quality.py --shard hero` (or portfolio, lab, performance, static): isolated commands, requiring the runner dependencies.
-- `python3 scripts/ci/check_source.py`: changed-source whitespace, high-confidence secret patterns and required docs.
-- `python3 scripts/ci/check_source.py --artifact dist`: public artifact checks.
+- `cd code && python3 scripts/ci/quality.py`: inventory and failure-propagation self-test.
+- `cd code && python3 scripts/ci/quality.py --shard hero` (or portfolio, lab, performance, static): isolated commands, requiring the runner dependencies.
+- `cd code && python3 scripts/ci/check_source.py`: changed-source whitespace, high-confidence secret patterns and required docs.
+- `cd code && python3 scripts/ci/check_source.py --artifact dist`: public artifact checks.
 - CI artifacts include SHA, individual command exit status, duration and evidence. No real backend is authorized.
 
 ## Cutover conditions

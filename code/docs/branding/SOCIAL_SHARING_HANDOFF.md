@@ -13,8 +13,8 @@
 ## Release procedure
 
 1. The original was resized proportionally to 1119×630 with LANCZOS; 40/41 px edge-extended side margins preserve the entire composition. PNG optimize=True; WebP quality=91, method=6. Both output hashes exactly match the Drawer handoff. The verified files are archived in Drive under LCR Apps/LCR-SolutionsArchitecture-IA-Quantum/branding/social, without changing sharing permissions. CI must confirm the repository and built bytes.
-2. Run `npm ci`, `npm run build`, `python3 tests/social-sharing-smoke.py --dist dist`. CI also validates the legacy SVG and captures published preview assets as evidence.
-3. Merge only after all required checks pass. The deploy workflow runs `python3 tests/social-sharing-smoke.py --live` after publication, checking the static HTML, both files, HTTP 200, MIME type, dimensions and SHA-256 for simulated WhatsApp, LinkedIn and Twitter crawler user agents.
+2. Run `cd code && npm ci && npm run build && python3 tests/social-sharing-smoke.py --dist dist`. CI also validates the legacy SVG and captures published preview assets as evidence.
+3. Merge only after all required checks pass. The deploy workflow runs `cd code && python3 tests/social-sharing-smoke.py --live` after publication, checking the static HTML, both files, HTTP 200, MIME type, dimensions and SHA-256 for simulated WhatsApp, LinkedIn and Twitter crawler user agents.
 4. Share the canonical root URL (no hash/replay parameters). Use LinkedIn Post Inspector (https://www.linkedin.com/post-inspector/) to rescrape the root; verify actual draft preview without posting. Test WhatsApp in self-chat, optionally share `?share=v2` if a previous preview is cached. Native app cache/rendering is not proven by HTTP simulation.
 5. Roll back by reverting the approved-artwork commit; original provisional bytes and v1 metadata remain available in Git history.
 
@@ -26,7 +26,7 @@ The owner's native WhatsApp test displayed text but no image. The approved PNG (
 
 - Primary Open Graph and Twitter image: `public/assets/branding/social/lcr-portfolio-og.jpg` (1200×630, 260603 bytes, SHA-256 `6b06f48081d7d8bac09c296a79b5d1ae7018791b3b52d2ad69590015642bf7fa`, baseline JPEG, quality 92, Pillow 12.0.0). No change to composition, dimensions, PNG, or WebP. JPEG is an explicitly derived delivery asset; PNG and WebP remain versioned and public. No new runtime dependency or Home request.
 - Static tags use absolute HTTPS JPEG URL with `?v=3`, MIME `image/jpeg`. Canonical page URL unchanged.
-- Reproduce only when needed: install Pillow==12.0.0 in an isolated environment and run `python3 scripts/generate-social-preview.py`. The checked-in JPEG is the deployed artifact; CI checks exact digest, baseline markers, size strictly below 300 KB, dimensions, and preserved approved assets. Public check exercises the documented Android/iOS/web WhatsApp user agents plus LinkedIn and X. Native platform rendering remains a separate manual acceptance.
+- Reproduce only when needed: install Pillow==12.0.0 in an isolated environment and run `cd code && python3 scripts/generate-social-preview.py`. The checked-in JPEG is the deployed artifact; CI checks exact digest, baseline markers, size strictly below 300 KB, dimensions, and preserved approved assets. Public check exercises the documented Android/iOS/web WhatsApp user agents plus LinkedIn and X. Native platform rendering remains a separate manual acceptance.
 - Re-test canonical link; if cached, share a new message using `?share=v3` and wait for the preview before sending. Governance: LCR_ASSET_ORGANIZATION_STANDARD v1.1 and LCR_PERFORMANCE_STANDARD. Rollback: revert the V3 commit without deleting approved source assets.
 
 ## V4 — ultralight mobile preview (2026-11-24)

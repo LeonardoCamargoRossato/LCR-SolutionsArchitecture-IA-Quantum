@@ -26,14 +26,14 @@ The local `SKILL.md` uses project-root paths rather than the upstream Claude-spe
 
 **Impeccable:** read `.agents/skills/impeccable/SKILL.md` plus the relevant `reference/critique.md`, `reference/polish.md`, `reference/bolder.md` or `reference/distill.md`. The provided launcher `scripts/impeccable` can download a native engine; do not run it or activate hooks automatically. Human approval and review of download/cache behavior are required first. Reference-only critique is still possible.
 
-**Web Design Guidelines:** read `.agents/skills/web-design-guidelines/SKILL.md` and `references/command.md`; audit, for example, `src/pages/Home.tsx` and related CSS. Issue reports should use file/line references and concrete tests. The rules are a pinned snapshot, not an automatic web fetch.
+**Web Design Guidelines:** read `.agents/skills/web-design-guidelines/SKILL.md` and `references/command.md`; audit, for example, `code/src/pages/Home.tsx` and related CSS. Issue reports should use file/line references and concrete tests. The rules are a pinned snapshot, not an automatic web fetch.
 
 ## Priorities and LCR approval gates
 
 1. User brief and repository safety requirements prevail.
 2. Respect the existing React/Vite structure, image inventories, localization, responsive behavior and deployed content.
 3. Propose changes before implementing a redesign; no skill is permission to run third-party code or publish.
-4. Avoid multiple sources of design truth: `.agents/skills/` is canonical and `docs/design-skills/` contains only metadata and integration rules.
+4. Avoid multiple sources of design truth: `.agents/skills/` is canonical and `code/docs/design-skills/` contains only metadata and integration rules.
 5. Only agents explicitly running in this repository can access the local skill files; other Builder/ChatGPT sessions may need repository read access.
 6. Compare pinned SHAs and license text before any update; keep changes in a reviewed PR.
 
