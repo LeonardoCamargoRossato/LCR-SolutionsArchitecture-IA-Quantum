@@ -52,11 +52,11 @@ O catálogo de referências e hashes está em [`assets/supabase-public-assets-in
 - O maior arquivo individual tem 15.135.381 bytes (PNG da galeria); nenhum excede 100 MB.
 - `npm ci`: concluído. O npm apresentou aviso de configuração local `http-proxy`, aviso de suporte do ESLint e aviso do script de instalação do esbuild.
 - `npm exec vite build`: aprovado; empacotou 1.899 módulos e copiou os assets para `dist/`.
-- `npm run build`: falhou antes do Vite, em erros preexistentes de TypeScript em `vite.config.ts` (`Cannot find name 'process'`; `@types/node` não está instalado). Não alterei dependências nem configuração de build nesta migração.
+- O build limpo (`npm ci && npm run build`) inicialmente revelou que `vite.config.ts` usa `process`, mas `@types/node` não estava declarado diretamente. Adicionei `@types/node` `22.20.7` como dependência de desenvolvimento fixada, com a atualização mínima necessária do lockfile. Depois disso, `npm ci` e `npm run build` passaram; o Vite empacotou 1.899 módulos e incluiu os assets em `dist/`.
 - `npm run test:isolated -- node tests/isolation/Guardrail.test.mjs`: não executou os testes; o ambiente atual não possui `sudo`, exigido pelo script para criar o namespace de rede. A infraestrutura não foi contornada.
 - Tamanho medido de `dist/`: 146.601.183 bytes (~139,8 MiB). O limite publicado atual do GitHub Pages é 1 GB; o artefato está abaixo dele ([documentação oficial](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits)).
 
-No primeiro CI do PR, o check de qualidade apontou whitespace dentro dos bytes do PDF. O Git o estava tratando como texto. Adicionei `*.pdf binary` em `.gitattributes`, preservando o PDF byte a byte e mantendo `git diff --check` sobre arquivos textuais; o workflow e os testes não foram desativados nem enfraquecidos.
+No primeiro CI do PR, o check de qualidade apontou whitespace dentro dos bytes do PDF. O Git o estava tratando como texto. Adicionei `*.pdf binary` em `.gitattributes`, preservando o PDF byte a byte e mantendo `git diff --check` sobre arquivos textuais; o workflow e os testes não foram desativados nem enfraquecidos. O pipeline anterior aprovou os 12 checks no SHA indicado abaixo; a inclusão da dependência fixada e este relatório atualizado exigem uma nova execução integral, ainda pendente.
 
 ## CI do Pull Request
 
@@ -67,7 +67,7 @@ No SHA `f98d719cb0d8d00fff042637eef3c2497573abdb`, os 12 checks aplicáveis pass
 - [Build e browser — run 45560510649](https://github.com/LeonardoCamargoRossato/LCR-SolutionsArchitecture-IA-Quantum/actions/runs/45560510649)
 - [Build e browser — run 45560510685](https://github.com/LeonardoCamargoRossato/LCR-SolutionsArchitecture-IA-Quantum/actions/runs/45560510685)
 
-O teste de isolamento passou no runner do GitHub; a execução local não pôde iniciar por falta de `sudo` no ambiente de trabalho. O PR é [#54](https://github.com/LeonardoCamargoRossato/LCR-SolutionsArchitecture-IA-Quantum/pull/54). A `main` foi reconsultada antes da consolidação e retornou `protected: false`, sem regrasets; nenhuma proteção ou permissão foi modificada. Este commit atualiza somente o relatório e será novamente validado pelo CI do PR antes do merge.
+O teste de isolamento passou no runner do GitHub; a execução local não pôde iniciar por falta de `sudo` no ambiente de trabalho. O PR é [#54](https://github.com/LeonardoCamargoRossato/LCR-SolutionsArchitecture-IA-Quantum/pull/54). A `main` foi reconsultada antes da consolidação e retornou `protected: false`, sem regrasets; nenhuma proteção ou permissão foi modificada. O commit final precisa passar novamente pelo CI completo antes do merge.
 
 ## Compatibilidade e estado da publicação
 
