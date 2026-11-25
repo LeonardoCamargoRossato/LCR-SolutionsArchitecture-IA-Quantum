@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 3249)
+Total output lines: 138
+
 # LCR Code Root Migration — Plan
 
 **Etapa:** 01/05 — auditoria e baseline
@@ -62,12 +65,7 @@ Não foi feita alteração em qualquer desses pontos nesta etapa. Decisões de i
 
 ## Sequência proposta para a Etapa 02
 
-1. Reconfirmar `main`, PRs e checks; rebasear/criar branch a partir do SHA então atual.
-2. Fazer a mudança em commit rastreável, movendo os arquivos preservando conteúdo e histórico Git inferível. Manter `.agents/`, `.github/workflows/`, `documentation/`, `.gitignore`, `AGENTS.md` e `README.md` na raiz.
-3. Ajustar somente caminhos necessários em Vite, scripts, testes, documentação técnica e workflows; preservar as 32 definições de workflow e toda cobertura aplicável.
-4. Executar `npm ci` no diretório `code/` dentro do fluxo isolado; validar typecheck/build, integridade de assets, testes de isolamento, rotas, metadados, simulação de auth/admin, browser smoke, Portal, Lab, carrosséis, casos de portfólio e benchmarks.
-5. Confirmar pacote publicado e SHA exato antes do deploy; após merge/deploy, fazer smoke público mínimo, somente leitura.
-6. Só remover resíduos ou arquivos duplicados após conferir equivalência e aprovação das validações; preservar originais durante a migração até o gate final.
+1. Reconfirmar `main`,…249 tokens truncated…ão até o gate final.
 
 ## Recuperação
 
@@ -92,17 +90,17 @@ Documentos atuais no Drive do LCR Framework, consultados em 24/11/2026: `LCR_WOR
 ## Etapa 02 — resultado da migração
 
 **Estado:** concluída na branch de trabalho; não houve merge nem publicação.
-**Commit com a estrutura completa:** `2065d154bb9a7013524b5970825842d12dd72750`.
+**Commit com a estrutura completa:** `252d2a5960a1faab209e1749f19adc2c079a30ec`.
 
 | Lote | Commit | Verificação |
 |---|---|---|
-| A — `docs/` → `code/docs/` | `e482767696b68ab3125f040d1f72b604337b81b1` | 64 arquivos conferidos pelo SHA-256 da baseline |
-| B — `supabase/` → `code/supabase/` | `aa5af4a23a4f727d9211f536927e56f8f1da6a9a` | 3 SQL byte a byte; nenhum executado |
-| C — `scripts/` → `code/scripts/` | `f905d9da0cfc66b1fa675f0c3d78f1b31833ab39` | 12 arquivos; raízes `REPO_ROOT`/`APP_ROOT` e caminhos adaptados |
-| D — `tests/` → `code/tests/` | `6a3f550b56015bc52d27d5860d8762a6bb06b15c` | 53 arquivos; isolation preservado e caminhos adaptados |
-| E — `public/` → `code/public/` | `d87ab145b026ec9dab9410d977731cb6dbe3fb65` | 203 arquivos; todos os SHA-256, nomes e extensões preservados |
-| F — `src/` → `code/src/` | `05f0776cfff2e58bda0e7d0fd6c9ac5effe49b38` | 200 arquivos byte a byte; imports relativos preservados |
-| G — configurações → `code/` | `2065d154bb9a7013524b5970825842d12dd72750` | 8 arquivos byte a byte; `package-lock.json` inalterado |
+| A — `docs/` → `code/docs/` | `e51950e5de113d3ddc2ce99cae677f7c16c1365f` | 64 arquivos conferidos pelo SHA-256 da baseline |
+| B — `supabase/` → `code/supabase/` | `548376242ff78ddd2000f17a5a67c916ef913041` | 3 SQL byte a byte; nenhum executado |
+| C — `scripts/` → `code/scripts/` | `f789f4805360f7f39a82ff885563eb0a34641bac` | 12 arquivos; raízes `REPO_ROOT`/`APP_ROOT` e caminhos adaptados |
+| D — `tests/` → `code/tests/` | `627258a9a1cdb7439c2359ae6ab823e499f1d118` | 53 arquivos; isolation preservado e caminhos adaptados |
+| E — `public/` → `code/public/` | `5a73e15e74029bfae9d82a016bcba24dbe4c5411` | 203 arquivos; todos os SHA-256, nomes e extensões preservados |
+| F — `src/` → `code/src/` | `367ca9f093016774d2a0c5e97a222b5a984bf91c` | 200 arquivos byte a byte; imports relativos preservados |
+| G — configurações → `code/` | `252d2a5960a1faab209e1749f19adc2c079a30ec` | 8 arquivos byte a byte; `package-lock.json` inalterado |
 
 Foram atualizados os caminhos dos documentos de instrução na raiz (`AGENTS.md`, `README.md`), dos comandos ativos de qualidade/social sharing e das raízes de execução dos scripts. `.agents/` e `.github/workflows/` continuam na raiz; `documentation/` permanece separada; removido `code/.gitkeep`; nenhuma `package.json` duplicada foi criada na raiz. `.gitignore` agora ignora `test-results/`, junto aos diretórios de build/dependências.
 
