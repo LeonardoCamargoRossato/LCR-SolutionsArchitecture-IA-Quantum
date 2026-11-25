@@ -11,10 +11,10 @@ export const embeddedControlProject: Project = {
   technologies: ['ESP32', 'C/C++', 'Arduino', 'Web Server', 'HTML', 'CSS', 'JavaScript', 'IoT'],
   coverImage: {
     id: 'default-embedded-control-platform',
-    url: './projects/embedded-control.png',
-    path: './projects/embedded-control.png',
+    url: './projects/embedded-control.svg',
+    path: './projects/embedded-control.svg',
     name: 'Embedded Control Platform',
-    mimeType: 'image/png',
+    mimeType: 'image/svg+xml',
     category: 'Projects',
     imageType: 'illustrative-placeholder',
   },

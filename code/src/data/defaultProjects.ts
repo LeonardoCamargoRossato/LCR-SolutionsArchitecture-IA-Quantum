@@ -333,7 +333,7 @@ export const defaultMoreProjects: Project[] = [
       },
     },
     technologies: ['Python', 'Streamlit', 'Data Applications'],
-    coverImage: ph('streamlit-tools', './projects/streamlit-tools.png'),
+    coverImage: ph('streamlit-tools', './projects/streamlit-tools.svg'),
     imageType: 'illustrative-placeholder',
     sections: {},
     links: {},
