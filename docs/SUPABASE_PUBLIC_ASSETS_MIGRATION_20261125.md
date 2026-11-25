@@ -56,6 +56,8 @@ O catálogo de referências e hashes está em [`assets/supabase-public-assets-in
 - `npm run test:isolated -- node tests/isolation/Guardrail.test.mjs`: não executou os testes; o ambiente atual não possui `sudo`, exigido pelo script para criar o namespace de rede. A infraestrutura não foi contornada.
 - Tamanho medido de `dist/`: 146.601.183 bytes (~139,8 MiB). O limite publicado atual do GitHub Pages é 1 GB; o artefato está abaixo dele ([documentação oficial](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits)).
 
+No primeiro CI do PR, o check de qualidade apontou whitespace dentro dos bytes do PDF. O Git o estava tratando como texto. Adicionei `*.pdf binary` em `.gitattributes`, preservando o PDF byte a byte e mantendo `git diff --check` sobre arquivos textuais; o workflow e os testes não foram desativados nem enfraquecidos. O CI está sendo repetido para esse ajuste.
+
 ## Compatibilidade e estado da publicação
 
 Esta é somente uma cópia: referências do app continuam apontando para o Supabase, de modo que esta etapa não muda o site publicado nem ativa os novos caminhos locais. A migração futura das referências permanece separada. Não houve alteração de UI, conteúdo dos cards, dependências, banco, Storage, Auth ou RLS.
