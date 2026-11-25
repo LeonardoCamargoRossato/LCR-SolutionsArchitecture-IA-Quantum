@@ -1,8 +1,8 @@
 # Supabase Public Assets Migration — Etapa 01
 
-**Data:** 25/11/2026  
-**Branch:** `feat/supabase-public-assets-copy`  
-**Base:** `main` em `dd7010ab95cc3c763a9069e30452ecede2da8485`  
+**Data:** 25/11/2026
+**Branch:** `feat/supabase-public-assets-copy`
+**Base:** `main` em `dd7010ab95cc3c763a9069e30452ecede2da8485`
 **Bucket de origem:** `portfolio-media` (projeto `wdjffhfnzydudmhhekmk`, público)
 
 ## Escopo e resultado da auditoria
