@@ -6,6 +6,9 @@ import pathlib
 import re
 import subprocess
 
+APP_ROOT = pathlib.Path(__file__).resolve().parents[2]
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[3]
+
 BASE = "cf273ae6026c48e264c3ef80863abf458dc61fc4"
 PATTERNS = {
     "private-key": re.compile(rb"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
@@ -52,16 +55,18 @@ def main():
     args = parser.parse_args()
     if args.artifact:
         root = pathlib.Path(args.artifact)
+        if not root.is_absolute():
+            root = APP_ROOT / root
         assert (root / "index.html").is_file(), "Artifact missing"
         check([p for p in root.rglob("*") if p.is_file() or p.is_symlink()])
         print("PASS artifact: private-file and high-confidence secret rules")
     else:
-        subprocess.run(["git", "diff", "--check", BASE, "HEAD"], check=True)
-        changed = subprocess.check_output(["git", "diff", "--name-only", "--diff-filter=ACMR", "-z", BASE, "HEAD"])
-        files = [pathlib.Path(p.decode()) for p in changed.split(b"\0") if p]
+        subprocess.run(["git", "diff", "--check", BASE, "HEAD"], check=True, cwd=REPO_ROOT)
+        changed = subprocess.check_output(["git", "diff", "--name-only", "--diff-filter=ACMR", "-z", BASE, "HEAD"], cwd=REPO_ROOT)
+        files = [REPO_ROOT / pathlib.Path(p.decode()) for p in changed.split(b"\0") if p]
         check(files)
-        for name in ("AGENTS.md", "docs/ci/QUALITY_TRANSITION.md"):
-            assert pathlib.Path(name).is_file(), f"Required documentation missing: {name}"
+        for path in (REPO_ROOT / "AGENTS.md", APP_ROOT / "docs/ci/QUALITY_TRANSITION.md"):
+            assert path.is_file(), f"Required documentation missing: {path.relative_to(REPO_ROOT)}"
         print("PASS changed-source whitespace, high-confidence secrets, documentation")
 
 

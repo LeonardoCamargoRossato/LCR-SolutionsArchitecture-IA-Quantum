@@ -7,9 +7,9 @@ from PIL import Image, ImageDraw
 import numpy as np
 import hashlib, json, tempfile, shutil, sys
 
-ROOT = Path(__file__).resolve().parents[1]
-ASSETS = ROOT / 'public/assets/home/loading-portal'
-GEOMETRY = json.loads((ROOT/'src/components/loading-portal/v2/portal-door-geometry.json').read_text())
+APP_ROOT = Path(__file__).resolve().parents[1]
+ASSETS = APP_ROOT / 'public/assets/home/loading-portal'
+GEOMETRY = json.loads((APP_ROOT/'src/components/loading-portal/v2/portal-door-geometry.json').read_text())
 
 def sha(p):
     return hashlib.sha256(p.read_bytes()).hexdigest()

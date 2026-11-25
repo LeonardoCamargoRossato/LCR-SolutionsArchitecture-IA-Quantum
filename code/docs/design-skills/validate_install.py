@@ -8,8 +8,9 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-SKILLS = ROOT / ".agents" / "skills"
+APP_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[3]
+SKILLS = REPO_ROOT / ".agents" / "skills"
 REQUIRED = {
     "frontend-design": ["SKILL.md", "LICENSE.txt"],
     "ui-ux-pro-max": [
@@ -60,10 +61,12 @@ for slug, paths in REQUIRED.items():
         errors.append(f"{slug}: sensitive filename present")
     manifest[slug] = {"files": len(files), "bytes": sum(p.stat().st_size for p in files)}
 
-for path in ("AGENTS.md", "docs/design-skills/README.md", "docs/design-skills/SKILLS_INVENTORY.md", "docs/design-skills/INTEGRATION_GUIDE.md"):
-    if not (ROOT / path).is_file():
-        errors.append(f"missing documentation: {path}")
-agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8") if (ROOT / "AGENTS.md").is_file() else ""
+for path in ("AGENTS.md", "design-skills/README.md", "design-skills/SKILLS_INVENTORY.md", "design-skills/INTEGRATION_GUIDE.md"):
+    target = REPO_ROOT / path if path == "AGENTS.md" else APP_ROOT / "docs" / path
+    if not target.is_file():
+        errors.append(f"missing documentation: {target}")
+agents_path = REPO_ROOT / "AGENTS.md"
+agents = agents_path.read_text(encoding="utf-8") if agents_path.is_file() else ""
 for slug in REQUIRED:
     if f".agents/skills/{slug}/SKILL.md" not in agents:
         errors.append(f"AGENTS.md does not reference {slug}")

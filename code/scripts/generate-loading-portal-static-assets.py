@@ -11,6 +11,7 @@ from pathlib import Path
 import shutil
 from PIL import Image, ImageFilter, ImageEnhance
 
+APP_ROOT=Path(__file__).resolve().parents[1]
 SOURCE_SIZE=(1672,941)
 CORE=(835.5,440.0)
 SPLIT_X=835.5
@@ -67,8 +68,8 @@ def extend_ultrawide(src:Image.Image,size:tuple[int,int]):
 
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument("--source",default="public/assets/home/loading-portal/portal-000.webp")
-    p.add_argument("--output",default="public/assets/home/loading-portal")
+    p.add_argument("--source",default=str(APP_ROOT/"public/assets/home/loading-portal/portal-000.webp"))
+    p.add_argument("--output",default=str(APP_ROOT/"public/assets/home/loading-portal"))
     a=p.parse_args()
     source_path=Path(a.source)
     out=Path(a.output)

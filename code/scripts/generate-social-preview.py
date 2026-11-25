@@ -7,8 +7,8 @@ import json
 from pathlib import Path
 from PIL import Image
 
-ROOT = Path(__file__).resolve().parents[1]
-DIR = ROOT / 'public/assets/branding/social'
+APP_ROOT = Path(__file__).resolve().parents[1]
+DIR = APP_ROOT / 'public/assets/branding/social'
 BUDGET = 300_000
 
 def main():
@@ -16,7 +16,7 @@ def main():
     parser.add_argument('--output', type=Path, default=DIR / 'lcr-portfolio-og.jpg')
     args = parser.parse_args()
     source = (DIR / 'lcr-portfolio-og.png').read_bytes()
-    inventory = json.loads((ROOT / 'docs/branding/SOCIAL_ASSET_INVENTORY.json').read_text())
+    inventory = json.loads((APP_ROOT / 'docs/branding/SOCIAL_ASSET_INVENTORY.json').read_text())
     assert hashlib.sha256(source).hexdigest() == inventory['sha256'], 'approved PNG changed'
     with Image.open(io.BytesIO(source)) as original:
         assert original.size == (1200, 630)

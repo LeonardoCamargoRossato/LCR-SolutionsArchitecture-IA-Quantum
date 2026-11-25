@@ -9,8 +9,9 @@ import subprocess
 import time
 
 BASE = "cf273ae6026c48e264c3ef80863abf458dc61fc4"
-ROOT = Path(__file__).resolve().parents[2]
-os.chdir(ROOT)
+REPO_ROOT = Path(__file__).resolve().parents[3]
+APP_ROOT = Path(__file__).resolve().parents[2]
+os.chdir(APP_ROOT)
 GROUPS = {
     "hero": ["hero-v2-ci", "hero-v14-wide-ci", "loading-portal-home-ci", "ai-positioning-ci"],
     "portfolio": ["about-animefinder-gallery-ci", "about-compact-retirement-ci", "about-gallery-frontend-ci",
@@ -166,7 +167,7 @@ def inventory():
     names = {Path(p).stem for p in paths if p.endswith(".yml")}
     assigned = [CORE, "deploy", *MANUAL, *(n for group in GROUPS.values() for n in group)]
     assert len(assigned) == len(set(assigned)) and set(assigned) == names, "Unmapped workflow"
-    current = {p.stem for p in Path(".github/workflows").glob("*.yml")}
+    current = {p.stem for p in (REPO_ROOT / ".github/workflows").glob("*.yml")}
     assert current == names, "Workflow inventory changed; review mapping before transition"
     seen = {}
     rows = []
@@ -178,7 +179,7 @@ def inventory():
     for name in assigned:
         path = f".github/workflows/{name}.yml"
         old = subprocess.check_output(["git", "show", f"{BASE}:{path}"], text=True)
-        now = Path(path).read_text()
+        now = (REPO_ROOT / path).read_text()
         verify_transition(name, old, now)
         group = next((g for g, ns in GROUPS.items() if name in ns), None)
         data = parse_yaml(now if name in HISTORICAL_BASELINES else old)

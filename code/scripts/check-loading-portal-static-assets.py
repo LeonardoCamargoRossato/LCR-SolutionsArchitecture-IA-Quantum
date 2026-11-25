@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 from PIL import Image
 
-DIR=Path("public/assets/home/loading-portal")
+APP_ROOT=Path(__file__).resolve().parents[1]
+DIR=APP_ROOT/"public/assets/home/loading-portal"
 source=DIR/"portal-000.webp"
 metadata=json.loads((DIR/"loading-portal-variants.metadata.json").read_text(encoding="utf-8"))
 assert source.exists()

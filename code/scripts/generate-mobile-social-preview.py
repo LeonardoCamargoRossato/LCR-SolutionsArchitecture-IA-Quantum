@@ -7,15 +7,15 @@ import json
 from pathlib import Path
 from PIL import Image
 
-ROOT = Path(__file__).resolve().parents[1]
-DIR = ROOT / 'public/assets/branding/social'
+APP_ROOT = Path(__file__).resolve().parents[1]
+DIR = APP_ROOT / 'public/assets/branding/social'
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--output-dir', type=Path, default=DIR)
     args = parser.parse_args()
     source = (DIR / 'lcr-portfolio-og.png').read_bytes()
-    inventory = json.loads((ROOT / 'docs/branding/SOCIAL_ASSET_INVENTORY.json').read_text())
+    inventory = json.loads((APP_ROOT / 'docs/branding/SOCIAL_ASSET_INVENTORY.json').read_text())
     assert hashlib.sha256(source).hexdigest() == inventory['sha256']
     with Image.open(io.BytesIO(source)) as original:
         assert original.size == (1200, 630)

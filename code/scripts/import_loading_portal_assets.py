@@ -19,8 +19,8 @@ import sys
 from pathlib import Path
 from zipfile import ZipFile, BadZipFile
 
-REPO_ROOT = Path(__file__).resolve().parent.parent
-MANIFEST = REPO_ROOT / "docs/test-component-lab/loading-portal-v1/ASSET_INVENTORY.json"
+APP_ROOT = Path(__file__).resolve().parent.parent
+MANIFEST = APP_ROOT / "docs/test-component-lab/loading-portal-v1/ASSET_INVENTORY.json"
 
 
 def digest(data: bytes) -> str:
@@ -42,7 +42,7 @@ def main() -> int:
     names = [entry["filename"] for entry in expected]
     assert len(names) == 10 and len(names) == len(set(names)), "Expected exactly 10 unique runtime assets"
     prefix = manifest["archive_prefix"]
-    target_root = REPO_ROOT / manifest["repo_directory"]
+    target_root = APP_ROOT / manifest["repo_directory"]
 
     archive: ZipFile | None = None
     if args.zip:

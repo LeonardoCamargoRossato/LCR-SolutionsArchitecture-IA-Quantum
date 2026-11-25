@@ -1,11 +1,15 @@
 """Audit lockfile against the npm registry; no production secrets or services."""
 import json
 from pathlib import Path
+import os
 import subprocess
 import shutil
 import tempfile
 
-out = Path("test-results/quality/dependencies.json")
+REPO_ROOT = Path(__file__).resolve().parents[3]
+APP_ROOT = Path(__file__).resolve().parents[2]
+os.chdir(APP_ROOT)
+out = APP_ROOT / "test-results/quality/dependencies.json"
 out.parent.mkdir(parents=True, exist_ok=True)
 r = subprocess.run(["npm", "audit", "--json", "--audit-level=high", "--ignore-scripts",
                     "--registry=https://registry.npmjs.org"], capture_output=True, text=True, timeout=120)
