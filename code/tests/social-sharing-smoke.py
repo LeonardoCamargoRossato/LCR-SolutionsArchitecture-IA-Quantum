@@ -19,8 +19,8 @@ ASSET = 'assets/branding/social/lcr-portfolio-og-wa.jpg'
 PNG_ASSET = 'assets/branding/social/lcr-portfolio-og.png'
 TITLE = "Leonardo Rossato | AI Engineer & Software Developer Portfolio"
 DESCRIPTION = "Building intelligent solutions through AI engineering, software development, AI agents, LLMs, RAG, hybrid retrieval and systems architecture."
-ROOT = Path(__file__).resolve().parents[1]
-INVENTORY = json.loads((ROOT / 'docs/branding/SOCIAL_ASSET_INVENTORY.json').read_text())
+APP_ROOT = Path(__file__).resolve().parents[1]
+INVENTORY = json.loads((APP_ROOT / 'docs/branding/SOCIAL_ASSET_INVENTORY.json').read_text())
 IMAGE = BASE + ASSET
 EXPECTED = {
   "og:title": "Leonardo Rossato | AI Engineer & Software Developer Portfolio",
@@ -166,7 +166,9 @@ def main():
     p.add_argument('--live',action='store_true')
     a=p.parse_args()
     if not a.live:
-        d=ROOT / a.dist
+        d=Path(a.dist)
+        if not d.is_absolute():
+            d=APP_ROOT / d
         check_html((d/'index.html').read_text())
         assert (d/ASSET).is_file(), 'Social JPEG missing'
         check_jpeg((d/ASSET).read_bytes())
@@ -179,7 +181,7 @@ def main():
             webp = d / INVENTORY['optimized']['path'].removeprefix('public/')
             assert webp.is_file(), 'Approved Drawer WebP missing: ' + str(webp)
             check_webp(webp.read_bytes())
-        assert (d/'og-cover.svg').read_bytes()==(ROOT/'public/og-cover.svg').read_bytes()
+        assert (d/'og-cover.svg').read_bytes()==(APP_ROOT/'public/og-cover.svg').read_bytes()
         print('PASS: build HTML, HTTPS absolute URLs, mobile JPEG <50 KB, mobile WebP <20 KB, all preserved asset hashes, legacy SVG preserved')
         return
     raise SystemExit('Use the bounded published smoke: python3 tests/isolation/PublishedSmoke.py')
