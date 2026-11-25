@@ -1,9 +1,9 @@
 # LCR Code Root Migration — Plan
 
-**Etapa:** 01/05 — auditoria e baseline  
-**Repositório:** `LeonardoCamargoRossato/LCR-SolutionsArchitecture-IA-Quantum`  
-**Branch de trabalho:** `refactor/lcr-framework-code-root`  
-**SHA de origem:** `dd7010ab95cc3c763a9069e30452ecede2da8485` (`main`)  
+**Etapa:** 01/05 — auditoria e baseline
+**Repositório:** `LeonardoCamargoRossato/LCR-SolutionsArchitecture-IA-Quantum`
+**Branch de trabalho:** `refactor/lcr-framework-code-root`
+**SHA de origem:** `dd7010ab95cc3c763a9069e30452ecede2da8485` (`main`)
 **Data de referência:** 24/11/2026, 23:05 BRT
 
 ## Objetivo e limite
@@ -88,3 +88,51 @@ Documentos atuais no Drive do LCR Framework, consultados em 24/11/2026: `LCR_WOR
 - [x] Baseline com build, rotas, assets, lockfile, CI, evidências de UI, isolamento e benchmarks.
 - [x] Plano de recuperação documentado.
 - [x] Nenhum arquivo de aplicação movido e nenhuma publicação/merge efetuado.
+
+## Etapa 02 — resultado da migração
+
+**Estado:** concluída na branch de trabalho; não houve merge nem publicação.
+**Commit com a estrutura completa:** `2065d154bb9a7013524b5970825842d12dd72750`.
+
+| Lote | Commit | Verificação |
+|---|---|---|
+| A — `docs/` → `code/docs/` | `e482767696b68ab3125f040d1f72b604337b81b1` | 64 arquivos conferidos pelo SHA-256 da baseline |
+| B — `supabase/` → `code/supabase/` | `aa5af4a23a4f727d9211f536927e56f8f1da6a9a` | 3 SQL byte a byte; nenhum executado |
+| C — `scripts/` → `code/scripts/` | `f905d9da0cfc66b1fa675f0c3d78f1b31833ab39` | 12 arquivos; raízes `REPO_ROOT`/`APP_ROOT` e caminhos adaptados |
+| D — `tests/` → `code/tests/` | `6a3f550b56015bc52d27d5860d8762a6bb06b15c` | 53 arquivos; isolation preservado e caminhos adaptados |
+| E — `public/` → `code/public/` | `d87ab145b026ec9dab9410d977731cb6dbe3fb65` | 203 arquivos; todos os SHA-256, nomes e extensões preservados |
+| F — `src/` → `code/src/` | `05f0776cfff2e58bda0e7d0fd6c9ac5effe49b38` | 200 arquivos byte a byte; imports relativos preservados |
+| G — configurações → `code/` | `2065d154bb9a7013524b5970825842d12dd72750` | 8 arquivos byte a byte; `package-lock.json` inalterado |
+
+Foram atualizados os caminhos dos documentos de instrução na raiz (`AGENTS.md`, `README.md`), dos comandos ativos de qualidade/social sharing e das raízes de execução dos scripts. `.agents/` e `.github/workflows/` continuam na raiz; `documentation/` permanece separada; removido `code/.gitkeep`; nenhuma `package.json` duplicada foi criada na raiz. `.gitignore` agora ignora `test-results/`, junto aos diretórios de build/dependências.
+
+### Validação após a movimentação
+
+- `cd code && npm ci && npm run build`: **passou** usando npm 10.9.4 para reproduzir a versão compatível com a CI. TypeScript passou; Vite 6.4.6 transformou 1.899 módulos e gerou `code/dist/`. Nenhuma variável/credencial de produção foi fornecida.
+- `code/package-lock.json`: SHA-256 idêntico ao inventário inicial; nenhuma dependência atualizada.
+- Integridade local passou para AnimeFinder (16 pares PNG/WebP), CE-235, Cities Comparing (7 pares), logos (5 SVG), seis variantes estáticas do Loading Portal, skills, política dos 32 workflows, verificação de segredos do artefato e preview social estático.
+- Verificação de links relativos em `README.md`, `AGENTS.md` e documentação técnica: zero destinos quebrados.
+- Todos os 543 arquivos estão no destino previsto, com SHA-256 pré e pós-migração registrado no inventário. Conteúdo adaptado em 16 arquivos de scripts, harnesses e instruções; os demais permaneceram byte a byte idênticos.
+- A suíte de isolamento de rede não foi iniciada no executor local: ele não dispõe de `sudo`, requerido pelo `tests/isolation/run.sh`. O isolamento não foi contornado. A execução completa dos workflows aguarda a Etapa 03, que adaptará seus caminhos na raiz.
+
+### Estrutura resultante
+
+```text
+.agents/                    (mantida na raiz)
+.github/workflows/          (mantida na raiz; CI/CD ainda não adaptado)
+code/
+  docs/ public/ scripts/ src/ supabase/ tests/
+  index.html package.json package-lock.json storage.rules
+  tsconfig*.json vite.config.ts
+
+documentation/              (mantida na raiz)
+.gitignore AGENTS.md README.md
+```
+
+### Pendências para a Etapa 03
+
+1. Atualizar os 32 workflows para instalar e executar a aplicação dentro de `code/`, conservando paths, caches, artifacts, baseline worktrees, checks e proteção do deploy.
+2. Confirmar que os jobs de qualidade rodam a partir do SHA de código efetivo e que a publicação usa `code/dist/`, valida o SHA e mantém o mesmo `base` público.
+3. Executar o CI completo na branch/PR; tratar diferenças antes de solicitar revisão. Esta branch ainda não foi integrada nem publicada.
+
+O inventário detalhado registra cada caminho, SHA-256 anterior e posterior, bytes, tipo, destinos, dependências, buscas de referência, adaptações e resultados de validação.

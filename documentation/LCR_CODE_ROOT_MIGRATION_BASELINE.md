@@ -1,8 +1,8 @@
 # LCR Code Root Migration — Baseline
 
-**SHA submetido ao baseline:** `dd7010ab95cc3c763a9069e30452ecede2da8485`  
-**Branch:** `main`  
-**Data:** 24/11/2026 (BRT)  
+**SHA submetido ao baseline:** `dd7010ab95cc3c763a9069e30452ecede2da8485`
+**Branch:** `main`
+**Data:** 24/11/2026 (BRT)
 **Último deploy saudável identificado:** GitHub Actions run [45530499240](https://github.com/LeonardoCamargoRossato/LCR-SolutionsArchitecture-IA-Quantum/actions/runs/45530499240), publicado a partir do mesmo SHA.
 
 ## Estado geral
