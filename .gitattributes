@@ -1,0 +1,2 @@
+# PDF streams are binary assets; do not run text whitespace checks on their bytes.
+*.pdf binary
