@@ -112,6 +112,29 @@ async function run(viewport){
   await wait(300)
   result.imageEncodedBytes=net.entries.reduce((s,r)=>s+(r.encodedBytes??0),0)
   result.imageRequests=net.entries.length
+  // Keep the original historical totals/assertions. Also expose the common
+  // interaction phases separately: candidate-only language/theme activity
+  // makes the original aggregate unsuitable as an equivalent benchmark.
+  const commonPhases=['initial','scroll-first','open','next','warm-return','refresh-warm']
+  const summarize=rows=>({
+    requests:rows.length,
+    encodedBytes:rows.reduce((sum,e)=>sum+(e.encodedBytes??0),0),
+    missingByteMeasurements:rows.filter(e=>e.encodedBytes===null).length,
+    cached:rows.filter(e=>e.cache).length,
+    http304:rows.filter(e=>e.status===304).length,
+    failures:rows.filter(e=>e.error||e.status>=400).length,
+    byUrl:[...new Set(rows.map(e=>e.url))].map(url=>{
+      const requests=rows.filter(e=>e.url===url)
+      return {url,requests:requests.length,encodedBytes:requests.reduce((s,e)=>s+(e.encodedBytes??0),0),
+        phases:[...new Set(requests.map(e=>e.phase))],cached:requests.filter(e=>e.cache).length,
+        status:requests.map(e=>e.status),mime:requests[0].mime}
+    }).sort((a,b)=>b.encodedBytes-a.encodedBytes)
+  })
+  result.phases=Object.fromEntries([...new Set(net.entries.map(e=>e.phase))].map(phase=>[phase,summarize(net.entries.filter(e=>e.phase===phase))]))
+  result.commonColdPhases=summarize(net.entries.filter(e=>commonPhases.slice(0,4).includes(e.phase)))
+  result.commonWarmPhases=summarize(net.entries.filter(e=>commonPhases.slice(4).includes(e.phase)))
+  result.comparisonLimitations=['Historical fixture differs from approved main','Candidate-only theme/language interaction occurs before warm refresh; warm totals are descriptive, not equivalent']
+  console.log('IMAGE DEMAND PHASES',JSON.stringify({baseline,viewport,phases:result.phases,commonColdPhases:result.commonColdPhases}))
   console.log('IMAGE DEMAND',JSON.stringify({baseline,viewport,initialGalleryRequests:result.initialGalleryRequests,initialGalleryBytes:result.initialGalleryBytes,imageRequests:result.imageRequests,imageEncodedBytes:result.imageEncodedBytes}))
   await ctx.close()
 }
