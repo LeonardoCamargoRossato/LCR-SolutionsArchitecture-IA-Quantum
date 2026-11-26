@@ -7,6 +7,7 @@ import { mkdir, mkdtemp, rm, writeFile, readFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
+import { verifySelectedCaseGalleries } from './selected-case-galleries-smoke.mjs'
 
 const prefix='/LCR-SolutionsArchitecture-IA-Quantum/'
 const dir='test-results/selected-work'
@@ -118,10 +119,15 @@ export async function verifySelectedWork(browser,fixtureBase){
     await run(fixtureBase,'empty-cms','desktop','dark','en-US')
     await run(fixtureBase,'blocked','mobile','light','pt-BR',true)
     await run(fixtureBase,'blocked','desktop','dark','en-US')
+    await verifySelectedCaseGalleries(browser,fixtureBase,'blocked','desktop','dark','en-US')
+    await verifySelectedCaseGalleries(browser,fixtureBase,'blocked','mobile','light','pt-BR')
+    await verifySelectedCaseGalleries(browser,fixtureBase,'stale-cms','desktop','dark','en-US')
     const db='http://127.0.0.1:'+ports.dev+prefix
     dev=await start(['--host','127.0.0.1','--port',String(ports.dev),'--strictPort'],db)
     await run(db,'dev-no-config','desktop','light','pt-BR',true)
     await run(db,'dev-no-config','mobile','dark','en-US')
+    await verifySelectedCaseGalleries(browser,db,'dev-no-config','desktop','light','pt-BR')
+    await verifySelectedCaseGalleries(browser,db,'dev-no-config','mobile','dark','en-US')
     stop(dev);dev=undefined
     temp=await mkdtemp(join(tmpdir(),'lcr-selected-build-'))
     const build=spawn('node_modules/.bin/vite',['build','--outDir',temp,'--emptyOutDir'],{env:offlineEnv,stdio:'inherit'})
@@ -131,6 +137,8 @@ export async function verifySelectedWork(browser,fixtureBase){
     preview=await start(['preview','--host','127.0.0.1','--port',String(ports.preview),'--strictPort','--outDir',temp],pb)
     await run(pb,'pages-no-config','desktop','dark','pt-BR')
     await run(pb,'pages-no-config','mobile','light','en-US',true)
+    await verifySelectedCaseGalleries(browser,pb,'pages-no-config','desktop','dark','pt-BR')
+    await verifySelectedCaseGalleries(browser,pb,'pages-no-config','mobile','light','en-US')
     const ctx=await browser.newContext({viewport:{width:1440,height:900}})
     const page=await ctx.newPage()
     await page.goto(fixtureBase+'tests/selected-work-admin-harness.html')

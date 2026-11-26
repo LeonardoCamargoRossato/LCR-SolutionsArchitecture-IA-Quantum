@@ -25,6 +25,7 @@ const abstract: ProjectGalleryItem = {
     cardUrl: abstractRoot + '-card.webp',
     fullUrl: abstractRoot + '-full.webp',
   },
+  downloadName: 'cities-comparing-graphical-abstract.webp',
   caption: 'Graphical abstract',
   altText: 'Graphical abstract for the Cities Comparing research platform',
   cardUrl: abstractRoot + '-card.webp',

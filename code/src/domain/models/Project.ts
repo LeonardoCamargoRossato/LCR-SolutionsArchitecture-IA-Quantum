@@ -62,6 +62,8 @@ export type ProjectGalleryItem = {
   cardUrl?: string
   fullUrl?: string
   evidence?: string
+  /** Explicit filename for an approved original in a non-PNG format. */
+  downloadName?: string
   imageClassification?: 'real-screenshot' | 'photograph' | 'technical-diagram' | 'illustration'
   /** Legacy order alias kept for compatibility with older components/data. */
   order: number

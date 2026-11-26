@@ -38,3 +38,14 @@ for (const [index, item] of inventory.items.entries()) {
 
 const reduction = (100 * (1 - webpBytes / pngBytes)).toFixed(2)
 console.log('PASS: 7 PNG originals + 7 WebPs: ' + pngBytes + ' -> ' + webpBytes + ' bytes, ' + reduction + '% smaller initial transfer.')
+
+const selected = JSON.parse(await readFile('docs/assets/selected-case-galleries-inventory.json', 'utf8'))
+assert.equal(selected.files.length,22)
+assert.deepEqual(selected.cases.map(c=>[c.slug,c.slides]),[['cities-comparing',9],['foton-hub',1]])
+for(const item of selected.files){
+  const bytes=await readFile(item.path)
+  assert.equal(bytes.length,item.bytes,item.path)
+  const blob=createHash('sha1').update(Buffer.from('blob '+bytes.length+'\0')).update(bytes).digest('hex')
+  assert.equal(blob,item.gitBlob,'Git blob mismatch: '+item.path)
+}
+console.log('PASS: 22 existing selected-case asset blobs, unchanged; 9 Cities slides and 1 verified Foton cover.')
