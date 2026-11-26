@@ -122,7 +122,9 @@ async function testFallback() {
     return img instanceof HTMLImageElement && img.complete && img.naturalWidth > 0 &&
       img.currentSrc.toLowerCase().endsWith('.png')
   }, null, { timeout: 30000 })
-  console.log('LOGOS legacy PNG fallback PASS')
+  const fallback=await page.locator('.case-institution-logo--extra-wide img').evaluate(el=>el.currentSrc)
+  assert(fallback.startsWith(base+'assets/institutions/raster/'),'Fallback must be local, not Storage')
+  console.log('LOGOS local approved PNG fallback PASS')
   await context.close()
 }
 

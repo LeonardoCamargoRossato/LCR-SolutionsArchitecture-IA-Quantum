@@ -1,3 +1,4 @@
+import { publicAssetCatalog } from '../assets/public/publicAssetCatalog'
 import { migratedPublicAsset } from '../assets/public/resolvePublicAsset'
 /** Central catalog for the five unique institutional marks currently in portfolio-media.
  * Existing editorial PNG URLs remain in Supabase, so rollback and uploads are safe.
@@ -35,7 +36,12 @@ export function resolveInstitutionLogo(source?: string): ResolvedInstitutionLogo
   const fromEditorialStorage = pathname.includes('/storage/v1/object/public/portfolio-media/')
   if (!fromEditorialStorage) {
     const local = catalog.find(({asset}) => pathname === import.meta.env.BASE_URL.replace(/\/?$/, '/') + 'assets/institutions/svg/' + asset.svg)
-    return local ? {src:source,layout:local.asset.layout,vectorized:true} : { src: source, layout: 'wide', vectorized: false }
+    if (!local) return { src: source, layout: 'wide', vectorized: false }
+    // A known local SVG may fail; retain its audited local raster original.
+    // Never fall back to the old Storage URL.
+    const entry=Object.values(publicAssetCatalog).find(item=>item.display==='assets/institutions/svg/'+local.asset.svg)
+    const fallback=entry ? import.meta.env.BASE_URL.replace(/\/?$/, '/')+entry.original : undefined
+    return {src:source,fallback,layout:local.asset.layout,vectorized:true}
   }
 
   // Supabase prefixes uploaded filenames with a timestamp/UUID. Match the

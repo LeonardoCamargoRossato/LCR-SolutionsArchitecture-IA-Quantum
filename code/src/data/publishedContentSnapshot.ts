@@ -394,7 +394,6 @@ const published = {
         ],
         "valueProposition": "",
         "professionalTitle": "AI Engineer | Software Development | Applied AI | Systems Architecture",
-        "speakerPortfolioUrl": "https://leonardo-camargo-rossato.lovable.app/",
         "scienceCommunication": "Cofundador do movimento brasileiro de Ligas Acadêmicas de Computação Quântica; fundou e apoiou 10+ ligas acadêmicas no Brasil (2024–2026/1). Realizou mais de 50 palestras em português e inglês (2023–2026) nas cinco macrorregiões do país. Organizou, coordenou ou curei 15+ eventos e trilhas técnicas em Quantum, Segurança e Tecnologias Emergentes. Selecionado pelo Young Scholars Initiative como o único brasileiro entre sete pesquisadores internacionalmente financiados para a Conference on Complex Systems (CCS) de 2023."
       }
     }

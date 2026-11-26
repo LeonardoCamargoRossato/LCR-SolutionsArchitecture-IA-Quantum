@@ -36,6 +36,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
+          fetch-depth: 0
 
       - name: Verify versioned public assets (preserve PNG originals and WebP variants)
         run: python3 scripts/ci/check_source.py

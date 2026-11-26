@@ -70,6 +70,10 @@ def relocate_workflow(name, raw):
                            'for dir in /tmp/lcr-before /tmp/lcr-after/code; do')
         raw = replace_once(raw, 'LCR_AFTER: /tmp/lcr-after\n', 'LCR_AFTER: /tmp/lcr-after/code\n')
     elif name == "deploy":
+        # Source validation compares an immutable historical SHA, so the build
+        # checkout must retain history rather than fail after the merge.
+        raw = replace_once(raw, "          ref: ${{ github.sha }}\n\n      - name: Optimize LCR Workflow diagram as WebP",
+                           "          ref: ${{ github.sha }}\n          fetch-depth: 0\n\n      - name: Optimize LCR Workflow diagram as WebP")
         # Stage 04: replace build-time regeneration/deletion with verification
         # of the approved versioned PNG/WebP pairs. No deploy gate is removed.
         raw = replace_once(raw, "      - name: Optimize LCR Workflow diagram as WebP\n        run: |\n          python3 -m venv /tmp/lcr-webp\n          /tmp/lcr-webp/bin/pip install --disable-pip-version-check Pillow\n          /tmp/lcr-webp/bin/python - <<'PY'\n          from pathlib import Path\n          from PIL import Image\n\n          source = Path(\"public/workflow/LCR_Workflow_Agentes_Papeis_Funcoes.png\")\n          target = source.with_suffix(\".webp\")\n          with Image.open(source) as image:\n              image.save(target, \"WEBP\", quality=92, method=6)\n          print(f\"Workflow diagram: {source.stat().st_size:,} -> {target.stat().st_size:,} bytes\")\n          # Retain the original PNG in Git history, but publish only the WebP.\n          source.unlink()\n          PY\n\n", "      - name: Verify versioned public assets (preserve PNG originals and WebP variants)\n        run: python3 scripts/ci/check_source.py\n\n")
