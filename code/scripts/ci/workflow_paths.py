@@ -69,6 +69,10 @@ def relocate_workflow(name, raw):
         raw = replace_once(raw, 'for dir in /tmp/lcr-before /tmp/lcr-after; do',
                            'for dir in /tmp/lcr-before /tmp/lcr-after/code; do')
         raw = replace_once(raw, 'LCR_AFTER: /tmp/lcr-after\n', 'LCR_AFTER: /tmp/lcr-after/code\n')
+    elif name == "LCR_TEST_ISOLATION":
+        # AUD-005: additive pinned-main comparison. Keep historical baseline
+        # and execute its comparison even if the new reference differs.
+        raw = replace_once(raw, "      - name: Compare baseline and candidate screenshots and case content\n        env:\n", "      - name: Reconstruct audited main with its own lockfile and isolated fixture\n        run: |\n          git worktree add --detach /tmp/lcr-approved-main 67e8877b02fc23352306f75c04a40f4085b1f716\n          (cd /tmp/lcr-approved-main && npm ci)\n          bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-approved-main && npm run build'\n      - name: Compare audited main, candidate and offline public content\n        env:\n          LCR_BEFORE: /tmp/lcr-approved-main\n        run: npm run test:isolated -- node tests/isolation/ApprovedMainComparison.test.mjs\n      - name: Compare baseline and candidate screenshots and case content\n        if: always()\n        env:\n")
     elif name == "deploy":
         # Source validation compares an immutable historical SHA, so the build
         # checkout must retain history rather than fail after the merge.

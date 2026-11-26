@@ -49,7 +49,17 @@ jobs:
           git worktree add --detach /tmp/lcr-p0-baseline 7b5d0ad67d9697b7338c945dfc7691ed8b0bd0d1
           (cd /tmp/lcr-p0-baseline && npm ci)
           bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-p0-baseline && npm run build'
+      - name: Reconstruct audited main with its own lockfile and isolated fixture
+        run: |
+          git worktree add --detach /tmp/lcr-approved-main 67e8877b02fc23352306f75c04a40f4085b1f716
+          (cd /tmp/lcr-approved-main && npm ci)
+          bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-approved-main && npm run build'
+      - name: Compare audited main, candidate and offline public content
+        env:
+          LCR_BEFORE: /tmp/lcr-approved-main
+        run: npm run test:isolated -- node tests/isolation/ApprovedMainComparison.test.mjs
       - name: Compare baseline and candidate screenshots and case content
+        if: always()
         env:
           LCR_BEFORE: /tmp/lcr-p0-baseline
         run: npm run test:isolated -- node tests/isolation/BaselineComparison.test.mjs
