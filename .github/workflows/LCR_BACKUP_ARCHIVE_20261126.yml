@@ -1,5 +1,8 @@
 name: LCR one-time version backup archive
 on:
+  pull_request:
+    branches: [backup/versao-2026-11-26]
+    paths: ['.github/workflows/LCR_BACKUP_ARCHIVE_20261126.yml']
   push:
     branches: [chore/backup-archive-20261126]
     paths: ['.github/workflows/LCR_BACKUP_ARCHIVE_20261126.yml']
