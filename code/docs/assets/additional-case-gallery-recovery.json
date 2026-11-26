@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "mainReference": "67e8877b02fc23352306f75c04a40f4085b1f716",
+  "validatedSource": "b58d7fa44267f448338c90d75df4e72332145667",
+  "validationRunId": 45887126219,
+  "validationArtifactId": 15150551618,
+  "records": [
+    {
+      "slug": "hamlet",
+      "confirmedOriginalSlides": 1,
+      "recoveredAdditionalSlides": 0,
+      "finalSlides": 1,
+      "display": {
+        "path": "public/assets/projects/hamlet/WebP/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.webp",
+        "gitBlob": "9c34e05092b07917e70383e6e4c159ffc2b2f002",
+        "bytes": 103640
+      },
+      "full": {
+        "path": "public/assets/projects/hamlet/PNG/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png",
+        "gitBlob": "3735f3369169abcede6bce713f3178f450b03164",
+        "bytes": 1890644
+      },
+      "caption": "localized project title (existing CaseHero adapter)",
+      "additionalApprovedReferences": [],
+      "pending": "No previously approved additional slide identified. If another approval or historical export exists, reconcile its exact paths, captions and order before publication."
+    },
+    {
+      "slug": "metcompb-landing-page",
+      "confirmedOriginalSlides": 1,
+      "recoveredAdditionalSlides": 0,
+      "finalSlides": 1,
+      "display": {
+        "path": "public/projects/metcompb-landing-page.webp",
+        "gitBlob": "78a404f2d1b018c7cffcde362fbc41e479937beb",
+        "bytes": 46832
+      },
+      "full": {
+        "path": "public/projects/metcompb-landing-page.png",
+        "gitBlob": "1e51ae8093578ab210e09cba22c4652c581b949a",
+        "bytes": 296506
+      },
+      "caption": "localized project title (existing CaseHero adapter)",
+      "additionalApprovedReferences": [],
+      "pending": "No previously approved additional slide identified. If another approval or historical export exists, reconcile its exact paths, captions and order before publication."
+    },
+    {
+      "slug": "speaker-portfolio",
+      "confirmedOriginalSlides": 1,
+      "recoveredAdditionalSlides": 0,
+      "finalSlides": 1,
+      "display": {
+        "path": "public/assets/projects/speaker-portfolio/WebP/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.webp",
+        "gitBlob": "1e18f0b0fd6cf38c3c7d8f0244cb7035eac5ed7d",
+        "bytes": 119786
+      },
+      "full": {
+        "path": "public/assets/projects/speaker-portfolio/PNG/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png",
+        "gitBlob": "4d9182dd22477d0148dfd8ecac3b0db611ce5d95",
+        "bytes": 1877910
+      },
+      "caption": "localized project title (existing CaseHero adapter)",
+      "additionalApprovedReferences": [],
+      "pending": "No previously approved additional slide identified. If another approval or historical export exists, reconcile its exact paths, captions and order before publication."
+    },
+    {
+      "slug": "quantum-education-apps",
+      "confirmedOriginalSlides": 1,
+      "recoveredAdditionalSlides": 0,
+      "finalSlides": 1,
+      "display": {
+        "path": "public/assets/projects/quantum-education-apps/WebP/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.webp",
+        "gitBlob": "1637ec67f1ebc209d67041b4b65ee2f9f2bde21e",
+        "bytes": 118132
+      },
+      "full": {
+        "path": "public/assets/projects/quantum-education-apps/PNG/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png",
+        "gitBlob": "efeb03497563a32dc35cd3749627d93aa3649566",
+        "bytes": 1801316
+      },
+      "caption": "localized project title (existing CaseHero adapter)",
+      "additionalApprovedReferences": [],
+      "pending": "No previously approved additional slide identified. If another approval or historical export exists, reconcile its exact paths, captions and order before publication."
+    },
+    {
+      "slug": "embedded-control-platform",
+      "confirmedOriginalSlides": 1,
+      "recoveredAdditionalSlides": 0,
+      "finalSlides": 1,
+      "display": {
+        "path": "public/assets/projects/embedded-control-platform/WebP/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.webp",
+        "gitBlob": "1368fc308ef66663fe92f23a466c23e86dd576b0",
+        "bytes": 152558
+      },
+      "full": {
+        "path": "public/assets/projects/embedded-control-platform/PNG/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png",
+        "gitBlob": "3281b6874fa150979eb9061590e9583c84667709",
+        "bytes": 1808444
+      },
+      "caption": "localized project title (existing CaseHero adapter)",
+      "additionalApprovedReferences": [],
+      "pending": "No previously approved additional slide identified. If another approval or historical export exists, reconcile its exact paths, captions and order before publication."
+    }
+  ],
+  "unchangedMultiImageCases": [
+    {
+      "slug": "webseer",
+      "slides": 10
+    },
+    {
+      "slug": "ce235-real-time-systems",
+      "slides": 8
+    }
+  ],
+  "evidence": {
+    "gitHistory": {
+      "defaultProjectsRevisions": 13,
+      "metCompBRevisions": 2,
+      "embeddedControlRevisions": 1,
+      "allInspectedGalleryArrays": "empty where defined"
+    },
+    "database": "Read-only: Hamlet and Speaking Portfolio gallery arrays empty. Quantum Education and Embedded Control rows are in more_projects (no gallery column). MetCompB has no CMS row; code-managed.",
+    "storage": "Public portfolio-media metadata search found only four cover pairs, legacy cover aliases and three institutional logo references; no additional case gallery assets for these five.",
+    "drive": "Portfolio folder, documentation, and exact project-folder/name search: no approved case gallery catalogue or additional reference identified. External-project documents and images are not evidence of portfolio publication."
+  },
+  "scope": "Verified published reference, not proof that no unversioned approval ever existed."
+}

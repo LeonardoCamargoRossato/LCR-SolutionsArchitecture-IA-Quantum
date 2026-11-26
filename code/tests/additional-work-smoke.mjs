@@ -24,6 +24,29 @@ export async function prepareAdditionalWork(browser,base){
    },base)
    assert.deepEqual(expected.map(p=>p.slug),inventory.order)
    assert.deepEqual(expected.map(p=>p.locales['en-US'].slides.length),inventory.slides)
+   // Historical recovery contract is independent of the runtime catalogue.
+   // Preserve approved cover identity and caption in both languages; do not
+   // fill unknown historical galleries with unrelated external-project images.
+   const recovery=JSON.parse(await readFile('docs/assets/additional-case-gallery-recovery.json','utf8'))
+   assert.equal(recovery.records.length,5)
+   for(const record of recovery.records){
+     const project=expected.find(p=>p.slug===record.slug)
+     assert(project,'Missing recovered case '+record.slug)
+     for(const copy of Object.values(project.locales)){
+       assert.equal(copy.slides.length,record.finalSlides,record.slug)
+       assert.equal(copy.slides[0].src,prefix+record.display.path.slice('public/'.length))
+       assert.equal(copy.slides[0].fullSrc,prefix+record.full.path.slice('public/'.length))
+       assert.equal(copy.slides[0].caption,copy.title)
+       assert.equal(hashes.get(copy.slides[0].src),record.display.gitBlob)
+       assert.equal(hashes.get(copy.slides[0].fullSrc),record.full.gitBlob)
+     }
+   }
+   for(const record of recovery.unchangedMultiImageCases){
+     const project=expected.find(p=>p.slug===record.slug)
+     for(const copy of Object.values(project.locales))assert.equal(copy.slides.length,record.slides)
+   }
+   console.log('PASS historical Additional Work cover identities and bilingual captions; WebSeer 10 and CE235 8 preserved')
+
    for(const p of expected)for(const l of Object.values(p.locales))for(const slide of l.slides){
      for(const url of [slide.src,slide.fullSrc,slide.thumbnailSrc,slide.previewSrc].filter(Boolean)){
        assert(url.startsWith(prefix),'Remote or invalid slide path: '+url)

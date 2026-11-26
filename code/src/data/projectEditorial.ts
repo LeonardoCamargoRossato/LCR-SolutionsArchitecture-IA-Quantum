@@ -183,4 +183,3 @@ export function enrichPublishedProject(project: Project): Project {
     },
   })
 }
-
