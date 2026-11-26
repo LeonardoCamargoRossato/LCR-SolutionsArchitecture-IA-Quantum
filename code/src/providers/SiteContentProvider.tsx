@@ -1,3 +1,4 @@
+import { getSelectedCases } from '../data/selectedCases'
 import { officialCvUrl } from '../assets/public/officialCv'
 import { getAdditionalWork } from '../data/additionalWork'
 import { getSelectedWork } from '../data/selectedWork'
@@ -52,7 +53,7 @@ export function SiteContentProvider({ children }: { children: ReactNode }) {
     const cached = readCache('lcr-site-content-v2', defaultContent)
     return { ...cached, cvUrl: officialCvUrl, about: withOfficialProfile(cached.about ?? defaultContent.about) }
   })
-  const [projects, setProjects] = useState<Project[]>(getAdditionalWork)
+  const [projects, setProjects] = useState<Project[]>(()=>[...getSelectedCases(),...getAdditionalWork()])
   const [loading, setLoading] = useState(true)
 
   const refreshContent = async () => {
