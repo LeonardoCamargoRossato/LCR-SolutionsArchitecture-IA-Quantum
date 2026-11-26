@@ -1,11 +1,12 @@
 import { ExternalLink, FileText, Plus, Save, Trash2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { contentService, mediaService } from '../../bootstrap/services'
+import { contentService } from '../../bootstrap/services'
 import type { AboutContent, AboutContentBlock } from '../../domain/models/About'
 import type { SocialLink } from '../../domain/models/SiteContent'
 import { humanizeError } from '../../utils/errors'
 import { useToast } from '../../providers/ToastProvider'
-import { ImageUploader } from './ImageUploader'
+import { DemandImage } from '../DemandImage'
+import { officialProfileUrl } from '../../assets/public/officialProfile'
 import { AboutGalleryAdmin } from './AboutGalleryAdmin'
 
 type EditLocale = 'en-US' | 'pt-BR'
@@ -176,51 +177,6 @@ export function AboutAdminEditor({
     }
   }
 
-  const saveImage = async (file: File) => {
-    setBusy(true)
-    let asset
-    try {
-      mediaService.validateImage(file)
-      asset = await mediaService.upload(file, 'About', 'profile')
-      const old = value.profileImage
-      const next = { ...value, profileImage: asset }
-      await contentService.saveAbout(next)
-      setValue(next)
-      onDirty(false)
-      await refresh()
-      if (old) {
-        mediaService.delete(old).catch((error) =>
-          console.warn('Old media cleanup failed.', error),
-        )
-      }
-      toast.success('Profile image saved.')
-    } catch (error) {
-      if (asset) await mediaService.delete(asset).catch(() => undefined)
-      toast.error('Could not upload profile image.', humanizeError(error))
-      throw error
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  const removeImage = async () => {
-    setBusy(true)
-    try {
-      const old = value.profileImage
-      const next = { ...value, profileImage: undefined }
-      await contentService.saveAbout(next)
-      setValue(next)
-      onDirty(false)
-      await refresh()
-      if (old) await mediaService.delete(old).catch(() => undefined)
-      toast.success('Profile image removed.')
-    } catch (error) {
-      toast.error('Could not remove profile image.', humanizeError(error))
-    } finally {
-      setBusy(false)
-    }
-  }
-
   const blocks = Array.isArray(value.contentBlocks) ? value.contentBlocks : []
 
   const updateBlock = (id: string, patch: Partial<AboutContentBlock>) => {
@@ -279,13 +235,15 @@ export function AboutAdminEditor({
 
         <div className="about-admin-profile-grid">
           <div>
-            <ImageUploader
-              label="Profile Image"
-              currentUrl={value.profileImage?.url}
-              busy={busy}
-              onSave={saveImage}
-              onRemove={value.profileImage ? removeImage : undefined}
-            />
+            <div className="upload-block" data-testid="versioned-profile">
+              <div className="field-label">Profile Image</div>
+              <div className="upload-preview">
+                <DemandImage src={officialProfileUrl} alt="Profile Image preview" data-testid="official-profile-admin" />
+              </div>
+              <p className="admin-note">{locale === 'pt-BR'
+                ? 'Foto oficial versionada no GitHub. A atualização é realizada pelo repositório; upload e remoção pelo CMS estão desativados.'
+                : 'Official photo versioned on GitHub. Update it through the repository; CMS upload and removal are disabled.'}</p>
+            </div>
           </div>
 
           <div className="about-admin-profile-fields">

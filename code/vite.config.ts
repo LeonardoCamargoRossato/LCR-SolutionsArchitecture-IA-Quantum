@@ -6,6 +6,8 @@ const fixtureKey = 'lcr-fixture-public-key-not-a-secret'
 
 export default defineConfig(({ command, mode, isPreview }) => {
   const testing = process.env.LCR_TEST_MODE === '1'
+  const profileNoBackend = process.env.LCR_PROFILE_NO_BACKEND === '1'
+  if (profileNoBackend && !testing) throw new Error('Profile offline simulation requires isolated tests')
   if (testing) {
     if (process.env.VITE_SUPABASE_URL !== fixtureUrl ||
         process.env.VITE_SUPABASE_PUBLISHABLE_KEY !== fixtureKey ||
@@ -19,8 +21,8 @@ export default defineConfig(({ command, mode, isPreview }) => {
       base: '/LCR-SolutionsArchitecture-IA-Quantum/',
       envDir: false as const,
       define: {
-        'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(fixtureUrl),
-        'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY': JSON.stringify(fixtureKey),
+        'import.meta.env.VITE_SUPABASE_URL': profileNoBackend ? 'undefined' : JSON.stringify(fixtureUrl),
+        'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY': profileNoBackend ? 'undefined' : JSON.stringify(fixtureKey),
         'import.meta.env.VITE_SUPABASE_MEDIA_BUCKET': JSON.stringify('portfolio-media'),
         'import.meta.env.VITE_LCR_TEST_MODE': JSON.stringify('1'),
       },

@@ -1,3 +1,4 @@
+import { withOfficialProfile } from '../../assets/public/officialProfile'
 import type { IContentRepository } from '../../domain/repositories/IContentRepository'
 import { defaultContent } from '../../data/defaultContent'
 import { externalLinks } from '../../config/externalLinks'
@@ -15,9 +16,9 @@ export class ContentService {
   async getAbout() {
     try {
       const about = (await this.repo.getAbout()) ?? defaultContent.about
-      return { ...about, speakerPortfolioUrl: externalLinks.speaker }
+      return withOfficialProfile({ ...about, speakerPortfolioUrl: externalLinks.speaker })
     }
-    catch { return defaultContent.about }
+    catch { return withOfficialProfile(defaultContent.about) }
   }
 
   saveAbout(v: typeof defaultContent.about) { return this.repo.saveAbout(v) }

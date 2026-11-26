@@ -1,3 +1,4 @@
+import { withOfficialProfile } from '../assets/public/officialProfile'
 import {
   createContext,
   useContext,
@@ -44,7 +45,10 @@ function writeCache<T>(key: string, value: T) {
 }
 
 export function SiteContentProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState<SiteContent>(() => readCache('lcr-site-content-v2', defaultContent))
+  const [content, setContent] = useState<SiteContent>(() => {
+    const cached = readCache('lcr-site-content-v2', defaultContent)
+    return { ...cached, about: withOfficialProfile(cached.about ?? defaultContent.about) }
+  })
   const [projects, setProjects] = useState<Project[]>(() =>
     readCache('lcr-projects-v2', [
       ...defaultProjects,
@@ -68,7 +72,7 @@ export function SiteContentProvider({ children }: { children: ReactNode }) {
 
     const next = {
       home,
-      about,
+      about: withOfficialProfile(about),
       research,
       siteSettings,
       socialLinks,

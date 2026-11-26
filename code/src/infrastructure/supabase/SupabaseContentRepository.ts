@@ -9,7 +9,8 @@ import type {
   WorkProcessStep,
 } from '../../domain/models/SiteContent'
 import type { IContentRepository } from '../../domain/repositories/IContentRepository'
-import { cleanUndefined, mediaAssetFromUrl } from './helpers'
+import { cleanUndefined } from './helpers'
+import { officialProfileImage } from '../../assets/public/officialProfile'
 import { requireSupabase } from './supabaseClient'
 
 const MAIN_ID = 'main'
@@ -122,7 +123,7 @@ export class SupabaseContentRepository implements IContentRepository {
   async getAbout(): Promise<AboutContent | null> {
     const { data, error } = await requireSupabase()
       .from('about')
-      .select('*')
+      .select('content_en,content_pt,professional_title_en,professional_title_pt,intro_en,intro_pt,value_proposition_en,value_proposition_pt,description_en,description_pt')
       .eq('id', MAIN_ID)
       .maybeSingle()
 
@@ -151,7 +152,7 @@ export class SupabaseContentRepository implements IContentRepository {
       bio: Array.isArray(en.bio) ? en.bio : data.description_en ? [data.description_en] : [],
       location: en.location ?? '',
       email: en.email ?? 'leo.c.rossato@gmail.com',
-      profileImage: mediaAssetFromUrl(data.profile_image_url, 'About', 'profile-image'),
+      profileImage: officialProfileImage,
       experiences: Array.isArray(en.experiences) ? en.experiences : [],
       education: Array.isArray(en.education) ? en.education : [],
       researchTimeline: Array.isArray(en.researchTimeline) ? en.researchTimeline : [],
@@ -190,15 +191,15 @@ export class SupabaseContentRepository implements IContentRepository {
       id: MAIN_ID,
       description_en: value.bio.join('\n\n'),
       description_pt: pt.bio?.join('\n\n') ?? value.bio.join('\n\n'),
-      profile_image_url: value.profileImage?.url ?? null,
+      // Do not include the legacy profile column in the write payload.
       content_en: cleanUndefined({
         ...value,
         profileImage: undefined,
         translations: undefined,
       }),
-      content_pt: cleanUndefined(pt),
+      content_pt: cleanUndefined({ ...pt, profileImage: undefined }),
       updated_at: new Date().toISOString(),
-    })
+    }, { onConflict: 'id', defaultToNull: false })
     if (error) throw error
   }
 

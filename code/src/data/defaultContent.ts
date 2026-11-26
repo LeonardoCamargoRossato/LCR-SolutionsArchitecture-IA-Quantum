@@ -1,3 +1,4 @@
+import { officialProfileImage } from '../assets/public/officialProfile'
 import type { SiteContent } from '../domain/models/SiteContent'
 
 export const defaultContent: SiteContent = {
@@ -47,6 +48,7 @@ export const defaultContent: SiteContent = {
   },
 
   about: {
+    profileImage: officialProfileImage,
     title: 'About',
     name: 'Leonardo Camargo Rossato',
     headline: 'AI Engineer | Software Development | Applied AI | Systems Architecture',

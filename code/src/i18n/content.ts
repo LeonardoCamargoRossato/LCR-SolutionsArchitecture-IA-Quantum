@@ -1,3 +1,4 @@
+import { withOfficialProfile } from '../assets/public/officialProfile'
 import type { AboutContent } from '../domain/models/About'
 import type { Project, ProjectStatus } from '../domain/models/Project'
 import type { HomeContent, SiteSettingsContent } from '../domain/models/SiteContent'
@@ -9,8 +10,8 @@ export function localizedHome(home: HomeContent, locale: Locale): HomeContent {
 }
 
 export function localizedAbout(about: AboutContent, locale: Locale): AboutContent {
-  if (locale === 'en-US') return about
-  return { ...about, ...(about.translations?.[locale] ?? {}) }
+  if (locale === 'en-US') return withOfficialProfile(about)
+  return withOfficialProfile({ ...about, ...(about.translations?.[locale] ?? {}) })
 }
 
 export function localizedSiteSettings(
