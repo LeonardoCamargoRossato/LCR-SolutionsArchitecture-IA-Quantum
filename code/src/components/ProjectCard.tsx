@@ -1,3 +1,4 @@
+import { isSelectedWork } from '../data/selectedWork'
 import { Link } from 'react-router-dom'
 import type { Project } from '../domain/models/Project'
 import { localizedProject, localizedProjectStatus } from '../i18n/content'
@@ -18,11 +19,12 @@ type Props = {
 export function ProjectCard({ project, variant = 'primary', reveal, revealDelay = 0 }: Props) {
   const { locale, t } = useI18n()
   const current = localizedProject(project, locale)
-  const animeFinderAssetsReady = useAnimeFinderAssetsReady(current.slug === 'animefinder')
+  const localSelected = isSelectedWork(current)
+  const animeFinderAssetsReady = useAnimeFinderAssetsReady(!localSelected && current.slug === 'animefinder')
   const description = (current.description ?? '').replace(/<[^>]*>/g, ' ')
   const technologies = current.technologies ?? []
   const originalCover = current.coverImage?.cardUrl || current.coverImage?.url
-  const image = current.slug === 'animefinder' && animeFinderAssetsReady
+  const image = !localSelected && current.slug === 'animefinder' && animeFinderAssetsReady
     ? animeFinderAssetPaths(animeFinderScreenshots[0].id).webp
     : originalCover
   const category = `${current.category} ${current.slug}`.toLowerCase()
@@ -40,7 +42,7 @@ export function ProjectCard({ project, variant = 'primary', reveal, revealDelay 
           <SafeImage
             className="project-image"
             src={image}
-            fallbackSrc={current.slug === 'animefinder' ? originalCover : undefined}
+            fallbackSrc={!localSelected && current.slug === 'animefinder' ? originalCover : undefined}
             previewSrc={current.coverImage?.previewUrl}
             alt={locale === 'pt-BR' ? `Capa do projeto ${current.title}` : `${current.title} project cover`}
             fallbackLabel={current.title || (locale === 'pt-BR' ? 'Imagem indisponível' : 'Project image unavailable')}

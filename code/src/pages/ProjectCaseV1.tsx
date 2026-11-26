@@ -1,3 +1,4 @@
+import { selectedCaseFallback } from '../application/services/ProjectService'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { projectInstitutionService, projectService } from '../bootstrap/services'
@@ -61,7 +62,7 @@ export function ProjectCaseV1() {
     return () => { active = false }
   }, [slug, publicSource, isAdmin])
 
-  const source = publicSource ?? adminProject
+  const source = publicSource ?? adminProject ?? (slug ? selectedCaseFallback(slug) : undefined)
   const displaySource = source && animeFinderAssetsReady ? withAnimeFinderScreenshots(source) : source
   const project = displaySource ? localizedProject(displaySource, locale) : undefined
 

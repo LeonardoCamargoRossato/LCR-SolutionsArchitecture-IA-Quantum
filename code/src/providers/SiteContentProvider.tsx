@@ -1,3 +1,4 @@
+import { getSelectedWork } from '../data/selectedWork'
 import { withOfficialProfile } from '../assets/public/officialProfile'
 import {
   createContext,
@@ -16,6 +17,7 @@ import type { SiteContent } from '../domain/models/SiteContent'
 type Ctx = {
   content: SiteContent
   projects: Project[]
+  selectedWork: Project[]
   loading: boolean
   refresh: () => Promise<void>
   refreshContent: () => Promise<void>
@@ -102,7 +104,7 @@ export function SiteContentProvider({ children }: { children: ReactNode }) {
   useEffect(() => { void refresh().catch((error) => console.error('Content refresh failed.', error)) }, [])
 
   const value = useMemo(
-    () => ({ content, projects, loading, refresh, refreshContent, refreshProjects }),
+    () => ({ content, projects, selectedWork: getSelectedWork(), loading, refresh, refreshContent, refreshProjects }),
     [content, projects, loading],
   )
 

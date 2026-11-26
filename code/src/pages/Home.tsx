@@ -1,3 +1,4 @@
+import { isSelectedWork } from '../data/selectedWork'
 import { officialProfileUrl } from '../assets/public/officialProfile'
 import { DemandImage } from '../components/DemandImage'
 import { FileText, Mail } from 'lucide-react'
@@ -25,7 +26,7 @@ import { useHomeEntrance } from '../hooks/useHomeEntrance'
 import { useHomeMotionEnabled } from '../features/home-loading/HomeMotionContext'
 
 export function Home() {
-  const { content, projects } = useSiteContent()
+  const { content, projects, selectedWork } = useSiteContent()
   const { locale, t } = useI18n()
   const [cvOpen, setCvOpen] = useState(false)
   const homeRef = useRef<HTMLElement>(null)
@@ -65,17 +66,14 @@ export function Home() {
     '--more-card-scale': String(moreCardScale / 100),
   } as CSSProperties
 
-  const featuredSlugs = ['foton-hub', 'cities-comparing', 'animefinder']
   const visibleProjects = projects.filter((project) => project.visible !== false && !RETIRED_PROJECT_SLUGS.has(project.slug))
   const projectOrder = (project: typeof projects[number]) =>
     project.sortOrder ?? project.order ?? 999
 
-  const mainProjects = visibleProjects
-    .filter((project) => featuredSlugs.includes(project.slug))
-    .sort((a, b) => featuredSlugs.indexOf(a.slug) - featuredSlugs.indexOf(b.slug))
+  const mainProjects = selectedWork
 
   const moreProjects = visibleProjects
-    .filter((project) => !featuredSlugs.includes(project.slug))
+    .filter((project) => !isSelectedWork(project))
     .sort((a, b) => {
       const priority = ['hamlet', 'webseer', 'metcompb-landing-page']
       const priorityA = priority.indexOf(a.slug)

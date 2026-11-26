@@ -1,3 +1,4 @@
+import { getSelectedWork, isSelectedWork } from '../../data/selectedWork'
 import type { IProjectRepository } from '../../domain/repositories/IProjectRepository'
 import type { Project, ProjectPlacement, ProjectSource } from '../../domain/models/Project'
 import { defaultMoreProjects, defaultProjects } from '../../data/defaultProjects'
@@ -232,6 +233,19 @@ function fallbackDefaults() {
   return defaults.filter((project) => !retiredSlugs.has(project.slug)).map(withEditorialDefaults)
 }
 
+/** Minimal offline case bridge. Do not change CMS-backed detail pages
+ * when available; use only the existing approved case for missing routes. */
+export function selectedCaseFallback(slug: string): Project | undefined {
+  const card = getSelectedWork().find(p => p.slug === slug || p.id === slug)
+  if (!card) return undefined
+  const existing = defaults.find(p => p.slug === card.slug)
+  if (!existing) return undefined
+  return { ...existing, ...card, sections:existing.sections, gallery:existing.gallery,
+    translations:{ ...existing.translations, 'pt-BR':{
+      ...existing.translations?.['pt-BR'], ...card.translations?.['pt-BR'],
+      sections:existing.translations?.['pt-BR']?.sections,
+    } } }
+}
 export class ProjectService {
   constructor(private repo: IProjectRepository) {}
 
@@ -263,7 +277,7 @@ export class ProjectService {
 
   async getAllForAdmin() {
     const remote = await this.repo.getAllForAdmin()
-    return sortEditorial(remote.filter((project) => !retiredSlugs.has(project.slug)).map(enrich))
+    return sortEditorial([...getSelectedWork(), ...remote.filter((project) => !retiredSlugs.has(project.slug) && !isSelectedWork(project)).map(enrich)])
   }
 
   async getBySlug(slug: string, includeHidden = false) {
@@ -279,13 +293,16 @@ export class ProjectService {
             ? await this.repo.getBySlug(animeFinderProject.slug, true) ?? animeFinderProject
             : null)
       if (!includeHidden && project?.visible === false) return null
-      return project ? enrich(project) : null
+      return project ? enrich(project) : selectedCaseFallback(slug) ?? null
     } catch {
-      return null
+      return selectedCaseFallback(slug) ?? null
     }
   }
 
-  update(project: Project) { return this.repo.update(withEditorialDefaults({ ...project, slug: canonicalSlug(project) })) }
-  create(project: Project) { return this.repo.create(withEditorialDefaults({ ...project, slug: canonicalSlug(project) })) }
-  delete(id: string) { return this.repo.delete(id) }
+  private assertEditable(value: string | Project) {
+    if (isSelectedWork(value)) throw new Error('Selected Work is versioned on GitHub; edit the repository.')
+  }
+  update(project: Project) { this.assertEditable(project); return this.repo.update(withEditorialDefaults({ ...project, slug: canonicalSlug(project) })) }
+  create(project: Project) { this.assertEditable(project); return this.repo.create(withEditorialDefaults({ ...project, slug: canonicalSlug(project) })) }
+  delete(id: string) { this.assertEditable(id); return this.repo.delete(id) }
 }
