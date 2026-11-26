@@ -5,6 +5,7 @@ import assert from 'node:assert/strict'
 import {spawn,execFileSync} from 'node:child_process'
 import {mkdir,readFile,writeFile} from 'node:fs/promises'
 import {chromium} from './Browser.mjs'
+import {approvedMainPerformance} from './ApprovedMainPerformance.mjs'
 const prefix='/LCR-SolutionsArchitecture-IA-Quantum/'
 const fixture=JSON.parse(await readFile('tests/isolation/ApprovedMainFixture.json','utf8'))
 const inventory=JSON.parse(await readFile('docs/assets/supabase-public-assets-inventory.json','utf8'))
@@ -175,6 +176,8 @@ try{
  await mkdir(out,{recursive:true})
  for(const t of targets.slice(0,2))for(let i=0;i<100;i++){try{if((await fetch('http://127.0.0.1:'+t.port+prefix)).ok)break}catch{}if(i===99)throw Error('Preview unavailable '+t.name);await new Promise(r=>setTimeout(r,250))}
  browser=await chromium.launch({headless:true,args:['--no-sandbox']})
+ try{await approvedMainPerformance(browser,targets.slice(0,2),prefix,out,report.mainSha,report.candidateSha)}
+ catch(e){report.differences.push({field:'approved-main-performance',error:String(e)})}
  for(const [viewport,locale,theme] of [[{width:1440,height:900},'en-US','dark'],[{width:390,height:844},'pt-BR','light']]){
    for(const route of routes){
      const rows=[]
