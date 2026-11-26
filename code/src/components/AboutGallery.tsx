@@ -1,6 +1,5 @@
 import { ChevronLeft, ChevronRight, LayoutGrid } from 'lucide-react'
 import {
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -9,7 +8,7 @@ import type { AboutGalleryItem } from '../domain/models/AboutGallery'
 import { useI18n } from '../i18n/I18nProvider'
 import { AboutGalleryLightbox } from './AboutGalleryLightbox'
 import { SafeImage } from './SafeImage'
-import { normalizeAboutGallery } from '../data/aboutGalleryEditorial'
+import { getLocalAboutGallery } from '../data/aboutGallery'
 import { resolveAboutGalleryMedia } from '../assets/public/aboutGalleryMedia'
 
 function localized(item: AboutGalleryItem, locale: 'en-US' | 'pt-BR') {
@@ -29,26 +28,11 @@ function localized(item: AboutGalleryItem, locale: 'en-US' | 'pt-BR') {
 
 export function AboutGallery() {
   const { locale } = useI18n()
-  const [items, setItems] = useState<AboutGalleryItem[]>([])
+  const items = useMemo(() => getLocalAboutGallery(), [])
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const [galleryExpanded, setGalleryExpanded] = useState(false)
   const railRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    let cancelled = false
-    void import('../bootstrap/services')
-      .then(({ aboutGalleryService }) => aboutGalleryService.getPublicAboutGallery())
-      .then((next) => {
-        if (!cancelled) setItems(normalizeAboutGallery(next))
-      })
-      .catch((error) => {
-        console.error('Supabase about gallery query failed.', error)
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [])
 
   const copy = useMemo(
     () =>
@@ -135,7 +119,7 @@ export function AboutGallery() {
       <div ref={railRef} className="about-gallery-rail" onScroll={syncVisibleIndex}>
         {items.map((item, index) => {
           const localizedItem = localized(item, locale)
-          const media = resolveAboutGalleryMedia(item.imageUrl, item.storagePath)
+          const media = resolveAboutGalleryMedia(item)
           const alt = [
             localizedItem.title,
             localizedItem.caption,
@@ -146,6 +130,7 @@ export function AboutGallery() {
               key={item.id}
               type="button"
               className="about-gallery-card"
+              data-photo-number={item.photoNumber}
               onClick={() => { setActiveIndex(index); setLightboxIndex(index) }}
               aria-label={localizedItem.title || alt}
             >
@@ -170,11 +155,12 @@ export function AboutGallery() {
         <div className="about-gallery-grid-panel" id="about-gallery-all-images" aria-label={copy.showGallery}>
           {items.map((item, index) => {
             const entry = localized(item, locale)
-            const media = resolveAboutGalleryMedia(item.imageUrl, item.storagePath)
+            const media = resolveAboutGalleryMedia(item)
             return (
               <button
                 type="button"
                 className="about-gallery-grid-item"
+                data-photo-number={item.photoNumber}
                 key={item.id}
                 aria-label={entry.title || `${index + 1} / ${items.length}`}
                 onClick={() => { setActiveIndex(index); setLightboxIndex(index) }}

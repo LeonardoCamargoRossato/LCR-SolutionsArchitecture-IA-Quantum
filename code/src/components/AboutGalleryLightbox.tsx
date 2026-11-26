@@ -1,6 +1,7 @@
 import { ExternalLink } from 'lucide-react'
 import { useMemo } from 'react'
 import type { AboutGalleryItem } from '../domain/models/AboutGallery'
+import type { LocalAboutGalleryItem } from '../data/aboutGallery'
 import type { Locale } from '../i18n/types'
 import { externalLinks } from '../config/externalLinks'
 import { ImageLightbox } from './ImageLightbox'
@@ -38,7 +39,7 @@ function relatedLink(item: AboutGalleryItem, locale: Locale) {
 }
 
 type Props = {
-  items: AboutGalleryItem[]
+  items: LocalAboutGalleryItem[]
   index: number | null
   locale: Locale
   onClose: () => void
@@ -70,10 +71,9 @@ export function AboutGalleryLightbox({
 
   const viewerItems = items.map((item) => {
     const localizedItem = localized(item, locale)
-    const media = resolveAboutGalleryMedia(item.imageUrl, item.storagePath)
+    const media = resolveAboutGalleryMedia(item)
     return {
       src: media.full,
-      fallbackSrc: media.hasVariants ? media.original : undefined,
       alt: [localizedItem.title, localizedItem.caption, localizedItem.location].filter(Boolean).join(' — ') || 'About gallery image',
       downloadName: `about-gallery-${item.id}.${media.hasVariants ? 'png' : item.imageUrl.split(/[?#]/)[0].split('.').pop()?.toLowerCase() || 'jpg'}`,
     }
