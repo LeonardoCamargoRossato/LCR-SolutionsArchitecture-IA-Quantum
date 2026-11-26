@@ -49,3 +49,14 @@ for(const item of selected.files){
   assert.equal(blob,item.gitBlob,'Git blob mismatch: '+item.path)
 }
 console.log('PASS: 22 existing selected-case asset blobs, unchanged; 9 Cities slides and 1 verified Foton cover.')
+
+const additional=JSON.parse(await readFile('docs/assets/additional-work-inventory.json','utf8'))
+assert.equal(additional.files.length,93)
+assert.deepEqual(additional.slides,[1,10,1,1,1,8,1])
+for(const item of additional.files){
+  const bytes=await readFile(item.path)
+  assert.equal(bytes.length,item.bytes,item.path)
+  const blob=createHash('sha1').update(Buffer.from('blob '+bytes.length+'\0')).update(bytes).digest('hex')
+  assert.equal(blob,item.gitBlob,'Additional Work Git blob mismatch: '+item.path)
+}
+console.log('PASS: 93 approved Additional Work asset blobs, 7 projects, 23 slides.')

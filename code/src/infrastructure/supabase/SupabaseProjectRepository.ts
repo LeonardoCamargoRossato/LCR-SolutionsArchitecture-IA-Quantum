@@ -239,6 +239,11 @@ export class SupabaseProjectRepository implements IProjectRepository {
     ])
   }
 
+  async getSelectedCaseDetails() {
+    const {data,error}=await requireSupabase().from('projects').select('*').in('slug',['foton-hub','cities-comparing','city-comparing','animefinder']).eq('visible',true).order('sort_order')
+    if(error)throw error
+    return (data??[]).map(row=>toProject(row,'main'))
+  }
   getAll() { return this.load(false) }
   getAllForAdmin() { return this.load(true) }
 

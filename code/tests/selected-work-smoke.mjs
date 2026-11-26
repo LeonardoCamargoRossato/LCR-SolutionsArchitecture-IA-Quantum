@@ -8,6 +8,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
 import { verifySelectedCaseGalleries } from './selected-case-galleries-smoke.mjs'
+import { prepareAdditionalWork, verifyAdditionalWork } from './additional-work-smoke.mjs'
 
 const prefix='/LCR-SolutionsArchitecture-IA-Quantum/'
 const dir='test-results/selected-work'
@@ -115,6 +116,7 @@ export async function verifySelectedWork(browser,fixtureBase){
       console.log('PASS Selected Work',file,'3 approved cards, localized content, local WebP, routes, no remote cover')
     }finally{await page.unrouteAll({behavior:'wait'});await ctx.close();await writeFile(dir+'/evidence.json',JSON.stringify(report,null,2))}
   }
+  const additionalExpected=await prepareAdditionalWork(browser,fixtureBase)
   try{
     await run(fixtureBase,'empty-cms','desktop','dark','en-US')
     await run(fixtureBase,'blocked','mobile','light','pt-BR',true)
@@ -122,12 +124,17 @@ export async function verifySelectedWork(browser,fixtureBase){
     await verifySelectedCaseGalleries(browser,fixtureBase,'blocked','desktop','dark','en-US')
     await verifySelectedCaseGalleries(browser,fixtureBase,'blocked','mobile','light','pt-BR')
     await verifySelectedCaseGalleries(browser,fixtureBase,'stale-cms','desktop','dark','en-US')
+    await verifyAdditionalWork(browser,fixtureBase,additionalExpected,'blocked','desktop','dark','en-US')
+    await verifyAdditionalWork(browser,fixtureBase,additionalExpected,'blocked','mobile','light','pt-BR')
+    await verifyAdditionalWork(browser,fixtureBase,additionalExpected,'stale-cms','desktop','light','pt-BR')
     const db='http://127.0.0.1:'+ports.dev+prefix
     dev=await start(['--host','127.0.0.1','--port',String(ports.dev),'--strictPort'],db)
     await run(db,'dev-no-config','desktop','light','pt-BR',true)
     await run(db,'dev-no-config','mobile','dark','en-US')
     await verifySelectedCaseGalleries(browser,db,'dev-no-config','desktop','light','pt-BR')
     await verifySelectedCaseGalleries(browser,db,'dev-no-config','mobile','dark','en-US')
+    await verifyAdditionalWork(browser,db,additionalExpected,'dev-no-config','desktop','light','pt-BR')
+    await verifyAdditionalWork(browser,db,additionalExpected,'dev-no-config','mobile','dark','en-US')
     stop(dev);dev=undefined
     temp=await mkdtemp(join(tmpdir(),'lcr-selected-build-'))
     const build=spawn('node_modules/.bin/vite',['build','--outDir',temp,'--emptyOutDir'],{env:offlineEnv,stdio:'inherit'})
@@ -139,32 +146,41 @@ export async function verifySelectedWork(browser,fixtureBase){
     await run(pb,'pages-no-config','mobile','light','en-US',true)
     await verifySelectedCaseGalleries(browser,pb,'pages-no-config','desktop','dark','pt-BR')
     await verifySelectedCaseGalleries(browser,pb,'pages-no-config','mobile','light','en-US')
+    await verifyAdditionalWork(browser,pb,additionalExpected,'pages-no-config','desktop','dark','pt-BR')
+    await verifyAdditionalWork(browser,pb,additionalExpected,'pages-no-config','mobile','light','en-US')
     const ctx=await browser.newContext({viewport:{width:1440,height:900}})
     const page=await ctx.newPage()
     await page.goto(fixtureBase+'tests/selected-work-admin-harness.html')
     const cards=page.locator('.project-admin-card')
     await cards.first().waitFor()
-    assert.equal(await cards.count(),4)
+    assert.equal(await cards.count(),11)
     for(let i=0;i<3;i++){
       const card=cards.filter({has:page.getByRole('heading',{name:names[i],exact:true})})
       assert.equal(await card.locator('input,select,button').count(),0)
       assert.equal(await card.getByText(/versioned on GitHub/).count(),1)
     }
-    const other=cards.filter({has:page.getByRole('heading',{name:/Hamlet/})})
+    for(const item of additionalExpected){
+      const card=cards.filter({has:page.getByRole('heading',{name:item.locales['en-US'].title,exact:true})})
+      assert.equal(await card.count(),1)
+      assert.equal(await card.locator('input,select,button').count(),0)
+      assert.equal(await card.getByText(/versioned on GitHub/).count(),1)
+    }
+    const other=cards.filter({has:page.getByRole('heading',{name:'Fixture unmanaged',exact:true})})
     assert.equal(await other.getByRole('button',{name:'Edit',exact:true}).count(),1)
     const guard=await page.evaluate(async base=>{
       const {ProjectService}=await import(base+'src/application/services/ProjectService.ts')
       const {getSelectedWork}=await import(base+'src/data/selectedWork.ts')
+      const {getAdditionalWork}=await import(base+'src/data/additionalWork.ts')
       let writes=0,blocked=0
       const repo={update:async()=>{writes++},create:async()=>{writes++},delete:async()=>{writes++}}
       const svc=new ProjectService(repo)
-      for(const p of getSelectedWork())for(const op of [()=>svc.update(p),()=>svc.create(p),()=>svc.delete(p.id)])try{await op()}catch{blocked++}
+      for(const p of [...getSelectedWork(),...getAdditionalWork()])for(const op of [()=>svc.update(p),()=>svc.create(p),()=>svc.delete(p.id)])try{await op()}catch{blocked++}
       await svc.delete('unmanaged-fixture')
       return {blocked,writes}
     },fixtureBase)
-    assert.deepEqual(guard,{blocked:9,writes:1})
+    assert.deepEqual(guard,{blocked:30,writes:1})
     await page.screenshot({path:dir+'/admin.png'})
-    report.admin={...guard,selectedReadOnly:3,otherEditable:true}
+    report.admin={...guard,selectedReadOnly:3,additionalReadOnly:7,otherEditable:true}
     await ctx.close()
     console.log('PASS Selected Work admin read-only and service write guard')
   }finally{stop(dev);stop(preview);if(temp)await rm(temp,{recursive:true,force:true});await writeFile(dir+'/evidence.json',JSON.stringify(report,null,2))}

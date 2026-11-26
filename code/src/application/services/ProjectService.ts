@@ -45,9 +45,9 @@ export class ProjectService {
     // Additional Work is present before and after a backend failure.
     const local = getAdditionalWork()
     try {
-      const remote = await this.repo.getAll()
+      const remote = await (this.repo.getSelectedCaseDetails?.() ?? this.repo.getAll())
       let selected = remote.filter(p=>isSelectedWork(p)&&p.visible!==false)
-      if(!selected.some(p=>p.slug===animeFinderProject.slug)){
+      if(!this.repo.getSelectedCaseDetails && !selected.some(p=>p.slug===animeFinderProject.slug)){
         const existing=await this.repo.getBySlug(animeFinderProject.slug,true)
         if(!existing)selected=[...selected,animeFinderProject]
       }
