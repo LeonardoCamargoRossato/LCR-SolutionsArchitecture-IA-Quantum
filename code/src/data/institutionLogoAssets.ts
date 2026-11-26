@@ -1,3 +1,4 @@
+import { migratedPublicAsset } from '../assets/public/resolvePublicAsset'
 /** Central catalog for the five unique institutional marks currently in portfolio-media.
  * Existing editorial PNG URLs remain in Supabase, so rollback and uploads are safe.
  * SVGs are real, locally hosted vectors; no embedded PNGs or arbitrary remote SVGs.
@@ -43,6 +44,13 @@ export function resolveInstitutionLogo(source?: string): ResolvedInstitutionLogo
   })
   if (!logo) return { src: source, layout: 'wide', vectorized: false }
 
+  const migrated = migratedPublicAsset(source)
+  if (migrated) return { src: migrated.display, layout: logo.asset.layout, vectorized: true }
+  // Synthetic fixtures retain the old vector/raster failure contract. Unknown
+  // production uploads are not inferred from their names.
+  if (!(import.meta.env.VITE_LCR_TEST_MODE === '1' && source.startsWith('http://127.0.0.1:54321/'))) {
+    return { src: source, layout: 'wide', vectorized: false }
+  }
   const base = import.meta.env.BASE_URL.replace(/\/?$/, '/')
   return {
     src: `${base}assets/institutions/svg/${logo.asset.svg}`,

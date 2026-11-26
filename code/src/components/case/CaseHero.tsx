@@ -1,3 +1,4 @@
+import { resolvePublicAsset } from '../../assets/public/resolvePublicAsset'
 import { ExternalLink, FileText, Github, GraduationCap } from 'lucide-react'
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
@@ -68,7 +69,7 @@ export function CaseHero({
 
                 {project.reportPdfUrl && (
                   <a
-                    href={project.reportPdfUrl}
+                    href={resolvePublicAsset(project.reportPdfUrl, 'original')}
                     download
                     target="_blank"
                     rel="noopener noreferrer"

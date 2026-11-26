@@ -1,3 +1,4 @@
+import { resolvePublicAsset } from '../../assets/public/resolvePublicAsset'
 import type { Project } from '../../domain/models/Project'
 
 /** Paths and captions are supplied by each project; no project-specific UI branches. */
@@ -45,5 +46,7 @@ export function buildProjectCarouselImages(project: Project): ProjectCarouselIma
   return [
     coverImage,
     ...gallery.filter((image) => normalizePath(image.fullSrc) !== normalizePath(cover)),
-  ]
+  ].map(image => ({ ...image, src: resolvePublicAsset(image.src),
+    thumbnailSrc: resolvePublicAsset(image.thumbnailSrc), previewSrc: resolvePublicAsset(image.previewSrc),
+    fullSrc: resolvePublicAsset(image.fullSrc, 'full') }))
 }

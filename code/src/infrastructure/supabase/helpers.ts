@@ -1,3 +1,4 @@
+import { migratedPublicAsset } from '../../assets/public/resolvePublicAsset'
 
 import type { MediaAsset, MediaCategory } from '../../domain/models/MediaAsset'
 import { supabaseMediaBucket } from './supabaseClient'
@@ -26,6 +27,7 @@ export function mediaAssetFromUrl(
     ? url.replace('/PNG/', '/WebP/').replace(/\.png(?:$|(?=[?#]))/i, '.webp')
     : undefined
 
+  const migrated = migratedPublicAsset(url)
   return {
     id: `remote-${name}`,
     url,
@@ -36,9 +38,9 @@ export function mediaAssetFromUrl(
       : /\.svg(?:$|[?#])/i.test(path) ? 'image/svg+xml' : 'image/*',
     category,
     imageType: isAnimeFinderBrand ? 'illustrative-placeholder' : 'real-screenshot',
-    ...(optimizedUrl
-      ? { cardUrl: optimizedUrl, thumbnailUrl: optimizedUrl, fullUrl: url }
-      : {}),
+    ...(migrated
+      ? { cardUrl: migrated.display, thumbnailUrl: migrated.display, fullUrl: migrated.full }
+      : optimizedUrl ? { cardUrl: optimizedUrl, thumbnailUrl: optimizedUrl, fullUrl: url } : {}),
   }
 }
 

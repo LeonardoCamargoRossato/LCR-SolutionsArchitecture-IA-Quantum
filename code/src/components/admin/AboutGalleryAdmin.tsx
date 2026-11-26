@@ -22,7 +22,7 @@ import { useToast } from '../../providers/ToastProvider'
 import { humanizeError } from '../../utils/errors'
 import { AboutGalleryLightbox } from '../AboutGalleryLightbox'
 import { SafeImage } from '../SafeImage'
-import { resolveAboutGalleryMedia } from '../../infrastructure/supabase/aboutGalleryMedia'
+import { resolveAboutGalleryMedia } from '../../assets/public/aboutGalleryMedia'
 
 const STORAGE_DASHBOARD_URL =
   'https://supabase.com/dashboard/project/wdjffhfnzydudmhhekmk/storage/files/buckets/portfolio-media'

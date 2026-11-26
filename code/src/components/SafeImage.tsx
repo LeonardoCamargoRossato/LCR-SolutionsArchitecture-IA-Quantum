@@ -1,3 +1,4 @@
+import { resolvePublicAsset, resolveAssetFallback } from '../assets/public/resolvePublicAsset'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { useImageDemand } from '../hooks/useImageDemand'
 
@@ -11,7 +12,9 @@ type Props = React.ImgHTMLAttributes<HTMLImageElement> & {
 
 export function SafeImage(props: Props) {
   // Asset changes reset only the resource lifecycle, not on scroll/theme/locale.
-  return <SafeImageResource key={props.src ?? props.srcSet ?? ''} {...props} />
+  const src = resolvePublicAsset(props.src)
+  return <SafeImageResource key={src ?? props.srcSet ?? ''} {...props} src={src}
+    previewSrc={resolvePublicAsset(props.previewSrc)} fallbackSrc={resolveAssetFallback(props.src, props.fallbackSrc)} />
 }
 
 function SafeImageResource({

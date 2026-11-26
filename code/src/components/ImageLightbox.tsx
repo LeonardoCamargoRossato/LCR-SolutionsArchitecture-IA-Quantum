@@ -1,3 +1,4 @@
+import { resolvePublicAsset, resolveAssetFallback } from '../assets/public/resolvePublicAsset'
 import {
   ChevronLeft,
   ChevronRight,
@@ -39,7 +40,9 @@ export function ImageLightbox({
 }: Props) {
   const { locale } = useI18n()
   const pt = locale === 'pt-BR'
-  const current = index !== null ? items[index] : undefined
+  const entry = index !== null ? items[index] : undefined
+  const current = entry ? { ...entry, src: resolvePublicAsset(entry.src, 'full'),
+    fallbackSrc: resolveAssetFallback(entry.src, entry.fallbackSrc, 'full') } : undefined
   const modalRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
   const previousFocus = useRef<HTMLElement | null>(null)

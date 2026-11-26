@@ -4,7 +4,7 @@ import type { AboutGalleryItem } from '../domain/models/AboutGallery'
 import type { Locale } from '../i18n/types'
 import { externalLinks } from '../config/externalLinks'
 import { ImageLightbox } from './ImageLightbox'
-import { resolveAboutGalleryMedia } from '../infrastructure/supabase/aboutGalleryMedia'
+import { resolveAboutGalleryMedia } from '../assets/public/aboutGalleryMedia'
 
 const SPEAKER_PORTFOLIO = externalLinks.speaker
 const INSTITUTO_PENSE_MAIS = 'https://institutopensemais.com/'

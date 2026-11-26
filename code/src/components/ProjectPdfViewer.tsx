@@ -1,3 +1,4 @@
+import { resolvePublicAsset } from '../assets/public/resolvePublicAsset'
 import {
   Download,
   Maximize2,
@@ -21,6 +22,7 @@ function withZoom(url: string, zoom: number) {
 }
 
 export function ProjectPdfViewer({ open, url, title, onClose }: Props) {
+  url = resolvePublicAsset(url, 'original')
   const { locale } = useI18n()
   const pt = locale === 'pt-BR'
   const modalRef = useRef<HTMLDivElement>(null)

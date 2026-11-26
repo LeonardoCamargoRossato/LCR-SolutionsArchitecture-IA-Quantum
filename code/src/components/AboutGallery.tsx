@@ -10,7 +10,7 @@ import { useI18n } from '../i18n/I18nProvider'
 import { AboutGalleryLightbox } from './AboutGalleryLightbox'
 import { SafeImage } from './SafeImage'
 import { normalizeAboutGallery } from '../data/aboutGalleryEditorial'
-import { resolveAboutGalleryMedia } from '../infrastructure/supabase/aboutGalleryMedia'
+import { resolveAboutGalleryMedia } from '../assets/public/aboutGalleryMedia'
 
 function localized(item: AboutGalleryItem, locale: 'en-US' | 'pt-BR') {
   const pt = locale === 'pt-BR'

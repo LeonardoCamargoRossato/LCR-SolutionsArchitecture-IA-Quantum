@@ -1,3 +1,4 @@
+import { resolvePublicAsset } from '../assets/public/resolvePublicAsset'
 import { Download, Maximize2, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useI18n } from '../i18n/I18nProvider'
@@ -9,6 +10,7 @@ type Props = {
 }
 
 export function CvViewer({ open, url, onClose }: Props) {
+  url = resolvePublicAsset(url, 'original')
   const { t } = useI18n()
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)

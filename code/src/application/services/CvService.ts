@@ -1,3 +1,4 @@
+import { resolvePublicAsset } from '../../assets/public/resolvePublicAsset'
 
 import type { IContentRepository } from '../../domain/repositories/IContentRepository'
 import type { IMediaRepository } from '../../domain/repositories/IMediaRepository'
@@ -52,6 +53,6 @@ export class CvService {
   async downloadCv() {
     const url = await this.getCurrentCv()
     if (!url) throw new Error('Currículo não disponível.')
-    return url
+    return resolvePublicAsset(url, 'original')
   }
 }

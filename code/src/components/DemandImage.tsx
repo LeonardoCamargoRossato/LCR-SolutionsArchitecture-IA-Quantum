@@ -1,3 +1,4 @@
+import { resolvePublicAsset, resolveAssetFallback } from '../assets/public/resolvePublicAsset'
 import { useRef, useState, type ImgHTMLAttributes } from 'react'
 import { useImageDemand } from '../hooks/useImageDemand'
 
@@ -11,6 +12,8 @@ type Props = ImgHTMLAttributes<HTMLImageElement> & {
  * admission. The fallback is opt-in for a visible legacy asset, at most once. */
 export function DemandImage({ src, srcSet, enabled = true, allowPortalReveal = false,
   fallbackSrc, onError, ...props }: Props) {
+  fallbackSrc = resolveAssetFallback(src, fallbackSrc)
+  src = resolvePublicAsset(src)
   const ref = useRef<HTMLImageElement>(null)
   const ready = useImageDemand(ref, src || srcSet, enabled, allowPortalReveal)
   const [failedSource, setFailedSource] = useState<string>()
