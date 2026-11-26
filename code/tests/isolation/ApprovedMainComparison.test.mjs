@@ -15,7 +15,7 @@ const assets=new Map(inventory.assets.filter(x=>x.github_path).map(x=>[x.supabas
 const targets=[{name:'main',cwd:main,port:5191,offline:false},{name:'candidate',cwd:process.cwd(),port:5192,offline:false},{name:'offline',cwd:process.cwd(),port:5192,offline:true}]
 const servers=targets.slice(0,2).map(t=>spawn('npm',['run','preview','--','--host','127.0.0.1','--port',String(t.port),'--strictPort'],{cwd:t.cwd,stdio:'ignore',detached:true}))
 const report={mainSha:fixture.mainSha,candidateSha:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),comparisons:[],differences:[],network:[],authorized:[fixture.authorizedTextCorrection]}
-const routes=['','projects/foton-hub','projects/cities-comparing','projects/animefinder','projects/hamlet','projects/webseer','projects/metcompb-landing-page','projects/speaker-portfolio','projects/quantum-education-apps','projects/ce235-real-time-systems','projects/embedded-control-platform','admin','test-component-lab']
+const routes=['','projects/foton-hub','projects/cities-comparing','projects/animefinder','projects/hamlet','projects/webseer','projects/metcompb-landing-page','projects/speaker-portfolio','projects/quantum-education-apps','projects/ce235-real-time-systems','projects/embedded-control-platform','workflow','about','admin','test-component-lab']
 const normalized=v=>String(v??'').replaceAll(fixture.authorizedTextCorrection.from,fixture.authorizedTextCorrection.to).replace(/\s+/g,' ').trim()
 async function installFixture(page,offline){
   await page.route('http://127.0.0.1:54321/rest/v1/**',async route=>{
@@ -53,10 +53,13 @@ async function collect(browser,t,route,viewport,locale,theme){
      // offline candidate still writes its local content and projects cache.
      await page.waitForFunction(()=>localStorage.getItem('lcr-site-content-v2')&&localStorage.getItem('lcr-projects-v2'))
      if(route.endsWith('animefinder'))await page.waitForFunction(()=>document.querySelector('.case-hero-carousel-count')?.textContent?.trim()==='1 / 16')
-   }else if(!route){
+   }else if(!route||route==='about'){
      await page.locator('.selected-grid').waitFor({timeout:30000})
      await page.waitForFunction(()=>localStorage.getItem('lcr-site-content-v2')&&localStorage.getItem('lcr-projects-v2')&&document.querySelectorAll('.about-gallery-card').length===10)
-   }else await page.locator('main').waitFor({timeout:30000})
+   }else {
+     await page.locator('main:not(.loading-page)').waitFor({timeout:30000})
+     if(route==='admin')await page.getByText('This area is restricted.').waitFor({timeout:30000})
+   }
    // DOM settles after asynchronous locale/fixture data. No external calls.
    await page.waitForTimeout(300)
    const state=await page.evaluate(()=>{

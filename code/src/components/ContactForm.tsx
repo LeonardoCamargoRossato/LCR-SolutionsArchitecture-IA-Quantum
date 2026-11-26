@@ -4,6 +4,15 @@ import { useI18n } from '../i18n/I18nProvider'
 
 const CONTACT_EMAIL = 'leo.c.rossato@gmail.com'
 
+type ContactFields = {name:string;email:string;subject:string;message:string}
+
+/** Pure URI construction, tested without starting an external mail client. */
+export function contactMailto(form:ContactFields) {
+  const subject=encodeURIComponent(form.subject.trim() || `Portfolio contact — ${form.name.trim()}`)
+  const body=encodeURIComponent(`${form.message.trim()}\n\nName: ${form.name.trim()}\nEmail: ${form.email.trim()}`)
+  return `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`
+}
+
 export function ContactForm() {
   const { t } = useI18n()
   const [form, setForm] = useState({
@@ -16,14 +25,7 @@ export function ContactForm() {
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const subject = encodeURIComponent(
-      form.subject.trim() || `Portfolio contact — ${form.name.trim()}`,
-    )
-    const body = encodeURIComponent(
-      `${form.message.trim()}\n\nName: ${form.name.trim()}\nEmail: ${form.email.trim()}`,
-    )
-
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`
+    window.location.href = contactMailto(form)
   }
 
   return (

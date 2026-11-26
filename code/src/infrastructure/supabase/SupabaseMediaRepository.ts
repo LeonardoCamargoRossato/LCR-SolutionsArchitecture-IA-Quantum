@@ -1,3 +1,4 @@
+import { isProtectedLegacyMedia } from '../../assets/public/protectedLegacyMedia'
 
 import type { MediaAsset, MediaCategory } from '../../domain/models/MediaAsset'
 import type { IMediaRepository } from '../../domain/repositories/IMediaRepository'
@@ -303,6 +304,7 @@ export class SupabaseMediaRepository implements IMediaRepository {
         : storagePathFromPublicUrl(asset.url)
 
     if (!path) return
+    if (isProtectedLegacyMedia({path,url:asset.url})) throw new Error('Versioned media: legacy source is protected.')
 
     // Protect canonical and legacy project covers from accidental deletion.
     // Files are only retired through an explicitly audited migration/cleanup.

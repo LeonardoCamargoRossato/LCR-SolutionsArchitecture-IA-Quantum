@@ -1,3 +1,4 @@
+import { isProtectedLegacyMedia } from '../../assets/public/protectedLegacyMedia'
 import type { MediaCategory } from '../../domain/models/MediaAsset'
 import type { IMediaRepository } from '../../domain/repositories/IMediaRepository'
 
@@ -41,12 +42,16 @@ export class MediaService {
   }
 
   async replace(current: Parameters<IMediaRepository['replace']>[0], file: File, category: MediaCategory, pathPrefix?: string) {
+    if (current && isProtectedLegacyMedia(current)) throw new Error('Versioned media: edit GitHub; legacy source is protected.')
     if (category === 'Documents') this.validatePdf(file)
     else this.validateImage(file)
     return this.repo.replace(current, file, category, pathPrefix)
   }
 
-  delete(...args: Parameters<IMediaRepository['delete']>) { return this.repo.delete(...args) }
+  async delete(asset: Parameters<IMediaRepository['delete']>[0]) {
+    if (isProtectedLegacyMedia(asset)) throw new Error('Versioned media: legacy source is protected.')
+    return this.repo.delete(asset)
+  }
   getLibrary() { return this.repo.getLibrary() }
   getPublicUrl(path: string) { return this.repo.getPublicUrl(path) }
 }
