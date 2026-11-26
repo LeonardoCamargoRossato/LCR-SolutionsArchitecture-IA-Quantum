@@ -41,10 +41,33 @@ jobs:
           sha256sum LCR-Portfolio-2026-11-26.zip > LCR-Portfolio-2026-11-26.zip.sha256
           sha256sum -c LCR-Portfolio-2026-11-26.zip.sha256
           printf '%s\n' '67e8877b02fc23352306f75c04a40f4085b1f716' > COMMIT.txt
+      - name: Split archive for Drive connector transfer limit
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/lcr-backup"
+          split -b 75M -d -a 2 LCR-Portfolio-2026-11-26.zip LCR-Portfolio-2026-11-26.zip.part-
+          test -f LCR-Portfolio-2026-11-26.zip.part-00
+          test -f LCR-Portfolio-2026-11-26.zip.part-01
+          test ! -f LCR-Portfolio-2026-11-26.zip.part-02
+          cat LCR-Portfolio-2026-11-26.zip.part-00 LCR-Portfolio-2026-11-26.zip.part-01 | cmp - LCR-Portfolio-2026-11-26.zip
+          sha256sum LCR-Portfolio-2026-11-26.zip.part-* > PARTS.sha256
+          sha256sum -c PARTS.sha256
+          printf '%s\n' 'Extract both artifact ZIPs into the same folder, then run:' 'sha256sum -c PARTS.sha256' 'cat LCR-Portfolio-2026-11-26.zip.part-00 LCR-Portfolio-2026-11-26.zip.part-01 > LCR-Portfolio-2026-11-26.zip' 'sha256sum -c LCR-Portfolio-2026-11-26.zip.sha256' > RESTORE.txt
+          for part in 00 01; do
+            mkdir "$part"
+            cp "LCR-Portfolio-2026-11-26.zip.part-$part" COMMIT.txt PARTS.sha256 LCR-Portfolio-2026-11-26.zip.sha256 RESTORE.txt "$part/"
+          done
       - uses: actions/upload-artifact@v4
         with:
-          name: LCR-Portfolio-Backup-2026-11-26
-          path: ${{ runner.temp }}/lcr-backup/
+          name: LCR-Portfolio-Backup-2026-11-26-part-01
+          path: ${{ runner.temp }}/lcr-backup/00/
+          compression-level: 0
+          retention-days: 7
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LCR-Portfolio-Backup-2026-11-26-part-02
+          path: ${{ runner.temp }}/lcr-backup/01/
           compression-level: 0
           retention-days: 7
           if-no-files-found: error
