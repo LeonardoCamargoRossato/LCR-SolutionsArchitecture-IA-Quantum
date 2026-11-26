@@ -9,7 +9,7 @@ const base=import.meta.env.BASE_URL.replace(/\/?$/, '/')
 const local=(path?:string)=>path?base+path:undefined
 
 /** Same approved editorial enrichment used on main, with versioned media and
- * the audited AnimeFinder wording taking precedence over the stale CMS copy. */
+ * the approved Portuguese CMS wording and previously approved English correction. */
 const cases: readonly Project[]=getSelectedWork().map(card=>{
   const raw=selectedCaseSnapshot.find(p=>p.id===card.id)
   if(!raw)throw new Error('Missing selected case snapshot '+card.id)
@@ -17,7 +17,7 @@ const cases: readonly Project[]=getSelectedWork().map(card=>{
   const project={...enriched,institutionLogoUrl:local(enriched.institutionLogoUrl),reportPdfUrl:local(enriched.reportPdfUrl)}
   if(project.slug!=='animefinder')return project
   return withAnimeFinderScreenshots({...project,description:animeFinderProject.description,
-    translations:{...project.translations,'pt-BR':{...project.translations?.['pt-BR'],description:animeFinderProject.translations?.['pt-BR']?.description}}})
+    translations:{...project.translations,'pt-BR':{...project.translations?.['pt-BR'],description:raw.translations?.['pt-BR']?.description}}})
 })
 export function getSelectedCases():Project[]{return [...cases]}
 export function findSelectedCase(key?:string){return cases.find(p=>p.slug===key||p.id===key)}
