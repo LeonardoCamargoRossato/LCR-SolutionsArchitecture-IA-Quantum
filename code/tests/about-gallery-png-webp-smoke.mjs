@@ -7,6 +7,7 @@ import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { chromium } from './isolation/Browser.mjs'
+import { verifyLocalPublicDelivery } from './local-public-assets-smoke.mjs'
 
 const PUBLIC_BASE = process.env.GALLERY_SMOKE_BASE_URL?.trim()
 const BASE = PUBLIC_BASE ? (PUBLIC_BASE.endsWith('/') ? PUBLIC_BASE : PUBLIC_BASE + '/') : 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
@@ -175,7 +176,10 @@ try {
   browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] })
   await viewportTest('desktop', { width: 1440, height: 900 })
   await viewportTest('mobile', { width: 390, height: 844 })
-  if (!PUBLIC_BASE) await mockedAdminUploadTest()
+  if (!PUBLIC_BASE) {
+    await mockedAdminUploadTest()
+    await verifyLocalPublicDelivery(browser, BASE)
+  }
   console.log('GALLERY PASS: ' + (PUBLIC_BASE ? 'PUBLISHED SITE' : 'BRANCH') + ' 10 visible photos × 2 devices; WebP carousel, PNG lightbox and PNG download.')
 } catch (error) {
   output.errors.push(String(error))

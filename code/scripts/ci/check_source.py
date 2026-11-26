@@ -92,6 +92,32 @@ def verify_public_assets(root):
     print(f"PASS {len(copied)} canonical public assets; {len(refs)} references; SHA-256 integrity")
 
 
+def verify_delivery_catalog(root):
+    inventory = json.loads((APP_ROOT / "docs/assets/supabase-public-assets-inventory.json").read_text(encoding="utf-8"))
+    catalog_file = APP_ROOT / "src/assets/public/publicAssetCatalog.ts"
+    catalog = json.loads(catalog_file.read_text(encoding="utf-8").split(" = ", 1)[1])
+    expected = {a["supabase_path"]: a["github_path"].removeprefix("code/public/") for a in inventory["assets"] if a["github_path"]}
+    assert set(catalog) == set(expected), "Delivery catalog is not the exact audited inventory"
+    for source, item in catalog.items():
+        assert item["original"] == expected[source], "Original path changed"
+        for path in item.values():
+            file = root / path
+            assert file.is_file() and file.resolve().is_relative_to(root.resolve()) and not file.is_symlink(), f"Missing delivery target: {path}"
+        assert item["display"].endswith((".webp", ".svg", ".pdf")), f"Unoptimized delivery: {source}"
+        if source.startswith("about/gallery/") or source.startswith("projects/") and "/institutions/" not in source:
+            assert item["full"].endswith(".png"), f"Missing PNG zoom: {source}"
+    assert all(r["source_path"] in catalog for r in inventory["content_reference_map"])
+    derivative = root / next(v["display"] for k,v in catalog.items() if k.startswith("profile/"))
+    assert hashlib.sha256(derivative.read_bytes()).hexdigest() == "c2b93202bee240a884d49a6aeaa55b2f99768a0202d8d2579cdfa59b0671b9dc"
+    local = json.loads((APP_ROOT / "docs/assets/WEBP_FIRST_DELIVERY.json").read_text(encoding="utf-8"))
+    for item in local["assets"]:
+        for key, meta in (("source_path","source"), ("webp_path","webp")):
+            p = root / item[key].removeprefix("public/")
+            assert p.is_file(), f"Missing local display/zoom pair: {p}"
+            assert hashlib.sha256(p.read_bytes()).hexdigest() == item[meta]["sha256"], f"Changed approved derivative: {p}"
+    print(f"PASS delivery catalog: {len(catalog)} exact keys, {len(inventory['content_reference_map'])} editorial references, WebP/SVG/PDF display and PNG gallery zoom")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact")
@@ -103,6 +129,7 @@ def main():
         assert (root / "index.html").is_file(), "Artifact missing"
         check([p for p in root.rglob("*") if p.is_file() or p.is_symlink()])
         verify_public_assets(root)
+        verify_delivery_catalog(root)
         print("PASS artifact: private-file and high-confidence secret rules")
     else:
         subprocess.run(["git", "diff", "--check", BASE, "HEAD"], check=True, cwd=REPO_ROOT)
@@ -112,6 +139,7 @@ def main():
         for path in (REPO_ROOT / "AGENTS.md", APP_ROOT / "docs/ci/QUALITY_TRANSITION.md"):
             assert path.is_file(), f"Required documentation missing: {path.relative_to(REPO_ROOT)}"
         verify_public_assets(APP_ROOT / "public")
+        verify_delivery_catalog(APP_ROOT / "public")
         print("PASS changed-source whitespace, high-confidence secrets, documentation")
 
 

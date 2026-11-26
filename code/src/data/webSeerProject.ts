@@ -31,7 +31,7 @@ const gallery: ProjectGalleryItem[] = screenshots.map(([id, file, caption, altTe
   previewUrl: `./projects/webseer-gallery/${file.replace('.png', '-preview.webp')}`,
   thumbnailUrl: `./projects/webseer-gallery/${file.replace('.png', '-thumb.webp')}`,
   cardUrl: `./projects/webseer-gallery/${file.replace('.png', '-card.webp')}`,
-  fullUrl: `./projects/webseer-gallery/${file.replace('.png', '-full.webp')}`,
+  fullUrl: `./projects/webseer-gallery/${file}`,
   evidence: 'Screenshot provided in the public WebSeer repository.',
   imageClassification: 'real-screenshot',
   order: index + 1,

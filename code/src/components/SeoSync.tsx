@@ -1,3 +1,4 @@
+import { resolvePublicAsset } from '../assets/public/resolvePublicAsset'
 import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { PORTFOLIO_HERO_CONTENT } from '../config/portfolioPositioning'
@@ -49,7 +50,7 @@ export function SeoSync() {
     // canonical portfolio card identical before and after hydration. The
     // localized browser title, description and favicon remain dynamic.
 
-    const configuredFavicon = s.faviconUrl?.trim()
+    const configuredFavicon = resolvePublicAsset(s.faviconUrl?.trim())
     const faviconSource = configuredFavicon || DEFAULT_FAVICON
 
     if (lastFaviconSource.current !== faviconSource) {
@@ -62,7 +63,7 @@ export function SeoSync() {
 
       favicon.type = configuredFavicon?.toLowerCase().includes('.svg')
         ? 'image/svg+xml'
-        : 'image/png'
+        : configuredFavicon?.toLowerCase().endsWith('.webp') ? 'image/webp' : 'image/png'
 
       favicon.href = configuredFavicon
         ? configuredFavicon

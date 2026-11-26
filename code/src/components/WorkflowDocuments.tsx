@@ -50,7 +50,7 @@ export function WorkflowDocuments({ locale }: { locale: Locale }) {
   }
 
   const lightboxItems = resources.map(({ item, text }) => ({
-    src: `${import.meta.env.BASE_URL}${item.publicPath}`,
+    src: `${import.meta.env.BASE_URL}workflow/${item.originalName}`,
     alt: text.title,
     downloadName: item.originalName,
   }))
