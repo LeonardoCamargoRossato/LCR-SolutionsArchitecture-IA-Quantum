@@ -39,7 +39,7 @@ export function buildProjectCarouselImages(project: Project): ProjectCarouselIma
       thumbnailSrc: item.thumbnailUrl || item.cardUrl || item.image!.url,
       alt: item.altText || item.image!.altText || item.caption || `${project.title} project image`,
       caption: item.caption,
-      downloadName: `${project.slug}-${item.id}${(item.fullUrl ?? '').toLowerCase().endsWith('.png') ? '.png' : ''}`,
+      downloadName: `${project.slug}-${item.id}${(item.fullUrl ?? '').toLowerCase().endsWith('.png') ? '.png' : (item.fullUrl ?? '').toLowerCase().endsWith('.webp') ? '.webp' : ''}`,
     }))
 
   const normalizePath = (path: string) => path.replace(/^\.\//, '/')

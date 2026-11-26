@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "624b685e74f31ed52bb6c1650ccd0222d368f887",
+  "mainReference": "67e8877b02fc23352306f75c04a40f4085b1f716",
+  "cases": [
+    {
+      "slug": "cities-comparing",
+      "slides": 9,
+      "additionalGallery": 8,
+      "order": [
+        "cover",
+        "cities-comparing-graphical-abstract",
+        "cities-comparing-series-compare-01",
+        "cities-comparing-series-compare-02",
+        "cities-comparing-series-compare-03",
+        "cities-comparing-series-compare-04",
+        "cities-comparing-series-compare-05",
+        "cities-comparing-series-compare-06",
+        "cities-comparing-series-compare-07"
+      ],
+      "abstractFull": "public/projects/cities-comparing/graphical-abstract-full.webp",
+      "abstractOriginalPng": "not found in versioned tree; preserve approved full WebP"
+    },
+    {
+      "slug": "foton-hub",
+      "slides": 1,
+      "additionalGallery": 0,
+      "order": [
+        "cover"
+      ],
+      "publicCmsGalleryCount": 0,
+      "unverifiedAdditionalImages": "No approved public references found in main, public CMS row, portfolio-media project prefix or relevant Drive name search. Do not migrate unverified private files."
+    }
+  ],
+  "files": [
+    {
+      "path": "public/assets/projects/cities-comparing/PNG/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.png",
+      "gitBlob": "7a533479723475efefc7814b6cdb8ea26a9288c0",
+      "bytes": 1510172
+    },
+    {
+      "path": "public/assets/projects/cities-comparing/WebP/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.webp",
+      "gitBlob": "3e568c17e6102a53c9ee10ac2220f62562b4b462",
+      "bytes": 123206
+    },
+    {
+      "path": "public/assets/projects/foton-hub/PNG/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.png",
+      "gitBlob": "9f2a9f832fe0d6550eab5dde383623874febcf0f",
+      "bytes": 1461104
+    },
+    {
+      "path": "public/assets/projects/foton-hub/WebP/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.webp",
+      "gitBlob": "544a94aefbe4b0bcc8b503ceed56a91149a60f76",
+      "bytes": 103166
+    },
+    {
+      "path": "public/projects/cities-comparing/graphical-abstract-card.webp",
+      "gitBlob": "96773cc6ea7a5a60ffa3dd41cae21e6dac1e3c29",
+      "bytes": 58282
+    },
+    {
+      "path": "public/projects/cities-comparing/graphical-abstract-full.webp",
+      "gitBlob": "672a7b3dec8327d26d3e57c100eedababe3774e9",
+      "bytes": 174976
+    },
+    {
+      "path": "public/projects/cities-comparing/graphical-abstract-preview.webp",
+      "gitBlob": "06cbb56ee5e72929658d4023a1ee795943f996f4",
+      "bytes": 242
+    },
+    {
+      "path": "public/projects/cities-comparing/graphical-abstract-thumb.webp",
+      "gitBlob": "7fe5433b6645546f3f69979757226521c2dcdf86",
+      "bytes": 12812
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_01.png",
+      "gitBlob": "ad3eb534b09d8c1a11875f33100acbcacde9e368",
+      "bytes": 324585
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_02.png",
+      "gitBlob": "4a807e16d455321d383670398c20f2079298b0b9",
+      "bytes": 421942
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_03.png",
+      "gitBlob": "c5ad431a60768dd97e1933a4f7412ad15e9988c1",
+      "bytes": 372852
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_04.png",
+      "gitBlob": "1ffa2f5b976c74fa8c42fd8354b270421dc7e1c8",
+      "bytes": 351214
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_05.png",
+      "gitBlob": "712202c89d1be0f4017dae8f6e6c4f89644e7610",
+      "bytes": 288623
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_06.png",
+      "gitBlob": "01d1ba40e7a4b8b8008cf0b4447b9eb52bcc43b4",
+      "bytes": 327490
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/PNG/Research_Platform_Series_Compare_07.png",
+      "gitBlob": "f02f28e861f5d14c3c07a2b22398b9063392fa56",
+      "bytes": 294473
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_01.webp",
+      "gitBlob": "8f486b374d6275fb9a248d2d79db062692511acf",
+      "bytes": 95132
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_02.webp",
+      "gitBlob": "29bbb3206da0f45b8a0cec7d973c6b5df72f607a",
+      "bytes": 111014
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_03.webp",
+      "gitBlob": "64866ce74e71b88fc277269cf5461488bbfb88d8",
+      "bytes": 106642
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_04.webp",
+      "gitBlob": "42968a7c48f326ca932a198d5545c14f21049275",
+      "bytes": 97824
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_05.webp",
+      "gitBlob": "e404f33051fc84afa3b9c556adea9f5fa0723d6e",
+      "bytes": 104476
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_06.webp",
+      "gitBlob": "67d99cec62ce194b4228a35919a19f7c2ad78119",
+      "bytes": 164012
+    },
+    {
+      "path": "public/projects/cities-comparing/series-compare/WebP/Research_Platform_Series_Compare_07.webp",
+      "gitBlob": "e5154a9d3a98fc05a9b41201622b6de7102ea10f",
+      "bytes": 122754
+    }
+  ],
+  "animeFinder": "unchanged"
+}

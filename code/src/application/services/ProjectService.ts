@@ -3,7 +3,7 @@ import type { IProjectRepository } from '../../domain/repositories/IProjectRepos
 import type { Project, ProjectPlacement, ProjectSource } from '../../domain/models/Project'
 import { defaultMoreProjects, defaultProjects } from '../../data/defaultProjects'
 import { citiesComparingContent } from '../../data/citiesComparing'
-import { citiesComparingSeriesGallery } from '../../data/citiesComparingSeriesGallery'
+import { withLocalSelectedCaseGallery } from '../../data/selectedCaseGalleries'
 import { ce235Project } from '../../data/ce235Project'
 import { animeFinderProject } from '../../data/animeFinderProject'
 import { metCompBProject } from '../../data/metCompBProject'
@@ -171,39 +171,12 @@ function enrich(project: Project): Project {
     }
   }
 
-  if (base.slug !== 'cities-comparing') return enriched
+  if (base.slug !== 'cities-comparing') return withLocalSelectedCaseGallery(enriched)
 
-  // Keep the approved platform narrative current even when Supabase has legacy
-  // Streamlit-only copy, while retaining its visibility, cover and institution ID.
-  return {
+  // Preserve the approved case narrative, but never use CMS gallery content.
+  return withLocalSelectedCaseGallery({
     ...enriched,
     ...citiesComparingContent,
-    // Keep CMS cover in the first slide and retain the approved graphical
-    // abstract as an additional gallery slide, never discard the original.
-    coverImage: enriched.coverImage ?? base.coverImage,
-    imageType: enriched.imageType ?? base.imageType,
-    // Keep the existing two slides (CMS cover + the graphical abstract) first.
-    // Add seven approved series screenshots in upload order as slides 3–9.
-    // Do not duplicate entries that an editor later adds to the CMS gallery.
-    gallery: [
-      ...(base.coverImage && !enriched.gallery.some((item) =>
-        item.id === 'cities-comparing-graphical-abstract' ||
-        item.image?.url === base.coverImage?.url
-      ) ? [{
-        id: 'cities-comparing-graphical-abstract',
-        image: base.coverImage,
-        caption: 'Graphical abstract',
-        altText: base.coverImage.altText ?? 'Cities Comparing graphical abstract',
-        cardUrl: base.coverImage.cardUrl,
-        thumbnailUrl: base.coverImage.thumbnailUrl,
-        fullUrl: base.coverImage.fullUrl,
-        order: 1,
-        visible: true,
-      }] : []),
-      ...enriched.gallery,
-      ...citiesComparingSeriesGallery.filter((asset) =>
-        !enriched.gallery.some((item) => item.id === asset.id)),
-    ],
     links: { ...enriched.links, ...citiesComparingContent.links },
     sections: { ...enriched.sections, ...citiesComparingContent.sections },
     translations: {
@@ -217,7 +190,7 @@ function enrich(project: Project): Project {
         },
       },
     },
-  }
+  })
 }
 
 function sortEditorial(items: Project[]) {
@@ -240,11 +213,11 @@ export function selectedCaseFallback(slug: string): Project | undefined {
   if (!card) return undefined
   const existing = defaults.find(p => p.slug === card.slug)
   if (!existing) return undefined
-  return { ...existing, ...card, sections:existing.sections, gallery:existing.gallery,
+  return withLocalSelectedCaseGallery({ ...existing, ...card, sections:existing.sections, gallery:existing.gallery,
     translations:{ ...existing.translations, 'pt-BR':{
       ...existing.translations?.['pt-BR'], ...card.translations?.['pt-BR'],
       sections:existing.translations?.['pt-BR']?.sections,
-    } } }
+    } } })
 }
 export class ProjectService {
   constructor(private repo: IProjectRepository) {}

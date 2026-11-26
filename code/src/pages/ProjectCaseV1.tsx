@@ -1,3 +1,4 @@
+import { withLocalSelectedCaseGallery } from '../data/selectedCaseGalleries'
 import { isSelectedWork } from '../data/selectedWork'
 import { selectedCaseFallback } from '../application/services/ProjectService'
 import { useEffect, useLayoutEffect, useState } from 'react'
@@ -64,7 +65,7 @@ export function ProjectCaseV1() {
   }, [slug, publicSource, isAdmin])
 
   const source = publicSource ?? adminProject ?? (slug ? selectedCaseFallback(slug) : undefined)
-  const displaySource = source && animeFinderAssetsReady ? withAnimeFinderScreenshots(source) : source
+  const displaySource = source && animeFinderAssetsReady ? withAnimeFinderScreenshots(source) : source ? withLocalSelectedCaseGallery(source) : source
   const project = displaySource ? localizedProject(displaySource, locale) : undefined
 
   useEffect(() => {
