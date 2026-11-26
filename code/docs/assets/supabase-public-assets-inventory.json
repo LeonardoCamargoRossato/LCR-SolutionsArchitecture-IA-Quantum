@@ -1,0 +1,1432 @@
+{
+  "schema_version": "1.0.0",
+  "summary": {
+    "source_bucket": "portfolio-media",
+    "source_project_id": "wdjffhfnzydudmhhekmk",
+    "source_public": true,
+    "inventory_date": "2026-11-25",
+    "bucket_object_count": 77,
+    "bucket_total_bytes": 132475975,
+    "github_new_file_count": 57,
+    "github_new_bytes": 113032100,
+    "exact_duplicates_existing_github": 0,
+    "exact_duplicates_within_supabase": 4,
+    "legacy_root_duplicates": 7,
+    "content_reference_count": 31,
+    "excluded_or_unreferenced_count": 9
+  },
+  "assets": [
+    {
+      "id": "about/gallery/1789571785798-b6287f6d-cc44-4bd3-8783-ca2fbdf2930b-palestrando-1.jpg",
+      "supabase_path": "about/gallery/1789571785798-b6287f6d-cc44-4bd3-8783-ca2fbdf2930b-palestrando-1.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571785798-b6287f6d-cc44-4bd3-8783-ca2fbdf2930b-palestrando-1.jpg",
+      "project_or_page": "about/gallery",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 1280,
+        "height": 577
+      },
+      "size_bytes": 88597,
+      "sha256": "0e96d62d78e631847224ffe425b747ef252847f0bbc18dc723a80c50f5eac558",
+      "status": "copied",
+      "reason": "visible about gallery original"
+    },
+    {
+      "id": "about/gallery/1789571793547-0cefe15d-dff1-4d14-83da-d2cee9bc3f96-palestrando-2.jpg",
+      "supabase_path": "about/gallery/1789571793547-0cefe15d-dff1-4d14-83da-d2cee9bc3f96-palestrando-2.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571793547-0cefe15d-dff1-4d14-83da-d2cee9bc3f96-palestrando-2.jpg",
+      "project_or_page": "about/gallery",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 4032,
+        "height": 3024
+      },
+      "size_bytes": 825275,
+      "sha256": "a77861ade8633acef39ae68e6168ef6a26ebb3d8ebf85d94c14e8d58b9eb6c32",
+      "status": "copied",
+      "reason": "visible about gallery original"
+    },
+    {
+      "id": "about/gallery/1789571801186-0f09a16d-f380-455d-bfcd-8d26548bb286-palestrando-3.jpg",
+      "supabase_path": "about/gallery/1789571801186-0f09a16d-f380-455d-bfcd-8d26548bb286-palestrando-3.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571801186-0f09a16d-f380-455d-bfcd-8d26548bb286-palestrando-3.jpg",
+      "project_or_page": "about/gallery",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 4032,
+        "height": 3024
+      },
+      "size_bytes": 1311921,
+      "sha256": "bd9acc0074d133ad45efb6b22e0bd2b35ea95cd5ecc1cff456c6169cc24bda6a",
+      "status": "copied",
+      "reason": "visible about gallery original"
+    },
+    {
+      "id": "about/gallery/1789571811030-2945a4f7-87e0-4535-9841-4cfde152eceb-palestrando-4.jpg",
+      "supabase_path": "about/gallery/1789571811030-2945a4f7-87e0-4535-9841-4cfde152eceb-palestrando-4.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571811030-2945a4f7-87e0-4535-9841-4cfde152eceb-palestrando-4.jpg",
+      "project_or_page": "about/gallery",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 1280,
+        "height": 960
+      },
+      "size_bytes": 239321,
+      "sha256": "2b0011c9528a80310bc37c282809832225ef403211641dc5199c9252139a3e59",
+      "status": "copied",
+      "reason": "visible about gallery original"
+    },
+    {
+      "id": "about/gallery/1789571818244-4b919e6a-9188-4b40-a58b-2a669be3c183-palestrando-5.jpg",
+      "supabase_path": "about/gallery/1789571818244-4b919e6a-9188-4b40-a58b-2a669be3c183-palestrando-5.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571818244-4b919e6a-9188-4b40-a58b-2a669be3c183-palestrando-5.jpg",
+      "project_or_page": "about/gallery",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 4032,
+        "height": 3024
+      },
+      "size_bytes": 1850639,
+      "sha256": "cad7786ed7046d8ffa64d893d951ea821f34ec2277ba057a2a983b8854431067",
+      "status": "copied",
+      "reason": "visible about gallery original"
+    },
+    {
+      "id": "about/gallery/1789571828453-cfc3921b-7e7a-4d64-827c-f3d4d3782ce5-palestrando-6.jpg",
+      "supabase_path": "about/gallery/1789571828453-cfc3921b-7e7a-4d64-827c-f3d4d3782ce5-palestrando-6.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571828453-cfc3921b-7e7a-4d64-827c-f3d4d3782ce5-palestrando-6.jpg",
+      "project_or_page": "about/gallery",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 4624,
+        "height": 3468
+      },
+      "size_bytes": 4348385,
+      "sha256": "68a7019f7e0c4de58d50f9edaf3cc875bd0e60043f297f55bc0761006fc3c46b",
+      "status": "copied",
+      "reason": "visible about gallery original"
+    },
+    {
+      "id": "about/gallery/1789571843484-bd83235e-a2bf-4416-ba8f-eb29eb271307-palestrando-7.jpg",
+      "supabase_path": "about/gallery/1789571843484-bd83235e-a2bf-4416-ba8f-eb29eb271307-palestrando-7.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571843484-bd83235e-a2bf-4416-ba8f-eb29eb271307-palestrando-7.jpg",
+      "project_or_page": "about/gallery",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 899,
+        "height": 1599
+      },
+      "size_bytes": 166545,
+      "sha256": "5a57b3a0ca4ec39245f26a1f10666eb5e880d1c9618012430600b6d2ea0a60f9",
+      "status": "copied",
+      "reason": "visible about gallery original"
+    },
+    {
+      "id": "about/gallery/1789571852749-67a24381-2bc4-4381-9cf4-08c3f43f4fe1-palestrando-8.jpg",
+      "supabase_path": "about/gallery/1789571852749-67a24381-2bc4-4381-9cf4-08c3f43f4fe1-palestrando-8.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571852749-67a24381-2bc4-4381-9cf4-08c3f43f4fe1-palestrando-8.jpg",
+      "project_or_page": "about/gallery",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 3024,
+        "height": 4032
+      },
+      "size_bytes": 878553,
+      "sha256": "4273cf7de9b6102174032d572051f987e353910315e0535ddefcd41eb39564d5",
+      "status": "copied",
+      "reason": "visible about gallery original"
+    },
+    {
+      "id": "about/gallery/1789571862628-119f0928-a93e-46ed-a09a-901f977f60a8-palestrando-9.jpg",
+      "supabase_path": "about/gallery/1789571862628-119f0928-a93e-46ed-a09a-901f977f60a8-palestrando-9.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571862628-119f0928-a93e-46ed-a09a-901f977f60a8-palestrando-9.jpg",
+      "project_or_page": "about/gallery",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "size_bytes": 3300330,
+      "sha256": "8714c93f82fac0b25961f704767916ab6a18a2d89ebf33d97fb515ad25da0e7b",
+      "status": "copied",
+      "reason": "visible about gallery original"
+    },
+    {
+      "id": "about/gallery/1789571874216-6ee14aef-bc22-4285-a12c-3c7da26b2273-palestrando-10.jpg",
+      "supabase_path": "about/gallery/1789571874216-6ee14aef-bc22-4285-a12c-3c7da26b2273-palestrando-10.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571874216-6ee14aef-bc22-4285-a12c-3c7da26b2273-palestrando-10.jpg",
+      "project_or_page": "about/gallery",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "size_bytes": 5358284,
+      "sha256": "368632bc5899907d3b68988417095891b016f009ac4c830d2af170e89d70cbc2",
+      "status": "copied",
+      "reason": "visible about gallery original"
+    },
+    {
+      "id": "about/gallery/1789571889074-8ba328b3-a6f4-4252-a9f9-c6d90be3eb80-palestrando-11.jpg",
+      "supabase_path": "about/gallery/1789571889074-8ba328b3-a6f4-4252-a9f9-c6d90be3eb80-palestrando-11.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571889074-8ba328b3-a6f4-4252-a9f9-c6d90be3eb80-palestrando-11.jpg",
+      "project_or_page": "about/gallery",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "size_bytes": 495365,
+      "sha256": "60a1e7176d444657872c5ca8fd00c30f27aaba7655fc3713e704f4603e08cee0",
+      "status": "copied",
+      "reason": "visible about gallery original"
+    },
+    {
+      "id": "about/gallery/1789572227151-8edb333c-c1f5-4b06-9d90-acf0b2bfbb2b-palestrando-12.jpg",
+      "supabase_path": "about/gallery/1789572227151-8edb333c-c1f5-4b06-9d90-acf0b2bfbb2b-palestrando-12.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789572227151-8edb333c-c1f5-4b06-9d90-acf0b2bfbb2b-palestrando-12.jpg",
+      "project_or_page": "about/gallery",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 1600,
+        "height": 1063
+      },
+      "size_bytes": 173298,
+      "sha256": "8b6178e4bb366346def402f464245959c6d0c768af9e672ab58a62c8684cac2a",
+      "status": "copied",
+      "reason": "visible about gallery original"
+    },
+    {
+      "id": "about/gallery/PNG/1789571785798-b6287f6d-cc44-4bd3-8783-ca2fbdf2930b-palestrando-1.png",
+      "supabase_path": "about/gallery/PNG/1789571785798-b6287f6d-cc44-4bd3-8783-ca2fbdf2930b-palestrando-1.png",
+      "github_path": "code/public/assets/about/gallery/PNG/1789571785798-b6287f6d-cc44-4bd3-8783-ca2fbdf2930b-palestrando-1.png",
+      "project_or_page": "about/gallery",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1280,
+        "height": 577
+      },
+      "size_bytes": 703366,
+      "sha256": "debd9f4d9b725efc03e168fb1b21bcbb7efb5b2ecf349bf24b936fd02fcc4635",
+      "status": "copied",
+      "reason": "visible about gallery PNG"
+    },
+    {
+      "id": "about/gallery/PNG/1789571793547-0cefe15d-dff1-4d14-83da-d2cee9bc3f96-palestrando-2.png",
+      "supabase_path": "about/gallery/PNG/1789571793547-0cefe15d-dff1-4d14-83da-d2cee9bc3f96-palestrando-2.png",
+      "github_path": "code/public/assets/about/gallery/PNG/1789571793547-0cefe15d-dff1-4d14-83da-d2cee9bc3f96-palestrando-2.png",
+      "project_or_page": "about/gallery",
+      "format": "image/png",
+      "dimensions": {
+        "width": 4032,
+        "height": 3024
+      },
+      "size_bytes": 7740220,
+      "sha256": "8d3187fb30f0fd8581312a728f59bd51ef3ddadf020123254289f1771aabc481",
+      "status": "copied",
+      "reason": "visible about gallery PNG"
+    },
+    {
+      "id": "about/gallery/PNG/1789571801186-0f09a16d-f380-455d-bfcd-8d26548bb286-palestrando-3.png",
+      "supabase_path": "about/gallery/PNG/1789571801186-0f09a16d-f380-455d-bfcd-8d26548bb286-palestrando-3.png",
+      "github_path": "code/public/assets/about/gallery/PNG/1789571801186-0f09a16d-f380-455d-bfcd-8d26548bb286-palestrando-3.png",
+      "project_or_page": "about/gallery",
+      "format": "image/png",
+      "dimensions": {
+        "width": 4032,
+        "height": 3024
+      },
+      "size_bytes": 12221132,
+      "sha256": "eac28ebad4e2454eab1ea05cf9cc49cfd3999a7f999b78bdf5b917c91230ad39",
+      "status": "copied",
+      "reason": "visible about gallery PNG"
+    },
+    {
+      "id": "about/gallery/PNG/1789571811030-2945a4f7-87e0-4535-9841-4cfde152eceb-palestrando-4.png",
+      "supabase_path": "about/gallery/PNG/1789571811030-2945a4f7-87e0-4535-9841-4cfde152eceb-palestrando-4.png",
+      "github_path": "code/public/assets/about/gallery/PNG/1789571811030-2945a4f7-87e0-4535-9841-4cfde152eceb-palestrando-4.png",
+      "project_or_page": "about/gallery",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1280,
+        "height": 960
+      },
+      "size_bytes": 2014745,
+      "sha256": "8cf626551089caefbedf90e9a40f16966791dbd807e3a95e658cc45fd72dcc01",
+      "status": "copied",
+      "reason": "visible about gallery PNG"
+    },
+    {
+      "id": "about/gallery/PNG/1789571818244-4b919e6a-9188-4b40-a58b-2a669be3c183-palestrando-5.png",
+      "supabase_path": "about/gallery/PNG/1789571818244-4b919e6a-9188-4b40-a58b-2a669be3c183-palestrando-5.png",
+      "github_path": "code/public/assets/about/gallery/PNG/1789571818244-4b919e6a-9188-4b40-a58b-2a669be3c183-palestrando-5.png",
+      "project_or_page": "about/gallery",
+      "format": "image/png",
+      "dimensions": {
+        "width": 4032,
+        "height": 3024
+      },
+      "size_bytes": 8048444,
+      "sha256": "2c9cce5a88da2e0c2692dcdff0a401a0d8596194fca85f471a625287f245298e",
+      "status": "copied",
+      "reason": "visible about gallery PNG"
+    },
+    {
+      "id": "about/gallery/PNG/1789571828453-cfc3921b-7e7a-4d64-827c-f3d4d3782ce5-palestrando-6.png",
+      "supabase_path": "about/gallery/PNG/1789571828453-cfc3921b-7e7a-4d64-827c-f3d4d3782ce5-palestrando-6.png",
+      "github_path": "code/public/assets/about/gallery/PNG/1789571828453-cfc3921b-7e7a-4d64-827c-f3d4d3782ce5-palestrando-6.png",
+      "project_or_page": "about/gallery",
+      "format": "image/png",
+      "dimensions": {
+        "width": 4624,
+        "height": 3468
+      },
+      "size_bytes": 15135381,
+      "sha256": "5e3c2c13b6228a979375be6448cb66273692a684b29647a0a6798ba62e672e25",
+      "status": "copied",
+      "reason": "visible about gallery PNG"
+    },
+    {
+      "id": "about/gallery/PNG/1789571843484-bd83235e-a2bf-4416-ba8f-eb29eb271307-palestrando-7.png",
+      "supabase_path": "about/gallery/PNG/1789571843484-bd83235e-a2bf-4416-ba8f-eb29eb271307-palestrando-7.png",
+      "github_path": "code/public/assets/about/gallery/PNG/1789571843484-bd83235e-a2bf-4416-ba8f-eb29eb271307-palestrando-7.png",
+      "project_or_page": "about/gallery",
+      "format": "image/png",
+      "dimensions": {
+        "width": 899,
+        "height": 1599
+      },
+      "size_bytes": 1401112,
+      "sha256": "5ca6d072f617009092780aaa905722133b0f0ecff707ce5d86c1d2d58234e47e",
+      "status": "copied",
+      "reason": "visible about gallery PNG"
+    },
+    {
+      "id": "about/gallery/PNG/1789571852749-67a24381-2bc4-4381-9cf4-08c3f43f4fe1-palestrando-8.png",
+      "supabase_path": "about/gallery/PNG/1789571852749-67a24381-2bc4-4381-9cf4-08c3f43f4fe1-palestrando-8.png",
+      "github_path": "code/public/assets/about/gallery/PNG/1789571852749-67a24381-2bc4-4381-9cf4-08c3f43f4fe1-palestrando-8.png",
+      "project_or_page": "about/gallery",
+      "format": "image/png",
+      "dimensions": {
+        "width": 3024,
+        "height": 4032
+      },
+      "size_bytes": 8429789,
+      "sha256": "25339ff0c3c2d2869bbda66cfe9090fc4231eb4fd748832f51eb7676b295bc5a",
+      "status": "copied",
+      "reason": "visible about gallery PNG"
+    },
+    {
+      "id": "about/gallery/PNG/1789571862628-119f0928-a93e-46ed-a09a-901f977f60a8-palestrando-9.png",
+      "supabase_path": "about/gallery/PNG/1789571862628-119f0928-a93e-46ed-a09a-901f977f60a8-palestrando-9.png",
+      "github_path": "code/public/assets/about/gallery/PNG/1789571862628-119f0928-a93e-46ed-a09a-901f977f60a8-palestrando-9.png",
+      "project_or_page": "about/gallery",
+      "format": "image/png",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "size_bytes": 6587088,
+      "sha256": "b2367b07f39b4abf7303c6cf4fa7961737de08a194b6429594affea198852749",
+      "status": "copied",
+      "reason": "visible about gallery PNG"
+    },
+    {
+      "id": "about/gallery/PNG/1789571874216-6ee14aef-bc22-4285-a12c-3c7da26b2273-palestrando-10.png",
+      "supabase_path": "about/gallery/PNG/1789571874216-6ee14aef-bc22-4285-a12c-3c7da26b2273-palestrando-10.png",
+      "github_path": "code/public/assets/about/gallery/PNG/1789571874216-6ee14aef-bc22-4285-a12c-3c7da26b2273-palestrando-10.png",
+      "project_or_page": "about/gallery",
+      "format": "image/png",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "size_bytes": 9818670,
+      "sha256": "dbce144571f6cbb4880df094ad16d43a0e94ec8cfe7c2da3a2533f688d20349c",
+      "status": "copied",
+      "reason": "visible about gallery PNG"
+    },
+    {
+      "id": "about/gallery/PNG/1789571889074-8ba328b3-a6f4-4252-a9f9-c6d90be3eb80-palestrando-11.png",
+      "supabase_path": "about/gallery/PNG/1789571889074-8ba328b3-a6f4-4252-a9f9-c6d90be3eb80-palestrando-11.png",
+      "github_path": "code/public/assets/about/gallery/PNG/1789571889074-8ba328b3-a6f4-4252-a9f9-c6d90be3eb80-palestrando-11.png",
+      "project_or_page": "about/gallery",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "size_bytes": 2187860,
+      "sha256": "93b5ca1031952d82263b44ec322c6f1d0174ad321c8bf02df0f977764623fc05",
+      "status": "copied",
+      "reason": "visible about gallery PNG"
+    },
+    {
+      "id": "about/gallery/PNG/1789572227151-8edb333c-c1f5-4b06-9d90-acf0b2bfbb2b-palestrando-12.png",
+      "supabase_path": "about/gallery/PNG/1789572227151-8edb333c-c1f5-4b06-9d90-acf0b2bfbb2b-palestrando-12.png",
+      "github_path": "code/public/assets/about/gallery/PNG/1789572227151-8edb333c-c1f5-4b06-9d90-acf0b2bfbb2b-palestrando-12.png",
+      "project_or_page": "about/gallery",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1600,
+        "height": 1063
+      },
+      "size_bytes": 1632512,
+      "sha256": "b7be1d8fe6d0ac1774b47bc587ee1556aac09a7f26f709098faeb48b1a6674f4",
+      "status": "copied",
+      "reason": "visible about gallery PNG"
+    },
+    {
+      "id": "about/gallery/WebP/1789571785798-b6287f6d-cc44-4bd3-8783-ca2fbdf2930b-palestrando-1.webp",
+      "supabase_path": "about/gallery/WebP/1789571785798-b6287f6d-cc44-4bd3-8783-ca2fbdf2930b-palestrando-1.webp",
+      "github_path": "code/public/assets/about/gallery/WebP/1789571785798-b6287f6d-cc44-4bd3-8783-ca2fbdf2930b-palestrando-1.webp",
+      "project_or_page": "about/gallery",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 1280,
+        "height": 577
+      },
+      "size_bytes": 63824,
+      "sha256": "762f1908f205e04da093b0615d2461419b3f0470f8b996d542858df3cdd257a3",
+      "status": "copied",
+      "reason": "visible about gallery WebP"
+    },
+    {
+      "id": "about/gallery/WebP/1789571793547-0cefe15d-dff1-4d14-83da-d2cee9bc3f96-palestrando-2.webp",
+      "supabase_path": "about/gallery/WebP/1789571793547-0cefe15d-dff1-4d14-83da-d2cee9bc3f96-palestrando-2.webp",
+      "github_path": "code/public/assets/about/gallery/WebP/1789571793547-0cefe15d-dff1-4d14-83da-d2cee9bc3f96-palestrando-2.webp",
+      "project_or_page": "about/gallery",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 4032,
+        "height": 3024
+      },
+      "size_bytes": 457190,
+      "sha256": "169f3a499f8cd6e321df4196d4a80e9342c1ccdbd6590712c08b0f3839f89079",
+      "status": "copied",
+      "reason": "visible about gallery WebP"
+    },
+    {
+      "id": "about/gallery/WebP/1789571801186-0f09a16d-f380-455d-bfcd-8d26548bb286-palestrando-3.webp",
+      "supabase_path": "about/gallery/WebP/1789571801186-0f09a16d-f380-455d-bfcd-8d26548bb286-palestrando-3.webp",
+      "github_path": "code/public/assets/about/gallery/WebP/1789571801186-0f09a16d-f380-455d-bfcd-8d26548bb286-palestrando-3.webp",
+      "project_or_page": "about/gallery",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 4032,
+        "height": 3024
+      },
+      "size_bytes": 1000500,
+      "sha256": "f47a9c86b3a021e260d3970a158ebe7cb2ce9fd8694301879abf70ec91047a41",
+      "status": "copied",
+      "reason": "visible about gallery WebP"
+    },
+    {
+      "id": "about/gallery/WebP/1789571811030-2945a4f7-87e0-4535-9841-4cfde152eceb-palestrando-4.webp",
+      "supabase_path": "about/gallery/WebP/1789571811030-2945a4f7-87e0-4535-9841-4cfde152eceb-palestrando-4.webp",
+      "github_path": "code/public/assets/about/gallery/WebP/1789571811030-2945a4f7-87e0-4535-9841-4cfde152eceb-palestrando-4.webp",
+      "project_or_page": "about/gallery",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 1280,
+        "height": 960
+      },
+      "size_bytes": 229256,
+      "sha256": "24e56cf798b897496b43ea111a658ab1be696cc1cf2072aa3ba211f2b2517f81",
+      "status": "copied",
+      "reason": "visible about gallery WebP"
+    },
+    {
+      "id": "about/gallery/WebP/1789571818244-4b919e6a-9188-4b40-a58b-2a669be3c183-palestrando-5.webp",
+      "supabase_path": "about/gallery/WebP/1789571818244-4b919e6a-9188-4b40-a58b-2a669be3c183-palestrando-5.webp",
+      "github_path": "code/public/assets/about/gallery/WebP/1789571818244-4b919e6a-9188-4b40-a58b-2a669be3c183-palestrando-5.webp",
+      "project_or_page": "about/gallery",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 4032,
+        "height": 3024
+      },
+      "size_bytes": 463258,
+      "sha256": "7885433cbcc5e9c1d521bf30223831b3706540af767e4eaab7e1bb6fcaa81401",
+      "status": "copied",
+      "reason": "visible about gallery WebP"
+    },
+    {
+      "id": "about/gallery/WebP/1789571828453-cfc3921b-7e7a-4d64-827c-f3d4d3782ce5-palestrando-6.webp",
+      "supabase_path": "about/gallery/WebP/1789571828453-cfc3921b-7e7a-4d64-827c-f3d4d3782ce5-palestrando-6.webp",
+      "github_path": "code/public/assets/about/gallery/WebP/1789571828453-cfc3921b-7e7a-4d64-827c-f3d4d3782ce5-palestrando-6.webp",
+      "project_or_page": "about/gallery",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 4624,
+        "height": 3468
+      },
+      "size_bytes": 803420,
+      "sha256": "e19733183e1201ee4a6286cb37daf6ec0251317fb88a9c1889f9cc54beff2214",
+      "status": "copied",
+      "reason": "visible about gallery WebP"
+    },
+    {
+      "id": "about/gallery/WebP/1789571843484-bd83235e-a2bf-4416-ba8f-eb29eb271307-palestrando-7.webp",
+      "supabase_path": "about/gallery/WebP/1789571843484-bd83235e-a2bf-4416-ba8f-eb29eb271307-palestrando-7.webp",
+      "github_path": "code/public/assets/about/gallery/WebP/1789571843484-bd83235e-a2bf-4416-ba8f-eb29eb271307-palestrando-7.webp",
+      "project_or_page": "about/gallery",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 899,
+        "height": 1599
+      },
+      "size_bytes": 123086,
+      "sha256": "33a55a2f1d6d2958c3eb8638d7711349a7b5ea6ac78f2991009117b87fbc6139",
+      "status": "copied",
+      "reason": "visible about gallery WebP"
+    },
+    {
+      "id": "about/gallery/WebP/1789571852749-67a24381-2bc4-4381-9cf4-08c3f43f4fe1-palestrando-8.webp",
+      "supabase_path": "about/gallery/WebP/1789571852749-67a24381-2bc4-4381-9cf4-08c3f43f4fe1-palestrando-8.webp",
+      "github_path": "code/public/assets/about/gallery/WebP/1789571852749-67a24381-2bc4-4381-9cf4-08c3f43f4fe1-palestrando-8.webp",
+      "project_or_page": "about/gallery",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 3024,
+        "height": 4032
+      },
+      "size_bytes": 529950,
+      "sha256": "1b0476acfd287d7550d2643f581bd224ba7d30a528c7edba158a8eff3b252806",
+      "status": "copied",
+      "reason": "visible about gallery WebP"
+    },
+    {
+      "id": "about/gallery/WebP/1789571862628-119f0928-a93e-46ed-a09a-901f977f60a8-palestrando-9.webp",
+      "supabase_path": "about/gallery/WebP/1789571862628-119f0928-a93e-46ed-a09a-901f977f60a8-palestrando-9.webp",
+      "github_path": "code/public/assets/about/gallery/WebP/1789571862628-119f0928-a93e-46ed-a09a-901f977f60a8-palestrando-9.webp",
+      "project_or_page": "about/gallery",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "size_bytes": 375000,
+      "sha256": "31b2d74fc4bc83259e8c9ad4097a8917558f297e534a8def19b8857f6040d1d0",
+      "status": "copied",
+      "reason": "visible about gallery WebP"
+    },
+    {
+      "id": "about/gallery/WebP/1789571874216-6ee14aef-bc22-4285-a12c-3c7da26b2273-palestrando-10.webp",
+      "supabase_path": "about/gallery/WebP/1789571874216-6ee14aef-bc22-4285-a12c-3c7da26b2273-palestrando-10.webp",
+      "github_path": "code/public/assets/about/gallery/WebP/1789571874216-6ee14aef-bc22-4285-a12c-3c7da26b2273-palestrando-10.webp",
+      "project_or_page": "about/gallery",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 3000,
+        "height": 2000
+      },
+      "size_bytes": 666648,
+      "sha256": "ad36379aef191095e3b8ecc5bbdfddd8f8b4f094714045f28858e98ee3e9036f",
+      "status": "copied",
+      "reason": "visible about gallery WebP"
+    },
+    {
+      "id": "about/gallery/WebP/1789571889074-8ba328b3-a6f4-4252-a9f9-c6d90be3eb80-palestrando-11.webp",
+      "supabase_path": "about/gallery/WebP/1789571889074-8ba328b3-a6f4-4252-a9f9-c6d90be3eb80-palestrando-11.webp",
+      "github_path": "code/public/assets/about/gallery/WebP/1789571889074-8ba328b3-a6f4-4252-a9f9-c6d90be3eb80-palestrando-11.webp",
+      "project_or_page": "about/gallery",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 1080,
+        "height": 1920
+      },
+      "size_bytes": 166004,
+      "sha256": "cbb3982dea7c221d9eacff9f5f3e60f332ebe8fcbbccfc047a00704f0d1c28e5",
+      "status": "copied",
+      "reason": "visible about gallery WebP"
+    },
+    {
+      "id": "about/gallery/WebP/1789572227151-8edb333c-c1f5-4b06-9d90-acf0b2bfbb2b-palestrando-12.webp",
+      "supabase_path": "about/gallery/WebP/1789572227151-8edb333c-c1f5-4b06-9d90-acf0b2bfbb2b-palestrando-12.webp",
+      "github_path": "code/public/assets/about/gallery/WebP/1789572227151-8edb333c-c1f5-4b06-9d90-acf0b2bfbb2b-palestrando-12.webp",
+      "project_or_page": "about/gallery",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 1600,
+        "height": 1063
+      },
+      "size_bytes": 126450,
+      "sha256": "62c06bd59570196664fec90b791cb4bde26453795e9d0e347adacb5b015e46bd",
+      "status": "copied",
+      "reason": "visible about gallery WebP"
+    },
+    {
+      "id": "cv/1789402779401-e682ffff-84d2-4f28-825e-1d121352e0bd-CV-2026-A-I-Applied.pdf",
+      "supabase_path": "cv/1789402779401-e682ffff-84d2-4f28-825e-1d121352e0bd-CV-2026-A-I-Applied.pdf",
+      "github_path": null,
+      "project_or_page": null,
+      "format": "application/pdf",
+      "dimensions": null,
+      "size_bytes": 218316,
+      "sha256": null,
+      "status": "not_currently_referenced",
+      "reason": "Hidden/retired content or no current visible catalog reference; not copied and left untouched in Supabase."
+    },
+    {
+      "id": "cv/1792380202950-206c2842-6852-4d61-90c1-b24ce1ab5bd2-LeonardoRossato_CV_2026-pdf.pdf",
+      "supabase_path": "cv/1792380202950-206c2842-6852-4d61-90c1-b24ce1ab5bd2-LeonardoRossato_CV_2026-pdf.pdf",
+      "github_path": "code/public/assets/documents/cv/1792380202950-206c2842-6852-4d61-90c1-b24ce1ab5bd2-LeonardoRossato_CV_2026-pdf.pdf",
+      "project_or_page": "about/cv",
+      "format": "application/pdf",
+      "dimensions": null,
+      "size_bytes": 33281,
+      "sha256": "d366de22a0534075039d6c003b55e9396593f606191d5b78489f8a1e1231c95f",
+      "status": "copied",
+      "reason": "current public CV"
+    },
+    {
+      "id": "more-projects/embedded-control-platform/institutions/1789600185611-5b245c1f-73a3-44de-8fad-131cc76caeff-ITA_logo.png",
+      "supabase_path": "more-projects/embedded-control-platform/institutions/1789600185611-5b245c1f-73a3-44de-8fad-131cc76caeff-ITA_logo.png",
+      "github_path": "code/public/assets/institutions/raster/1789600185611-5b245c1f-73a3-44de-8fad-131cc76caeff-ITA_logo.png",
+      "project_or_page": "projects/embedded-control-platform",
+      "format": "image/png",
+      "dimensions": {
+        "width": 496,
+        "height": 188
+      },
+      "size_bytes": 67030,
+      "sha256": "7332795b5f3f00271f1a549c7c6bb2926d8e684f90d0e547a9535c4141ab61bb",
+      "status": "copied",
+      "reason": "institution logo used by embedded-control-platform"
+    },
+    {
+      "id": "more-projects/quantum-education-apps/institutions/1789600655230-55ec7ea4-13b8-4836-a07d-f8a14aa36a03-LogoInstitutoPense-1000-X-200-Px-1.png",
+      "supabase_path": "more-projects/quantum-education-apps/institutions/1789600655230-55ec7ea4-13b8-4836-a07d-f8a14aa36a03-LogoInstitutoPense-1000-X-200-Px-1.png",
+      "github_path": "code/public/assets/institutions/raster/1789600655230-55ec7ea4-13b8-4836-a07d-f8a14aa36a03-LogoInstitutoPense-1000-X-200-Px-1.png",
+      "project_or_page": "projects/quantum-education-apps",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1000,
+        "height": 200
+      },
+      "size_bytes": 72494,
+      "sha256": "98a2b8f0c6ad22d8f1da521db52a676613112e0c60007d27a8bfd87eef344fdc",
+      "status": "copied",
+      "reason": "institution logo used by quantum-education-apps"
+    },
+    {
+      "id": "more-projects/quantum-education-apps/institutions/1789600676711-6c20d346-f23e-40e7-ad24-ca81258169eb-Logo-Foton-Azul.png",
+      "supabase_path": "more-projects/quantum-education-apps/institutions/1789600676711-6c20d346-f23e-40e7-ad24-ca81258169eb-Logo-Foton-Azul.png",
+      "github_path": "code/public/assets/institutions/raster/1789600676711-6c20d346-f23e-40e7-ad24-ca81258169eb-Logo-Foton-Azul.png",
+      "project_or_page": "projects/quantum-education-apps",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1924,
+        "height": 595
+      },
+      "size_bytes": 289787,
+      "sha256": "2e4182f6c9f30c19138d7a0863e55cb10e099a9485d7ab2766b91e0486fdc98b",
+      "status": "copied",
+      "reason": "institution logo used by quantum-education-apps"
+    },
+    {
+      "id": "more-projects/scientific-analysis-toolkit/institutions/1789600264474-e1529b1b-32d6-4c31-804a-20fe469ae98a-IF-UFRGS_-logo.png",
+      "supabase_path": "more-projects/scientific-analysis-toolkit/institutions/1789600264474-e1529b1b-32d6-4c31-804a-20fe469ae98a-IF-UFRGS_-logo.png",
+      "github_path": null,
+      "project_or_page": null,
+      "format": "image/png",
+      "dimensions": null,
+      "size_bytes": 163526,
+      "sha256": null,
+      "status": "excluded_hidden_or_retired",
+      "reason": "Hidden/retired content or no current visible catalog reference; not copied and left untouched in Supabase."
+    },
+    {
+      "id": "more-projects/scientific-analysis-toolkit/institutions/1789600275007-1c914e2d-76a1-4ad7-829c-14ebc2e7dfb8-Logo_UFRGS.png",
+      "supabase_path": "more-projects/scientific-analysis-toolkit/institutions/1789600275007-1c914e2d-76a1-4ad7-829c-14ebc2e7dfb8-Logo_UFRGS.png",
+      "github_path": null,
+      "project_or_page": null,
+      "format": "image/png",
+      "dimensions": null,
+      "size_bytes": 206724,
+      "sha256": null,
+      "status": "excluded_hidden_or_retired",
+      "reason": "Hidden/retired content or no current visible catalog reference; not copied and left untouched in Supabase."
+    },
+    {
+      "id": "more-projects/webseer/institutions/1789600382591-61d10932-506f-4e88-aa50-17eac34e1911-ITA_logo.png",
+      "supabase_path": "more-projects/webseer/institutions/1789600382591-61d10932-506f-4e88-aa50-17eac34e1911-ITA_logo.png",
+      "github_path": "code/public/assets/institutions/raster/1789600185611-5b245c1f-73a3-44de-8fad-131cc76caeff-ITA_logo.png",
+      "project_or_page": "projects/webseer",
+      "format": "image/png",
+      "dimensions": {
+        "width": 496,
+        "height": 188
+      },
+      "size_bytes": 67030,
+      "sha256": "7332795b5f3f00271f1a549c7c6bb2926d8e684f90d0e547a9535c4141ab61bb",
+      "status": "duplicate_supabase_content",
+      "reason": "Exact SHA-256 duplicated by another Supabase object; using one GitHub copy."
+    },
+    {
+      "id": "more-projects/webseer/institutions/1789600419537-3a787001-ad0c-4851-94b4-3f2cabe65e6c-Logo-Foton-Azul.png",
+      "supabase_path": "more-projects/webseer/institutions/1789600419537-3a787001-ad0c-4851-94b4-3f2cabe65e6c-Logo-Foton-Azul.png",
+      "github_path": "code/public/assets/institutions/raster/1789600676711-6c20d346-f23e-40e7-ad24-ca81258169eb-Logo-Foton-Azul.png",
+      "project_or_page": "projects/webseer",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1924,
+        "height": 595
+      },
+      "size_bytes": 289787,
+      "sha256": "2e4182f6c9f30c19138d7a0863e55cb10e099a9485d7ab2766b91e0486fdc98b",
+      "status": "duplicate_supabase_content",
+      "reason": "Exact SHA-256 duplicated by another Supabase object; using one GitHub copy."
+    },
+    {
+      "id": "profile/1792380122932-87ee4d65-cc32-4005-85d5-24fb6ed67957-fotoperfilLCR.jpeg",
+      "supabase_path": "profile/1792380122932-87ee4d65-cc32-4005-85d5-24fb6ed67957-fotoperfilLCR.jpeg",
+      "github_path": "code/public/assets/about/profile/1792380122932-87ee4d65-cc32-4005-85d5-24fb6ed67957-fotoperfilLCR.jpeg",
+      "project_or_page": "about/profile",
+      "format": "image/jpeg",
+      "dimensions": {
+        "width": 640,
+        "height": 640
+      },
+      "size_bytes": 28945,
+      "sha256": "47dd48f8b22c574f3f575ed7dfc318d526b4255eca74c4f81c34da82f6a55a2f",
+      "status": "copied",
+      "reason": "current public profile image"
+    },
+    {
+      "id": "projects/cities-comparing/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.png",
+      "supabase_path": "projects/cities-comparing/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.png",
+      "github_path": "code/public/assets/projects/cities-comparing/PNG/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.png",
+      "project_or_page": "projects/cities-comparing",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "size_bytes": 1510172,
+      "sha256": "afff17fd8c1f0738e382171a1c26e35877301b89d323afb3f7752abbd26940be",
+      "status": "duplicate_supabase_legacy",
+      "reason": "Byte-identical root-level legacy PNG; canonical nested PNG retained."
+    },
+    {
+      "id": "projects/cities-comparing/PNG/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.png",
+      "supabase_path": "projects/cities-comparing/PNG/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.png",
+      "github_path": "code/public/assets/projects/cities-comparing/PNG/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.png",
+      "project_or_page": "projects/cities-comparing",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "size_bytes": 1510172,
+      "sha256": "afff17fd8c1f0738e382171a1c26e35877301b89d323afb3f7752abbd26940be",
+      "status": "copied",
+      "reason": "visible project city-comparing referenced cover"
+    },
+    {
+      "id": "projects/cities-comparing/WebP/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.webp",
+      "supabase_path": "projects/cities-comparing/WebP/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.webp",
+      "github_path": "code/public/assets/projects/cities-comparing/WebP/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.webp",
+      "project_or_page": "projects/cities-comparing",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "size_bytes": 123206,
+      "sha256": "afaad6da2a5158520fa97429d10d4949262f7b662e7b95f80afb4a3d0bcd5375",
+      "status": "copied",
+      "reason": "visible project city-comparing optimized cover"
+    },
+    {
+      "id": "projects/city-comparing/institutions/1789601940148-324aca00-69d4-4a00-9bc9-79686cfb9415-IF-UFRGS_-logo.png",
+      "supabase_path": "projects/city-comparing/institutions/1789601940148-324aca00-69d4-4a00-9bc9-79686cfb9415-IF-UFRGS_-logo.png",
+      "github_path": "code/public/assets/institutions/raster/1789601940148-324aca00-69d4-4a00-9bc9-79686cfb9415-IF-UFRGS_-logo.png",
+      "project_or_page": "projects/city-comparing",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1181,
+        "height": 376
+      },
+      "size_bytes": 163526,
+      "sha256": "a8892965a41c7f55d06930e5be1530d26aeded4cf205656c74a555cc043326f3",
+      "status": "copied",
+      "reason": "institution logo used by city-comparing"
+    },
+    {
+      "id": "projects/city-comparing/institutions/1789601953572-49ac7afa-388c-40c3-b668-b658cbc84acc-Logo_UFRGS.png",
+      "supabase_path": "projects/city-comparing/institutions/1789601953572-49ac7afa-388c-40c3-b668-b658cbc84acc-Logo_UFRGS.png",
+      "github_path": "code/public/assets/institutions/raster/1789601953572-49ac7afa-388c-40c3-b668-b658cbc84acc-Logo_UFRGS.png",
+      "project_or_page": "projects/city-comparing",
+      "format": "image/png",
+      "dimensions": {
+        "width": 724,
+        "height": 563
+      },
+      "size_bytes": 206724,
+      "sha256": "6734814c488dfa0c378ddf4389f37114a24351cf8e58bdff94fb6d93b6cdb9f1",
+      "status": "copied",
+      "reason": "institution logo used by city-comparing"
+    },
+    {
+      "id": "projects/city-comparing/institutions/1789601963273-bcde279c-4d71-4cc7-8fe6-54852ed36671-LogoInstitutoPense-1000-X-200-Px-1.png",
+      "supabase_path": "projects/city-comparing/institutions/1789601963273-bcde279c-4d71-4cc7-8fe6-54852ed36671-LogoInstitutoPense-1000-X-200-Px-1.png",
+      "github_path": "code/public/assets/institutions/raster/1789600655230-55ec7ea4-13b8-4836-a07d-f8a14aa36a03-LogoInstitutoPense-1000-X-200-Px-1.png",
+      "project_or_page": "projects/city-comparing",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1000,
+        "height": 200
+      },
+      "size_bytes": 72494,
+      "sha256": "98a2b8f0c6ad22d8f1da521db52a676613112e0c60007d27a8bfd87eef344fdc",
+      "status": "duplicate_supabase_content",
+      "reason": "Exact SHA-256 duplicated by another Supabase object; using one GitHub copy."
+    },
+    {
+      "id": "projects/embedded-control-platform/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png",
+      "supabase_path": "projects/embedded-control-platform/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png",
+      "github_path": "code/public/assets/projects/embedded-control-platform/PNG/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png",
+      "project_or_page": "projects/embedded-control-platform",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "size_bytes": 1808444,
+      "sha256": "cca752dab6e39331ae2040edba6fa5084d421609f258154bc0b1129cebbb45e7",
+      "status": "duplicate_supabase_legacy",
+      "reason": "Byte-identical root-level legacy PNG; canonical nested PNG retained."
+    },
+    {
+      "id": "projects/embedded-control-platform/PNG/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png",
+      "supabase_path": "projects/embedded-control-platform/PNG/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png",
+      "github_path": "code/public/assets/projects/embedded-control-platform/PNG/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png",
+      "project_or_page": "projects/embedded-control-platform",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "size_bytes": 1808444,
+      "sha256": "cca752dab6e39331ae2040edba6fa5084d421609f258154bc0b1129cebbb45e7",
+      "status": "copied",
+      "reason": "visible project embedded-control-platform referenced cover"
+    },
+    {
+      "id": "projects/embedded-control-platform/WebP/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.webp",
+      "supabase_path": "projects/embedded-control-platform/WebP/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.webp",
+      "github_path": "code/public/assets/projects/embedded-control-platform/WebP/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.webp",
+      "project_or_page": "projects/embedded-control-platform",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "size_bytes": 152558,
+      "sha256": "5d8a32a0e9438e9dae5baad74e223a7c2d0c09f3dff8536586ffa256f9f22b8f",
+      "status": "copied",
+      "reason": "visible project embedded-control-platform optimized cover"
+    },
+    {
+      "id": "projects/foton-hub/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.png",
+      "supabase_path": "projects/foton-hub/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.png",
+      "github_path": "code/public/assets/projects/foton-hub/PNG/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.png",
+      "project_or_page": "projects/foton-hub",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "size_bytes": 1461104,
+      "sha256": "03f5ccc2c6b8cf86df7fea39eee309b64946fd44f0bdc1681d81ecb78fc89ea2",
+      "status": "duplicate_supabase_legacy",
+      "reason": "Byte-identical root-level legacy PNG; canonical nested PNG retained."
+    },
+    {
+      "id": "projects/foton-hub/PNG/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.png",
+      "supabase_path": "projects/foton-hub/PNG/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.png",
+      "github_path": "code/public/assets/projects/foton-hub/PNG/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.png",
+      "project_or_page": "projects/foton-hub",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "size_bytes": 1461104,
+      "sha256": "03f5ccc2c6b8cf86df7fea39eee309b64946fd44f0bdc1681d81ecb78fc89ea2",
+      "status": "copied",
+      "reason": "visible project foton-hub referenced cover"
+    },
+    {
+      "id": "projects/foton-hub/WebP/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.webp",
+      "supabase_path": "projects/foton-hub/WebP/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.webp",
+      "github_path": "code/public/assets/projects/foton-hub/WebP/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.webp",
+      "project_or_page": "projects/foton-hub",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "size_bytes": 103166,
+      "sha256": "d0645fdeb4091f1d12322eaf934812fa68e57f5cff4c74996fd867d90b30f66a",
+      "status": "copied",
+      "reason": "visible project foton-hub optimized cover"
+    },
+    {
+      "id": "projects/foton-hub/institutions/1789601907389-fcb9525c-9e02-4809-b3f2-4a0a7282fca0-Logo-Foton-Azul.png",
+      "supabase_path": "projects/foton-hub/institutions/1789601907389-fcb9525c-9e02-4809-b3f2-4a0a7282fca0-Logo-Foton-Azul.png",
+      "github_path": "code/public/assets/institutions/raster/1789600676711-6c20d346-f23e-40e7-ad24-ca81258169eb-Logo-Foton-Azul.png",
+      "project_or_page": "projects/foton-hub",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1924,
+        "height": 595
+      },
+      "size_bytes": 289787,
+      "sha256": "2e4182f6c9f30c19138d7a0863e55cb10e099a9485d7ab2766b91e0486fdc98b",
+      "status": "duplicate_supabase_content",
+      "reason": "Exact SHA-256 duplicated by another Supabase object; using one GitHub copy."
+    },
+    {
+      "id": "projects/hamlet/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png",
+      "supabase_path": "projects/hamlet/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png",
+      "github_path": "code/public/assets/projects/hamlet/PNG/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png",
+      "project_or_page": "projects/hamlet",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "size_bytes": 1890644,
+      "sha256": "7010dea8448bda827328606d31ffe6bf05b109cb65c4809b92cb49ba43b7ba17",
+      "status": "duplicate_supabase_legacy",
+      "reason": "Byte-identical root-level legacy PNG; canonical nested PNG retained."
+    },
+    {
+      "id": "projects/hamlet/PNG/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png",
+      "supabase_path": "projects/hamlet/PNG/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png",
+      "github_path": "code/public/assets/projects/hamlet/PNG/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png",
+      "project_or_page": "projects/hamlet",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "size_bytes": 1890644,
+      "sha256": "7010dea8448bda827328606d31ffe6bf05b109cb65c4809b92cb49ba43b7ba17",
+      "status": "copied",
+      "reason": "visible project hamlet referenced cover"
+    },
+    {
+      "id": "projects/hamlet/WebP/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.webp",
+      "supabase_path": "projects/hamlet/WebP/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.webp",
+      "github_path": "code/public/assets/projects/hamlet/WebP/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.webp",
+      "project_or_page": "projects/hamlet",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "size_bytes": 103640,
+      "sha256": "0eeded55246abcb0e5007ed027f3f25e8c3694bdfcea7d10dfa01f42406e2bf9",
+      "status": "copied",
+      "reason": "visible project hamlet optimized cover"
+    },
+    {
+      "id": "projects/pdf-frequency-analyzer/1789577994613-5507d9da-b3c8-42c1-9f27-ecdb8989dbef-FrequencyAnalyser_CapaCard.png",
+      "supabase_path": "projects/pdf-frequency-analyzer/1789577994613-5507d9da-b3c8-42c1-9f27-ecdb8989dbef-FrequencyAnalyser_CapaCard.png",
+      "github_path": null,
+      "project_or_page": null,
+      "format": "image/png",
+      "dimensions": null,
+      "size_bytes": 1358618,
+      "sha256": null,
+      "status": "excluded_hidden_or_retired",
+      "reason": "Hidden/retired content or no current visible catalog reference; not copied and left untouched in Supabase."
+    },
+    {
+      "id": "projects/pdf-frequency-analyzer/PNG/1789577994613-5507d9da-b3c8-42c1-9f27-ecdb8989dbef-FrequencyAnalyser_CapaCard.png",
+      "supabase_path": "projects/pdf-frequency-analyzer/PNG/1789577994613-5507d9da-b3c8-42c1-9f27-ecdb8989dbef-FrequencyAnalyser_CapaCard.png",
+      "github_path": null,
+      "project_or_page": null,
+      "format": "image/png",
+      "dimensions": null,
+      "size_bytes": 1358618,
+      "sha256": null,
+      "status": "excluded_hidden_or_retired",
+      "reason": "Hidden/retired content or no current visible catalog reference; not copied and left untouched in Supabase."
+    },
+    {
+      "id": "projects/pdf-frequency-analyzer/WebP/1789577994613-5507d9da-b3c8-42c1-9f27-ecdb8989dbef-FrequencyAnalyser_CapaCard.webp",
+      "supabase_path": "projects/pdf-frequency-analyzer/WebP/1789577994613-5507d9da-b3c8-42c1-9f27-ecdb8989dbef-FrequencyAnalyser_CapaCard.webp",
+      "github_path": null,
+      "project_or_page": null,
+      "format": "image/webp",
+      "dimensions": null,
+      "size_bytes": 94572,
+      "sha256": null,
+      "status": "excluded_hidden_or_retired",
+      "reason": "Hidden/retired content or no current visible catalog reference; not copied and left untouched in Supabase."
+    },
+    {
+      "id": "projects/quantum-education-apps/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png",
+      "supabase_path": "projects/quantum-education-apps/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png",
+      "github_path": "code/public/assets/projects/quantum-education-apps/PNG/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png",
+      "project_or_page": "projects/quantum-education-apps",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "size_bytes": 1801316,
+      "sha256": "f95b93f4fa76b186edb781fa2f97bc7f1824aa970f29e0399e613fdc5e591b1c",
+      "status": "duplicate_supabase_legacy",
+      "reason": "Byte-identical root-level legacy PNG; canonical nested PNG retained."
+    },
+    {
+      "id": "projects/quantum-education-apps/PNG/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png",
+      "supabase_path": "projects/quantum-education-apps/PNG/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png",
+      "github_path": "code/public/assets/projects/quantum-education-apps/PNG/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png",
+      "project_or_page": "projects/quantum-education-apps",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "size_bytes": 1801316,
+      "sha256": "f95b93f4fa76b186edb781fa2f97bc7f1824aa970f29e0399e613fdc5e591b1c",
+      "status": "copied",
+      "reason": "visible project quantum-education-apps referenced cover"
+    },
+    {
+      "id": "projects/quantum-education-apps/WebP/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.webp",
+      "supabase_path": "projects/quantum-education-apps/WebP/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.webp",
+      "github_path": "code/public/assets/projects/quantum-education-apps/WebP/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.webp",
+      "project_or_page": "projects/quantum-education-apps",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "size_bytes": 118132,
+      "sha256": "d73aa49e4ab34a8e594d3cde2da18d0ac39bc71792a7b1eccb257409bcda02e1",
+      "status": "copied",
+      "reason": "visible project quantum-education-apps optimized cover"
+    },
+    {
+      "id": "projects/scientific-analysis-toolkit/1789577893972-0ac3894c-5459-4df2-989a-029bf13891ec-ScientificAnalysisToolitCapaCard.png",
+      "supabase_path": "projects/scientific-analysis-toolkit/1789577893972-0ac3894c-5459-4df2-989a-029bf13891ec-ScientificAnalysisToolitCapaCard.png",
+      "github_path": null,
+      "project_or_page": null,
+      "format": "image/png",
+      "dimensions": null,
+      "size_bytes": 1865442,
+      "sha256": null,
+      "status": "excluded_hidden_or_retired",
+      "reason": "Hidden/retired content or no current visible catalog reference; not copied and left untouched in Supabase."
+    },
+    {
+      "id": "projects/scientific-analysis-toolkit/PNG/1789577893972-0ac3894c-5459-4df2-989a-029bf13891ec-ScientificAnalysisToolitCapaCard.png",
+      "supabase_path": "projects/scientific-analysis-toolkit/PNG/1789577893972-0ac3894c-5459-4df2-989a-029bf13891ec-ScientificAnalysisToolitCapaCard.png",
+      "github_path": null,
+      "project_or_page": null,
+      "format": "image/png",
+      "dimensions": null,
+      "size_bytes": 1865442,
+      "sha256": null,
+      "status": "excluded_hidden_or_retired",
+      "reason": "Hidden/retired content or no current visible catalog reference; not copied and left untouched in Supabase."
+    },
+    {
+      "id": "projects/scientific-analysis-toolkit/WebP/1789577893972-0ac3894c-5459-4df2-989a-029bf13891ec-ScientificAnalysisToolitCapaCard.webp",
+      "supabase_path": "projects/scientific-analysis-toolkit/WebP/1789577893972-0ac3894c-5459-4df2-989a-029bf13891ec-ScientificAnalysisToolitCapaCard.webp",
+      "github_path": null,
+      "project_or_page": null,
+      "format": "image/webp",
+      "dimensions": null,
+      "size_bytes": 169414,
+      "sha256": null,
+      "status": "excluded_hidden_or_retired",
+      "reason": "Hidden/retired content or no current visible catalog reference; not copied and left untouched in Supabase."
+    },
+    {
+      "id": "projects/speaker-portfolio/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png",
+      "supabase_path": "projects/speaker-portfolio/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png",
+      "github_path": "code/public/assets/projects/speaker-portfolio/PNG/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png",
+      "project_or_page": "projects/speaker-portfolio",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "size_bytes": 1877910,
+      "sha256": "fc94346cd35fabad34ea6e16dec41e3421065b192e4651cf745eba2a9f505676",
+      "status": "duplicate_supabase_legacy",
+      "reason": "Byte-identical root-level legacy PNG; canonical nested PNG retained."
+    },
+    {
+      "id": "projects/speaker-portfolio/PNG/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png",
+      "supabase_path": "projects/speaker-portfolio/PNG/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png",
+      "github_path": "code/public/assets/projects/speaker-portfolio/PNG/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png",
+      "project_or_page": "projects/speaker-portfolio",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "size_bytes": 1877910,
+      "sha256": "fc94346cd35fabad34ea6e16dec41e3421065b192e4651cf745eba2a9f505676",
+      "status": "copied",
+      "reason": "visible project speaker-portfolio referenced cover"
+    },
+    {
+      "id": "projects/speaker-portfolio/WebP/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.webp",
+      "supabase_path": "projects/speaker-portfolio/WebP/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.webp",
+      "github_path": "code/public/assets/projects/speaker-portfolio/WebP/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.webp",
+      "project_or_page": "projects/speaker-portfolio",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 1448,
+        "height": 1086
+      },
+      "size_bytes": 119786,
+      "sha256": "8c702fc5bb1feb23f420702f61ab60af8514c862609888673f174e808b90c6f1",
+      "status": "copied",
+      "reason": "visible project speaker-portfolio optimized cover"
+    },
+    {
+      "id": "projects/webseer/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "supabase_path": "projects/webseer/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "github_path": "code/public/assets/projects/webseer/PNG/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "project_or_page": "projects/webseer",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "size_bytes": 1074515,
+      "sha256": "c2bb5a46ede21c5e917ee904f67ba4fa27367a981b46cac3cc6a165dbcb647f3",
+      "status": "duplicate_supabase_legacy",
+      "reason": "Byte-identical root-level legacy PNG; canonical nested PNG retained."
+    },
+    {
+      "id": "projects/webseer/PNG/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "supabase_path": "projects/webseer/PNG/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "github_path": "code/public/assets/projects/webseer/PNG/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "project_or_page": "projects/webseer",
+      "format": "image/png",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "size_bytes": 1074515,
+      "sha256": "c2bb5a46ede21c5e917ee904f67ba4fa27367a981b46cac3cc6a165dbcb647f3",
+      "status": "copied",
+      "reason": "visible project webseer referenced cover"
+    },
+    {
+      "id": "projects/webseer/WebP/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.webp",
+      "supabase_path": "projects/webseer/WebP/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.webp",
+      "github_path": "code/public/assets/projects/webseer/WebP/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.webp",
+      "project_or_page": "projects/webseer",
+      "format": "image/webp",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "size_bytes": 64302,
+      "sha256": "9d9840e6177b47fa05ec9df7bf63774a92735c73ddc27ff34793d8c30db2b598",
+      "status": "copied",
+      "reason": "visible project webseer optimized cover"
+    }
+  ],
+  "content_reference_map": [
+    {
+      "source_table": "about",
+      "record_id": "main",
+      "related_project_id": "main",
+      "source_path": "cv/1792380202950-206c2842-6852-4d61-90c1-b24ce1ab5bd2-LeonardoRossato_CV_2026-pdf.pdf",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/cv/1792380202950-206c2842-6852-4d61-90c1-b24ce1ab5bd2-LeonardoRossato_CV_2026-pdf.pdf",
+      "github_path": "code/public/assets/documents/cv/1792380202950-206c2842-6852-4d61-90c1-b24ce1ab5bd2-LeonardoRossato_CV_2026-pdf.pdf",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about",
+      "record_id": "main",
+      "related_project_id": "main",
+      "source_path": "profile/1792380122932-87ee4d65-cc32-4005-85d5-24fb6ed67957-fotoperfilLCR.jpeg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/profile/1792380122932-87ee4d65-cc32-4005-85d5-24fb6ed67957-fotoperfilLCR.jpeg",
+      "github_path": "code/public/assets/about/profile/1792380122932-87ee4d65-cc32-4005-85d5-24fb6ed67957-fotoperfilLCR.jpeg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about_gallery",
+      "record_id": "0a16c827-14e3-4ad6-8303-f8410ed7f652",
+      "related_project_id": "0a16c827-14e3-4ad6-8303-f8410ed7f652",
+      "source_path": "about/gallery/1789571801186-0f09a16d-f380-455d-bfcd-8d26548bb286-palestrando-3.jpg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/about/gallery/1789571801186-0f09a16d-f380-455d-bfcd-8d26548bb286-palestrando-3.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571801186-0f09a16d-f380-455d-bfcd-8d26548bb286-palestrando-3.jpg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about_gallery",
+      "record_id": "0bdee20b-f1d5-4c58-9e7c-5b3c9d743d06",
+      "related_project_id": "0bdee20b-f1d5-4c58-9e7c-5b3c9d743d06",
+      "source_path": "about/gallery/1789571852749-67a24381-2bc4-4381-9cf4-08c3f43f4fe1-palestrando-8.jpg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/about/gallery/1789571852749-67a24381-2bc4-4381-9cf4-08c3f43f4fe1-palestrando-8.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571852749-67a24381-2bc4-4381-9cf4-08c3f43f4fe1-palestrando-8.jpg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about_gallery",
+      "record_id": "150121e0-7ab6-4f9f-b56a-779f6a45b956",
+      "related_project_id": "150121e0-7ab6-4f9f-b56a-779f6a45b956",
+      "source_path": "about/gallery/1789571785798-b6287f6d-cc44-4bd3-8783-ca2fbdf2930b-palestrando-1.jpg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/about/gallery/1789571785798-b6287f6d-cc44-4bd3-8783-ca2fbdf2930b-palestrando-1.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571785798-b6287f6d-cc44-4bd3-8783-ca2fbdf2930b-palestrando-1.jpg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about_gallery",
+      "record_id": "37b7b020-dbc1-4c04-bd7b-c014a7afe863",
+      "related_project_id": "37b7b020-dbc1-4c04-bd7b-c014a7afe863",
+      "source_path": "about/gallery/1789572227151-8edb333c-c1f5-4b06-9d90-acf0b2bfbb2b-palestrando-12.jpg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/about/gallery/1789572227151-8edb333c-c1f5-4b06-9d90-acf0b2bfbb2b-palestrando-12.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789572227151-8edb333c-c1f5-4b06-9d90-acf0b2bfbb2b-palestrando-12.jpg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about_gallery",
+      "record_id": "71cdcba8-bd02-4192-9ea0-5e0b7d4f76c9",
+      "related_project_id": "71cdcba8-bd02-4192-9ea0-5e0b7d4f76c9",
+      "source_path": "about/gallery/1789571874216-6ee14aef-bc22-4285-a12c-3c7da26b2273-palestrando-10.jpg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/about/gallery/1789571874216-6ee14aef-bc22-4285-a12c-3c7da26b2273-palestrando-10.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571874216-6ee14aef-bc22-4285-a12c-3c7da26b2273-palestrando-10.jpg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about_gallery",
+      "record_id": "72297bc3-2530-4f46-96f6-1348704ca148",
+      "related_project_id": "72297bc3-2530-4f46-96f6-1348704ca148",
+      "source_path": "about/gallery/1789571811030-2945a4f7-87e0-4535-9841-4cfde152eceb-palestrando-4.jpg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/about/gallery/1789571811030-2945a4f7-87e0-4535-9841-4cfde152eceb-palestrando-4.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571811030-2945a4f7-87e0-4535-9841-4cfde152eceb-palestrando-4.jpg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about_gallery",
+      "record_id": "74b859f4-fed5-4572-8bad-fa36fa15c5ac",
+      "related_project_id": "74b859f4-fed5-4572-8bad-fa36fa15c5ac",
+      "source_path": "about/gallery/1789571862628-119f0928-a93e-46ed-a09a-901f977f60a8-palestrando-9.jpg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/about/gallery/1789571862628-119f0928-a93e-46ed-a09a-901f977f60a8-palestrando-9.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571862628-119f0928-a93e-46ed-a09a-901f977f60a8-palestrando-9.jpg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about_gallery",
+      "record_id": "8f1e276a-334f-45d2-86cc-fb4cc7511be0",
+      "related_project_id": "8f1e276a-334f-45d2-86cc-fb4cc7511be0",
+      "source_path": "about/gallery/1789571843484-bd83235e-a2bf-4416-ba8f-eb29eb271307-palestrando-7.jpg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/about/gallery/1789571843484-bd83235e-a2bf-4416-ba8f-eb29eb271307-palestrando-7.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571843484-bd83235e-a2bf-4416-ba8f-eb29eb271307-palestrando-7.jpg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about_gallery",
+      "record_id": "9963a7e2-550b-4435-9c14-d7289ad40d8a",
+      "related_project_id": "9963a7e2-550b-4435-9c14-d7289ad40d8a",
+      "source_path": "about/gallery/1789571818244-4b919e6a-9188-4b40-a58b-2a669be3c183-palestrando-5.jpg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/about/gallery/1789571818244-4b919e6a-9188-4b40-a58b-2a669be3c183-palestrando-5.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571818244-4b919e6a-9188-4b40-a58b-2a669be3c183-palestrando-5.jpg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about_gallery",
+      "record_id": "b4186111-09aa-48b1-b4d9-ad8fcef4eb65",
+      "related_project_id": "b4186111-09aa-48b1-b4d9-ad8fcef4eb65",
+      "source_path": "about/gallery/1789571889074-8ba328b3-a6f4-4252-a9f9-c6d90be3eb80-palestrando-11.jpg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/about/gallery/1789571889074-8ba328b3-a6f4-4252-a9f9-c6d90be3eb80-palestrando-11.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571889074-8ba328b3-a6f4-4252-a9f9-c6d90be3eb80-palestrando-11.jpg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about_gallery",
+      "record_id": "e61f69c2-574f-43e1-9555-bf251c87c223",
+      "related_project_id": "e61f69c2-574f-43e1-9555-bf251c87c223",
+      "source_path": "about/gallery/1789571828453-cfc3921b-7e7a-4d64-827c-f3d4d3782ce5-palestrando-6.jpg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/about/gallery/1789571828453-cfc3921b-7e7a-4d64-827c-f3d4d3782ce5-palestrando-6.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571828453-cfc3921b-7e7a-4d64-827c-f3d4d3782ce5-palestrando-6.jpg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "about_gallery",
+      "record_id": "f99f6d5e-a03b-4375-bdf1-4082680555cf",
+      "related_project_id": "f99f6d5e-a03b-4375-bdf1-4082680555cf",
+      "source_path": "about/gallery/1789571793547-0cefe15d-dff1-4d14-83da-d2cee9bc3f96-palestrando-2.jpg",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/about/gallery/1789571793547-0cefe15d-dff1-4d14-83da-d2cee9bc3f96-palestrando-2.jpg",
+      "github_path": "code/public/assets/about/gallery/originals/1789571793547-0cefe15d-dff1-4d14-83da-d2cee9bc3f96-palestrando-2.jpg",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "more_projects",
+      "record_id": "embedded-control-platform",
+      "related_project_id": "embedded-control-platform",
+      "source_path": "projects/embedded-control-platform/PNG/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/projects/embedded-control-platform/PNG/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png",
+      "github_path": "code/public/assets/projects/embedded-control-platform/PNG/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "more_projects",
+      "record_id": "quantum-education-apps",
+      "related_project_id": "quantum-education-apps",
+      "source_path": "projects/quantum-education-apps/PNG/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/projects/quantum-education-apps/PNG/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png",
+      "github_path": "code/public/assets/projects/quantum-education-apps/PNG/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "more_projects",
+      "record_id": "webseer",
+      "related_project_id": "webseer",
+      "source_path": "projects/webseer/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/projects/webseer/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "github_path": "code/public/assets/projects/webseer/PNG/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "asset_status": "duplicate_supabase_legacy"
+    },
+    {
+      "source_table": "more_projects",
+      "record_id": "webseer",
+      "related_project_id": "webseer",
+      "source_path": "projects/webseer/PNG/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/projects/webseer/PNG/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "github_path": "code/public/assets/projects/webseer/PNG/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "project_institutions",
+      "record_id": "0202d5d6-b933-405f-a8b8-c1985545dc1f",
+      "related_project_id": "quantum-education-apps",
+      "source_path": "more-projects/quantum-education-apps/institutions/1789600676711-6c20d346-f23e-40e7-ad24-ca81258169eb-Logo-Foton-Azul.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/more-projects/quantum-education-apps/institutions/1789600676711-6c20d346-f23e-40e7-ad24-ca81258169eb-Logo-Foton-Azul.png",
+      "github_path": "code/public/assets/institutions/raster/1789600676711-6c20d346-f23e-40e7-ad24-ca81258169eb-Logo-Foton-Azul.png",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "project_institutions",
+      "record_id": "2b85d8be-573b-42f6-9771-eef890c3b12b",
+      "related_project_id": "city-comparing",
+      "source_path": "projects/city-comparing/institutions/1789601953572-49ac7afa-388c-40c3-b668-b658cbc84acc-Logo_UFRGS.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/projects/city-comparing/institutions/1789601953572-49ac7afa-388c-40c3-b668-b658cbc84acc-Logo_UFRGS.png",
+      "github_path": "code/public/assets/institutions/raster/1789601953572-49ac7afa-388c-40c3-b668-b658cbc84acc-Logo_UFRGS.png",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "project_institutions",
+      "record_id": "422c43dc-1c18-4cf4-91d6-6af22b7e4bde",
+      "related_project_id": "webseer",
+      "source_path": "more-projects/webseer/institutions/1789600419537-3a787001-ad0c-4851-94b4-3f2cabe65e6c-Logo-Foton-Azul.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/more-projects/webseer/institutions/1789600419537-3a787001-ad0c-4851-94b4-3f2cabe65e6c-Logo-Foton-Azul.png",
+      "github_path": "code/public/assets/institutions/raster/1789600676711-6c20d346-f23e-40e7-ad24-ca81258169eb-Logo-Foton-Azul.png",
+      "asset_status": "duplicate_supabase_content"
+    },
+    {
+      "source_table": "project_institutions",
+      "record_id": "51859eeb-1e4f-47e5-86c9-d33a31d43fb2",
+      "related_project_id": "webseer",
+      "source_path": "more-projects/webseer/institutions/1789600382591-61d10932-506f-4e88-aa50-17eac34e1911-ITA_logo.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/more-projects/webseer/institutions/1789600382591-61d10932-506f-4e88-aa50-17eac34e1911-ITA_logo.png",
+      "github_path": "code/public/assets/institutions/raster/1789600185611-5b245c1f-73a3-44de-8fad-131cc76caeff-ITA_logo.png",
+      "asset_status": "duplicate_supabase_content"
+    },
+    {
+      "source_table": "project_institutions",
+      "record_id": "667e9371-48a9-4510-b9a2-2903e7216d21",
+      "related_project_id": "foton-hub",
+      "source_path": "projects/foton-hub/institutions/1789601907389-fcb9525c-9e02-4809-b3f2-4a0a7282fca0-Logo-Foton-Azul.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/projects/foton-hub/institutions/1789601907389-fcb9525c-9e02-4809-b3f2-4a0a7282fca0-Logo-Foton-Azul.png",
+      "github_path": "code/public/assets/institutions/raster/1789600676711-6c20d346-f23e-40e7-ad24-ca81258169eb-Logo-Foton-Azul.png",
+      "asset_status": "duplicate_supabase_content"
+    },
+    {
+      "source_table": "project_institutions",
+      "record_id": "7431ac59-62e3-46f0-acf7-a9d9c4dc28d4",
+      "related_project_id": "city-comparing",
+      "source_path": "projects/city-comparing/institutions/1789601963273-bcde279c-4d71-4cc7-8fe6-54852ed36671-LogoInstitutoPense-1000-X-200-Px-1.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/projects/city-comparing/institutions/1789601963273-bcde279c-4d71-4cc7-8fe6-54852ed36671-LogoInstitutoPense-1000-X-200-Px-1.png",
+      "github_path": "code/public/assets/institutions/raster/1789600655230-55ec7ea4-13b8-4836-a07d-f8a14aa36a03-LogoInstitutoPense-1000-X-200-Px-1.png",
+      "asset_status": "duplicate_supabase_content"
+    },
+    {
+      "source_table": "project_institutions",
+      "record_id": "88c1f798-36ab-4848-9ee2-8e6a453edb30",
+      "related_project_id": "embedded-control-platform",
+      "source_path": "more-projects/embedded-control-platform/institutions/1789600185611-5b245c1f-73a3-44de-8fad-131cc76caeff-ITA_logo.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/more-projects/embedded-control-platform/institutions/1789600185611-5b245c1f-73a3-44de-8fad-131cc76caeff-ITA_logo.png",
+      "github_path": "code/public/assets/institutions/raster/1789600185611-5b245c1f-73a3-44de-8fad-131cc76caeff-ITA_logo.png",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "project_institutions",
+      "record_id": "c71b072f-3b2d-4187-8413-cd38a108d76d",
+      "related_project_id": "city-comparing",
+      "source_path": "projects/city-comparing/institutions/1789601940148-324aca00-69d4-4a00-9bc9-79686cfb9415-IF-UFRGS_-logo.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/projects/city-comparing/institutions/1789601940148-324aca00-69d4-4a00-9bc9-79686cfb9415-IF-UFRGS_-logo.png",
+      "github_path": "code/public/assets/institutions/raster/1789601940148-324aca00-69d4-4a00-9bc9-79686cfb9415-IF-UFRGS_-logo.png",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "project_institutions",
+      "record_id": "e6aa90d6-1676-4f56-8179-92f5772bfe6f",
+      "related_project_id": "quantum-education-apps",
+      "source_path": "more-projects/quantum-education-apps/institutions/1789600655230-55ec7ea4-13b8-4836-a07d-f8a14aa36a03-LogoInstitutoPense-1000-X-200-Px-1.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/more-projects/quantum-education-apps/institutions/1789600655230-55ec7ea4-13b8-4836-a07d-f8a14aa36a03-LogoInstitutoPense-1000-X-200-Px-1.png",
+      "github_path": "code/public/assets/institutions/raster/1789600655230-55ec7ea4-13b8-4836-a07d-f8a14aa36a03-LogoInstitutoPense-1000-X-200-Px-1.png",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "projects",
+      "record_id": "city-comparing",
+      "related_project_id": "city-comparing",
+      "source_path": "projects/cities-comparing/PNG/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/projects/cities-comparing/PNG/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.png",
+      "github_path": "code/public/assets/projects/cities-comparing/PNG/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.png",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "projects",
+      "record_id": "foton-hub",
+      "related_project_id": "foton-hub",
+      "source_path": "projects/foton-hub/PNG/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/projects/foton-hub/PNG/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.png",
+      "github_path": "code/public/assets/projects/foton-hub/PNG/1789395184532-2e274ccc-e2ad-4c41-b7b8-a795f181f84b-FotonHub_CapaCard.png",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "projects",
+      "record_id": "hamlet",
+      "related_project_id": "hamlet",
+      "source_path": "projects/hamlet/PNG/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/projects/hamlet/PNG/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png",
+      "github_path": "code/public/assets/projects/hamlet/PNG/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png",
+      "asset_status": "copied"
+    },
+    {
+      "source_table": "projects",
+      "record_id": "speaker-portfolio",
+      "related_project_id": "speaker-portfolio",
+      "source_path": "projects/speaker-portfolio/PNG/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png",
+      "source_url": "https://wdjffhfnzydudmhhekmk.supabase.co/storage/v1/object/public/portfolio-media/projects/speaker-portfolio/PNG/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png",
+      "github_path": "code/public/assets/projects/speaker-portfolio/PNG/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png",
+      "asset_status": "copied"
+    }
+  ],
+  "notes": [
+    "Copy-only migration: no application references, database rows, Storage objects, Auth, or RLS were changed.",
+    "Only objects tied to currently visible public catalog records were included.",
+    "Objects excluded from this copy remain untouched in Supabase.",
+    "The reference map prepares a later controlled content-catalog migration."
+  ]
+}
