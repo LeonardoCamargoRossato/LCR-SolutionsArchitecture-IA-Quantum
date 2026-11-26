@@ -19,7 +19,6 @@ export async function verifyLocalPublicDelivery(browser, base) {
     const slug = row.related_project_id === 'city-comparing' ? 'cities-comparing' : row.related_project_id
     if (!covers.has(slug) || row.source_path.includes('/PNG/')) covers.set(slug,row.source_url)
   }
-  const gallery = refs.filter(r => r.source_table === 'about_gallery')
   const profile = refs.find(r=>r.source_path.startsWith('profile/')).source_url
   const cv = refs.find(r=>r.source_path.startsWith('cv/')).source_url
   const logos = refs.filter(r=>r.source_table === 'project_institutions')
@@ -47,18 +46,12 @@ export async function verifyLocalPublicDelivery(browser, base) {
       return
     }
     const response=await route.fetch()
-    if(!['projects','more_projects','project_institutions','about_gallery'].includes(table)){
+    if(!['projects','more_projects','project_institutions'].includes(table)){
       await route.fulfill({response}); return
     }
     const original=await response.json()
     function adapt(row) {
       if(!row) return row
-      if(table==='about_gallery') {
-        const number=Number(String(row.id).match(/fixture-photo-(\d+)/)?.[1])
-        const ref=gallery.find(r=>r.source_path.endsWith('-palestrando-'+number+'.jpg'))
-        assert(ref,'Gallery fixture has no audited match')
-        return {...row,image_url:ref.source_url,storage_path:ref.source_path}
-      }
       if(table==='project_institutions') {
         const basename=String(row.institution_logo_url).split('/').pop()
         const match=logos.find(r=>r.source_path.endsWith('-'+basename))
@@ -86,7 +79,7 @@ export async function verifyLocalPublicDelivery(browser, base) {
     await page.goto(base+'#/?portal=skip')
     const cards=page.locator('.about-gallery-card')
     await cards.first().waitFor({state:'attached',timeout:30000})
-    assert.equal(await cards.count(),10,'Preserve fixture editorial visibility')
+    assert.equal(await cards.count(),10,'Preserve approved editorial visibility')
     // Runtime resolver: all audited references and variants, no arbitrary host/bucket.
     const resolution=await page.evaluate(async ({base,refs,rows,storage})=>{
       const { migratedPublicAsset, resolvePublicAsset, resolveAssetFallback }=await import(base+'src/assets/public/resolvePublicAsset.ts')
@@ -162,7 +155,8 @@ export async function verifyLocalPublicDelivery(browser, base) {
     await page.getByText('Access denied.',{exact:true}).waitFor()
     await page.getByRole('button',{name:'Sign Out',exact:true}).click()
     await page.getByText('This area is restricted.').waitFor()
-    assert(apiRequests.some(u=>u.includes('/rest/v1/about_gallery')))
+    assert(!apiRequests.some(u=>u.includes('/rest/v1/about_gallery')),'Gallery must not query database')
+    assert(apiRequests.some(u=>u.includes('/rest/v1/about')),'Other About editorial reads remain available')
     assert(apiRequests.some(u=>u.includes('/auth/v1/token')))
     assert.equal(storageRequests.length,0,'Migrated public UI attempted Storage: '+storageRequests.join(', '))
     assert.equal(errors.length,0,'Local asset errors: '+errors.join(', '))

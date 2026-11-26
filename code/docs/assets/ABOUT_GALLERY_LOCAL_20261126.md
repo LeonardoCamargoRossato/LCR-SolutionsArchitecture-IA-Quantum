@@ -1,0 +1,9 @@
+# Stage 04.2 — local About gallery
+
+Same migration branch and PR #55. Prior profile checkpoint 97cb5866dcaec509dbce75cd8c54aa925b66af4a; 24/26 workflows passed; two failed due to the profile test, not accepted as homologated. Profile asset and implementation untouched; test instrumentation corrected and integrated with new read-only gallery contract.
+
+One authorized READ ONLY transaction on public.about_gallery (visible=true, 12 rows) verified IDs, paths, legacy order, and all nullable descriptions/captions/locations/event dates/links. All are null and link_type is none. Titles are copied from the approved frontend editorial mapping (same title in both locales); no inferred translations. Photos 7 and 10 retain legacy title and ID and are hidden in the public catalogue; legacy rows are unchanged. Public order: 9,11,8,12,1,2,3,4,5,6. All 36 files remain byte-identical, matched through the original inventory and publicAssetCatalog.
+
+Public and administrative presentation use the local catalogue and Vite BASE_URL. No database or Storage reads, fallback or CMS hydration for the gallery. Admin preview only; no upload/edit/reorder/visibility/delete controls. Legacy repository, migration scripts and media upload tests retained but the application no longer instantiates the gallery repository. Other services unchanged.
+
+Browser verification uses the existing isolated workflow: desktop/mobile, both themes/locales, blocked backend, no-client dev and Pages-compatible build; assertions include exact order, demand WebP, PNG only on viewer interaction, hidden assets not fetched, grid, zoom, fullscreen and download. Prior fixture-based demand assertions adapt to the actual approved source identities; immutable baseline untouched. Legacy upload contract test remains separate. Evidence at test-results/offline-about-gallery/ and existing gallery artifacts. No publication until independent review and human validation.

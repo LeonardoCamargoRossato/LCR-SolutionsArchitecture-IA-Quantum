@@ -115,6 +115,16 @@ def verify_delivery_catalog(root):
             p = root / item[key].removeprefix("public/")
             assert p.is_file(), f"Missing local display/zoom pair: {p}"
             assert hashlib.sha256(p.read_bytes()).hexdigest() == item[meta]["sha256"], f"Changed approved derivative: {p}"
+    gallery_text = (APP_ROOT / "src/data/aboutGallery.ts").read_text(encoding="utf-8")
+    gallery = json.loads(gallery_text.split("ReadonlyArray<Entry> = ",1)[1].split("\n\nexport type LocalAboutGalleryItem",1)[0])
+    assert [r["photoNumber"] for r in gallery if r["visible"]] == [9,11,8,12,1,2,3,4,5,6]
+    assert [r["photoNumber"] for r in gallery if not r["visible"]] == [7,10]
+    refs = {r["record_id"]: r for r in inventory["content_reference_map"] if r["source_table"] == "about_gallery"}
+    assert set(r["id"] for r in gallery) == set(refs) and len(gallery) == len(refs) == 12
+    for row in gallery:
+        old = catalog[refs[row["id"]]["source_path"]]
+        assert row["media"] == {"card":old["display"],"full":old["full"],"original":old["original"]}
+    print("PASS About catalogue: 12 preserved identities, 10 public, 2 hidden, exact variants and order")
     print(f"PASS delivery catalog: {len(catalog)} exact keys, {len(inventory['content_reference_map'])} editorial references, WebP/SVG/PDF display and PNG gallery zoom")
 
 

@@ -9,6 +9,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { chromium } from './isolation/Browser.mjs'
 import { verifyLocalPublicDelivery } from './local-public-assets-smoke.mjs'
 import { verifyOfficialProfile } from './official-profile-smoke.mjs'
+import { verifyOfflineAboutGallery } from './offline-about-gallery-smoke.mjs'
 
 const PUBLIC_BASE = process.env.GALLERY_SMOKE_BASE_URL?.trim()
 const BASE = PUBLIC_BASE ? (PUBLIC_BASE.endsWith('/') ? PUBLIC_BASE : PUBLIC_BASE + '/') : 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
@@ -180,6 +181,7 @@ try {
   if (!PUBLIC_BASE) {
     await mockedAdminUploadTest()
     await verifyLocalPublicDelivery(browser, BASE)
+    await verifyOfflineAboutGallery(browser, BASE, 'database-storage-blocked', true)
     await verifyOfficialProfile(browser, BASE)
   }
   console.log('GALLERY PASS: ' + (PUBLIC_BASE ? 'PUBLISHED SITE' : 'BRANCH') + ' 10 visible photos × 2 devices; WebP carousel, PNG lightbox and PNG download.')

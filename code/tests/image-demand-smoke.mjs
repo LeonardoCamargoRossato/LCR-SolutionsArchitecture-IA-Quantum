@@ -67,7 +67,7 @@ async function run(viewport){
     const visible=await geometry(page)
     const expected=new Set(visible.flatMap((x,i)=>x.visible?[i]:[]))
     const actual=net.entries.filter(e=>e.phase==='scroll-first'&&gallery(e))
-    for(const e of actual){const m=e.url.match(/fixture-photo-(\d+)/);if(m){const id=Number(m[1]);const index=[1,2,3,4,5,6,8,9,11,12].indexOf(id);assert(expected.has(index),'Clipped photo requested: '+e.url)}}
+    for(const e of actual){const m=e.url.match(/palestrando-(\d+)\.webp$/);assert(m,'Unexpected gallery source: '+e.url);const id=Number(m[1]);const index=[9,11,8,12,1,2,3,4,5,6].indexOf(id);assert(expected.has(index),'Clipped photo requested: '+e.url)}
     assert.equal(net.entries.filter(zoom).length,0)
   }
   if(!baseline){
@@ -160,7 +160,7 @@ async function extraScenarios(){
     if(offline)await cards.first().locator('.image-fallback').waitFor({timeout:15000})
     else await loaded(page,'.about-gallery-card:first-child img.progressive-image-main')
     await wait(500)
-    assert.equal(net.entries.filter(e=>e.url.includes('fixture-photo-01')).length,1)
+    assert.equal(net.entries.filter(e=>/palestrando-9\.(?:webp|png|jpg)$/.test(e.url)).length,1)
     assert.equal(net.entries.filter(zoom).length,0)
     if(offline)await ctx.setOffline(false)
     else await net.cdp.send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1})
@@ -174,13 +174,13 @@ async function extraScenarios(){
   const errorCtx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'})
   const page=await errorCtx.newPage(),net=await instrument(page)
   // Explicit failure injection is separate from the cache measurements.
-  await page.route('**/about/gallery/WebP/fixture-photo-01.webp',r=>r.abort('failed'))
+  await page.route('**/about/gallery/WebP/*-palestrando-9.webp',r=>r.abort('failed'))
   await page.goto(BASE+'#/?portal=skip')
   const card=page.locator('.about-gallery-card').first()
   await card.waitFor({state:'attached'});await card.scrollIntoViewIfNeeded()
   await card.locator('.image-fallback').waitFor({timeout:15000})
   await wait(400)
-  const failed=net.entries.filter(e=>e.url.includes('fixture-photo-01'))
+  const failed=net.entries.filter(e=>/palestrando-9\.(?:webp|png|jpg)$/.test(e.url))
   assert.equal(failed.length,1,'No automatic retry or original transfer')
   assert(failed[0].url.includes('/WebP/'))
   await card.click();await loaded(page,'.image-lightbox-viewport img')

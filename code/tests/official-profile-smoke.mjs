@@ -8,6 +8,7 @@ import { mkdir, mkdtemp, rm, writeFile, readFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
+import { verifyOfflineAboutGallery } from './offline-about-gallery-smoke.mjs'
 
 const root = '/LCR-SolutionsArchitecture-IA-Quantum/'
 const fixture = 'http://127.0.0.1:54321'
@@ -17,7 +18,7 @@ const profilePath = 'assets/about/profile/1792380122932-87ee4d65-cc32-4005-85d5-
 const hash = 'c2b93202bee240a884d49a6aeaa55b2f99768a0202d8d2579cdfa59b0671b9dc'
 const out = 'test-results/official-profile'
 const sha256 = buffer => createHash('sha256').update(buffer).digest('hex')
-const isPhoto = url => /\/profile\/|\/about\/profile\/|fotoperfilLCR|legacy-profile|wrong-profile/i.test(url)
+const isPhoto = url => /(?:\/profile\/|fotoperfilLCR|legacy-profile|wrong-profile).*\.(?:webp|jpe?g|png)(?:[?#]|$)/i.test(url)
 const isBackend = url => url.startsWith(fixture) || /\.supabase\.co\//i.test(url)
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 const noBackendEnv = { ...process.env, LCR_PROFILE_NO_BACKEND:'1' }
@@ -60,10 +61,8 @@ export async function verifyOfficialProfile(browser, fixtureBase) {
     },{cache,legacy})
     if(options.databaseDown)await page.route('**/rest/v1/**',route=>route.abort('failed'))
     else if('cms' in options)await page.route('**/rest/v1/about?**',async route=>{
-      const res=await route.fetch()
-      const row=await res.json()
-      const mutate=value=>value?{...value,profile_image_url:options.cms,content_en:{...value.content_en,profileImage:{url:wrong}},content_pt:{...value.content_pt,profileImage:{url:wrong}}}:value
-      await route.fulfill({response:res,json:Array.isArray(row)?row.map(mutate):mutate(row)})
+      const row={id:'main',profile_image_url:options.cms,content_en:{name:'Fixture profile',profileImage:{url:wrong}},content_pt:{profileImage:{url:wrong}}}
+      await route.fulfill({status:200,contentType:'application/json',json:[row]})
     })
     if(options.storageDown)await page.route('**/storage/v1/**',route=>route.abort('failed'))
     try{
@@ -72,7 +71,7 @@ export async function verifyOfficialProfile(browser, fixtureBase) {
       await img.waitFor({state:'attached',timeout:30000})
       const hiddenBefore=await img.evaluate(el=>el.getBoundingClientRect().top>=innerHeight)
       assert(hiddenBefore,'Expected portrait below first viewport')
-      assert.equal(photoRequests.length,0,'Portrait fetched before entering viewport')
+      assert.equal(photoRequests.length,0,'Portrait fetched before entering viewport: '+JSON.stringify(photoRequests))
       assert.equal(await img.getAttribute('src'),null,'Offscreen portrait has src')
       await img.scrollIntoViewIfNeeded()
       await page.waitForFunction(expected=>{
@@ -95,7 +94,7 @@ export async function verifyOfficialProfile(browser, fixtureBase) {
       if(!cache)cache=await page.evaluate(async base=>(await import(base+'src/data/defaultContent.ts')).defaultContent,base)
       result.scenarios.push({name,source:base+profilePath,sha256:hash,demand:true,photoRequests,backendPhotoRequests,backendRequests:backendRequests.length,aboutSelections,photoResponses,screenshot:name+'.png'})
       console.log('PASS official profile '+name+': WebP local; zero backend photo requests; viewport admission')
-    }finally{await context.close()}
+    }finally{await page.unrouteAll({behavior:'wait'});await context.close()}
   }
   let dev,preview,temp
   try{
@@ -109,6 +108,7 @@ export async function verifyOfficialProfile(browser, fixtureBase) {
     const devBase='http://127.0.0.1:5186'+root
     dev=await startServer(['--host','127.0.0.1','--port','5186','--strictPort'],devBase)
     await scenario('localhost-no-backend-config',devBase,{noBackend:true})
+    await verifyOfflineAboutGallery(browser,devBase,'localhost-no-backend',false)
     stop(dev);dev=undefined
     temp=await mkdtemp(join(tmpdir(),'lcr-profile-build-'))
     const build=spawn('node_modules/.bin/vite',['build','--outDir',temp,'--emptyOutDir'],{env:noBackendEnv,stdio:'inherit'})
@@ -117,6 +117,7 @@ export async function verifyOfficialProfile(browser, fixtureBase) {
     const previewBase='http://127.0.0.1:5187'+root
     preview=await startServer(['preview','--host','127.0.0.1','--port','5187','--strictPort','--outDir',temp],previewBase)
     await scenario('github-pages-build-no-backend',previewBase,{noBackend:true,cache:true})
+    await verifyOfflineAboutGallery(browser,previewBase,'pages-build-no-backend',false)
     const context=await browser.newContext({viewport:{width:1200,height:900}})
     const page=await context.newPage()
     const photoRequests=[],writes=[]
@@ -143,7 +144,10 @@ export async function verifyOfficialProfile(browser, fixtureBase) {
       },fixtureBase+profilePath)
       assert.equal(await panel.locator('input[type=file],button').count(),0)
       await panel.getByText(/versioned on GitHub/).waitFor()
-      assert(await page.locator('input[type=file]').count()>0,'Gallery upload controls were removed')
+      const gallery=page.getByTestId('versioned-about-gallery')
+      assert.equal(await gallery.locator('input[type=file],input[type=number]').count(),0)
+      assert.equal(await gallery.locator('article').count(),12)
+      assert.equal(await gallery.locator('article.is-hidden').count(),2)
       await page.getByLabel('Name',{exact:true}).fill('Fixture updated name')
       await page.getByRole('button',{name:'Save About',exact:true}).click()
       await page.getByText('About updated successfully.').waitFor()
@@ -155,9 +159,9 @@ export async function verifyOfficialProfile(browser, fixtureBase) {
       assert.equal(writes[0].content_en.name,'Fixture updated name')
       assert(photoRequests.every(url=>url===fixtureBase+profilePath))
       await panel.screenshot({path:out+'/admin.png'})
-      result.admin={readOnly:true,otherFieldsSaved:true,galleryControlsPreserved:true,legacyColumnOmitted:true,legacyValuePreserved:true,photoRequests,screenshot:'admin.png'}
-      console.log('PASS profile admin read-only; About save excludes legacy column; gallery upload retained')
-    }finally{await context.close()}
+      result.admin={readOnly:true,otherFieldsSaved:true,galleryReadOnly:true,legacyColumnOmitted:true,legacyValuePreserved:true,photoRequests,screenshot:'admin.png'}
+      console.log('PASS profile admin read-only; About save excludes legacy column; gallery read-only; 12 preserved')
+    }finally{await page.unrouteAll({behavior:'wait'});await context.close()}
   }finally{
     stop(dev);stop(preview)
     if(temp)await rm(temp,{recursive:true,force:true})
