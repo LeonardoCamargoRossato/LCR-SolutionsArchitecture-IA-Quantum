@@ -1,0 +1,47 @@
+name: LCR one-time version backup archive
+on:
+  push:
+    branches: [chore/backup-archive-20261126]
+    paths: ['.github/workflows/LCR_BACKUP_ARCHIVE_20261126.yml']
+permissions:
+  contents: read
+jobs:
+  archive:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 67e8877b02fc23352306f75c04a40f4085b1f716
+          persist-credentials: false
+      - name: Archive and verify exact stable tracked tree
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 67e8877b02fc23352306f75c04a40f4085b1f716
+          mkdir -p "$RUNNER_TEMP/lcr-backup"
+          git archive --format=zip --prefix=LCR-Portfolio/ -o "$RUNNER_TEMP/lcr-backup/LCR-Portfolio-2026-11-26.zip" HEAD
+          python3 - <<'PY'
+          import hashlib, os, pathlib, subprocess, zipfile
+          p = pathlib.Path(os.environ["RUNNER_TEMP"]) / "lcr-backup/LCR-Portfolio-2026-11-26.zip"
+          expected = subprocess.check_output(["git", "ls-tree", "-r", "-z", "HEAD"]).split(b"\0")
+          expected = {x.split(b"\t",1)[1].decode(): x.split(b"\t",1)[0].split()[2].decode() for x in expected if x}
+          with zipfile.ZipFile(p) as z:
+              actual = {n.removeprefix("LCR-Portfolio/") for n in z.namelist() if not n.endswith("/")}
+              assert actual == set(expected), "Archive path mismatch"
+              for name, sha in expected.items():
+                  data = z.read("LCR-Portfolio/" + name)
+                  assert hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest() == sha, name
+              assert z.testzip() is None
+          print(f"Verified {len(expected)} tracked files; ZIP {p.stat().st_size} bytes")
+          PY
+          cd "$RUNNER_TEMP/lcr-backup"
+          sha256sum LCR-Portfolio-2026-11-26.zip > LCR-Portfolio-2026-11-26.zip.sha256
+          sha256sum -c LCR-Portfolio-2026-11-26.zip.sha256
+          printf '%s\n' '67e8877b02fc23352306f75c04a40f4085b1f716' > COMMIT.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LCR-Portfolio-Backup-2026-11-26
+          path: ${{ runner.temp }}/lcr-backup/
+          compression-level: 0
+          retention-days: 7
+          if-no-files-found: error
