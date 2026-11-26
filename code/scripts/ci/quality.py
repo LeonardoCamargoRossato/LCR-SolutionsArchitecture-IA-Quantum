@@ -188,7 +188,24 @@ def inventory():
         verify_transition(name, old, legacy)
         verify_workflow_relocation(name, legacy, now)
         group = next((g for g, ns in GROUPS.items() if name in ns), None)
-        data = parse_yaml(relocate_workflow(name, legacy if name in HISTORICAL_BASELINES else old))
+        # Deploy is not a shadow shard. Its pinned structural base already
+        # contains the authorized quality gate and explicit checkout ref.
+        # The older BASE lacks that ref; never try to relocate it as if it
+        # were the post-transition deployment workflow.
+        if name == "deploy":
+            for original, changed in (
+                ("    needs: quality\n", "    needs: []\n"),
+                ("          fetch-depth: 0\n", "          fetch-depth: 1\n"),
+                ("      contents: read\n", "      contents: write\n"),
+                ("        run: python3 scripts/ci/check_source.py\n", "        run: echo skipped\n"),
+            ):
+                assert original in now, "Deploy negative-test anchor missing"
+                try:
+                    verify_workflow_relocation(name, legacy, now.replace(original, changed, 1))
+                except AssertionError:
+                    continue
+                raise AssertionError("Unauthorized deploy mutation accepted: " + original)
+        data = parse_yaml(relocate_workflow(name, legacy if name in HISTORICAL_BASELINES or name == "deploy" else old))
         if group and name in HISTORICAL_BASELINES:
             counts["shadow_historical_baseline_builds"] += HISTORICAL_BASELINES[name]["builds"]
             counts["shadow_historical_baseline_installations"] += HISTORICAL_BASELINES[name]["installations"]
