@@ -1,0 +1,33 @@
+name: LCR generate approved profile derivative
+on:
+  push:
+    branches: [chore/backup-archive-20261126]
+    paths: ['.github/workflows/LCR_PROFILE_DERIVATIVE.yml']
+permissions:
+  contents: read
+jobs:
+  convert:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: daddd00a5947dc9b61d92093ff6071d274264720
+          persist-credentials: false
+      - run: |
+          python3 -m venv /tmp/lcr-image
+          /tmp/lcr-image/bin/pip install --disable-pip-version-check Pillow
+          /tmp/lcr-image/bin/python - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          import base64,hashlib
+          p=next(Path('code/public/assets/about/profile').glob('*.jpeg'))
+          with Image.open(p) as im:
+              target=p.with_suffix('.webp')
+              im.save(target,'WEBP',quality=80,method=6)
+              with Image.open(target) as result:
+                  assert result.size==im.size and result.format=='WEBP'
+          data=target.read_bytes()
+          print('DERIVATIVE_SHA256='+hashlib.sha256(data).hexdigest())
+          for i in range(0,len(data),1500):
+              print('DERIVATIVE_CHUNK='+base64.b64encode(data[i:i+1500]).decode())
+          PY
