@@ -8,7 +8,10 @@ from pathlib import Path
 import subprocess
 import time
 
+from workflow_paths import relocate_workflow, verify_workflow_relocation, self_test as relocation_self_test
+
 BASE = "cf273ae6026c48e264c3ef80863abf458dc61fc4"
+STRUCTURAL_BASE = "67e8877b02fc23352306f75c04a40f4085b1f716"
 REPO_ROOT = Path(__file__).resolve().parents[3]
 APP_ROOT = Path(__file__).resolve().parents[2]
 os.chdir(APP_ROOT)
@@ -33,12 +36,12 @@ HISTORICAL_BASELINES = {
     "loading-portal-v2-benchmark": {"builds": 1, "installations": 1},
     "portal-performance-hotfix": {"builds": 2, "installations": 1},
 }
-OUT = Path("test-results/quality")
+OUT = APP_ROOT / "test-results/quality"
 RUBY = "require 'yaml'; require 'json'; puts JSON.generate(YAML.safe_load(STDIN.read))"
 
 
 def git(*args):
-    return subprocess.check_output(["git", *args], text=True).strip()
+    return subprocess.check_output(["git", *args], text=True, cwd=REPO_ROOT).strip()
 
 
 def canonical(command):
@@ -178,11 +181,14 @@ def inventory():
               "shadow_historical_baseline_installations": 0}
     for name in assigned:
         path = f".github/workflows/{name}.yml"
-        old = subprocess.check_output(["git", "show", f"{BASE}:{path}"], text=True)
+        old = subprocess.check_output(["git", "show", f"{BASE}:{path}"], text=True, cwd=REPO_ROOT)
+        legacy = subprocess.check_output(["git", "show", f"{STRUCTURAL_BASE}:{path}"], text=True, cwd=REPO_ROOT)
         now = (REPO_ROOT / path).read_text()
-        verify_transition(name, old, now)
+        # Prove legacy parity first, then permit only deterministic structural relocation.
+        verify_transition(name, old, legacy)
+        verify_workflow_relocation(name, legacy, now)
         group = next((g for g, ns in GROUPS.items() if name in ns), None)
-        data = parse_yaml(now if name in HISTORICAL_BASELINES else old)
+        data = parse_yaml(relocate_workflow(name, legacy if name in HISTORICAL_BASELINES else old))
         if group and name in HISTORICAL_BASELINES:
             counts["shadow_historical_baseline_builds"] += HISTORICAL_BASELINES[name]["builds"]
             counts["shadow_historical_baseline_installations"] += HISTORICAL_BASELINES[name]["installations"]
@@ -240,12 +246,13 @@ def inventory():
         counts["shadow_builds"] + counts["shadow_historical_baseline_builds"])
     counts["shadow_total_installations_including_benchmarks"] = (
         counts["shadow_installations"] + counts["shadow_historical_baseline_installations"])
-    return {"base": BASE, "jobs": rows, "shards": shards, "counts": counts}
+    return {"base": BASE, "structural_base": STRUCTURAL_BASE, "app_root": "code/",
+            "jobs": rows, "shards": shards, "counts": counts}
 
 
 def run(command, env=None):
     return subprocess.run(["bash", "-e", "-o", "pipefail", "-c", command],
-                          env={**os.environ, **(env or {})}, timeout=900).returncode
+                          env={**os.environ, **(env or {})}, cwd=APP_ROOT, timeout=900).returncode
 
 
 def write_json(path, value):
@@ -296,6 +303,7 @@ def main():
     parser.add_argument("--shard", choices=GROUPS)
     parser.add_argument("--verify")
     args = parser.parse_args()
+    relocation_self_test()
     plan = inventory()
     write_json("inventory.json", plan)
     print("QUALITY_COUNTS", json.dumps(plan["counts"], sort_keys=True))
