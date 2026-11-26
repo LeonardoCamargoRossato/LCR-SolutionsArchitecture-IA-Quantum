@@ -6,52 +6,56 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'tests/isolation/**'
-      - 'vite.config.ts'
-      - src/components/hero/**
-      - src/components/test-component-lab/particle-wave/**
-      - src/config/heroParticleWave.ts
-      - src/config/portfolioPositioning.ts
-      - src/data/defaultContent.ts
-      - src/data/defaultProjects.ts
-      - src/i18n/**
-      - src/pages/**
-      - src/components/ProjectCard.tsx
-      - src/components/case/CaseHero.tsx
-      - src/components/SeoSync.tsx
-      - src/components/WorkflowManual.tsx
-      - src/App.tsx
-      - tests/hero-v11-responsive-i18n-smoke.mjs
-      - tests/hero-v12-composition-smoke.mjs
-      - tests/hero-v13-particle-wave-smoke.mjs
-      - src/components/Header.tsx
-      - src/components/header/**
-      - src/i18n/**
-      - src/providers/ThemeProvider.tsx
-      - src/styles/global.css
-      - index.html
-      - tests/hero-v10-header-smoke.mjs
-      - src/pages/Home.tsx
-      - src/config/portfolioPositioning.ts
-      - src/main.tsx
-      - tests/hero-v5-smoke.mjs
-      - tests/hero-mobile-v9-layout-smoke.mjs
-      - public/assets/home/hero/**
-      - tests/ai-positioning-smoke.mjs
+      - 'code/tests/isolation/**'
+      - 'code/vite.config.ts'
+      - code/src/components/hero/**
+      - code/src/components/test-component-lab/particle-wave/**
+      - code/src/config/heroParticleWave.ts
+      - code/src/config/portfolioPositioning.ts
+      - code/src/data/defaultContent.ts
+      - code/src/data/defaultProjects.ts
+      - code/src/i18n/**
+      - code/src/pages/**
+      - code/src/components/ProjectCard.tsx
+      - code/src/components/case/CaseHero.tsx
+      - code/src/components/SeoSync.tsx
+      - code/src/components/WorkflowManual.tsx
+      - code/src/App.tsx
+      - code/tests/hero-v11-responsive-i18n-smoke.mjs
+      - code/tests/hero-v12-composition-smoke.mjs
+      - code/tests/hero-v13-particle-wave-smoke.mjs
+      - code/src/components/Header.tsx
+      - code/src/components/header/**
+      - code/src/i18n/**
+      - code/src/providers/ThemeProvider.tsx
+      - code/src/styles/global.css
+      - code/index.html
+      - code/tests/hero-v10-header-smoke.mjs
+      - code/src/pages/Home.tsx
+      - code/src/config/portfolioPositioning.ts
+      - code/src/main.tsx
+      - code/tests/hero-v5-smoke.mjs
+      - code/tests/hero-mobile-v9-layout-smoke.mjs
+      - code/public/assets/home/hero/**
+      - code/tests/ai-positioning-smoke.mjs
       - .github/workflows/hero-v2-ci.yml
-      - docs/hero-v5/**
-      - docs/hero-v6/**
-      - docs/hero-v7/**
-      - docs/hero-v8/**
-      - docs/hero-v9/**
-      - docs/hero-v10/**
-      - docs/hero-v11/**
-      - docs/hero-v12/**
-      - docs/hero-v13/**
+      - code/docs/hero-v5/**
+      - code/docs/hero-v6/**
+      - code/docs/hero-v7/**
+      - code/docs/hero-v8/**
+      - code/docs/hero-v9/**
+      - code/docs/hero-v10/**
+      - code/docs/hero-v11/**
+      - code/docs/hero-v12/**
+      - code/docs/hero-v13/**
   workflow_dispatch:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: code
 
 jobs:
   verify-hero:
@@ -65,6 +69,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Locked dependency install
         run: npm ci
       - name: TypeScript and production Vite build
@@ -122,6 +127,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lcr-hero-v13-browser-evidence
-          path: test-results/
+          path: code/test-results/
           if-no-files-found: warn
           retention-days: 30

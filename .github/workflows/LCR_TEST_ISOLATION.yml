@@ -9,6 +9,10 @@ permissions:
 concurrency:
   group: isolation-${{ github.ref }}
   cancel-in-progress: true
+defaults:
+  run:
+    working-directory: code
+
 jobs:
   isolation:
     runs-on: ubuntu-24.04
@@ -21,6 +25,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - run: npm ci
       - run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
@@ -54,7 +59,7 @@ jobs:
         if: always()
         with:
           name: lcr-isolation-evidence
-          path: test-results/
+          path: code/test-results/
           retention-days: 30
           if-no-files-found: error
 
@@ -72,7 +77,7 @@ jobs:
         if: always()
         with:
           name: quality-inventory
-          path: test-results/quality/
+          path: code/test-results/quality/
           retention-days: 30
   quality-shadow:
     name: Quality shadow / ${{ matrix.shard }}
@@ -91,6 +96,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - uses: actions/setup-python@v5
         if: matrix.shard == 'lab'
         with:
@@ -109,7 +115,7 @@ jobs:
         if: always()
         with:
           name: quality-${{ matrix.shard }}
-          path: test-results/
+          path: code/test-results/
           retention-days: 30
           if-no-files-found: error
   quality-dependencies:
@@ -128,8 +134,8 @@ jobs:
         with:
           name: quality-dependency-audit
           path: |
-            test-results/quality/dependencies.json
-            test-results/quality/dependency-remediation/
+            code/test-results/quality/dependencies.json
+            code/test-results/quality/dependency-remediation/
           retention-days: 30
   quality-parity:
     name: Quality transition parity
@@ -159,6 +165,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: quality-parity-summary
-          path: test-results/quality/summary.json
+          path: code/test-results/quality/summary.json
           retention-days: 30
           if-no-files-found: error

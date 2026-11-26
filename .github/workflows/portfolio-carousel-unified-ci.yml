@@ -8,18 +8,22 @@ on:
     branches:
       - main
     paths:
-      - src/components/case/CaseHero.tsx
-      - src/estruturas-padroes/**
-      - src/main.tsx
-      - docs/adr/**
-      - src/styles/global.css
-      - tests/cities-carousel-alignment-smoke.mjs
-      - tests/portfolio-carousel-unified-smoke.mjs
+      - code/src/components/case/CaseHero.tsx
+      - code/src/estruturas-padroes/**
+      - code/src/main.tsx
+      - code/docs/adr/**
+      - code/src/styles/global.css
+      - code/tests/cities-carousel-alignment-smoke.mjs
+      - code/tests/portfolio-carousel-unified-smoke.mjs
       - .github/workflows/portfolio-carousel-unified-ci.yml
   workflow_dispatch:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: code
 
 jobs:
   validate-all-projects:
@@ -31,6 +35,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Install exact project dependencies
         run: npm ci
       - name: TypeScript and production build
@@ -48,6 +53,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lcr-standard-project-carousel
-          path: test-results/
+          path: code/test-results/
           retention-days: 30
           if-no-files-found: warn

@@ -3,18 +3,18 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'index.html'
-      - 'src/components/SeoSync.tsx'
-      - 'tests/ai-positioning-smoke.mjs'
-      - 'public/og-cover.svg'
-      - 'public/assets/branding/social/**'
-      - 'docs/branding/**'
-      - 'tests/social-sharing-smoke.py'
-      - 'scripts/generate-mobile-social-preview.py'
+      - 'code/index.html'
+      - 'code/src/components/SeoSync.tsx'
+      - 'code/tests/ai-positioning-smoke.mjs'
+      - 'code/public/og-cover.svg'
+      - 'code/public/assets/branding/social/**'
+      - 'code/docs/branding/**'
+      - 'code/tests/social-sharing-smoke.py'
+      - 'code/scripts/generate-mobile-social-preview.py'
       - '.github/workflows/social-sharing-ci.yml'
       - '.github/workflows/deploy.yml'
-      - 'vite.config.ts'
-      - 'package*.json'
+      - 'code/vite.config.ts'
+      - 'code/package*.json'
   workflow_dispatch:
     inputs:
       verify_live:
@@ -23,6 +23,10 @@ on:
         default: false
 permissions:
   contents: read
+defaults:
+  run:
+    working-directory: code
+
 jobs:
   static-social-preview:
     runs-on: ubuntu-24.04
@@ -35,22 +39,23 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - run: npm ci
       - run: bash tests/isolation/run.sh npm run build
       - run: bash tests/isolation/run.sh python3 tests/social-sharing-smoke.py --dist dist
       - name: Preserve legacy SVG source
-        run: git diff --exit-code dc7bc88c709ef46ea039e47c4d5c08630420df19 -- public/og-cover.svg
+        run: git show dc7bc88c709ef46ea039e47c4d5c08630420df19:public/og-cover.svg | cmp - public/og-cover.svg
       - uses: actions/upload-artifact@v4
         with:
           name: social-sharing-preview
           path: |
-            dist/index.html
-            dist/assets/branding/social/lcr-portfolio-og-wa.jpg
-            dist/assets/branding/social/lcr-portfolio-og-wa.webp
-            dist/assets/branding/social/lcr-portfolio-og.jpg
-            dist/assets/branding/social/lcr-portfolio-og.png
-            dist/assets/branding/social/lcr-portfolio-og.webp
-            docs/branding/SOCIAL_ASSET_INVENTORY.json
+            code/dist/index.html
+            code/dist/assets/branding/social/lcr-portfolio-og-wa.jpg
+            code/dist/assets/branding/social/lcr-portfolio-og-wa.webp
+            code/dist/assets/branding/social/lcr-portfolio-og.jpg
+            code/dist/assets/branding/social/lcr-portfolio-og.png
+            code/dist/assets/branding/social/lcr-portfolio-og.webp
+            code/docs/branding/SOCIAL_ASSET_INVENTORY.json
           retention-days: 30
       - name: Verify deployed crawler-facing HTML and image
         if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && inputs.verify_live

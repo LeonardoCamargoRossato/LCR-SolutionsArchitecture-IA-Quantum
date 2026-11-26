@@ -6,17 +6,21 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'tests/isolation/**'
-      - 'vite.config.ts'
-      - src/**
-      - index.html
-      - tests/ai-positioning-smoke.mjs
+      - 'code/tests/isolation/**'
+      - 'code/vite.config.ts'
+      - code/src/**
+      - code/index.html
+      - code/tests/ai-positioning-smoke.mjs
       - .github/workflows/ai-positioning-ci.yml
-      - docs/**
+      - code/docs/**
   workflow_dispatch:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: code
 
 jobs:
   build-and-browser:
@@ -28,6 +32,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Install pinned dependencies
         run: npm ci
       - name: Typecheck and build
@@ -45,6 +50,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lcr-ai-engineering-portfolio
-          path: test-results/
+          path: code/test-results/
           if-no-files-found: warn
           retention-days: 30

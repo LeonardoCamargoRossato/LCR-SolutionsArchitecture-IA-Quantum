@@ -4,20 +4,24 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'tests/isolation/**'
-      - 'vite.config.ts'
-      - 'src/components/loading-portal/**'
-      - 'src/features/test-component-lab/loading-portal/**'
-      - 'src/pages/TestComponentLab.tsx'
-      - 'public/assets/home/loading-portal/**'
-      - 'docs/test-component-lab/loading-portal-v1/**'
-      - 'scripts/import_loading_portal_assets.py'
-      - 'tests/loading-portal-lab-smoke.mjs'
+      - 'code/tests/isolation/**'
+      - 'code/vite.config.ts'
+      - 'code/src/components/loading-portal/**'
+      - 'code/src/features/test-component-lab/loading-portal/**'
+      - 'code/src/pages/TestComponentLab.tsx'
+      - 'code/public/assets/home/loading-portal/**'
+      - 'code/docs/test-component-lab/loading-portal-v1/**'
+      - 'code/scripts/import_loading_portal_assets.py'
+      - 'code/tests/loading-portal-lab-smoke.mjs'
       - '.github/workflows/loading-portal-lab-ci.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: code
 
 jobs:
   build-and-preservation:
@@ -29,6 +33,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Locked install
         run: npm ci
       - name: TypeScript and Vite production build
@@ -66,6 +71,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - run: npm ci
       - name: Install browser runtime
         run: |
@@ -80,6 +86,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: loading-portal-lab-v1-browser-evidence
-          path: test-results/
+          path: code/test-results/
           retention-days: 30
           if-no-files-found: warn

@@ -4,17 +4,21 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'tests/isolation/**'
-      - 'vite.config.ts'
-      - 'src/styles/hero-wide-desktop-v14.css'
-      - 'src/main.tsx'
-      - 'tests/hero-v14-wide-viewport-smoke.mjs'
+      - 'code/tests/isolation/**'
+      - 'code/vite.config.ts'
+      - 'code/src/styles/hero-wide-desktop-v14.css'
+      - 'code/src/main.tsx'
+      - 'code/tests/hero-v14-wide-viewport-smoke.mjs'
       - '.github/workflows/hero-v14-wide-ci.yml'
-      - 'docs/hero-v14/**'
+      - 'code/docs/hero-v14/**'
   workflow_dispatch:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: code
 
 jobs:
   hero-wide-layout:
@@ -28,6 +32,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Install locked dependencies
         run: npm ci
       - name: Build production
@@ -62,6 +67,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lcr-hero-v14-wide-landscape-evidence
-          path: test-results/
+          path: code/test-results/
           if-no-files-found: warn
           retention-days: 30

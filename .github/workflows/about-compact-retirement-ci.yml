@@ -8,15 +8,19 @@ on:
     branches:
       - main
     paths:
-      - src/**
-      - public/projects/scientific-analysis.*
-      - tests/about-compact-retirement-smoke.mjs
+      - code/src/**
+      - code/public/projects/scientific-analysis.*
+      - code/tests/about-compact-retirement-smoke.mjs
       - .github/workflows/about-compact-retirement-ci.yml
-      - docs/**
+      - code/docs/**
   workflow_dispatch:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: code
 
 jobs:
   typecheck-and-browser:
@@ -30,6 +34,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Install locked dependencies
         run: npm ci
       - name: TypeScript and production build
@@ -53,6 +58,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lcr-about-compact-retirement-evidence
-          path: test-results/
+          path: code/test-results/
           retention-days: 30
           if-no-files-found: warn

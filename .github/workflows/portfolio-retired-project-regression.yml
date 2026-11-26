@@ -7,16 +7,20 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'tests/isolation/**'
-      - 'vite.config.ts'
-      - tests/portfolio-covers-smoke.mjs
-      - src/config/retiredProjects.ts
-      - src/pages/ProjectCaseV1.tsx
+      - 'code/tests/isolation/**'
+      - 'code/vite.config.ts'
+      - code/tests/portfolio-covers-smoke.mjs
+      - code/src/config/retiredProjects.ts
+      - code/src/pages/ProjectCaseV1.tsx
       - .github/workflows/portfolio-retired-project-regression.yml
   workflow_dispatch:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: code
 
 jobs:
   verify-retirement:
@@ -30,6 +34,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Install pinned project dependencies
         run: npm ci
       - name: Build TypeScript and Vite
@@ -57,4 +62,4 @@ jobs:
           name: pdf-analyzer-retirement-regression-evidence
           retention-days: 30
           if-no-files-found: warn
-          path: test-results/
+          path: code/test-results/

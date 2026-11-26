@@ -6,6 +6,10 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    working-directory: code
+
 jobs:
   public-logos:
     runs-on: ubuntu-24.04
@@ -16,6 +20,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Install test dependencies
         run: |
           npm ci
@@ -30,4 +35,4 @@ jobs:
           name: institution-logos-published-evidence
           retention-days: 30
           if-no-files-found: warn
-          path: test-results/
+          path: code/test-results/
