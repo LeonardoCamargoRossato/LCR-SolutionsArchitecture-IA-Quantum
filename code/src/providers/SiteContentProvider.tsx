@@ -1,4 +1,4 @@
-import { getSelectedWork } from '../data/selectedWork'
+import { getSelectedWork, isSelectedWork } from '../data/selectedWork'
 import { withOfficialProfile } from '../assets/public/officialProfile'
 import {
   createContext,
@@ -55,7 +55,7 @@ export function SiteContentProvider({ children }: { children: ReactNode }) {
     readCache('lcr-projects-v2', [
       ...defaultProjects,
       ...defaultMoreProjects,
-    ]).filter((project) => !RETIRED_PROJECT_SLUGS.has(project.slug)),
+    ]).filter((project) => !RETIRED_PROJECT_SLUGS.has(project.slug) && !isSelectedWork(project)),
   )
   const [loading, setLoading] = useState(true)
 

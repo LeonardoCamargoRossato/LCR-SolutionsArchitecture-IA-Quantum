@@ -1,3 +1,4 @@
+import { isSelectedWork } from '../data/selectedWork'
 import { selectedCaseFallback } from '../application/services/ProjectService'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
@@ -39,7 +40,7 @@ export function ProjectCaseV1() {
   const [institutions, setInstitutions] = useState<ProjectInstitution[]>([])
 
   const publicSource = projects.find((project) =>
-    !RETIRED_PROJECT_SLUGS.has(project.slug) && (project.slug === slug ||
+    !RETIRED_PROJECT_SLUGS.has(project.slug) && (!isSelectedWork(project) || project.visible !== false) && (project.slug === slug ||
     (slug === 'cities-comparing' && (project.slug === 'city-comparing' || project.id === 'city-comparing'))),
   )
 

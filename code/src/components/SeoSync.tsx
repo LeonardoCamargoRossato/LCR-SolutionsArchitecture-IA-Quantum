@@ -10,7 +10,7 @@ const DEFAULT_TITLE = 'Leonardo Camargo Rossato | AI Engineering & Software Deve
 const DEFAULT_FAVICON = `${import.meta.env.BASE_URL}projects/logo_LCR_PortifolioApps.png`
 
 export function SeoSync() {
-  const { content, projects } = useSiteContent()
+  const { content, projects, selectedWork } = useSiteContent()
   const { pathname } = useLocation()
   const { locale } = useI18n()
   const lastFaviconSource = useRef<string | undefined>(undefined)
@@ -18,7 +18,7 @@ export function SeoSync() {
   useEffect(() => {
     const s = content.seo
     const slug = pathname.startsWith('/projects/') ? pathname.slice('/projects/'.length) : null
-    const caseSource = slug ? projects.find((project) => project.slug === slug && project.visible !== false && project.caseEnabled !== false) : null
+    const caseSource = slug ? (projects.find((project) => project.slug === slug && project.visible !== false && project.caseEnabled !== false) ?? selectedWork.find(project => project.slug === slug)) : null
     const currentCase = caseSource ? localizedProject(caseSource, locale) : null
     const caseDescription = currentCase?.description?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
     const localizedHero = PORTFOLIO_HERO_CONTENT[locale]
@@ -72,7 +72,7 @@ export function SeoSync() {
       favicon.dataset.source = faviconSource
       lastFaviconSource.current = faviconSource
     }
-  }, [content.seo, pathname, projects, locale])
+  }, [content.seo, pathname, projects, selectedWork, locale])
 
   return null
 }

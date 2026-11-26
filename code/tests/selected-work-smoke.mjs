@@ -109,6 +109,7 @@ export async function verifySelectedWork(browser,fixtureBase){
         await page.goto(base+'#/?portal=skip')
         await page.locator('.selected-grid .project-card').first().waitFor({state:'attached'})
       }
+      if(mode==='dev-no-config'||mode==='pages-no-config')assert.deepEqual(backend,[],'No backend request even during case navigation')
       report.scenarios.push({file,order:slugs,requests,backendRequests:backend.length,remoteImages,errors,navigation:3,screenshot:file+'.png'})
       console.log('PASS Selected Work',file,'3 approved cards, localized content, local WebP, routes, no remote cover')
     }finally{await page.unrouteAll({behavior:'wait'});await ctx.close();await writeFile(dir+'/evidence.json',JSON.stringify(report,null,2))}
