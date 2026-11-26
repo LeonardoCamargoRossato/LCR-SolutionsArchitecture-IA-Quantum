@@ -1,5 +1,4 @@
 import { getSelectedCases } from '../data/selectedCases'
-import { officialCvUrl } from '../assets/public/officialCv'
 import { getAdditionalWork } from '../data/additionalWork'
 import { getSelectedWork } from '../data/selectedWork'
 import { withOfficialProfile } from '../assets/public/officialProfile'
@@ -11,7 +10,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { defaultContent } from '../data/defaultContent'
+import { publishedContentSnapshot } from '../data/publishedContentSnapshot'
 import type { Project } from '../domain/models/Project'
 import type { SiteContent } from '../domain/models/SiteContent'
 
@@ -29,17 +28,6 @@ type Ctx = {
 const C = createContext<Ctx | undefined>(undefined)
 const CACHE_TTL = 6 * 60 * 60 * 1000
 
-function readCache<T>(key: string, fallback: T): T {
-  try {
-    const cached = JSON.parse(localStorage.getItem(key) ?? 'null') as { savedAt?: number; value?: T } | null
-    return cached?.savedAt && Date.now() - cached.savedAt < CACHE_TTL && cached.value
-      ? cached.value
-      : fallback
-  } catch {
-    return fallback
-  }
-}
-
 function writeCache<T>(key: string, value: T) {
   try {
     localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), value }))
@@ -49,10 +37,7 @@ function writeCache<T>(key: string, value: T) {
 }
 
 export function SiteContentProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState<SiteContent>(() => {
-    const cached = readCache('lcr-site-content-v2', defaultContent)
-    return { ...cached, cvUrl: officialCvUrl, about: withOfficialProfile(cached.about ?? defaultContent.about) }
-  })
+  const [content, setContent] = useState<SiteContent>(() => publishedContentSnapshot)
   const [projects, setProjects] = useState<Project[]>(()=>[...getSelectedCases(),...getAdditionalWork()])
   const [loading, setLoading] = useState(true)
 
