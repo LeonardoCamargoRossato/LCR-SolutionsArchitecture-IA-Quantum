@@ -1,58 +1,12 @@
-import { resolvePublicAsset } from '../../assets/public/resolvePublicAsset'
-
+import { officialCvUrl } from '../../assets/public/officialCv'
 import type { IContentRepository } from '../../domain/repositories/IContentRepository'
 import type { IMediaRepository } from '../../domain/repositories/IMediaRepository'
 
+/** The public PDF is versioned. Keep legacy repository contracts, never mutate them. */
 export class CvService {
-  constructor(
-    private content: IContentRepository,
-    private media: IMediaRepository,
-  ) {}
-
-  getCurrentCv() {
-    return this.content.getCvUrl()
-  }
-
-  async replaceCv(file: File) {
-    if (file.type !== 'application/pdf') {
-      throw new Error('Formato não suportado. Envie um arquivo PDF.')
-    }
-    if (file.size > 12 * 1024 * 1024) {
-      throw new Error('Arquivo excede o limite permitido de 12 MB.')
-    }
-
-    const previousUrl = await this.content.getCvUrl().catch(() => null)
-    const previousAsset = previousUrl
-      ? (await this.media.getLibrary().catch(() => [])).find(
-          (item) => item.url === previousUrl,
-        )
-      : undefined
-
-    const asset = await this.media.upload(file, 'Documents', 'cv')
-
-    try {
-      await this.content.saveCvUrl(asset.url)
-    } catch (error) {
-      await this.media.delete(asset).catch(() => undefined)
-      throw error
-    }
-
-    if (previousAsset) {
-      this.media.delete(previousAsset).catch((error) => {
-        console.warn('Não foi possível remover o CV anterior.', error)
-      })
-    }
-
-    return asset.url
-  }
-
-  async removeCv() {
-    await this.content.removeCvUrl()
-  }
-
-  async downloadCv() {
-    const url = await this.getCurrentCv()
-    if (!url) throw new Error('Currículo não disponível.')
-    return resolvePublicAsset(url, 'original')
-  }
+  constructor(_content: IContentRepository, _media: IMediaRepository) {}
+  async getCurrentCv() { return officialCvUrl }
+  async replaceCv(_file: File): Promise<string> { throw new Error('Official CV is versioned on GitHub.') }
+  async removeCv(): Promise<void> { throw new Error('Official CV is versioned on GitHub.') }
+  async downloadCv() { return officialCvUrl }
 }

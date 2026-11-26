@@ -22,6 +22,13 @@ const isPhoto = url => /(?:\/profile\/|fotoperfilLCR|legacy-profile|wrong-profil
 const isBackend = url => url.startsWith(fixture) || /\.supabase\.co\//i.test(url)
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 const noBackendEnv = { ...process.env, LCR_PROFILE_NO_BACKEND:'1' }
+async function assertOffscreenPortrait(img) {
+  const state=await img.evaluate(el=>({offscreen:el.getBoundingClientRect().top>=innerHeight,src:el.getAttribute('src'),srcSet:el.getAttribute('srcset'),pending:el.getAttribute('data-demand-pending')}))
+  assert(state.offscreen,'Expected portrait below first viewport')
+  assert.equal(state.src,null,'Offscreen About portrait has src')
+  assert.equal(state.srcSet,null,'Offscreen About portrait has srcset')
+  assert.equal(state.pending,'true','Offscreen About portrait admitted early')
+}
 
 async function startServer(args, base) {
   const child = spawn('node_modules/.bin/vite', args, { env:noBackendEnv, detached:true, stdio:'ignore' })
@@ -66,13 +73,36 @@ export async function verifyOfficialProfile(browser, fixtureBase) {
     })
     if(options.storageDown)await page.route('**/storage/v1/**',route=>route.abort('failed'))
     try{
+      await context.addInitScript(()=>{
+        window.__aboutPortraitAdmissions=[]
+        new MutationObserver(records=>{
+          for(const record of records){
+            const nodes=record.type==='attributes'?[record.target]:[...record.addedNodes].flatMap(n=>n instanceof Element?[n,...n.querySelectorAll('img[data-testid="official-profile-photo"]')]:[])
+            for(const el of nodes)if(el instanceof HTMLImageElement&&el.dataset.testid==='official-profile-photo'&&(el.hasAttribute('src')||el.hasAttribute('srcset')))window.__aboutPortraitAdmissions.push({src:el.getAttribute('src'),srcSet:el.getAttribute('srcset'),offscreen:el.getBoundingClientRect().top>=innerHeight})
+          }
+        }).observe(document,{subtree:true,childList:true,attributes:true,attributeFilter:['src','srcset']})
+      })
       await page.goto(base+'#/?portal=skip',{waitUntil:'domcontentloaded'})
       const img=page.getByTestId('official-profile-photo')
       await img.waitFor({state:'attached',timeout:30000})
-      const hiddenBefore=await img.evaluate(el=>el.getBoundingClientRect().top>=innerHeight)
-      assert(hiddenBefore,'Expected portrait below first viewport')
-      assert.equal(photoRequests.length,0,'Portrait fetched before entering viewport: '+JSON.stringify(photoRequests))
-      assert.equal(await img.getAttribute('src'),null,'Offscreen portrait has src')
+      const header=page.getByTestId('official-profile-header')
+      await page.waitForFunction(expected=>{
+        const el=document.querySelector('[data-testid="official-profile-header"]')
+        return el?.complete&&el.naturalWidth>0&&el.currentSrc===expected
+      },base+profilePath,{timeout:30000})
+      await assertOffscreenPortrait(img)
+      assert.deepEqual(await page.evaluate(()=>window.__aboutPortraitAdmissions),[],'About portrait admitted before viewport')
+      assert(photoRequests.every(url=>url===base+profilePath),'Unexpected header portrait source')
+      const beforeRequests=photoRequests.length
+      assert(beforeRequests>=1,'Missing initial header photo request')
+      // Negative control in a separate detached image: an early src must fail
+      // the exact same admission assertion, even when the URL is cached.
+      const probe=await page.evaluateHandle(()=>{const el=document.createElement('img');el.style.cssText='position:absolute;top:100000px;width:10px;height:10px';el.dataset.demandPending='true';document.body.append(el);return el})
+      try{
+        await assertOffscreenPortrait(probe)
+        await probe.evaluate(el=>el.setAttribute('src',document.querySelector('[data-testid="official-profile-header"]').currentSrc))
+        await assert.rejects(()=>assertOffscreenPortrait(probe),/Offscreen About portrait has src/)
+      }finally{await probe.evaluate(el=>el.remove());await probe.dispose()}
       await img.scrollIntoViewIfNeeded()
       await page.waitForFunction(expected=>{
         const el=document.querySelector('[data-testid="official-profile-photo"]')
@@ -83,16 +113,34 @@ export async function verifyOfficialProfile(browser, fixtureBase) {
       }
       assert.equal(await page.locator('.profile-placeholder').count(),0)
       assert.equal(await img.evaluate(el=>el.currentSrc),base+profilePath)
+      const admissions=await page.evaluate(()=>window.__aboutPortraitAdmissions)
+      assert(admissions.length>0&&admissions.every(x=>!x.offscreen),'About admission must occur within viewport')
+      const cacheEvidence=await page.evaluate(expected=>performance.getEntriesByName(expected).map(e=>({transferSize:e.transferSize,encodedBodySize:e.encodedBodySize})),base+profilePath)
       assert.deepEqual(backendPhotoRequests,[],'Backend portrait request')
       assert(photoRequests.every(url=>url===base+profilePath),'Unexpected portrait source')
       assert(aboutSelections.every(sel=>sel && sel!=='*' && !sel.includes('profile_image_url')),'About read includes legacy profile column')
       if(options.noBackend)assert.deepEqual(backendRequests,[],'Backend requested without client config')
       assert(photoResponses.some(r=>r.status===200&&r.mime?.includes('image/webp')),'Missing successful WebP response')
+      const cvRequests=[]
+      page.on('request',req=>{if(req.url().includes('/assets/documents/cv/'))cvRequests.push(req.url())})
+      assert(!(await page.evaluate(()=>performance.getEntriesByType('resource').some(e=>e.name.includes('/assets/documents/cv/')))),'CV loaded before interaction')
+      await page.locator('.about-cv-button').click()
+      const cv=page.locator('.cv-viewer-document iframe')
+      await cv.waitFor({state:'attached'})
+      const cvSrc=await cv.getAttribute('src')
+      assert(cvSrc?.startsWith(root+'assets/documents/cv/')&&cvSrc.endsWith('.pdf'))
+      const [download]=await Promise.all([page.waitForEvent('download'),page.locator('.cv-viewer-actions a[download]').click()])
+      const pdf=await readFile(await download.path())
+      assert.equal(pdf.subarray(0,5).toString(),'%PDF-')
+      assert.deepEqual(pdf,await readFile('public/'+cvSrc.slice(root.length)))
+      assert(cvRequests.every(u=>u.startsWith(new URL(base).origin+root+'assets/documents/cv/')))
+      await page.keyboard.press('Escape')
+      await page.locator('.cv-viewer-backdrop').waitFor({state:'hidden'})
       const bytes=await (await context.request.get(base+profilePath)).body()
       assert.equal(sha256(bytes),hash)
       await img.screenshot({path:out+'/'+name+'.png'})
       if(!cache)cache=await page.evaluate(async base=>(await import(base+'src/data/defaultContent.ts')).defaultContent,base)
-      result.scenarios.push({name,source:base+profilePath,sha256:hash,demand:true,photoRequests,backendPhotoRequests,backendRequests:backendRequests.length,aboutSelections,photoResponses,screenshot:name+'.png'})
+      result.scenarios.push({name,source:base+profilePath,sha256:hash,demand:true,negativeControl:true,headerRequests:beforeRequests,admissions,cacheEvidence,cvLocal:true,cvRequests,photoRequests,backendPhotoRequests,backendRequests:backendRequests.length,aboutSelections,photoResponses,screenshot:name+'.png'})
       console.log('PASS official profile '+name+': WebP local; zero backend photo requests; viewport admission')
     }finally{await page.unrouteAll({behavior:'wait'});await context.close()}
   }

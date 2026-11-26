@@ -3,7 +3,7 @@ import { isSelectedWork, getSelectedWork } from '../../data/selectedWork'
 import { DemandImage } from '../../components/DemandImage'
 import { useEffect,useMemo,useState } from 'react'
 import { ExternalLink,FileText,LogOut,Save,Trash2,Upload } from 'lucide-react'
-import { contentService,cvService,mediaService,projectService,runtimeInfo } from '../../bootstrap/services'
+import { contentService,mediaService,projectService,runtimeInfo } from '../../bootstrap/services'
 import { useSiteContent } from '../../providers/SiteContentProvider'
 import { useToast } from '../../providers/ToastProvider'
 import { RichTextEditor } from '../../components/admin/RichTextEditor'
@@ -315,70 +315,12 @@ function SeoEditor({initial,onDirty,done}:{initial:SeoContent;onDirty:(v:boolean
 
 function MediaLibrary(){const[items,setItems]=useState<any[]>([]);const[busy,setBusy]=useState(false);const toast=useToast();const load=()=>mediaService.getLibrary().then(setItems).catch(e=>toast.error('Não foi possível carregar a mídia.',humanizeError(e)));useEffect(()=>{load()},[]);const up=async(f:File)=>{setBusy(true);try{await mediaService.upload(f,'Other');await load();toast.success('Arquivo enviado com sucesso.')}catch(e){toast.error('Não foi possível enviar o arquivo.',humanizeError(e))}finally{setBusy(false)}};return <div className="admin-card"><label className="button"><Upload size={16}/> {busy?'Enviando...':'Upload'}<input hidden type="file" onChange={e=>e.target.files?.[0]&&up(e.target.files[0])}/></label><div className="media-library-grid">{items.map(x=><article key={x.id}>{x.mimeType?.startsWith('image/')&&<DemandImage src={x.url} alt=""/>}<strong>{x.name}</strong><small>{x.category}</small><div><button onClick={()=>navigator.clipboard.writeText(x.url)}>Copy URL</button><button onClick={async()=>{if(confirm('Delete this media? Referenced pages may break.')){try{await mediaService.delete(x);await load();toast.success('Mídia removida.')}catch(e){toast.error('Não foi possível remover.',humanizeError(e))}}}}><Trash2 size={13}/> Delete</button></div></article>)}</div></div>}
 
-function CvAdmin({url,done}:{url?:string;done:()=>Promise<void>}){
- const[busy,setBusy]=useState(false)
- const[selected,setSelected]=useState<File>()
- const[viewerOpen,setViewerOpen]=useState(false)
- const[status,setStatus]=useState('')
- const toast=useToast()
-
- const choose=(file?:File)=>{
-  setStatus('')
-  if(!file){setSelected(undefined);return}
-  if(file.type!=='application/pdf'){
-   setSelected(undefined)
-   setStatus('Erro ao salvar CV: envie apenas arquivos PDF.')
-   return
-  }
-  setSelected(file)
- }
-
- const save=async()=>{
-  if(!selected||busy)return
-  setBusy(true)
-  setStatus('Salvando...')
-  try{
-   await cvService.replaceCv(selected)
-   await done()
-   setSelected(undefined)
-   setStatus('CV atualizado com sucesso')
-   toast.success('CV atualizado com sucesso.')
-  }catch(e){
-   const reason=humanizeError(e)
-   setStatus(`Erro ao salvar CV: ${reason}`)
-   toast.error('Erro ao salvar CV.',reason)
-  }finally{
-   setBusy(false)
-  }
- }
-
- const remove=async()=>{
-  setBusy(true)
-  setStatus('Salvando...')
-  try{
-   await cvService.removeCv()
-   await done()
-   setStatus('CV removido com sucesso')
-   toast.success('CV removido com sucesso.')
-  }catch(e){
-   const reason=humanizeError(e)
-   setStatus(`Erro ao salvar CV: ${reason}`)
-   toast.error('Erro ao salvar CV.',reason)
-  }finally{
-   setBusy(false)
-  }
- }
-
- return <div className="admin-card cv-admin">
+function CvAdmin({url}:{url?:string;done:()=>Promise<void>}) {
+ const [viewerOpen,setViewerOpen]=useState(false)
+ return <div className="admin-card cv-admin" data-testid="versioned-cv">
   <h2>Curriculum PDF</h2>
-  {url?<div className="current-file"><FileText/><div><strong>CV atual</strong><button className="admin-inline-link" type="button" onClick={()=>setViewerOpen(true)}>Visualizar CV</button></div></div>:<p>Nenhum CV enviado.</p>}
-  {selected&&<div className="current-file"><FileText/><div><strong>Arquivo selecionado</strong><span>{selected.name}</span></div></div>}
-  <div className="cv-admin-actions">
-   <label className="button button-secondary"><Upload size={16}/> Selecionar PDF<input hidden type="file" accept="application/pdf" disabled={busy} onChange={e=>choose(e.target.files?.[0])}/></label>
-   {selected&&<button className="button" type="button" disabled={busy} onClick={()=>void save()}>{busy?'Salvando...':'Salvar CV'}</button>}
-   {url&&<button className="text-danger" type="button" onClick={()=>void remove()} disabled={busy}>Remover CV</button>}
-  </div>
-  {status&&<p className={status.startsWith('Erro')?'inline-error':'admin-note'}>{status}</p>}
-  {url&&<CvViewer open={viewerOpen} url={url} onClose={()=>setViewerOpen(false)}/>} 
+  <p className="admin-note">Official CV versioned on GitHub. Replace the approved PDF through the repository; CMS upload and removal are disabled.</p>
+  {url&&<div className="current-file"><FileText/><div><strong>CV atual</strong><button className="admin-inline-link" type="button" onClick={()=>setViewerOpen(true)}>Visualizar CV</button></div></div>}
+  {url&&<CvViewer open={viewerOpen} url={url} onClose={()=>setViewerOpen(false)}/>}
  </div>
 }

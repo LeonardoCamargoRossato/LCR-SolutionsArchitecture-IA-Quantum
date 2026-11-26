@@ -80,7 +80,7 @@ export const selectedWorkCatalog: ReadonlyArray<Entry> = [
   "subtitle": "AI-Powered Discovery & Hybrid Retrieval Platform",
   "category": "AI Engineering / RAG / Intelligent Search Systems",
   "status": "Live",
-  "description": "An AI-powered discovery and personal knowledge platform combining LLMs, semantic retrieval, structured database queries, statistical analysis, and hybrid query routing. Built around Gemini-based reasoning, Supabase/PostgreSQL, pgvector embeddings and evidence-grounded responses.",
+  "description": "An AI-powered discovery and personal knowledge platform combining LLMs, semantic retrieval, structured database queries, statistical analysis, and hybrid query routing. Its architecture integrates Gemini reasoning, Supabase/PostgreSQL, pgvector embeddings and evidence-grounded answers.",
   "technologies": [
     "LLMs",
     "RAG",

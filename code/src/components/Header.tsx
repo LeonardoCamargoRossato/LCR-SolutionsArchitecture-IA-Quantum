@@ -1,11 +1,11 @@
 import { DemandImage } from './DemandImage'
-import { ChevronDown, Menu, Moon, Sun, UserRound, X } from 'lucide-react'
+import { ChevronDown, Menu, Moon, Sun, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { externalLinks } from '../config/externalLinks'
 import { useI18n } from '../i18n/I18nProvider'
 import type { Locale } from '../i18n/types'
-import { useSiteContent } from '../providers/SiteContentProvider'
+import { officialProfileUrl } from '../assets/public/officialProfile'
 import { useTheme } from '../providers/ThemeProvider'
 import { FlagIcon } from './header/FlagIcon'
 import './header/header-controls.css'
@@ -22,7 +22,6 @@ export function Header() {
   const pickerButtonRef = useRef<HTMLButtonElement>(null)
   const location = useLocation()
   const navigate = useNavigate()
-  const { content } = useSiteContent()
   const { locale, setLocale, t } = useI18n()
   const { theme, toggleTheme } = useTheme()
   const selectedLanguage = LANGUAGES.find(option => option.locale === locale) ?? LANGUAGES[0]
@@ -81,11 +80,7 @@ export function Header() {
       <div className="site-container header-inner">
         <Link to="/" className="brand" aria-label={locale === 'pt-BR' ? 'Início — Leonardo Rossato' : 'Leonardo Rossato home'}>
           <span className="brand-avatar">
-            {content.about.profileImage?.url ? (
-              <DemandImage src={content.about.profileImage.url} alt="" aria-hidden="true" />
-            ) : (
-              <UserRound size={17} aria-hidden="true" />
-            )}
+            <DemandImage src={officialProfileUrl} alt="" aria-hidden="true" data-testid="official-profile-header" />
           </span>
           <span className="brand-name">Leonardo Rossato</span>
         </Link>

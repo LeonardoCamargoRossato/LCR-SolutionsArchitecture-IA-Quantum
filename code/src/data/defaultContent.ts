@@ -1,7 +1,9 @@
+import { officialCvUrl } from '../assets/public/officialCv'
 import { officialProfileImage } from '../assets/public/officialProfile'
 import type { SiteContent } from '../domain/models/SiteContent'
 
 export const defaultContent: SiteContent = {
+  cvUrl: officialCvUrl,
   home: {
     eyebrow: 'LEONARDO CAMARGO ROSSATO',
     title: 'AI Engineering & Software Development',

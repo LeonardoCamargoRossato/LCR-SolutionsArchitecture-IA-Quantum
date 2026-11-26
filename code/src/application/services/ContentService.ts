@@ -1,3 +1,4 @@
+import { officialCvUrl } from '../../assets/public/officialCv'
 import { withOfficialProfile } from '../../assets/public/officialProfile'
 import type { IContentRepository } from '../../domain/repositories/IContentRepository'
 import { defaultContent } from '../../data/defaultContent'
@@ -56,10 +57,7 @@ export class ContentService {
 
   saveSeo(v: typeof defaultContent.seo) { return this.repo.saveSeo(v) }
 
-  async getCvUrl() {
-    try { return (await this.repo.getCvUrl()) ?? undefined }
-    catch { return undefined }
-  }
+  async getCvUrl() { return officialCvUrl }
 
-  saveCvUrl(url: string) { return this.repo.saveCvUrl(url) }
+  saveCvUrl(_url: string): Promise<void> { return Promise.reject(new Error('Official CV is versioned on GitHub.')) }
 }

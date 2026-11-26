@@ -272,7 +272,7 @@ export function AboutAdminEditor({
               }
             />
             <p className="admin-note">
-              CV upload/replacement remains available in the dedicated CV section.
+              Official CV is versioned on GitHub. Preview is available in the dedicated CV section.
             </p>
           </div>
         </div>

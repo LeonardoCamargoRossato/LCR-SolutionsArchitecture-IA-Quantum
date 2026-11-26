@@ -1,3 +1,4 @@
+import { officialCvUrl } from '../assets/public/officialCv'
 import { getAdditionalWork } from '../data/additionalWork'
 import { getSelectedWork } from '../data/selectedWork'
 import { withOfficialProfile } from '../assets/public/officialProfile'
@@ -49,7 +50,7 @@ function writeCache<T>(key: string, value: T) {
 export function SiteContentProvider({ children }: { children: ReactNode }) {
   const [content, setContent] = useState<SiteContent>(() => {
     const cached = readCache('lcr-site-content-v2', defaultContent)
-    return { ...cached, about: withOfficialProfile(cached.about ?? defaultContent.about) }
+    return { ...cached, cvUrl: officialCvUrl, about: withOfficialProfile(cached.about ?? defaultContent.about) }
   })
   const [projects, setProjects] = useState<Project[]>(getAdditionalWork)
   const [loading, setLoading] = useState(true)
