@@ -1,4 +1,5 @@
-import { getSelectedWork, isSelectedWork } from '../data/selectedWork'
+import { getAdditionalWork } from '../data/additionalWork'
+import { getSelectedWork } from '../data/selectedWork'
 import { withOfficialProfile } from '../assets/public/officialProfile'
 import {
   createContext,
@@ -9,8 +10,6 @@ import {
   type ReactNode,
 } from 'react'
 import { defaultContent } from '../data/defaultContent'
-import { RETIRED_PROJECT_SLUGS } from '../config/retiredProjects'
-import { defaultMoreProjects, defaultProjects } from '../data/defaultProjects'
 import type { Project } from '../domain/models/Project'
 import type { SiteContent } from '../domain/models/SiteContent'
 
@@ -18,6 +17,7 @@ type Ctx = {
   content: SiteContent
   projects: Project[]
   selectedWork: Project[]
+  additionalWork: Project[]
   loading: boolean
   refresh: () => Promise<void>
   refreshContent: () => Promise<void>
@@ -51,12 +51,7 @@ export function SiteContentProvider({ children }: { children: ReactNode }) {
     const cached = readCache('lcr-site-content-v2', defaultContent)
     return { ...cached, about: withOfficialProfile(cached.about ?? defaultContent.about) }
   })
-  const [projects, setProjects] = useState<Project[]>(() =>
-    readCache('lcr-projects-v2', [
-      ...defaultProjects,
-      ...defaultMoreProjects,
-    ]).filter((project) => !RETIRED_PROJECT_SLUGS.has(project.slug) && !isSelectedWork(project)),
-  )
+  const [projects, setProjects] = useState<Project[]>(getAdditionalWork)
   const [loading, setLoading] = useState(true)
 
   const refreshContent = async () => {
@@ -104,7 +99,7 @@ export function SiteContentProvider({ children }: { children: ReactNode }) {
   useEffect(() => { void refresh().catch((error) => console.error('Content refresh failed.', error)) }, [])
 
   const value = useMemo(
-    () => ({ content, projects, selectedWork: getSelectedWork(), loading, refresh, refreshContent, refreshProjects }),
+    () => ({ content, projects, selectedWork: getSelectedWork(), additionalWork: getAdditionalWork(), loading, refresh, refreshContent, refreshProjects }),
     [content, projects, loading],
   )
 

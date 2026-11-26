@@ -1,4 +1,3 @@
-import { isSelectedWork } from '../data/selectedWork'
 import { officialProfileUrl } from '../assets/public/officialProfile'
 import { DemandImage } from '../components/DemandImage'
 import { FileText, Mail } from 'lucide-react'
@@ -17,7 +16,6 @@ import { SectionTitle } from '../components/SectionTitle'
 import { SocialLinkList } from '../components/SocialLinks'
 import { WorkProcessSection } from '../components/WorkProcessSection'
 import { externalLinks } from '../config/externalLinks'
-import { RETIRED_PROJECT_SLUGS } from '../config/retiredProjects'
 import { PORTFOLIO_HERO_CONTENT } from '../config/portfolioPositioning'
 import { localizedAbout, localizedHome, localizedSiteSettings } from '../i18n/content'
 import { useI18n } from '../i18n/I18nProvider'
@@ -26,7 +24,7 @@ import { useHomeEntrance } from '../hooks/useHomeEntrance'
 import { useHomeMotionEnabled } from '../features/home-loading/HomeMotionContext'
 
 export function Home() {
-  const { content, projects, selectedWork } = useSiteContent()
+  const { content, projects, selectedWork, additionalWork } = useSiteContent()
   const { locale, t } = useI18n()
   const [cvOpen, setCvOpen] = useState(false)
   const homeRef = useRef<HTMLElement>(null)
@@ -66,33 +64,8 @@ export function Home() {
     '--more-card-scale': String(moreCardScale / 100),
   } as CSSProperties
 
-  const visibleProjects = projects.filter((project) => project.visible !== false && !RETIRED_PROJECT_SLUGS.has(project.slug))
-  const projectOrder = (project: typeof projects[number]) =>
-    project.sortOrder ?? project.order ?? 999
-
   const mainProjects = selectedWork
-
-  const moreProjects = visibleProjects
-    .filter((project) => !isSelectedWork(project))
-    .sort((a, b) => {
-      const priority = ['hamlet', 'webseer', 'metcompb-landing-page']
-      const priorityA = priority.indexOf(a.slug)
-      const priorityB = priority.indexOf(b.slug)
-      if (priorityA !== -1 || priorityB !== -1) {
-        if (priorityA === -1) return 1
-        if (priorityB === -1) return -1
-        return priorityA - priorityB
-      }
-      const finalProjects = ['ce235-real-time-systems', 'embedded-control-platform', 'esp32-control']
-      const finalA = finalProjects.indexOf(a.slug)
-      const finalB = finalProjects.indexOf(b.slug)
-      if (finalA !== -1 || finalB !== -1) {
-        if (finalA === -1) return -1
-        if (finalB === -1) return 1
-        return finalA - finalB
-      }
-      return projectOrder(a) - projectOrder(b)
-    })
+  const moreProjects = additionalWork
 
   const heroCopy = PORTFOLIO_HERO_CONTENT[locale]
   const professionalTitle = heroCopy.positioning

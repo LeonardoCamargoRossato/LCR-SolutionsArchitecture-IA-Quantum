@@ -1,3 +1,4 @@
+import { findAdditionalWork, getAdditionalInstitutions } from '../data/additionalWork'
 import { withLocalSelectedCaseGallery } from '../data/selectedCaseGalleries'
 import { isSelectedWork } from '../data/selectedWork'
 import { selectedCaseFallback } from '../application/services/ProjectService'
@@ -40,7 +41,8 @@ export function ProjectCaseV1() {
   const animeFinderAssetsReady = useAnimeFinderAssetsReady(slug === 'animefinder')
   const [institutions, setInstitutions] = useState<ProjectInstitution[]>([])
 
-  const publicSource = projects.find((project) =>
+  const localAdditional = findAdditionalWork(slug)
+  const publicSource = localAdditional ?? projects.find((project) =>
     !RETIRED_PROJECT_SLUGS.has(project.slug) && (!isSelectedWork(project) || project.visible !== false) && (project.slug === slug ||
     (slug === 'cities-comparing' && (project.slug === 'city-comparing' || project.id === 'city-comparing'))),
   )
@@ -75,6 +77,10 @@ export function ProjectCaseV1() {
       return () => { active = false }
     }
 
+    if (localAdditional) {
+      setInstitutions(getAdditionalInstitutions(localAdditional.id))
+      return () => { active = false }
+    }
     const projectSource = source.source === 'more' ? 'more_projects' : 'projects'
     void projectInstitutionService
       .getPublic(source.id, projectSource)
@@ -107,7 +113,7 @@ export function ProjectCaseV1() {
       })
 
     return () => { active = false }
-  }, [source?.id, source?.source, source?.slug, projects])
+  }, [source?.id, source?.source, source?.slug, projects, localAdditional])
 
 
   const labels = locale === 'pt-BR'

@@ -1,7 +1,7 @@
 import type { MediaAsset } from './MediaAsset'
 import type { Locale } from '../../i18n/types'
 
-export type ProjectStatus = 'Live' | 'Private Platform' | 'Case Study in Progress' | 'Coming Soon' | 'Academic Project' | 'Projeto Acadêmico' | 'Research Software'
+export type ProjectStatus = 'Live' | 'Private Platform' | 'Case Study in Progress' | 'Coming Soon' | 'Academic Project' | 'Projeto Acadêmico' | 'Research Software' | "Live Project"
 
 export type ProjectPlacement = 'main' | 'more'
 export type ProjectSource = 'main' | 'more'

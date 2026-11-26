@@ -1,0 +1,501 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "8b069c2a47c5cae8d30e8e04ac905b403d540d18",
+  "mainReference": "67e8877b02fc23352306f75c04a40f4085b1f716",
+  "order": [
+    "hamlet",
+    "webseer",
+    "metcompb-landing-page",
+    "speaker-portfolio",
+    "quantum-education-apps",
+    "ce235-real-time-systems",
+    "embedded-control-platform"
+  ],
+  "slides": [
+    1,
+    10,
+    1,
+    1,
+    1,
+    8,
+    1
+  ],
+  "excluded": [
+    "scientific-analysis-toolkit",
+    "streamlit-tools",
+    "pdf-frequency-analyzer",
+    "esp32-control (no published record or code inclusion)"
+  ],
+  "files": [
+    {
+      "path": "public/assets/institutions/svg/instituto-fisica-ufrgs.svg",
+      "gitBlob": "a995ab37c6d519f0ed7d7106903b648394336f5f",
+      "bytes": 15822
+    },
+    {
+      "path": "public/assets/institutions/svg/instituto-foton.svg",
+      "gitBlob": "70f1d5343122d314b7c169d4884de75c595147ba",
+      "bytes": 4794
+    },
+    {
+      "path": "public/assets/institutions/svg/instituto-pense-mais.svg",
+      "gitBlob": "2fafbdfe97c3d11c76ab426d1410af3412ea5ad0",
+      "bytes": 27376
+    },
+    {
+      "path": "public/assets/institutions/svg/ita.svg",
+      "gitBlob": "bb1e5c1176d524e95d3491f2ea06997aa4f1cf7f",
+      "bytes": 35702
+    },
+    {
+      "path": "public/assets/institutions/svg/ufrgs.svg",
+      "gitBlob": "95bc5676161c81f95d25876b198bd142c2c151df",
+      "bytes": 22009
+    },
+    {
+      "path": "public/assets/projects/embedded-control-platform/PNG/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png",
+      "gitBlob": "3281b6874fa150979eb9061590e9583c84667709",
+      "bytes": 1808444
+    },
+    {
+      "path": "public/assets/projects/embedded-control-platform/WebP/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.webp",
+      "gitBlob": "1368fc308ef66663fe92f23a466c23e86dd576b0",
+      "bytes": 152558
+    },
+    {
+      "path": "public/assets/projects/hamlet/PNG/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png",
+      "gitBlob": "3735f3369169abcede6bce713f3178f450b03164",
+      "bytes": 1890644
+    },
+    {
+      "path": "public/assets/projects/hamlet/WebP/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.webp",
+      "gitBlob": "9c34e05092b07917e70383e6e4c159ffc2b2f002",
+      "bytes": 103640
+    },
+    {
+      "path": "public/assets/projects/quantum-education-apps/PNG/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png",
+      "gitBlob": "efeb03497563a32dc35cd3749627d93aa3649566",
+      "bytes": 1801316
+    },
+    {
+      "path": "public/assets/projects/quantum-education-apps/WebP/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.webp",
+      "gitBlob": "1637ec67f1ebc209d67041b4b65ee2f9f2bde21e",
+      "bytes": 118132
+    },
+    {
+      "path": "public/assets/projects/speaker-portfolio/PNG/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png",
+      "gitBlob": "4d9182dd22477d0148dfd8ecac3b0db611ce5d95",
+      "bytes": 1877910
+    },
+    {
+      "path": "public/assets/projects/speaker-portfolio/WebP/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.webp",
+      "gitBlob": "1e18f0b0fd6cf38c3c7d8f0244cb7035eac5ed7d",
+      "bytes": 119786
+    },
+    {
+      "path": "public/assets/projects/webseer/PNG/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.png",
+      "gitBlob": "3cb5a3daec87178ff24e2e807cffb05d29b2815a",
+      "bytes": 1074515
+    },
+    {
+      "path": "public/assets/projects/webseer/WebP/1789400307805-02852533-1924-4936-990b-85f91c19e663-WebSeer_CapaCard.webp",
+      "gitBlob": "a530af5a62239c6403d2a0e7ebb86005583f3d26",
+      "bytes": 64302
+    },
+    {
+      "path": "public/projects/ce235-gallery/ce235-documentation-card.webp",
+      "gitBlob": "c8cc27bc8fdc2f3f86277df641e923731b779f2f",
+      "bytes": 46304
+    },
+    {
+      "path": "public/projects/ce235-gallery/ce235-documentation-full.webp",
+      "gitBlob": "872b868c76a8f365a24b56f4a0d983ccee567ac0",
+      "bytes": 86696
+    },
+    {
+      "path": "public/projects/ce235-gallery/ce235-documentation-preview.webp",
+      "gitBlob": "38357c597ef97df2ba8f0dbaad5fa213614ae129",
+      "bytes": 150
+    },
+    {
+      "path": "public/projects/ce235-gallery/ce235-documentation-thumb.webp",
+      "gitBlob": "dfb304da2c5d9e7c87e03ffd27404949394237b5",
+      "bytes": 9668
+    },
+    {
+      "path": "public/projects/ce235-gallery/ce235-repository-card.webp",
+      "gitBlob": "4fbf04d5d58a31e57c63e42f430794f9d2c27c44",
+      "bytes": 45288
+    },
+    {
+      "path": "public/projects/ce235-gallery/ce235-repository-full.webp",
+      "gitBlob": "0e90302b22a8dca58145815478e3041d0512cd05",
+      "bytes": 88362
+    },
+    {
+      "path": "public/projects/ce235-gallery/ce235-repository-preview.webp",
+      "gitBlob": "48518b83ebf37bf5ee846ec19abc4799d5d24e92",
+      "bytes": 136
+    },
+    {
+      "path": "public/projects/ce235-gallery/ce235-repository-thumb.webp",
+      "gitBlob": "90e43e2a2486aa58205e460fd59d07268dbd52ea",
+      "bytes": 10032
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-c-algorithms-card.webp",
+      "gitBlob": "e48f44bf3f6c633e73ebccd6193c3152fd81864f",
+      "bytes": 33198
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-c-algorithms-full.webp",
+      "gitBlob": "e2ab67ea02c28c8b7c7af637d026c7a204f0a405",
+      "bytes": 68494
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-c-algorithms-preview.webp",
+      "gitBlob": "3a7d7a4924495f0f387ef4ecc32dc2f8a478f4ca",
+      "bytes": 172
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-c-algorithms-thumb.webp",
+      "gitBlob": "adb1f4689f25fef4e3f0ecf33839651324485e10",
+      "bytes": 6586
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-c-pipeline-card.webp",
+      "gitBlob": "303f2e904f692387c7b6fb9f69769c767250c561",
+      "bytes": 35526
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-c-pipeline-full.webp",
+      "gitBlob": "0f9225284bb093958a758ff27f3fff100af475d4",
+      "bytes": 72256
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-c-pipeline-preview.webp",
+      "gitBlob": "449113bd14bcb7a2f99789676b31ed225956f66f",
+      "bytes": 186
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-c-pipeline-thumb.webp",
+      "gitBlob": "29341a3652fd5ef8edbe08a6ac0ce6656260661c",
+      "bytes": 6986
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-interface-card.webp",
+      "gitBlob": "35114a3ae80e8a343250fca54585b350bf1fb83d",
+      "bytes": 30108
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-interface-full.webp",
+      "gitBlob": "97a801f5751208a074d2de2831643816ad261240",
+      "bytes": 61702
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-interface-preview.webp",
+      "gitBlob": "cabeb02820e3a7de800aacb4b7b85440f842dd77",
+      "bytes": 202
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-interface-thumb.webp",
+      "gitBlob": "84906257e83789bb605b741847fa8dbff626ccbc",
+      "bytes": 6604
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-telemetry-processing-card.webp",
+      "gitBlob": "26cfbc8a6a3ce9c5418dbb74995a8314364ff2be",
+      "bytes": 42770
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-telemetry-processing-full.webp",
+      "gitBlob": "5474112bdaaaf48e690578d1421d90df1f25c28a",
+      "bytes": 85764
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-telemetry-processing-preview.webp",
+      "gitBlob": "f783bc7138c1346c28d20eb994f8193a17103a58",
+      "bytes": 214
+    },
+    {
+      "path": "public/projects/ce235-gallery/us123-telemetry-processing-thumb.webp",
+      "gitBlob": "3e773e95a41863826c2f67e6b666530f0439f041",
+      "bytes": 9182
+    },
+    {
+      "path": "public/projects/ce235-telemetry.webp",
+      "gitBlob": "d891ce85f41ccd82264b133f51717fccac7a52c4",
+      "bytes": 152612
+    },
+    {
+      "path": "public/projects/ce235/cover/PNG/ce235-course-site-cover.png",
+      "gitBlob": "e6b93cd360f26a791c9806fdd52ed7549d65f3ae",
+      "bytes": 1303336
+    },
+    {
+      "path": "public/projects/ce235/cover/PNG/ce235-course-site-original.png",
+      "gitBlob": "5785f8898c426f6c55d2e74ef762804d649ecb8c",
+      "bytes": 2020877
+    },
+    {
+      "path": "public/projects/ce235/cover/WebP/ce235-course-site-card.webp",
+      "gitBlob": "d09e282c205dfd2779c5834c62f593ca325c7d23",
+      "bytes": 65342
+    },
+    {
+      "path": "public/projects/ce235/cover/WebP/ce235-course-site-cover.webp",
+      "gitBlob": "c886e978162c9f7ce82191c94bf57e52ac7a4a68",
+      "bytes": 165936
+    },
+    {
+      "path": "public/projects/ce235/cover/WebP/ce235-course-site-preview.webp",
+      "gitBlob": "e9ce7a2a688a6cda12a75d6f0f316ea69538f4c7",
+      "bytes": 114180
+    },
+    {
+      "path": "public/projects/ce235/cover/WebP/ce235-course-site-thumb.webp",
+      "gitBlob": "107b8a6d4b5eaa734ad9891995ace4d4d9fc2291",
+      "bytes": 21418
+    },
+    {
+      "path": "public/projects/metcompb-landing-page.png",
+      "gitBlob": "1e51ae8093578ab210e09cba22c4652c581b949a",
+      "bytes": 296506
+    },
+    {
+      "path": "public/projects/metcompb-landing-page.webp",
+      "gitBlob": "78a404f2d1b018c7cffcde362fbc41e479937beb",
+      "bytes": 46832
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa1-card.webp",
+      "gitBlob": "3708747265c29308a46c7ce24036e3b7ed852f39",
+      "bytes": 16400
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa1-full.webp",
+      "gitBlob": "03d58176df638537759140b1b51a534c56df22c8",
+      "bytes": 39968
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa1-preview.webp",
+      "gitBlob": "80be9551a0cfe7b590cd85193b4577546680f43d",
+      "bytes": 178
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa1-thumb.webp",
+      "gitBlob": "0c351872aa5605b61f8a46aadeed2951ac53117e",
+      "bytes": 3770
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa1.png",
+      "gitBlob": "a2238bf57754bd1683cf2785f61f386834a592d0",
+      "bytes": 284588
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa10-card.webp",
+      "gitBlob": "aecb5703bb5edba7fb61ae8f8910cdff3f6fe387",
+      "bytes": 17928
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa10-full.webp",
+      "gitBlob": "1f0a0ebb49a1362ebbc4b6707a46e67f5f85e6d2",
+      "bytes": 47062
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa10-preview.webp",
+      "gitBlob": "c1cc7ba77b8c0ca39565cc41055f3fb6e9e593d9",
+      "bytes": 130
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa10-thumb.webp",
+      "gitBlob": "008166337796e6ebf62511a88c25ff624df9f066",
+      "bytes": 3172
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa10.png",
+      "gitBlob": "6e06a09fd27fa7d3f3d712ea33041c49b6905620",
+      "bytes": 121216
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa2-card.webp",
+      "gitBlob": "615beed4e66686b770e36311efccb8997ca2024c",
+      "bytes": 22820
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa2-full.webp",
+      "gitBlob": "a8ca20316a624dd40c2c11d9142195999f3eebb1",
+      "bytes": 65300
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa2-preview.webp",
+      "gitBlob": "7277a3cfd2f50662f363a9beaaef384932639083",
+      "bytes": 118
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa2-thumb.webp",
+      "gitBlob": "52cc8536f56623965db61ff70efb6e97c53d544a",
+      "bytes": 4698
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa2.png",
+      "gitBlob": "80f74cc9712f785e878b68ffc29d1679acc90e19",
+      "bytes": 276741
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa3-card.webp",
+      "gitBlob": "c887551eceb245a5245a5c1fa4eacac9dd356dba",
+      "bytes": 24440
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa3-full.webp",
+      "gitBlob": "a3d76e92f712137fec8b27c2b18594c9a4fd422c",
+      "bytes": 66360
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa3-preview.webp",
+      "gitBlob": "e270668ea9decaf32d226f9f8816b1cd6a6597be",
+      "bytes": 156
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa3-thumb.webp",
+      "gitBlob": "303c399d1cf9a6ba00174bf03dbe51cfd0397d6b",
+      "bytes": 4668
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa3.png",
+      "gitBlob": "8a7e59aed0f17f7d1b365d692cf0428dc03ad87b",
+      "bytes": 163814
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa4-card.webp",
+      "gitBlob": "1c572fb9fd02e7a06574ae7127e74f6844066f0c",
+      "bytes": 21850
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa4-full.webp",
+      "gitBlob": "321a98b3402b2069be6fd2c4decf35e434c41f78",
+      "bytes": 59278
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa4-preview.webp",
+      "gitBlob": "8146c3631ede873458632a795e4aeee4ac3b9dda",
+      "bytes": 142
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa4-thumb.webp",
+      "gitBlob": "47febbfae7322762e286870ec7d9c6a983510711",
+      "bytes": 4452
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa4.png",
+      "gitBlob": "0c4ae57883c65ce3aa16cd790a750bea60449785",
+      "bytes": 190246
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa6-card.webp",
+      "gitBlob": "b08df8d3e14e87f8ff5965b42a5c41ec7b2ac2f5",
+      "bytes": 12976
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa6-full.webp",
+      "gitBlob": "4f9a9ba98db4578e54bea9f5892fcaa0c757aca1",
+      "bytes": 33322
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa6-preview.webp",
+      "gitBlob": "826c579583640290926687b18f5ec17fe115a9c4",
+      "bytes": 138
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa6-thumb.webp",
+      "gitBlob": "1691f6f9ed3eed268405c8697f832226db629261",
+      "bytes": 3170
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa6.png",
+      "gitBlob": "c5249b7c215e5379759049b965c9c27868624006",
+      "bytes": 134681
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa7-card.webp",
+      "gitBlob": "e9261689a7d7f40a35e90569617464a886617493",
+      "bytes": 24608
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa7-full.webp",
+      "gitBlob": "54c80b852d4b9fa14abc197fa6d229c06c1f6f7a",
+      "bytes": 69282
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa7-preview.webp",
+      "gitBlob": "894a9e3492dc2d24901622da5768aae0cf5fc8af",
+      "bytes": 116
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa7-thumb.webp",
+      "gitBlob": "30c6a9d77d41f90c199af35f4f06dd55c90316fd",
+      "bytes": 4864
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa7.png",
+      "gitBlob": "56c8d6847635814615018835a88eb2b15858c6d7",
+      "bytes": 290898
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa8-card.webp",
+      "gitBlob": "fcc79b8a8a0fdd9adb28898c05966feb1c875312",
+      "bytes": 24036
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa8-full.webp",
+      "gitBlob": "fa56693f2f0a0e739d457fe5b77e15175c18eb34",
+      "bytes": 68306
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa8-preview.webp",
+      "gitBlob": "5a8ef3a9096a16d9286bcd836e2b17131957969f",
+      "bytes": 114
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa8-thumb.webp",
+      "gitBlob": "2cefb14a88bf7d7c4dcdf541f07920b4fa81a055",
+      "bytes": 4852
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa8.png",
+      "gitBlob": "e11de845cd62fe84707a7aeac94ae27307b1c3bc",
+      "bytes": 289317
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa9-card.webp",
+      "gitBlob": "ad75991c1830fde523e6f3f88bbde52b54a0be37",
+      "bytes": 29864
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa9-full.webp",
+      "gitBlob": "e4d8101915761aacbc3ddce3a5ed9b4d065f3aa5",
+      "bytes": 66736
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa9-preview.webp",
+      "gitBlob": "e6fe31a9d088bb64f8e57ac54c3f7017620f965e",
+      "bytes": 114
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa9-thumb.webp",
+      "gitBlob": "32a0820911a3be14a94154c5e4102ff1432bf07b",
+      "bytes": 6912
+    },
+    {
+      "path": "public/projects/webseer-gallery/capa9.png",
+      "gitBlob": "a1836e3deddc2e106d43a55585721469d6abf6ff",
+      "bytes": 395566
+    }
+  ],
+  "notes": [
+    "Existing CE235 full WebP assets are approved originals for zoom; no new PNG synthesized.",
+    "Existing legacy project paths retained to avoid duplicates; exact BASE_URL paths.",
+    "MetCompB inherits the two published UFRGS affiliations from Cities Comparing."
+  ]
+}

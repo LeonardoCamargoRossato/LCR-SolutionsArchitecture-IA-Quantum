@@ -33,7 +33,10 @@ export function resolveInstitutionLogo(source?: string): ResolvedInstitutionLogo
   }
 
   const fromEditorialStorage = pathname.includes('/storage/v1/object/public/portfolio-media/')
-  if (!fromEditorialStorage) return { src: source, layout: 'wide', vectorized: false }
+  if (!fromEditorialStorage) {
+    const local = catalog.find(({asset}) => pathname === import.meta.env.BASE_URL.replace(/\/?$/, '/') + 'assets/institutions/svg/' + asset.svg)
+    return local ? {src:source,layout:local.asset.layout,vectorized:true} : { src: source, layout: 'wide', vectorized: false }
+  }
 
   // Supabase prefixes uploaded filenames with a timestamp/UUID. Match the
   // actual original name after that prefix, not only a slash-separated basename.

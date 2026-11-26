@@ -1,197 +1,15 @@
+import { getAdditionalWork, findAdditionalWork, isAdditionalWork } from '../../data/additionalWork'
+import { enrichPublishedProject as enrich, withEditorialDefaults, canonicalSlug } from '../../data/projectEditorial'
 import { getSelectedWork, isSelectedWork } from '../../data/selectedWork'
 import type { IProjectRepository } from '../../domain/repositories/IProjectRepository'
-import type { Project, ProjectPlacement, ProjectSource } from '../../domain/models/Project'
+import type { Project } from '../../domain/models/Project'
 import { defaultMoreProjects, defaultProjects } from '../../data/defaultProjects'
-import { citiesComparingContent } from '../../data/citiesComparing'
 import { withLocalSelectedCaseGallery } from '../../data/selectedCaseGalleries'
-import { ce235Project } from '../../data/ce235Project'
 import { animeFinderProject } from '../../data/animeFinderProject'
-import { metCompBProject } from '../../data/metCompBProject'
 import { RETIRED_PROJECT_SLUGS } from '../../config/retiredProjects'
 
 const defaults = [...defaultProjects, ...defaultMoreProjects]
 const retiredSlugs = RETIRED_PROJECT_SLUGS
-
-function canonicalSlug(project: Project) {
-  if (project.id === 'city-comparing' || project.slug === 'city-comparing') return 'cities-comparing'
-  return project.slug
-}
-
-function withEditorialDefaults(project: Project): Project {
-  const source: ProjectSource = project.source ?? (project.caseStudy ? 'main' : 'more')
-  const placement: ProjectPlacement = project.slug === 'hamlet'
-    ? 'more'
-    : project.slug === 'animefinder'
-      ? 'main'
-      : project.placement ?? (source === 'main' ? 'main' : 'more')
-  const sortOrder = Number.isFinite(Number(project.sortOrder))
-    ? Number(project.sortOrder)
-    : Number.isFinite(Number(project.order))
-      ? Number(project.order)
-      : 999
-
-  return {
-    ...project,
-    source,
-    placement,
-    visible: project.visible ?? true,
-    sortOrder,
-    order: sortOrder,
-    caseEnabled: project.caseEnabled ?? true,
-  }
-}
-
-function enrich(project: Project): Project {
-  const base = defaults.find((item) =>
-    item.id === project.id ||
-    item.slug === project.slug ||
-    (item.slug === 'cities-comparing' && project.slug === 'city-comparing'),
-  )
-
-  if (!base) return withEditorialDefaults({ ...project, slug: canonicalSlug(project) })
-
-  const hasSectionValue = (value: unknown) => {
-    if (typeof value === 'string') return value.trim().length > 0
-    if (Array.isArray(value)) return value.length > 0
-    if (value && typeof value === 'object') {
-      const section = value as Record<string, unknown>
-      const body = section.body ?? section.content ?? section.description ?? section.text
-      const items = section.items
-      return (
-        (typeof body === 'string' && body.trim().length > 0) ||
-        (Array.isArray(body) && body.length > 0) ||
-        (Array.isArray(items) && items.length > 0)
-      )
-    }
-    return false
-  }
-
-  const hasNewCaseSections = Boolean(
-    hasSectionValue(project.sections?.challenge) ||
-    hasSectionValue(project.sections?.solution) ||
-    hasSectionValue(project.sections?.architecture) ||
-    hasSectionValue(project.sections?.results),
-  )
-
-  const enriched = withEditorialDefaults({
-    ...base,
-    ...project,
-    slug: canonicalSlug(project),
-    links: { ...base.links, ...project.links },
-    sections: hasNewCaseSections
-      ? { ...base.sections, ...project.sections }
-      : { ...project.sections, ...base.sections },
-    translations: {
-      ...base.translations,
-      ...project.translations,
-      'pt-BR': {
-        ...base.translations?.['pt-BR'],
-        ...project.translations?.['pt-BR'],
-        sections: hasNewCaseSections
-          ? { ...base.translations?.['pt-BR']?.sections, ...project.translations?.['pt-BR']?.sections }
-          : { ...project.translations?.['pt-BR']?.sections, ...base.translations?.['pt-BR']?.sections },
-      },
-    },
-  })
-
-  // These public URLs are code-managed so stale CMS values cannot replace the
-  // current published-site actions after remote content hydration.
-  if (base.slug === 'speaker-portfolio') {
-    return {
-      ...enriched,
-      links: { ...enriched.links, liveUrl: base.links.liveUrl },
-    }
-  }
-
-  if (base.slug === 'ce235-real-time-systems') {
-    return {
-      ...enriched,
-      gallery: enriched.gallery.length ? enriched.gallery : base.gallery,
-      links: { ...enriched.links, ...base.links },
-    }
-  }
-
-  if (base.slug === 'webseer') {
-    return {
-      ...enriched,
-      title: base.title,
-      subtitle: base.subtitle,
-      category: base.category,
-      status: base.status,
-      description: base.description,
-      technologies: base.technologies,
-      // Supabase owns the canonical PNG cover; retain code-managed gallery.
-      coverImage: enriched.coverImage ?? base.coverImage,
-      imageType: enriched.imageType ?? base.imageType,
-      gallery: base.gallery,
-      isAcademic: base.isAcademic,
-      academicContext: base.academicContext,
-      caseStudy: base.caseStudy,
-      caseEnabled: base.caseEnabled,
-      links: { ...enriched.links, ...base.links },
-      sections: { ...enriched.sections, ...base.sections },
-      translations: {
-        ...enriched.translations,
-        'pt-BR': {
-          ...enriched.translations?.['pt-BR'],
-          ...base.translations?.['pt-BR'],
-          sections: {
-            ...enriched.translations?.['pt-BR']?.sections,
-            ...base.translations?.['pt-BR']?.sections,
-          },
-        },
-      },
-    }
-  }
-
-  if (base.slug === 'embedded-control-platform') {
-    return {
-      ...enriched,
-      title: base.title,
-      subtitle: base.subtitle,
-      category: base.category,
-      status: base.status,
-      description: base.description,
-      technologies: base.technologies,
-      isAcademic: base.isAcademic,
-      institutionName: base.institutionName,
-      academicContext: base.academicContext,
-      sections: { ...enriched.sections, ...base.sections },
-      translations: {
-        ...enriched.translations,
-        'pt-BR': {
-          ...enriched.translations?.['pt-BR'],
-          ...base.translations?.['pt-BR'],
-          sections: {
-            ...enriched.translations?.['pt-BR']?.sections,
-            ...base.translations?.['pt-BR']?.sections,
-          },
-        },
-      },
-    }
-  }
-
-  if (base.slug !== 'cities-comparing') return withLocalSelectedCaseGallery(enriched)
-
-  // Preserve the approved case narrative, but never use CMS gallery content.
-  return withLocalSelectedCaseGallery({
-    ...enriched,
-    ...citiesComparingContent,
-    links: { ...enriched.links, ...citiesComparingContent.links },
-    sections: { ...enriched.sections, ...citiesComparingContent.sections },
-    translations: {
-      ...enriched.translations,
-      'pt-BR': {
-        ...enriched.translations?.['pt-BR'],
-        ...citiesComparingContent.translations['pt-BR'],
-        sections: {
-          ...enriched.translations?.['pt-BR']?.sections,
-          ...citiesComparingContent.translations['pt-BR'].sections,
-        },
-      },
-    },
-  })
-}
 
 function sortEditorial(items: Project[]) {
   return [...items].sort((a, b) => {
@@ -223,48 +41,34 @@ export class ProjectService {
   constructor(private repo: IProjectRepository) {}
 
   async getAll() {
+    // Only the not-yet-migrated Selected Work case details depend on CMS.
+    // Additional Work is present before and after a backend failure.
+    const local = getAdditionalWork()
     try {
       const remote = await this.repo.getAll()
-      // This published academic case is code-managed until a matching CMS entry exists.
-      // Check the CMS explicitly because its public list already excludes hidden rows.
-      const hasCe235 = remote.some((project) => project.id === ce235Project.id || project.slug === ce235Project.slug)
-      const withCe235 = hasCe235
-        ? remote
-        : [...remote, await this.repo.getBySlug(ce235Project.slug, true) ?? ce235Project]
-      const hasMetCompB = withCe235.some((project) => project.id === metCompBProject.id || project.slug === metCompBProject.slug)
-      const projects = hasMetCompB ? withCe235 : [...withCe235, metCompBProject]
-      // Progressive rollout: when the CMS does not yet contain AnimeFinder,
-      // supply the audited local case. Never resurface an explicitly hidden
-      // CMS record, and never duplicate an existing project.
-      let readyProjects = projects
-      if (!projects.some((project) => project.slug === animeFinderProject.slug)) {
-        const existing = await this.repo.getBySlug(animeFinderProject.slug, true)
-        if (!existing) readyProjects = [...projects, animeFinderProject]
+      let selected = remote.filter(p=>isSelectedWork(p)&&p.visible!==false)
+      if(!selected.some(p=>p.slug===animeFinderProject.slug)){
+        const existing=await this.repo.getBySlug(animeFinderProject.slug,true)
+        if(!existing)selected=[...selected,animeFinderProject]
       }
-      return sortEditorial(readyProjects.filter((project) => !retiredSlugs.has(project.slug) && project.visible !== false).map(enrich))
-    } catch {
-      // Do not expose local defaults when the remote visibility query fails.
-      return []
-    }
+      return sortEditorial([...selected.map(enrich), ...local])
+    } catch { return local }
   }
 
   async getAllForAdmin() {
     const remote = await this.repo.getAllForAdmin()
-    return sortEditorial([...getSelectedWork(), ...remote.filter((project) => !retiredSlugs.has(project.slug) && !isSelectedWork(project)).map(enrich)])
+    return sortEditorial([...getSelectedWork(), ...getAdditionalWork(), ...remote.filter((project) => !retiredSlugs.has(project.slug) && !isSelectedWork(project) && !isAdditionalWork(project)).map(enrich)])
   }
 
   async getBySlug(slug: string, includeHidden = false) {
     if (retiredSlugs.has(slug)) return null
+    const local = findAdditionalWork(slug)
+    if (local) return local
     const accepted = slug === 'cities-comparing' ? ['cities-comparing', 'city-comparing'] : [slug]
     try {
       const all = includeHidden ? await this.repo.getAllForAdmin() : await this.repo.getAll()
       const found = all.find((project) => accepted.includes(project.slug) || (slug === 'cities-comparing' && project.id === 'city-comparing'))
-      const project = found ?? (slug === ce235Project.slug
-        ? await this.repo.getBySlug(ce235Project.slug, true) ?? ce235Project
-        : slug === metCompBProject.slug ? metCompBProject
-          : slug === animeFinderProject.slug
-            ? await this.repo.getBySlug(animeFinderProject.slug, true) ?? animeFinderProject
-            : null)
+      const project = found ?? (slug === animeFinderProject.slug ? await this.repo.getBySlug(animeFinderProject.slug, true) ?? animeFinderProject : null)
       if (!includeHidden && project?.visible === false) return null
       return project ? enrich(project) : selectedCaseFallback(slug) ?? null
     } catch {
@@ -273,7 +77,7 @@ export class ProjectService {
   }
 
   private assertEditable(value: string | Project) {
-    if (isSelectedWork(value)) throw new Error('Selected Work is versioned on GitHub; edit the repository.')
+    if (isSelectedWork(value) || isAdditionalWork(value)) throw new Error('Public project is versioned on GitHub; edit the repository.')
   }
   update(project: Project) { this.assertEditable(project); return this.repo.update(withEditorialDefaults({ ...project, slug: canonicalSlug(project) })) }
   create(project: Project) { this.assertEditable(project); return this.repo.create(withEditorialDefaults({ ...project, slug: canonicalSlug(project) })) }
