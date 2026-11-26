@@ -26,3 +26,16 @@ The baseline inventory is 22 legacy workflow builds, 24 installs, and 11 duplica
 
 ## Remaining debt
 No existing configured ESLint/Prettier baseline: changed-source whitespace is not full lint/format. Secret rules are high-confidence only, not comprehensive secret detection. Final cutover, complete lint/format and security policy and independent review remain pending. No savings claimed until legacy execution is actually retired. The main protection API currently reports protected=false, the rulesets listing is empty, and the detailed protection endpoint returns HTTP 403; administrative state therefore remains unverified. Rollback: revert transition commit; all original checks remain intact.
+
+
+## Stage 03 — code-root integration (2026-11-26)
+
+Stable main: `67e8877b02fc23352306f75c04a40f4085b1f716`; healthy deploy [45625400834](https://github.com/LeonardoCamargoRossato/LCR-SolutionsArchitecture-IA-Quantum/actions/runs/45625400834). Backup branch: `backup/pre-code-migration-20261126`. Recovery instructions: `documentation/LCR_CODE_ROOT_ROLLBACK_20261126.md`.
+
+- Scripts and strict workflow path comparator: `7f018de4d985296c0254aa98758ea925121112d4`.
+- Stable main integrated without replacing the code-root layout: `bb32817e917e6e693b25327d1d370750fd9d7b23`. All 57 asset Git blobs (113032100 bytes) identical to stable main; inventory retains 77 entries, original SHA-256 values and 31 reference mappings. Only destination path prefix changes. Package/lock and .gitattributes preserved.
+- All 32 workflow files relocated: `697989440a17d297bb3db1a3db55c4f8294ae426`. Five shadow groups, historical worktrees, isolation, permissions, build and deployment checks preserved. The comparator checks original parity first, then permits only deterministic path relocation. Its synthetic rejection self-tests passed locally. No workflow retirement.
+- Source and artifact checks now also verify canonical inventory size/SHA-256, alias consistency and mapped destinations. Candidate validation is pending CI.
+- No runtime reference migration, Supabase changes, or production publish in this step. Full local clone was unavailable (DNS); tag creation unavailable in the connected GitHub tools, and no compiled Pages artifact was listed in the healthy run. No claim of full regression success before candidate CI and independent audit.
+
+Stage 04 remains blocked until separate approval, merge, and healthy published deployment.

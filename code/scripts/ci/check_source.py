@@ -2,6 +2,7 @@
 import argparse
 import base64
 import json
+import hashlib
 import pathlib
 import re
 import subprocess
@@ -49,6 +50,48 @@ def check(files):
     assert not issues, "Potential secret or private file; inspect without exposing value"
 
 
+def verify_public_assets(root):
+    """Verify canonical public inventory in source or the copied build output."""
+    inventory = json.loads((APP_ROOT / "docs/assets/supabase-public-assets-inventory.json").read_text(encoding="utf-8"))
+    summary = inventory["summary"]
+    assets = inventory["assets"]
+    assert summary["source_public"] is True
+    assert len(assets) == summary["bucket_object_count"]
+    excluded = {"not_currently_referenced", "excluded_hidden_or_retired"}
+    aliases = {"duplicate_supabase_content", "duplicate_supabase_legacy"}
+    copied = {}
+    for asset in assets:
+        status = asset["status"]
+        if status in excluded:
+            assert not asset["github_path"], "Excluded asset has public destination"
+            continue
+        assert status in aliases | {"copied"}, "Unknown asset status"
+        path = asset["github_path"]
+        assert path and path.startswith("code/public/assets/"), "Unexpected asset destination"
+        parts = pathlib.PurePosixPath(path).parts
+        assert ".." not in parts and "\\" not in path
+        if status == "copied":
+            assert path not in copied, "Duplicate canonical destination"
+            copied[path] = (asset["size_bytes"], asset["sha256"])
+    assert len(copied) == summary["github_new_file_count"]
+    assert sum(size for size, _ in copied.values()) == summary["github_new_bytes"]
+    assert sum(a["status"] in excluded for a in assets) == summary["excluded_or_unreferenced_count"]
+    for asset in assets:
+        if asset["status"] in aliases:
+            assert copied[asset["github_path"]] == (asset["size_bytes"], asset["sha256"]), "Alias mismatch"
+    refs = inventory["content_reference_map"]
+    assert len(refs) == summary["content_reference_count"]
+    assert all(ref["github_path"] in copied for ref in refs), "Unmapped public reference"
+    for path, (size, expected) in copied.items():
+        file = root / path.removeprefix("code/public/")
+        assert file.resolve().is_relative_to(root.resolve()) and not file.is_symlink(), "Unsafe asset path"
+        assert file.is_file() and file.stat().st_size == size, f"Missing or wrong-size asset: {path}"
+        with file.open("rb") as stream:
+            digest = hashlib.file_digest(stream, "sha256").hexdigest()
+        assert digest == expected, f"Asset hash mismatch: {path}"
+    print(f"PASS {len(copied)} canonical public assets; {len(refs)} references; SHA-256 integrity")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifact")
@@ -59,6 +102,7 @@ def main():
             root = APP_ROOT / root
         assert (root / "index.html").is_file(), "Artifact missing"
         check([p for p in root.rglob("*") if p.is_file() or p.is_symlink()])
+        verify_public_assets(root)
         print("PASS artifact: private-file and high-confidence secret rules")
     else:
         subprocess.run(["git", "diff", "--check", BASE, "HEAD"], check=True, cwd=REPO_ROOT)
@@ -67,6 +111,7 @@ def main():
         check(files)
         for path in (REPO_ROOT / "AGENTS.md", APP_ROOT / "docs/ci/QUALITY_TRANSITION.md"):
             assert path.is_file(), f"Required documentation missing: {path.relative_to(REPO_ROOT)}"
+        verify_public_assets(APP_ROOT / "public")
         print("PASS changed-source whitespace, high-confidence secrets, documentation")
 
 
