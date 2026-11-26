@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { chromium } from './isolation/Browser.mjs'
+import { verifySelectedWork } from './selected-work-smoke.mjs'
 
 const base = 'http://127.0.0.1:5173/LCR-SolutionsArchitecture-IA-Quantum/'
 const server = spawn('npm', ['run', 'dev', '--', '--host', '127.0.0.1', '--port', '5173', '--strictPort'], {
@@ -141,6 +142,7 @@ try {
     await check(page, label)
     await context.close()
   }
+  await verifySelectedWork(browser, base)
 } catch (error) {
   report.errors.push(String(error))
   console.error('ABOUT/ANIMEFINDER SMOKE FAILED',error)

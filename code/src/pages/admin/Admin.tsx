@@ -117,7 +117,7 @@ function HomeEditor({initial,onDirty,done}:{initial:HomeContent;onDirty:(v:boole
  return <div className="admin-form cms-form"><LanguageTabs value={lang} onChange={setLang}/><Field label="Hero eyebrow" value={current.eyebrow||''} onChange={x=>changeFields({eyebrow:x})}/><Field label="Hero title" value={current.title||''} onChange={x=>changeFields({title:x})}/><Field label="Highlighted text" value={current.highlightedWords||''} onChange={x=>changeFields({highlightedWords:x})}/><TextArea label="Description" value={current.description||''} onChange={x=>changeFields({description:x})}/><TagsEditor label="Skills" items={current.skills||[]} onChange={x=>changeFields({skills:x})}/><SaveButton busy={busy} onClick={async()=>{setBusy(true);try{await done(v);onDirty(false);toast.success('Alterações salvas com sucesso.')}catch(e){toast.error('Erro ao salvar alterações.',humanizeError(e))}finally{setBusy(false)}}}/></div>
 }
 
-function ProjectsManager({projects,loading,initialPlacement='all',onDirty,refresh}:{projects:Project[];loading?:boolean;initialPlacement?:'all'|'main'|'more';onDirty:(v:boolean)=>void;refresh:()=>Promise<void>}){
+export function ProjectsManager({projects,loading,initialPlacement='all',onDirty,refresh}:{projects:Project[];loading?:boolean;initialPlacement?:'all'|'main'|'more';onDirty:(v:boolean)=>void;refresh:()=>Promise<void>}){
  const[selected,setSelected]=useState<Project>()
  const[visibilityFilter,setVisibilityFilter]=useState<'all'|'visible'|'hidden'>('all')
  const[placementFilter,setPlacementFilter]=useState<'all'|'main'|'more'>(initialPlacement)

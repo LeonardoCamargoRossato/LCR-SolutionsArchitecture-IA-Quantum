@@ -51,7 +51,6 @@ export const selectedWorkCatalog: ReadonlyArray<Entry> = [
   }
 },
 {
-  ...{
   "id": "city-comparing",
   "slug": "cities-comparing",
   "title": "Cities Comparing",
@@ -60,8 +59,7 @@ export const selectedWorkCatalog: ReadonlyArray<Entry> = [
   "media": {
     "webp": "assets/projects/cities-comparing/WebP/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.webp",
     "png": "assets/projects/cities-comparing/PNG/1789395964303-3c1f29cc-c8bd-42d7-8a7d-752b81756026-CitiesComparing_CapaCard.png"
-  }
-},
+  },
   subtitle: citiesComparingContent.subtitle,
   category: citiesComparingContent.category,
   description: citiesComparingContent.description,
