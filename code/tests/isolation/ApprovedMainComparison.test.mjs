@@ -3,7 +3,8 @@
  * served by loopback from inventoried originals. No external requests. */
 import assert from 'node:assert/strict'
 import {spawn,execFileSync} from 'node:child_process'
-import {mkdir,readFile,writeFile} from 'node:fs/promises'
+import {mkdir,readFile,writeFile,copyFile} from 'node:fs/promises'
+import {join} from 'node:path'
 import {chromium} from './Browser.mjs'
 import {approvedMainPerformance} from './ApprovedMainPerformance.mjs'
 const prefix='/LCR-SolutionsArchitecture-IA-Quantum/'
@@ -14,11 +15,22 @@ const main=process.env.LCR_BEFORE
 assert.equal(execFileSync('git',['-C',main,'rev-parse','HEAD'],{encoding:'utf8'}).trim(),fixture.mainSha)
 const assets=new Map(inventory.assets.filter(x=>x.github_path).map(x=>[x.supabase_path,x.github_path.replace(/^code\//,'')]))
 const targets=[{name:'main',cwd:main,port:5191,offline:false},{name:'candidate',cwd:process.cwd(),port:5192,offline:false},{name:'offline',cwd:process.cwd(),port:5192,offline:true}]
-const servers=targets.slice(0,2).map(t=>spawn('npm',['run','preview','--','--host','127.0.0.1','--port',String(t.port),'--strictPort'],{cwd:t.cwd,stdio:'ignore',detached:true}))
+// The pinned main's deploy.yml converts this PNG to WebP before building.
+ // The CI reconstruction runs npm build only. Restore the exact versioned
+ // derivative for this test build, after proving identical original PNG bytes
+ // and pinning the candidate derivative to the previously audited revision.
+ const diagram='workflow/LCR_Workflow_Agentes_Papeis_Funcoes'
+ const historicalPng=await readFile(join(main,'public',diagram+'.png'))
+ assert.deepEqual(historicalPng,await readFile('public/'+diagram+'.png'),'Workflow diagram original differs from main')
+ const auditedWebp=execFileSync('git',['show','ac774de8cbf3c21d6a9c26973cf055efc4421f7d:code/public/'+diagram+'.webp'],{maxBuffer:16*1024*1024})
+ assert.deepEqual(auditedWebp,await readFile('public/'+diagram+'.webp'),'Approved workflow derivative changed')
+ // Only the local, disposable reconstructed build; no edit to main.
+ await copyFile('public/'+diagram+'.webp',join(main,'dist',diagram+'.webp'))
+ const servers=targets.slice(0,2).map(t=>spawn('npm',['run','preview','--','--host','127.0.0.1','--port',String(t.port),'--strictPort'],{cwd:t.cwd,stdio:'ignore',detached:true}))
 const report={mainSha:fixture.mainSha,candidateSha:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),comparisons:[],differences:[],network:[],authorized:[fixture.authorizedTextCorrection]}
 const routes=['','projects/foton-hub','projects/cities-comparing','projects/animefinder','projects/hamlet','projects/webseer','projects/metcompb-landing-page','projects/speaker-portfolio','projects/quantum-education-apps','projects/ce235-real-time-systems','projects/embedded-control-platform','workflow','about','admin','test-component-lab']
 const normalized=v=>String(v??'').replace(/\s+/g,' ').trim()
-const approvedMainText=(v,route)=>!route||route==='projects/animefinder'
+const approvedMainText=(v,route)=>!route||route==='about'||route==='projects/animefinder'
   ? v.replaceAll(fixture.authorizedTextCorrection.from,fixture.authorizedTextCorrection.to) : v
 
 // Compare every pixel without masks. No lossy-format or animation tolerance
@@ -151,7 +163,7 @@ async function collect(browser,t,route,viewport,locale,theme){
    })
    assert(state.width<=state.viewport+2,'Horizontal overflow '+route)
    if(route.startsWith('projects/')){await page.locator('.case-story-cover').scrollIntoViewIfNeeded();await page.waitForFunction(()=>{const im=document.querySelector('.case-story-cover img');return im?.complete&&im.naturalWidth>0})}
-   if(!route){
+   if(!route||route==='about'){
      // Verify gallery and card images are actually admitted as sections become visible.
      for(const card of await page.locator('.selected-grid .project-card,.more-projects-grid .project-card,.about-gallery-card').all()){
        await card.scrollIntoViewIfNeeded()
@@ -161,8 +173,26 @@ async function collect(browser,t,route,viewport,locale,theme){
      }
      await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}))
    }
+   // Exercise the same real thumbnail navigation after content hydration.
+   // The first-slide rail can have different initial offsets when CMS data
+   // arrives asynchronously; both renderings must settle to the same state.
+   if(route.startsWith('projects/')&&await page.locator('.case-hero-carousel-dots button').count()>1){
+     const dots=page.locator('.case-hero-carousel-dots button')
+     for(const index of [1,0]){
+       await dots.nth(index).click()
+       await page.locator('.case-story-cover').scrollIntoViewIfNeeded()
+       await page.waitForFunction(expected=>{
+         const active=document.querySelector('.case-hero-carousel-dots button.is-active')
+         const all=[...document.querySelectorAll('.case-hero-carousel-dots button')]
+         const img=document.querySelector('.case-story-cover img')
+         return all.indexOf(active)===expected&&img?.complete&&img?.naturalWidth>0
+       },index)
+       await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))
+     }
+   }
    const name=[t.name,route.replaceAll('/','-')||'home',viewport.width,locale,theme].join('-')
    const imageSamples=await scanVisibleImages(page)
+   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))
    await page.screenshot({path:out+'/'+name+'.png',animations:'disabled',caret:'hide',fullPage:true})
    report.network.push({name,network,errors,imageSamples})
    assert.deepEqual(errors,[],'Image HTTP/request errors: '+name)
