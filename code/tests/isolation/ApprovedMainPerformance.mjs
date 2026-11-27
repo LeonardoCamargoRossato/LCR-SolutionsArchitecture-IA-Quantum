@@ -84,7 +84,7 @@ async function run(browser,target,viewport,prefix){
 export async function approvedMainPerformance(browser,targets,prefix,out,mainSha,candidateSha){
   const report={mainSha,candidateSha,dataset:'ApprovedMainFixture.json + supabase-public-assets-inventory.json',network:'same isolated loopback, no artificial throttling',
     cache:'actual local browser cache; fixture max-age=600 is lab-only, not GitHub Pages policy',
-    budget:'No approved numeric transfer limit; report bytes for review, retain demand invariants',scenarios:[],failures:[]}
+    budget:'No regression above same pinned main cold phase measured transfer; warm cache may revalidate but must not transfer previously loaded image bodies. Host headers and independent budget approval remain separate.',scenarios:[],failures:[]}
   try{
     for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
       const rows=[]
@@ -102,6 +102,18 @@ export async function approvedMainPerformance(browser,targets,prefix,out,mainSha
         assert.equal(candidate.requests.filter(e=>gallery(e.url)&&e.phase==='initial').length,0,'Offscreen gallery fetched on Home')
         assert(!candidate.requests.some(e=>original(e.url)&&!['open-zoom','next-slide'].includes(e.phase)),'Original downloaded outside viewer interaction')
         assert.equal(new Set(candidate.requests.filter(e=>original(e.url)).map(e=>photoId(e.url))).size,2,'Unexpected original download count')
+        // The pinned main is the non-regression budget, not an arbitrary MB cap.
+        // Identical logical images + same interactions establish the comparison.
+        for(const phase of ['initial','scroll-first','open-zoom','next-slide']){
+          assert(main.phases[phase]&&candidate.phases[phase],'Missing cold benchmark phase '+phase)
+          assert.equal(main.phases[phase].missingMeasurements,0,'Missing baseline byte measurement')
+          assert.equal(candidate.phases[phase].missingMeasurements,0,'Missing candidate byte measurement')
+          assert(candidate.phases[phase].encodedBytes<=main.phases[phase].encodedBytes,'Cold image transfer regressed: '+phase)
+        }
+        const prior=new Set(candidate.requests.filter(e=>!['close-and-warm-return','warm-reload'].includes(e.phase)&&e.status===200).map(e=>e.url))
+        for(const e of candidate.requests.filter(e=>['close-and-warm-return','warm-reload'].includes(e.phase)&&prior.has(e.url))){
+          assert(e.cache||e.status===304,'Previously loaded image body transferred again: '+e.url)
+        }
       }catch(e){report.failures.push({viewport,error:String(e)})}
     }
   }finally{
