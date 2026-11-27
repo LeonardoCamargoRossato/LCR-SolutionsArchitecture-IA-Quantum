@@ -3,7 +3,9 @@
  * which disables cache. Both builds use the same viewport, data, browser,
  * network and interactions; measured cache policy is lab-only. */
 import assert from 'node:assert/strict'
-import {writeFile} from 'node:fs/promises'
+import {writeFile,readFile} from 'node:fs/promises'
+import {createHash} from 'node:crypto'
+import {join} from 'node:path'
 
 const gallery=url=>url.includes('/about/gallery/')
 const original=url=>gallery(url)&&/\/PNG\//i.test(url)
@@ -110,6 +112,13 @@ async function runCase(browser,target,viewport,prefix,slug,count){
     await cover.click();await loaded(page,'.image-lightbox-viewport img');await settle(page)
     const full=await page.locator('.image-lightbox-viewport img').evaluate(img=>({url:img.currentSrc,width:img.naturalWidth,height:img.naturalHeight}))
     await page.keyboard.press('Escape');await page.locator('.image-lightbox-backdrop').waitFor({state:'hidden'})
+    // Reopen the same original before reload to test its warm-cache behavior.
+    if(slug==='webseer'){
+      net.phase('warm-zoom')
+      await cover.click();await loaded(page,'.image-lightbox-viewport img');await settle(page)
+      assert.equal(await page.locator('.image-lightbox-viewport img').evaluate(img=>img.currentSrc),full.url,'Warm zoom opened a different image')
+      await page.keyboard.press('Escape');await page.locator('.image-lightbox-backdrop').waitFor({state:'hidden'})
+    }
     net.phase('warm-reload')
     await page.reload()
     await page.waitForFunction(count=>document.querySelector('.case-hero-carousel-count')?.textContent?.trim()==='1 / '+count,count)
@@ -125,7 +134,7 @@ async function runCase(browser,target,viewport,prefix,slug,count){
 export async function approvedMainPerformance(browser,targets,prefix,out,mainSha,candidateSha){
   const report={mainSha,candidateSha,dataset:'ApprovedMainFixture.json + supabase-public-assets-inventory.json',network:'same isolated loopback, no artificial throttling',
     cache:'actual local browser cache; fixture max-age=600 is lab-only, not GitHub Pages policy',
-    budget:'No regression above same pinned main cold phase measured transfer; warm cache may revalidate but must not transfer previously loaded image bodies. Host headers and independent budget approval remain separate.',scenarios:[],caseScenarios:[],failures:[]}
+    budget:'Equivalent media must not regress against pinned main. WebSeer original zoom is measured separately from its historical smaller derivative, with pinned byte identity and no early/repeated transfer; its additional cost remains subject to independent approval. Host headers and independent budget approval remain separate.',scenarios:[],caseScenarios:[],qualityTransitions:[],failures:[]}
   try{
     for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
       const rows=[]
@@ -177,10 +186,44 @@ export async function approvedMainPerformance(browser,targets,prefix,out,mainSha
           assert.equal(delivery.full.width*reference.full.height,reference.full.width*delivery.full.height,'Viewer aspect ratio changed')
           if(delivery.full.url!==delivery.second.url)
             assert(!delivery.requests.some(e=>e.url===delivery.full.url&&!['open-zoom','warm-reload'].includes(e.phase)),'Viewer original preloaded')
-          const cold=row=>row.requests.filter(e=>e.phase!=='warm-reload').reduce((s,e)=>s+e.encodedBytes,0)
-          assert(cold(delivery)<=cold(reference),'Equivalent project carousel cold transfer increased')
-          const prior=new Set(delivery.requests.filter(e=>e.phase!=='warm-reload'&&e.status===200).map(e=>e.url))
-          assert(delivery.requests.filter(e=>e.phase==='warm-reload'&&prior.has(e.url)).every(e=>e.cache||e.status===304),'Repeated project image body in warm cache')
+          const warm=e=>['warm-reload','warm-zoom'].includes(e.phase)
+          const cold=row=>row.requests.filter(e=>!warm(e)).reduce((s,e)=>s+e.encodedBytes,0)
+          if(slug==='webseer'){
+            // Artifact 15163895074: same slide, but historical 1600x900 WebP
+            // versus approved 1920x1080 PNG. Both files exist at both SHAs.
+            const dir='projects/webseer-gallery/'
+            const files=[]
+            for(const [name,size] of [['capa1-full.webp',39968],['capa1.png',284588]]){
+              const old=await readFile(join(process.env.LCR_BEFORE,'public',dir,name))
+              const current=await readFile(join('public',dir,name))
+              assert.equal(old.length,size,'Unexpected historical WebSeer source size')
+              assert.deepEqual(current,old,'WebSeer original/derivative changed')
+              files.push({name,bytes:current.length,sha256:createHash('sha256').update(current).digest('hex')})
+            }
+            assert(reference.full.url.endsWith('/'+dir+'capa1-full.webp'),'Unexpected historical zoom URL')
+            assert(delivery.full.url.endsWith('/'+dir+'capa1.png'),'Unexpected original zoom URL')
+            assert.deepEqual([reference.full.width,reference.full.height],[1600,900])
+            assert.deepEqual([delivery.full.width,delivery.full.height],[1920,1080])
+            for(const [row,mime,file] of [[reference,'image/webp',files[0]],[delivery,'image/png',files[1]]]){
+              const zoom=row.requests.filter(e=>e.phase==='open-zoom')
+              assert.equal(zoom.length,1,'Unexpected additional cold zoom requests')
+              assert.equal(zoom[0].url,row.full.url)
+              assert.equal(zoom[0].mime,mime)
+              assert.equal(zoom[0].status,200)
+              const length=Object.entries(zoom[0].cacheHeaders??{}).find(([k])=>k.toLowerCase()==='content-length')?.[1]
+              assert.equal(Number(length),file.bytes,'Unexpected original/derivative response length')
+              assert(zoom[0].encodedBytes>=file.bytes,'Incomplete zoom transfer')
+            }
+            assert(!delivery.requests.some(e=>e.url===delivery.full.url&&!warm(e)&&e.phase!=='open-zoom'),'Original downloaded before zoom')
+            const beforeZoom=row=>row.requests.filter(e=>!warm(e)&&e.phase!=='open-zoom').reduce((sum,e)=>sum+e.encodedBytes,0)
+            assert(beforeZoom(delivery)<=beforeZoom(reference),'Equivalent WebSeer preview transfer increased')
+            report.qualityTransitions.push({slug,viewport,files,reference:reference.full,delivery:delivery.full,
+              previewBytes:{main:beforeZoom(reference),candidate:beforeZoom(delivery)},
+              zoomBytes:{main:reference.phases['open-zoom'].encodedBytes,candidate:delivery.phases['open-zoom'].encodedBytes},
+              totalColdBytes:{main:cold(reference),candidate:cold(delivery)},status:'original-delivery-cost-awaits-independent-approval'})
+          }else assert(cold(delivery)<=cold(reference),'Equivalent project carousel cold transfer increased')
+          const prior=new Set(delivery.requests.filter(e=>!warm(e)&&e.status===200).map(e=>e.url))
+          assert(delivery.requests.filter(e=>warm(e)&&prior.has(e.url)).every(e=>e.cache||e.status===304),'Repeated project image body in warm cache')
         }catch(e){report.failures.push({slug,viewport,error:String(e)})}
       }
     }

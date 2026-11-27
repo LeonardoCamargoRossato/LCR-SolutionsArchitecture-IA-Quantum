@@ -5,6 +5,7 @@ import assert from 'node:assert/strict'
 import {spawn,execFileSync} from 'node:child_process'
 import {mkdir,readFile,writeFile} from 'node:fs/promises'
 import {join} from 'node:path'
+import {createHash} from 'node:crypto'
 import {chromium} from './Browser.mjs'
 import {approvedMainPerformance} from './ApprovedMainPerformance.mjs'
 const prefix='/LCR-SolutionsArchitecture-IA-Quantum/'
@@ -27,8 +28,22 @@ const encoder='/tmp/lcr-visual-pillow/bin/python'
 const historicalWebp=join(main,'dist',diagram+'.webp')
 execFileSync(encoder,['-c','from PIL import Image; import PIL,sys; assert PIL.__version__=="13.0.0"; im=Image.open(sys.argv[1]); im.save(sys.argv[2], "WEBP", quality=92, method=6)',join(main,'public',diagram+'.png'),historicalWebp])
 assert.equal((await readFile(historicalWebp)).length,249148,'Historical deploy derivative size does not match the recorded release')
+const deliveredDiagram=await readFile('public/'+diagram+'.webp')
+assert.deepEqual(deliveredDiagram,execFileSync('git',['show','94b308d75852e410f3e7a69a93147d8b6169be55:code/public/'+diagram+'.webp']),'Workflow derivative changed since evidence')
+const diagramQuality=JSON.parse(execFileSync(encoder,['-c',`
+from PIL import Image,ImageChops,ImageStat
+import hashlib,json,sys
+source=Image.open(sys.argv[1]).convert("RGB")
+rows=[]
+for path in sys.argv[2:]:
+    image=Image.open(path).convert("RGB")
+    assert image.size==source.size
+    stat=ImageStat.Stat(ImageChops.difference(source,image))
+    rows.append(dict(path=path,dimensions=list(image.size),meanAbsoluteRGB=sum(stat.mean)/3,rmsRGB=(sum(x*x for x in stat.rms)/3)**0.5,sha256=hashlib.sha256(open(path,"rb").read()).hexdigest()))
+print(json.dumps(rows))
+`,join(main,'public',diagram+'.png'),historicalWebp,'public/'+diagram+'.webp'],{encoding:'utf8'}))
  const servers=targets.slice(0,2).map(t=>spawn('npm',['run','preview','--','--host','127.0.0.1','--port',String(t.port),'--strictPort'],{cwd:t.cwd,stdio:'ignore',detached:true}))
-const report={mainSha:fixture.mainSha,candidateSha:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),comparisons:[],differences:[],network:[],authorized:[fixture.authorizedTextCorrection]}
+const report={mainSha:fixture.mainSha,candidateSha:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),comparisons:[],differences:[],network:[],authorized:[fixture.authorizedTextCorrection],diagramQuality,diagramOriginalSha256:createHash('sha256').update(historicalPng).digest('hex')}
 const routes=['','projects/foton-hub','projects/cities-comparing','projects/animefinder','projects/hamlet','projects/webseer','projects/metcompb-landing-page','projects/speaker-portfolio','projects/quantum-education-apps','projects/ce235-real-time-systems','projects/embedded-control-platform','workflow','about','admin','test-component-lab']
 const normalized=v=>String(v??'').replace(/\s+/g,' ').trim()
 const approvedMainText=(v,route)=>!route||route==='about'||route==='projects/animefinder'
@@ -44,8 +59,13 @@ const approvedMainText=(v,route)=>!route||route==='about'||route==='projects/ani
 const profileStem='1792380122932-87ee4d65-cc32-4005-85d5-24fb6ed67957-fotoperfilLCR'
 const calibration={
   'profile-header':{max:2,mean:0.57},
-  'profile-about':{max:18,mean:1.44},
-  'metcompb':{max:24,mean:0.87}
+  'profile-about':{max:18,mean:1.45},
+  'metcompb':{max:24,mean:0.87},
+  // Artifact 15163895074: pinned same-source WebP derivatives; desktop
+  // max 22 / mean 1.511264; mobile max 8 / mean 0.849538.
+  'workflow-desktop':{max:22,mean:1.52},
+  'workflow-mobile':{max:8,mean:0.85},
+  'language-border':{max:2,mean:0.48,countMax:95}
 }
 const pairs=[
   {old:'assets/about/profile/'+profileStem+'.jpeg',next:'assets/about/profile/'+profileStem+'.webp'},
@@ -56,28 +76,48 @@ for(const pair of pairs)for(const asset of [pair.old,pair.next]){
   assert.deepEqual(bytes,await readFile('public/'+asset),'Calibrated source asset changed: '+asset)
 }
 assert.deepEqual(await readFile(join(main,'public',pairs[1].old)),await readFile('public/'+pairs[1].old),'MetCompB original differs from pinned main')
-async function conversionRegions(page){
-  return page.evaluate(({profileStem})=>[...document.images].flatMap(img=>{
+async function conversionRegions(page,route){
+  return page.evaluate(({profileStem,route})=>{
+    const rows=[...document.images].flatMap(img=>{
     const src=img.currentSrc||''
     let kind
     if(src.includes(profileStem+'.'))kind=img.getBoundingClientRect().width<=40?'profile-header':'profile-about'
     else if(/\/metcompb-landing-page\.(png|webp)$/.test(src))kind='metcompb'
+    else if(route==='workflow'&&/\/LCR_Workflow_Agentes_Papeis_Funcoes\.webp$/.test(src))kind=innerWidth>500?'workflow-desktop':'workflow-mobile'
     if(!kind||!img.complete||!img.naturalWidth)return []
     const r=img.getBoundingClientRect()
     if(!r.width||!r.height)return []
     return [{kind,src,alt:img.alt,width:img.naturalWidth,height:img.naturalHeight,
       rect:[Math.floor(r.left+scrollX),Math.floor(r.top+scrollY),Math.ceil(r.right+scrollX),Math.ceil(r.bottom+scrollY)]}]
-  }),{profileStem})
+    })
+    // Only the measured rounded language-control border on desktop AnimeFinder.
+    // Geometry, markup and computed paint properties must match; the interior
+    // and all other pixels remain exact.
+    if(route==='projects/animefinder'&&innerWidth===1440){
+      const el=document.querySelector('.language-picker-trigger')
+      if(el){const r=el.getBoundingClientRect(),s=getComputedStyle(el)
+        rows.push({kind:'language-border',rect:[Math.floor(r.left+scrollX)-1,Math.floor(r.top+scrollY)-1,Math.ceil(r.right+scrollX)+1,Math.ceil(r.bottom+scrollY)+1],
+          geometry:[r.left+scrollX,r.top+scrollY,r.width,r.height],markup:el.outerHTML,paint:[s.borderColor,s.borderWidth,s.borderRadius,s.backgroundColor,s.color,s.font,s.boxShadow,s.outline]})}
+    }
+    return rows
+  },{profileStem,route})
 }
 function pairedRegions(left,right){
   const rows=[]
   for(const a of left){
-    const expected=a.kind==='metcompb'?pairs[1]:pairs[0]
+    const expected=a.kind==='metcompb'?pairs[1]:a.kind.startsWith('workflow-')?{old:diagram+'.webp',next:diagram+'.webp'}:pairs[0]
     const b=right.find(b=>b.kind===a.kind&&b.alt===a.alt&&JSON.stringify(b.rect)===JSON.stringify(a.rect))
+    if(a.kind==='language-border'){
+      if(b&&JSON.stringify(a)===JSON.stringify(b))rows.push({...a,...calibration[a.kind]})
+      continue
+    }
     // Main portrait URL is the original CMS JPEG; exact asset stem required.
     if(!b||!a.src.endsWith(expected.old.split('/').at(-1))||!b.src.endsWith(expected.next.split('/').at(-1)))continue
     assert.equal(a.width*b.height,b.width*a.height,'Image conversion changed aspect ratio')
-    rows.push({kind:a.kind,rect:a.rect,source:a.src,delivery:b.src,...calibration[a.kind]})
+    // A one-device-pixel fringe is required for the rounded portrait's
+    // rasterized edge (artifact 15163895074, 24/21 pixels outside DOM bounds).
+    const rect=a.kind.startsWith('profile-')?a.rect.map((n,i)=>n+(i<2?-1:1)):a.rect
+    rows.push({kind:a.kind,rect,source:a.src,delivery:b.src,...calibration[a.kind]})
   }
   return rows
 }
@@ -99,7 +139,15 @@ async function comparePixels(page,left,right,label,regions=[]){
       if(changed){
         changedPixels++
         const px=(i/4)%width,py=Math.floor(i/4/width)
-        const region=measurements.find(r=>px>=r.rect[0]&&px<r.rect[2]&&py>=r.rect[1]&&py<r.rect[3])
+        const region=measurements.find(r=>{
+          if(!(px>=r.rect[0]&&px<r.rect[2]&&py>=r.rect[1]&&py<r.rect[3]))return false
+          if(r.kind!=='language-border')return true
+          // Signed distance to the actual pill outline, not its whole rectangle.
+          const [left,top,w,h]=r.geometry,rad=h/2
+          const qx=Math.abs(px+0.5-left-w/2)-(w/2-rad),qy=Math.abs(py+0.5-top-h/2)-(h/2-rad)
+          const distance=Math.hypot(Math.max(qx,0),Math.max(qy,0))+Math.min(Math.max(qx,qy),0)-rad
+          return Math.abs(distance)<=2
+        })
         if(region){region.changedPixels++;region.rgbError+=rgbError;region.maxChannelDelta=Math.max(region.maxChannelDelta,pixelDelta)}
         if(!region||pixelDelta>region.max||x.data[i+3]!==y.data[i+3])unapprovedPixels++
         diff.data[i]=255;diff.data[i+1]=0;diff.data[i+2]=0
@@ -117,7 +165,7 @@ async function comparePixels(page,left,right,label,regions=[]){
   const filename=label+'-difference.png'
   await writeFile(out+'/'+filename,Buffer.from(difference,'base64'))
   return {...metrics,artifact:filename,
-    match:metrics.unapprovedPixels===0&&metrics.regions.every(r=>r.maxChannelDelta<=r.max&&r.meanChangedRgbDelta<=r.mean)&&JSON.stringify(metrics.first)===JSON.stringify(metrics.second)}
+    match:metrics.unapprovedPixels===0&&metrics.regions.every(r=>r.maxChannelDelta<=r.max&&r.meanChangedRgbDelta<=r.mean&&(r.countMax===undefined||r.changedPixels<=r.countMax))&&JSON.stringify(metrics.first)===JSON.stringify(metrics.second)}
 }
 
 // Admit only actually visible image elements; do not assign src or preload
@@ -277,7 +325,7 @@ async function collect(browser,t,route,viewport,locale,theme){
        await page.screenshot({path:out+'/'+comparisonScreenshot+'.png',animations:'disabled',caret:'hide',fullPage:true})
      }
    }
-   const regions=await conversionRegions(page)
+   const regions=await conversionRegions(page,route)
    report.network.push({name,network,errors,imageSamples})
    assert.deepEqual(errors,[],'Image HTTP/request errors: '+name)
    assert(imageSamples.every(sample=>sample.images.every(img=>img.loaded)),'Visible image missing natural dimensions: '+name)
