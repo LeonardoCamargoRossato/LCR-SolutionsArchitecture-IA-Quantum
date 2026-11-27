@@ -7,12 +7,16 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'tests/isolation/**'
+      - 'code/tests/isolation/**'
       - '.github/workflows/about-gallery-frontend-ci.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: code
 
 jobs:
   browser-and-build:
@@ -27,6 +31,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Install locked dependencies
         run: npm ci
       - name: Build TypeScript and Vite
@@ -46,4 +51,4 @@ jobs:
           name: about-gallery-browser-evidence
           retention-days: 30
           if-no-files-found: warn
-          path: test-results/
+          path: code/test-results/

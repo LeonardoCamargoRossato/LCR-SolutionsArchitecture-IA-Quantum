@@ -4,22 +4,26 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'tests/isolation/**'
-      - 'vite.config.ts'
-      - 'src/features/home-loading/**'
-      - 'src/components/loading-portal/**'
-      - 'src/components/HeroTypeTitle.tsx'
-      - 'src/components/hero/**'
-      - 'src/hooks/useHomeEntrance.ts'
-      - 'src/pages/Home.tsx'
-      - 'src/RootRouteGate.tsx'
-      - 'tests/home-loading-*.mjs'
+      - 'code/tests/isolation/**'
+      - 'code/vite.config.ts'
+      - 'code/src/features/home-loading/**'
+      - 'code/src/components/loading-portal/**'
+      - 'code/src/components/HeroTypeTitle.tsx'
+      - 'code/src/components/hero/**'
+      - 'code/src/hooks/useHomeEntrance.ts'
+      - 'code/src/pages/Home.tsx'
+      - 'code/src/RootRouteGate.tsx'
+      - 'code/tests/home-loading-*.mjs'
       - '.github/workflows/loading-portal-home-ci.yml'
-      - 'docs/home-loading/**'
+      - 'code/docs/home-loading/**'
   workflow_dispatch:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: code
 
 jobs:
   home-boot-integration:
@@ -33,6 +37,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Install pinned dependencies
         run: npm ci
       - name: Compile TypeScript and build production bundles
@@ -78,6 +83,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lcr-loading-portal-home-boot-evidence
-          path: test-results/
+          path: code/test-results/
           retention-days: 30
           if-no-files-found: warn

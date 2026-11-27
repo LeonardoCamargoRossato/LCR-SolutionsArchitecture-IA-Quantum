@@ -9,6 +9,10 @@ permissions:
 concurrency:
   group: isolation-${{ github.ref }}
   cancel-in-progress: true
+defaults:
+  run:
+    working-directory: code
+
 jobs:
   isolation:
     runs-on: ubuntu-24.04
@@ -21,6 +25,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - run: npm ci
       - run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
@@ -44,7 +49,21 @@ jobs:
           git worktree add --detach /tmp/lcr-p0-baseline 7b5d0ad67d9697b7338c945dfc7691ed8b0bd0d1
           (cd /tmp/lcr-p0-baseline && npm ci)
           bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-p0-baseline && npm run build'
+      - name: Install pinned historical diagram encoder
+        run: |
+          python3 -m venv /tmp/lcr-visual-pillow
+          /tmp/lcr-visual-pillow/bin/pip install --disable-pip-version-check --no-deps Pillow==13.0.0
+      - name: Reconstruct audited main with its own lockfile and isolated fixture
+        run: |
+          git worktree add --detach /tmp/lcr-approved-main 67e8877b02fc23352306f75c04a40f4085b1f716
+          (cd /tmp/lcr-approved-main && npm ci)
+          bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-approved-main && npm run build'
+      - name: Compare audited main, candidate and offline public content
+        env:
+          LCR_BEFORE: /tmp/lcr-approved-main
+        run: npm run test:isolated -- node tests/isolation/ApprovedMainComparison.test.mjs
       - name: Compare baseline and candidate screenshots and case content
+        if: always()
         env:
           LCR_BEFORE: /tmp/lcr-p0-baseline
         run: npm run test:isolated -- node tests/isolation/BaselineComparison.test.mjs
@@ -54,7 +73,7 @@ jobs:
         if: always()
         with:
           name: lcr-isolation-evidence
-          path: test-results/
+          path: code/test-results/
           retention-days: 30
           if-no-files-found: error
 
@@ -72,7 +91,7 @@ jobs:
         if: always()
         with:
           name: quality-inventory
-          path: test-results/quality/
+          path: code/test-results/quality/
           retention-days: 30
   quality-shadow:
     name: Quality shadow / ${{ matrix.shard }}
@@ -91,6 +110,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - uses: actions/setup-python@v5
         if: matrix.shard == 'lab'
         with:
@@ -109,7 +129,7 @@ jobs:
         if: always()
         with:
           name: quality-${{ matrix.shard }}
-          path: test-results/
+          path: code/test-results/
           retention-days: 30
           if-no-files-found: error
   quality-dependencies:
@@ -128,8 +148,8 @@ jobs:
         with:
           name: quality-dependency-audit
           path: |
-            test-results/quality/dependencies.json
-            test-results/quality/dependency-remediation/
+            code/test-results/quality/dependencies.json
+            code/test-results/quality/dependency-remediation/
           retention-days: 30
   quality-parity:
     name: Quality transition parity
@@ -159,6 +179,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: quality-parity-summary
-          path: test-results/quality/summary.json
+          path: code/test-results/quality/summary.json
           retention-days: 30
           if-no-files-found: error

@@ -7,16 +7,20 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'tests/isolation/**'
-      - 'vite.config.ts'
-      - tests/institution-logos-browser-smoke.mjs
-      - src/config/retiredProjects.ts
-      - src/pages/ProjectCaseV1.tsx
+      - 'code/tests/isolation/**'
+      - 'code/vite.config.ts'
+      - code/tests/institution-logos-browser-smoke.mjs
+      - code/src/config/retiredProjects.ts
+      - code/src/pages/ProjectCaseV1.tsx
       - .github/workflows/institution-logos-svg-ci.yml
   workflow_dispatch:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: code
 
 jobs:
   check:
@@ -29,6 +33,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Install dependencies
         run: npm ci
       - name: Verify vector integrity, SHA-256 and transparency
@@ -48,4 +53,4 @@ jobs:
           name: institution-logo-regression-evidence
           retention-days: 30
           if-no-files-found: warn
-          path: test-results/
+          path: code/test-results/

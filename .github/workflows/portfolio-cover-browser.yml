@@ -7,12 +7,16 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'tests/isolation/**'
+      - 'code/tests/isolation/**'
       - '.github/workflows/portfolio-cover-browser.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: code
 
 jobs:
   browser-smoke:
@@ -26,6 +30,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Install application
         run: npm ci
       - name: TypeScript and Vite build
@@ -43,4 +48,4 @@ jobs:
           name: portfolio-browser-evidence
           if-no-files-found: warn
           retention-days: 30
-          path: test-results/
+          path: code/test-results/

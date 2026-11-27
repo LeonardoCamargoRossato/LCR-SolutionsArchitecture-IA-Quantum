@@ -6,21 +6,25 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'tests/isolation/**'
-      - 'vite.config.ts'
-      - 'src/RootRouteGate.tsx'
-      - 'src/PortfolioExperience.tsx'
-      - 'src/main.tsx'
-      - 'src/pages/TestComponentLab.tsx'
-      - 'src/features/test-component-lab/**'
-      - 'src/components/test-component-lab/**'
-      - 'tests/test-component-lab-smoke.mjs'
+      - 'code/tests/isolation/**'
+      - 'code/vite.config.ts'
+      - 'code/src/RootRouteGate.tsx'
+      - 'code/src/PortfolioExperience.tsx'
+      - 'code/src/main.tsx'
+      - 'code/src/pages/TestComponentLab.tsx'
+      - 'code/src/features/test-component-lab/**'
+      - 'code/src/components/test-component-lab/**'
+      - 'code/tests/test-component-lab-smoke.mjs'
       - '.github/workflows/test-component-lab-ci.yml'
-      - 'docs/test-component-lab/**'
+      - 'code/docs/test-component-lab/**'
   workflow_dispatch:
 
 permissions:
   contents: read
+
+defaults:
+  run:
+    working-directory: code
 
 jobs:
   verify-lab:
@@ -34,6 +38,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Install pinned dependencies
         run: npm ci
       - name: TypeScript and Vite production build
@@ -72,6 +77,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lcr-test-component-lab-v1-evidence
-          path: test-results/
+          path: code/test-results/
           retention-days: 30
           if-no-files-found: warn

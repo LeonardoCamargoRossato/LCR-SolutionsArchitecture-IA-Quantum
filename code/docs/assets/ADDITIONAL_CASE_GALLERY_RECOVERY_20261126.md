@@ -1,0 +1,23 @@
+# Stage 04.4.1 — historical Additional Work gallery reconciliation
+
+Scope: five cases, same branch and draft PR #55. Reference main 67e8877b02fc23352306f75c04a40f4085b1f716; prior stage source b58d7fa44267f448338c90d75df4e72332145667. LCR Asset Organization Standard v1.2 consulted.
+
+## Evidence and disposition
+
+| Case | Confirmed historical slides | Recovered new slides | Final slides | Source |
+| --- | ---: | ---: | ---: | --- |
+| hamlet | 1 | 0 | 1 | public/assets/projects/hamlet/WebP/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.webp; public/assets/projects/hamlet/PNG/1789395980082-0ecbb7cb-509a-4f32-af8d-8223936c54b2-Hamlet_CapaCard.png |
+| metcompb-landing-page | 1 | 0 | 1 | public/projects/metcompb-landing-page.webp; public/projects/metcompb-landing-page.png |
+| speaker-portfolio | 1 | 0 | 1 | public/assets/projects/speaker-portfolio/WebP/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.webp; public/assets/projects/speaker-portfolio/PNG/1789612243746-56327e21-536e-489e-a1e7-767a6bd6dcfb-PortifolioPalestras_CapaCard.png |
+| quantum-education-apps | 1 | 0 | 1 | public/assets/projects/quantum-education-apps/WebP/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.webp; public/assets/projects/quantum-education-apps/PNG/1789577934619-2416ce1d-3b63-4edc-a7cd-c74989da990a-QuantumEduApps_CapaCard.png |
+| embedded-control-platform | 1 | 0 | 1 | public/assets/projects/embedded-control-platform/WebP/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.webp; public/assets/projects/embedded-control-platform/PNG/1789580925841-e27a4260-39a0-4581-baf2-fd9c2470f97a-EmbeddedWebServer_CapaCard.png |
+
+Counts include the cover. All 13 main-history revisions of defaultProjects.ts, both metCompBProject.ts revisions, and the one embeddedControlProject.ts revision were checked. Where defined, gallery arrays for these target cases are empty. Main's public CMS rows for Hamlet and Speaking Portfolio also have empty gallery arrays; the more_projects table for Quantum and Embedded has no gallery column. MetCompB is code-managed and has no matching CMS record. The public Storage object metadata search for project names, aliases and gallery paths found cover variants/aliases and institutional logos only. Main's case adapter uses a cover plus the gallery array, not images of the linked external application. Drive portfolio folder and documentation, exact-name search and available project folder listings did not identify an approved additional gallery. Historical conversations do not establish additional file identities, ordering or captions. No images created, copied, removed or reclassified.
+
+The verified final counts match the previous implementation: one cover per target; WebSeer 10 and CE235 8. No verified gallery loss for these five in the inspected reference. This is not proof that unversioned older approvals never existed. Any unlocated historical approval remains pending provenance; do not mark it restored. Do not import external-site photos, figures, book illustrations or private content just because they are associated with a project. The MetCompB existing public/projects pair is kept in place to avoid duplicate files or premature relocation; all four other pairs already use assets/projects/<slug>/PNG and WebP. Existing catalogues and CaseHero unchanged.
+
+## Verification
+
+Previous SHA b58d7fa44267f448338c90d75df4e72332145667: GitHub Actions run 45887126219 passed the integrated browser acceptance. Downloaded artifact 15150551618, verified archive CRC; seven scenario JSON reports each contain seven cards and seven cases, the five target cases one slide each, WebSeer ten, CE235 eight, zero remote project image/institution requests and zero HTTP asset errors. Scenarios include blocked database/storage, stale CMS and cache, credential-free dev and Pages build; desktop/mobile, PT/EN, dark/light. Screenshots and byte-identity download checks are in the artifact. These are evidence of the prior unchanged runtime, not a result of the new commit.
+
+New assertions pin the exact historical cover paths, Git blob identities, counts, and bilingual captions independently of the runtime catalogue. Existing tests remain. Fixed the trailing blank line in projectEditorial.ts, which caused git diff --check to fail; no editorial change. The preceding full suite was 24/26; separate failures: portrait demand assertion, and isolation gate (whitespace and AnimeFinder baseline case text mismatch). The remaining issues are outside the five-case restoration; do not bypass or weaken them. New full CI triggered; independent visual/audit approval required before any merge.

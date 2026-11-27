@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "standard": "LCR_ASSET_ORGANIZATION_STANDARD v1.2",
+  "delivery_rule": "Use WebP for initial display of raster images; load originals/PNG only on user request. Images outside the viewport remain demand-loaded. SVG and animated assets are unchanged.",
+  "assets": [
+    {
+      "source_path": "public/workflow/LCR_Workflow_Agentes_Papeis_Funcoes.png",
+      "webp_path": "public/workflow/LCR_Workflow_Agentes_Papeis_Funcoes.webp",
+      "role": "Workflow page diagram, carousel first view",
+      "dimensions": {
+        "width": 1536,
+        "height": 1024
+      },
+      "source": {
+        "bytes": 1793986,
+        "sha256": "6f56ce3c484aa9952455584df194a5deef018dec3b076c66c6cd3bd6f282bf78"
+      },
+      "webp": {
+        "bytes": 182174,
+        "sha256": "2b82663d2d51da370a1268f1cca135e3ccd0c0c02346bd9d8d5b18cffb2e5583",
+        "encoding": "WebP lossy quality 85, method 6, original dimensions retained"
+      },
+      "source_preserved": true
+    },
+    {
+      "source_path": "public/workflow/LcrWorkflowEstrutura.png",
+      "webp_path": "public/workflow/LcrWorkflowEstrutura.webp",
+      "role": "Workflow page diagram, carousel first view",
+      "dimensions": {
+        "width": 1024,
+        "height": 1536
+      },
+      "source": {
+        "bytes": 2119499,
+        "sha256": "504232b0b33e9b57ecf8e54f8cb6e74a1efc94f43d8b0714ded76e139541c7db"
+      },
+      "webp": {
+        "bytes": 294772,
+        "sha256": "0d68547e1102aaf7f6566d53f69bc0610ff2eb430bb72f750a9f749255df7339",
+        "encoding": "WebP lossy quality 85, method 6, original dimensions retained"
+      },
+      "source_preserved": true
+    },
+    {
+      "source_path": "public/projects/metcompb-landing-page.png",
+      "webp_path": "public/projects/metcompb-landing-page.webp",
+      "role": "MetCompB project cover, card and case first view",
+      "dimensions": {
+        "width": 1600,
+        "height": 900
+      },
+      "source": {
+        "bytes": 296506,
+        "sha256": "fd44425e5115cba16adec0cae68ceb910ad2b14cf5daa020b13ac1fac9385675"
+      },
+      "webp": {
+        "bytes": 46832,
+        "sha256": "32a098d02e295e3e97c52dc12ca00267a6ba3e3126f29a58fa4c35e60c8a9a7e",
+        "encoding": "WebP lossy quality 85, method 6, original dimensions retained"
+      },
+      "source_preserved": true
+    }
+  ]
+}

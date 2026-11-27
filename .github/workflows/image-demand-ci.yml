@@ -3,8 +3,8 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'src/**'
-      - 'tests/image-demand*'
+      - 'code/src/**'
+      - 'code/tests/image-demand*'
       - '.github/workflows/image-demand-ci.yml'
   workflow_dispatch:
 permissions:
@@ -12,6 +12,10 @@ permissions:
 concurrency:
   group: image-demand-${{ github.ref }}
   cancel-in-progress: true
+defaults:
+  run:
+    working-directory: code
+
 jobs:
   demand-regression:
     runs-on: ubuntu-24.04
@@ -24,6 +28,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - run: npm ci
       - run: |
           npm install --no-save --ignore-scripts playwright@1.56.1
@@ -64,6 +69,6 @@ jobs:
         if: always()
         with:
           name: image-demand-before-after
-          path: test-results/
+          path: code/test-results/
           retention-days: 30
           if-no-files-found: error

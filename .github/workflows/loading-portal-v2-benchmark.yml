@@ -3,15 +3,19 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'tests/isolation/**'
-      - 'vite.config.ts'
-      - 'src/features/home-loading/**'
-      - 'src/components/loading-portal/v2/**'
-      - 'tests/loading-portal-v2-benchmark.mjs'
+      - 'code/tests/isolation/**'
+      - 'code/vite.config.ts'
+      - 'code/src/features/home-loading/**'
+      - 'code/src/components/loading-portal/v2/**'
+      - 'code/tests/loading-portal-v2-benchmark.mjs'
       - '.github/workflows/loading-portal-v2-benchmark.yml'
   workflow_dispatch:
 permissions:
   contents: read
+defaults:
+  run:
+    working-directory: code
+
 jobs:
   benchmark:
     runs-on: ubuntu-24.04
@@ -24,6 +28,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - run: npm ci
       - run: bash tests/isolation/run.sh npm run build
       - name: Build immutable V1 baseline
@@ -42,5 +47,5 @@ jobs:
         if: always()
         with:
           name: loading-portal-v2-performance-evidence
-          path: test-results/
+          path: code/test-results/
           retention-days: 30

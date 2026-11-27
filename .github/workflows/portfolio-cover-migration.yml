@@ -3,11 +3,15 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'scripts/migrate_portfolio_covers.py'
+      - 'code/scripts/migrate_portfolio_covers.py'
       - '.github/workflows/portfolio-cover-migration.yml'
   workflow_dispatch:
 permissions:
   contents: read
+defaults:
+  run:
+    working-directory: code
+
 jobs:
   validate:
     runs-on: ubuntu-24.04

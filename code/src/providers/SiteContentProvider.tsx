@@ -1,0 +1,100 @@
+import { getSelectedCases } from '../data/selectedCases'
+import { getAdditionalWork } from '../data/additionalWork'
+import { getSelectedWork } from '../data/selectedWork'
+import { withOfficialProfile } from '../assets/public/officialProfile'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
+import { publishedContentSnapshot } from '../data/publishedContentSnapshot'
+import type { Project } from '../domain/models/Project'
+import type { SiteContent } from '../domain/models/SiteContent'
+
+type Ctx = {
+  content: SiteContent
+  projects: Project[]
+  selectedWork: Project[]
+  additionalWork: Project[]
+  loading: boolean
+  refresh: () => Promise<void>
+  refreshContent: () => Promise<void>
+  refreshProjects: () => Promise<void>
+}
+
+const C = createContext<Ctx | undefined>(undefined)
+const CACHE_TTL = 6 * 60 * 60 * 1000
+
+function writeCache<T>(key: string, value: T) {
+  try {
+    localStorage.setItem(key, JSON.stringify({ savedAt: Date.now(), value }))
+  } catch {
+    // Storage can be unavailable in private or restricted browser contexts.
+  }
+}
+
+export function SiteContentProvider({ children }: { children: ReactNode }) {
+  const [content, setContent] = useState<SiteContent>(() => publishedContentSnapshot)
+  const [projects, setProjects] = useState<Project[]>(()=>[...getSelectedCases(),...getAdditionalWork()])
+  const [loading, setLoading] = useState(true)
+
+  const refreshContent = async () => {
+    const { contentService } = await import('../bootstrap/services')
+    const [home, about, research, siteSettings, socialLinks, seo, cvUrl] =
+      await Promise.all([
+        contentService.getHome(),
+        contentService.getAbout(),
+        contentService.getResearch(),
+        contentService.getSiteSettings(),
+        contentService.getSocialLinks(),
+        contentService.getSeo(),
+        contentService.getCvUrl(),
+      ])
+
+    const next = {
+      home,
+      about: withOfficialProfile(about),
+      research,
+      siteSettings,
+      socialLinks,
+      seo,
+      cvUrl,
+    }
+    setContent(next)
+    writeCache('lcr-site-content-v2', next)
+  }
+
+  const refreshProjects = async () => {
+    const { projectService } = await import('../bootstrap/services')
+    const next = await projectService.getAll()
+    setProjects(next)
+    writeCache('lcr-projects-v2', next)
+  }
+
+  const refresh = async () => {
+    setLoading(true)
+    try {
+      await Promise.all([refreshContent(), refreshProjects()])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { void refresh().catch((error) => console.error('Content refresh failed.', error)) }, [])
+
+  const value = useMemo(
+    () => ({ content, projects, selectedWork: getSelectedWork(), additionalWork: getAdditionalWork(), loading, refresh, refreshContent, refreshProjects }),
+    [content, projects, loading],
+  )
+
+  return <C.Provider value={value}>{children}</C.Provider>
+}
+
+export function useSiteContent() {
+  const value = useContext(C)
+  if (!value) throw new Error('SiteContentProvider missing')
+  return value
+}

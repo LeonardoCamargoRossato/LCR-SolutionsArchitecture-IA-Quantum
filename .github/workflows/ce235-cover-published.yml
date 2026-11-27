@@ -6,6 +6,10 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    working-directory: code
+
 jobs:
   published-ce235:
     runs-on: ubuntu-24.04
@@ -16,6 +20,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - name: Install browser test dependencies
         run: |
           npm ci
@@ -28,6 +33,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ce235-published-cover-evidence
-          path: test-results/
+          path: code/test-results/
           retention-days: 30
           if-no-files-found: warn

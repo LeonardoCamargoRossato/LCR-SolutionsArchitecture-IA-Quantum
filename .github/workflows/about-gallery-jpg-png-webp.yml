@@ -3,11 +3,15 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'scripts/migrate_about_gallery_jpg_png_webp.py'
+      - 'code/scripts/migrate_about_gallery_jpg_png_webp.py'
       - '.github/workflows/about-gallery-jpg-png-webp.yml'
   workflow_dispatch:
 permissions:
   contents: read
+defaults:
+  run:
+    working-directory: code
+
 jobs:
   validate:
     runs-on: ubuntu-24.04

@@ -30,14 +30,15 @@ React · TypeScript · JavaScript · Python · OpenAI API · Microsoft Copilot �
 ## Run locally
 
 ```bash
-npm install
-cp .env.example .env
+cd code
+npm ci
 npm run dev
 ```
 
 ## Build
 
 ```bash
+cd code
 npm run build
 ```
 
@@ -45,4 +46,4 @@ Hash-based routing keeps GitHub Pages routes robust.
 
 ## Architecture
 
-See the `docs/` directory for architecture and implementation documentation.
+See the [`code/docs/`](code/docs/) directory for architecture and implementation documentation.

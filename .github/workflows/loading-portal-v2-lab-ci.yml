@@ -3,17 +3,21 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'tests/isolation/**'
-      - 'vite.config.ts'
-      - 'src/components/loading-portal/v2/**'
-      - 'src/features/test-component-lab/loading-portal/**'
-      - 'public/assets/home/loading-portal/**'
-      - 'scripts/build_loading_portal_v2_mechanical.py'
-      - 'tests/loading-portal-v2-lab-smoke.mjs'
+      - 'code/tests/isolation/**'
+      - 'code/vite.config.ts'
+      - 'code/src/components/loading-portal/v2/**'
+      - 'code/src/features/test-component-lab/loading-portal/**'
+      - 'code/public/assets/home/loading-portal/**'
+      - 'code/scripts/build_loading_portal_v2_mechanical.py'
+      - 'code/tests/loading-portal-v2-lab-smoke.mjs'
       - '.github/workflows/loading-portal-v2-lab-ci.yml'
   workflow_dispatch:
 permissions:
   contents: read
+defaults:
+  run:
+    working-directory: code
+
 jobs:
   drawer-integrity:
     runs-on: ubuntu-24.04
@@ -33,6 +37,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
+          cache-dependency-path: code/package-lock.json
       - run: npm ci
       - run: bash tests/isolation/run.sh npm run build
       - run: |
@@ -43,5 +48,5 @@ jobs:
         if: always()
         with:
           name: loading-portal-v2-lab-evidence
-          path: test-results/
+          path: code/test-results/
           retention-days: 30
