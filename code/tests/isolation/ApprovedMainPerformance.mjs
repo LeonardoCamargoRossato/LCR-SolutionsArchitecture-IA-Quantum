@@ -185,7 +185,7 @@ export async function approvedMainPerformance(browser,targets,prefix,out,mainSha
           }
           assert.equal(delivery.full.width*reference.full.height,reference.full.width*delivery.full.height,'Viewer aspect ratio changed')
           if(delivery.full.url!==delivery.second.url)
-            assert(!delivery.requests.some(e=>e.url===delivery.full.url&&!['open-zoom','warm-reload'].includes(e.phase)),'Viewer original preloaded')
+            assert(!delivery.requests.some(e=>e.url===delivery.full.url&&!['open-zoom','warm-zoom','warm-reload'].includes(e.phase)),'Viewer original preloaded')
           const warm=e=>['warm-reload','warm-zoom'].includes(e.phase)
           const cold=row=>row.requests.filter(e=>!warm(e)).reduce((s,e)=>s+e.encodedBytes,0)
           if(slug==='webseer'){
