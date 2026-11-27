@@ -3,7 +3,7 @@
  * served by loopback from inventoried originals. No external requests. */
 import assert from 'node:assert/strict'
 import {spawn,execFileSync} from 'node:child_process'
-import {mkdir,readFile,writeFile,copyFile} from 'node:fs/promises'
+import {mkdir,readFile,writeFile} from 'node:fs/promises'
 import {join} from 'node:path'
 import {chromium} from './Browser.mjs'
 import {approvedMainPerformance} from './ApprovedMainPerformance.mjs'
@@ -15,17 +15,18 @@ const main=process.env.LCR_BEFORE
 assert.equal(execFileSync('git',['-C',main,'rev-parse','HEAD'],{encoding:'utf8'}).trim(),fixture.mainSha)
 const assets=new Map(inventory.assets.filter(x=>x.github_path).map(x=>[x.supabase_path,x.github_path.replace(/^code\//,'')]))
 const targets=[{name:'main',cwd:main,port:5191,offline:false},{name:'candidate',cwd:process.cwd(),port:5192,offline:false},{name:'offline',cwd:process.cwd(),port:5192,offline:true}]
-// The pinned main's deploy.yml converts this PNG to WebP before building.
- // The CI reconstruction runs npm build only. Restore the exact versioned
- // derivative for this test build, after proving identical original PNG bytes
- // and pinning the candidate derivative to the previously audited revision.
- const diagram='workflow/LCR_Workflow_Agentes_Papeis_Funcoes'
- const historicalPng=await readFile(join(main,'public',diagram+'.png'))
- assert.deepEqual(historicalPng,await readFile('public/'+diagram+'.png'),'Workflow diagram original differs from main')
- const auditedWebp=execFileSync('git',['show','ac774de8cbf3c21d6a9c26973cf055efc4421f7d:code/public/'+diagram+'.webp'],{maxBuffer:16*1024*1024})
- assert.deepEqual(auditedWebp,await readFile('public/'+diagram+'.webp'),'Approved workflow derivative changed')
- // Only the local, disposable reconstructed build; no edit to main.
- await copyFile('public/'+diagram+'.webp',join(main,'dist',diagram+'.webp'))
+// Independently reproduce the actual historical deploy (run 45625400834,
+// build job 139248305552): Pillow 13.0.0, quality=92, method=6,
+// 1,793,986-byte PNG -> 249,148-byte WebP. Do NOT substitute the
+// candidate's different, smaller version as the historical reference.
+const diagram='workflow/LCR_Workflow_Agentes_Papeis_Funcoes'
+const historicalPng=await readFile(join(main,'public',diagram+'.png'))
+assert.equal(historicalPng.length,1793986)
+assert.deepEqual(historicalPng,await readFile('public/'+diagram+'.png'),'Workflow diagram original differs from main')
+const encoder='/tmp/lcr-visual-pillow/bin/python'
+const historicalWebp=join(main,'dist',diagram+'.webp')
+execFileSync(encoder,['-c','from PIL import Image; import PIL,sys; assert PIL.__version__=="13.0.0"; im=Image.open(sys.argv[1]); im.save(sys.argv[2], "WEBP", quality=92, method=6)',join(main,'public',diagram+'.png'),historicalWebp])
+assert.equal((await readFile(historicalWebp)).length,249148,'Historical deploy derivative size does not match the recorded release')
  const servers=targets.slice(0,2).map(t=>spawn('npm',['run','preview','--','--host','127.0.0.1','--port',String(t.port),'--strictPort'],{cwd:t.cwd,stdio:'ignore',detached:true}))
 const report={mainSha:fixture.mainSha,candidateSha:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),comparisons:[],differences:[],network:[],authorized:[fixture.authorizedTextCorrection]}
 const routes=['','projects/foton-hub','projects/cities-comparing','projects/animefinder','projects/hamlet','projects/webseer','projects/metcompb-landing-page','projects/speaker-portfolio','projects/quantum-education-apps','projects/ce235-real-time-systems','projects/embedded-control-platform','workflow','about','admin','test-component-lab']
@@ -225,6 +226,18 @@ async function collect(browser,t,route,viewport,locale,theme){
        await page.waitForFunction(el=>el.complete&&el.naturalWidth>0,await im.elementHandle())
      }
      await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}))
+   }
+   // Record the initial carousel geometry and screenshot independently of
+   // the subsequent equal interaction sequence; do not hide timing differences.
+   if(route.startsWith('projects/')&&await page.locator('.case-hero-thumbnails').count()){
+     const initialRail=await page.locator('.case-hero-thumbnails').evaluate(rail=>{
+       const active=rail.querySelector('button.is-active')
+       const r=rail.getBoundingClientRect(),a=active?.getBoundingClientRect()
+       return {scrollLeft:rail.scrollLeft,width:rail.clientWidth,centerOffset:a?a.left+a.width/2-r.left-r.width/2:null}
+     })
+     const initialName=[t.name,route.replaceAll('/','-'),viewport.width,locale,theme,'initial-rail'].join('-')
+     await page.screenshot({path:out+'/'+initialName+'.png',animations:'disabled',caret:'hide',fullPage:true})
+     report.initialRails??=[];report.initialRails.push({route,locale,theme,target:t.name,...initialRail,screenshot:initialName+'.png'})
    }
    // Exercise the same real thumbnail navigation after content hydration.
    // The first-slide rail can have different initial offsets when CMS data

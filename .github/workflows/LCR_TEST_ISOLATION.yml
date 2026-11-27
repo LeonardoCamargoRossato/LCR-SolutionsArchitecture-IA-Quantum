@@ -49,6 +49,10 @@ jobs:
           git worktree add --detach /tmp/lcr-p0-baseline 7b5d0ad67d9697b7338c945dfc7691ed8b0bd0d1
           (cd /tmp/lcr-p0-baseline && npm ci)
           bash tests/isolation/run.sh bash -c 'cd /tmp/lcr-p0-baseline && npm run build'
+      - name: Install pinned historical diagram encoder
+        run: |
+          python3 -m venv /tmp/lcr-visual-pillow
+          /tmp/lcr-visual-pillow/bin/pip install --disable-pip-version-check --no-deps Pillow==13.0.0
       - name: Reconstruct audited main with its own lockfile and isolated fixture
         run: |
           git worktree add --detach /tmp/lcr-approved-main 67e8877b02fc23352306f75c04a40f4085b1f716
