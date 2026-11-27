@@ -81,10 +81,51 @@ async function run(browser,target,viewport,prefix){
   }finally{await ctx.close()}
 }
 
+// The four public cases with multi-slide galleries (43 slides in total).
+// Single-cover cases and all About photos remain covered by existing
+// acceptance suites and the full-page comparator; exercise navigation here.
+const carouselCases={'cities-comparing':9,animefinder:16,webseer:10,'ce235-real-time-systems':8}
+async function runCase(browser,target,viewport,prefix,slug,count){
+  const ctx=await browser.newContext({viewport,deviceScaleFactor:1,reducedMotion:'reduce',locale:'en-US',colorScheme:'dark',timezoneId:'UTC',
+    isMobile:viewport.width<500,hasTouch:viewport.width<500,extraHTTPHeaders:{'X-LCR-Fixture-Mode':'approved-main'}})
+  try{
+    await ctx.addInitScript(()=>{localStorage.setItem('portfolio-locale','en-US');localStorage.setItem('portfolio-theme','dark')})
+    const page=await ctx.newPage(),net=await recorder(page)
+    const cover=page.locator('.case-story-cover')
+    const image=cover.locator('img.progressive-image-main')
+    const label=()=>page.locator('.case-hero-caption').innerText()
+    const read=async()=>({url:await image.evaluate(img=>img.currentSrc),alt:await image.getAttribute('alt'),caption:await label()})
+    await page.goto('http://127.0.0.1:'+target.port+prefix+'#/projects/'+slug)
+    await page.waitForFunction(count=>localStorage.getItem('lcr-site-content-v2')&&localStorage.getItem('lcr-projects-v2')&&document.querySelector('.case-hero-carousel-count')?.textContent?.trim()==='1 / '+count,count)
+    await page.evaluate(()=>document.fonts.ready.then(()=>true));await settle(page)
+    net.phase('scroll-cover')
+    await cover.scrollIntoViewIfNeeded();await loaded(page,'.case-story-cover img.progressive-image-main');await settle(page)
+    const first=await read()
+    net.phase('next-slide')
+    await page.getByRole('button',{name:'Next project image',exact:true}).click()
+    await cover.scrollIntoViewIfNeeded()
+    await page.waitForFunction(({old,count})=>{const img=document.querySelector('.case-story-cover img.progressive-image-main');return document.querySelector('.case-hero-carousel-count')?.textContent?.trim()==='2 / '+count&&img?.currentSrc!==old&&img?.complete&&img.naturalWidth>0},{old:first.url,count})
+    await settle(page);const second=await read()
+    net.phase('open-zoom')
+    await cover.click();await loaded(page,'.image-lightbox-viewport img');await settle(page)
+    const full=await page.locator('.image-lightbox-viewport img').evaluate(img=>({url:img.currentSrc,width:img.naturalWidth,height:img.naturalHeight}))
+    await page.keyboard.press('Escape');await page.locator('.image-lightbox-backdrop').waitFor({state:'hidden'})
+    net.phase('warm-reload')
+    await page.reload()
+    await page.waitForFunction(count=>document.querySelector('.case-hero-carousel-count')?.textContent?.trim()==='1 / '+count,count)
+    await cover.scrollIntoViewIfNeeded();await loaded(page,'.case-story-cover img.progressive-image-main');await settle(page)
+    const phases=Object.fromEntries([...new Set(net.entries.map(e=>e.phase))].map(phase=>{
+      const rows=net.entries.filter(e=>e.phase===phase)
+      return [phase,{encodedBytes:rows.reduce((sum,e)=>sum+(e.encodedBytes??0),0),requests:rows.length,cacheHits:rows.filter(e=>e.cache).length,notModified:rows.filter(e=>e.status===304).length}]
+    }))
+    return {slug,count,target:target.name,viewport,first,second,full,phases,requests:net.entries}
+  }finally{await ctx.close()}
+}
+
 export async function approvedMainPerformance(browser,targets,prefix,out,mainSha,candidateSha){
   const report={mainSha,candidateSha,dataset:'ApprovedMainFixture.json + supabase-public-assets-inventory.json',network:'same isolated loopback, no artificial throttling',
     cache:'actual local browser cache; fixture max-age=600 is lab-only, not GitHub Pages policy',
-    budget:'No regression above same pinned main cold phase measured transfer; warm cache may revalidate but must not transfer previously loaded image bodies. Host headers and independent budget approval remain separate.',scenarios:[],failures:[]}
+    budget:'No regression above same pinned main cold phase measured transfer; warm cache may revalidate but must not transfer previously loaded image bodies. Host headers and independent budget approval remain separate.',scenarios:[],caseScenarios:[],failures:[]}
   try{
     for(const viewport of [{width:1440,height:900},{width:390,height:844}]){
       const rows=[]
@@ -115,10 +156,39 @@ export async function approvedMainPerformance(browser,targets,prefix,out,mainSha
           assert(e.cache||e.status===304,'Previously loaded image body transferred again: '+e.url)
         }
       }catch(e){report.failures.push({viewport,error:String(e)})}
+      for(const [slug,count] of Object.entries(carouselCases)){
+        const cases=[]
+        for(const target of targets){
+          try{const row=await runCase(browser,target,viewport,prefix,slug,count);cases.push(row);report.caseScenarios.push(row)}
+          catch(e){report.failures.push({target:target.name,slug,viewport,error:String(e)})}
+        }
+        if(cases.length!==2)continue
+        try{
+          const [reference,delivery]=cases
+          for(const row of cases){
+            assert(!row.requests.some(e=>e.error||e.status>=400),'Image request error in '+row.target)
+            assert(row.requests.every(e=>e.encodedBytes!==null),'Missing request byte measurements')
+          }
+          for(const key of ['first','second']){
+            assert.equal(delivery[key].caption,reference[key].caption,'Different slide caption')
+            assert.equal(delivery[key].alt,reference[key].alt,'Different slide identity')
+            assert(/\.(webp|svg|avif)$/i.test(delivery[key].url),'Non-optimized first-view project image')
+          }
+          assert.equal(delivery.full.width*reference.full.height,reference.full.width*delivery.full.height,'Viewer aspect ratio changed')
+          if(delivery.full.url!==delivery.second.url)
+            assert(!delivery.requests.some(e=>e.url===delivery.full.url&&!['open-zoom','warm-reload'].includes(e.phase)),'Viewer original preloaded')
+          const cold=row=>row.requests.filter(e=>e.phase!=='warm-reload').reduce((s,e)=>s+e.encodedBytes,0)
+          assert(cold(delivery)<=cold(reference),'Equivalent project carousel cold transfer increased')
+          const prior=new Set(delivery.requests.filter(e=>e.phase!=='warm-reload'&&e.status===200).map(e=>e.url))
+          assert(delivery.requests.filter(e=>e.phase==='warm-reload'&&prior.has(e.url)).every(e=>e.cache||e.status===304),'Repeated project image body in warm cache')
+        }catch(e){report.failures.push({slug,viewport,error:String(e)})}
+      }
     }
   }finally{
     await writeFile(out+'/approved-main-performance.json',JSON.stringify(report,null,2))
     console.log('APPROVED MAIN PERFORMANCE',JSON.stringify(report.scenarios.map(({target,viewport,logicalPhotos,phases})=>({target,viewport,logicalPhotos,phases}))))
+    console.log('APPROVED CASE PERFORMANCE',JSON.stringify(report.caseScenarios.map(({target,slug,count,viewport,phases})=>({target,slug,count,viewport,phases}))))
+    console.log('APPROVED PERFORMANCE FAILURES',JSON.stringify(report.failures))
   }
   assert.deepEqual(report.failures,[],'Equivalent real-media benchmark failed; see artifact')
 }
