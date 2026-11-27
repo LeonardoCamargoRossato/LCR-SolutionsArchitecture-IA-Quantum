@@ -33,12 +33,56 @@ const normalized=v=>String(v??'').replace(/\s+/g,' ').trim()
 const approvedMainText=(v,route)=>!route||route==='about'||route==='projects/animefinder'
   ? v.replaceAll(fixture.authorizedTextCorrection.from,fixture.authorizedTextCorrection.to) : v
 
-// Compare every pixel without masks. No lossy-format or animation tolerance
-// has been approved yet: exact equality is the conservative default, and
-// differences remain blocking until a measured per-scenario budget is approved.
-async function comparePixels(page,left,right,label){
+// Calibrate only the two identified, already-approved format conversions.
+// Run 45897178097 / artifact 15154439682: header portrait max RGB delta 2,
+// larger portrait 18, MetCompB 24; mean delta among changed RGB channels
+// respectively 0.563, 1.439, 0.863 (rounded upward to hundredths).
+// Every pixel outside the exact source/geometry-paired image rectangles
+// remains exact. Candidate vs offline always remains pixel-exact.
+// No masks, area-wide exclusions or generic page-wide percentage threshold.
+const profileStem='1792380122932-87ee4d65-cc32-4005-85d5-24fb6ed67957-fotoperfilLCR'
+const calibration={
+  'profile-header':{max:2,mean:0.57},
+  'profile-about':{max:18,mean:1.44},
+  'metcompb':{max:24,mean:0.87}
+}
+const pairs=[
+  {old:'assets/about/profile/'+profileStem+'.jpeg',next:'assets/about/profile/'+profileStem+'.webp'},
+  {old:'projects/metcompb-landing-page.png',next:'projects/metcompb-landing-page.webp'}
+]
+for(const pair of pairs)for(const asset of [pair.old,pair.next]){
+  const bytes=execFileSync('git',['show','ac774de8cbf3c21d6a9c26973cf055efc4421f7d:code/public/'+asset],{maxBuffer:16*1024*1024})
+  assert.deepEqual(bytes,await readFile('public/'+asset),'Calibrated source asset changed: '+asset)
+}
+assert.deepEqual(await readFile(join(main,'public',pairs[1].old)),await readFile('public/'+pairs[1].old),'MetCompB original differs from pinned main')
+async function conversionRegions(page){
+  return page.evaluate(({profileStem})=>[...document.images].flatMap(img=>{
+    const src=img.currentSrc||''
+    let kind
+    if(src.includes(profileStem+'.'))kind=img.getBoundingClientRect().width<=40?'profile-header':'profile-about'
+    else if(/\/metcompb-landing-page\.(png|webp)$/.test(src))kind='metcompb'
+    if(!kind||!img.complete||!img.naturalWidth)return []
+    const r=img.getBoundingClientRect()
+    if(!r.width||!r.height)return []
+    return [{kind,src,alt:img.alt,width:img.naturalWidth,height:img.naturalHeight,
+      rect:[Math.floor(r.left+scrollX),Math.floor(r.top+scrollY),Math.ceil(r.right+scrollX),Math.ceil(r.bottom+scrollY)]}]
+  }),{profileStem})
+}
+function pairedRegions(left,right){
+  const rows=[]
+  for(const a of left){
+    const expected=a.kind==='metcompb'?pairs[1]:pairs[0]
+    const b=right.find(b=>b.kind===a.kind&&b.alt===a.alt&&JSON.stringify(b.rect)===JSON.stringify(a.rect))
+    // Main portrait URL is the original CMS JPEG; exact asset stem required.
+    if(!b||!a.src.endsWith(expected.old.split('/').at(-1))||!b.src.endsWith(expected.next.split('/').at(-1)))continue
+    assert.equal(a.width*b.height,b.width*a.height,'Image conversion changed aspect ratio')
+    rows.push({kind:a.kind,rect:a.rect,source:a.src,delivery:b.src,...calibration[a.kind]})
+  }
+  return rows
+}
+async function comparePixels(page,left,right,label,regions=[]){
   const buffers=await Promise.all([left,right].map(name=>readFile(out+'/'+name+'.png')))
-  const result=await page.evaluate(async ([a,b])=>{
+  const result=await page.evaluate(async ({a,b,regions})=>{
     const decode=async src=>{const image=new Image();image.src='data:image/png;base64,'+src;await image.decode();return image}
     const [first,second]=await Promise.all([decode(a),decode(b)])
     const width=Math.max(first.naturalWidth,second.naturalWidth),height=Math.max(first.naturalHeight,second.naturalHeight)
@@ -46,24 +90,33 @@ async function comparePixels(page,left,right,label){
     const ctx=canvas.getContext('2d',{willReadFrequently:true})
     const pixels=image=>{ctx.clearRect(0,0,width,height);ctx.drawImage(image,0,0);return ctx.getImageData(0,0,width,height)}
     const x=pixels(first),y=pixels(second),diff=ctx.createImageData(width,height)
-    let changedPixels=0,absoluteError=0,maxChannelDelta=0
+    let changedPixels=0,absoluteError=0,maxChannelDelta=0,unapprovedPixels=0
+    const measurements=regions.map(r=>({...r,changedPixels:0,rgbError:0,maxChannelDelta:0}))
     for(let i=0;i<x.data.length;i+=4){
-      let changed=false
-      for(let j=0;j<4;j++){const d=Math.abs(x.data[i+j]-y.data[i+j]);absoluteError+=d;maxChannelDelta=Math.max(maxChannelDelta,d);changed||=d!==0}
-      if(changed){changedPixels++;diff.data[i]=255;diff.data[i+1]=0;diff.data[i+2]=0}
+      let changed=false,pixelDelta=0,rgbError=0
+      for(let j=0;j<4;j++){const d=Math.abs(x.data[i+j]-y.data[i+j]);absoluteError+=d;maxChannelDelta=Math.max(maxChannelDelta,d);pixelDelta=Math.max(pixelDelta,d);changed||=d!==0;if(j<3)rgbError+=d}
+      if(changed){
+        changedPixels++
+        const px=(i/4)%width,py=Math.floor(i/4/width)
+        const region=measurements.find(r=>px>=r.rect[0]&&px<r.rect[2]&&py>=r.rect[1]&&py<r.rect[3])
+        if(region){region.changedPixels++;region.rgbError+=rgbError;region.maxChannelDelta=Math.max(region.maxChannelDelta,pixelDelta)}
+        if(!region||pixelDelta>region.max||x.data[i+3]!==y.data[i+3])unapprovedPixels++
+        diff.data[i]=255;diff.data[i+1]=0;diff.data[i+2]=0
+      }
       else{const gray=Math.round((x.data[i]+x.data[i+1]+x.data[i+2])/6+100);diff.data[i]=gray;diff.data[i+1]=gray;diff.data[i+2]=gray}
       diff.data[i+3]=255
     }
     ctx.putImageData(diff,0,0)
     return {width,height,first:[first.naturalWidth,first.naturalHeight],second:[second.naturalWidth,second.naturalHeight],
       changedPixels,changedRatio:changedPixels/(width*height),meanChannelDelta:absoluteError/(width*height*4),maxChannelDelta,
+      unapprovedPixels,regions:measurements.map(r=>({...r,meanChangedRgbDelta:r.changedPixels?r.rgbError/(3*r.changedPixels):0})),
       difference:canvas.toDataURL('image/png').split(',')[1]}
-  },buffers.map(b=>b.toString('base64')))
+  },{a:buffers[0].toString('base64'),b:buffers[1].toString('base64'),regions})
   const {difference,...metrics}=result
   const filename=label+'-difference.png'
   await writeFile(out+'/'+filename,Buffer.from(difference,'base64'))
-  return {...metrics,artifact:filename,allowedChangedPixels:0,
-    match:metrics.changedPixels===0&&JSON.stringify(metrics.first)===JSON.stringify(metrics.second)}
+  return {...metrics,artifact:filename,
+    match:metrics.unapprovedPixels===0&&metrics.regions.every(r=>r.maxChannelDelta<=r.max&&r.meanChangedRgbDelta<=r.mean)&&JSON.stringify(metrics.first)===JSON.stringify(metrics.second)}
 }
 
 // Admit only actually visible image elements; do not assign src or preload
@@ -194,11 +247,29 @@ async function collect(browser,t,route,viewport,locale,theme){
    const imageSamples=await scanVisibleImages(page)
    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))
    await page.screenshot({path:out+'/'+name+'.png',animations:'disabled',caret:'hide',fullPage:true})
+   let comparisonScreenshot=name
+   // Preserve the unmodified main screenshot above. A separate screenshot
+   // applies only the already-authorized exact English editorial replacement,
+   // to distinguish layout regressions from the approved wording change.
+   if(t.name==='main'&&locale==='en-US'&&(!route||route==='about'||route==='projects/animefinder')){
+     const changed=await page.evaluate(({from,to})=>{
+       const walker=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT)
+       let n,count=0
+       while(n=walker.nextNode())if(n.data.includes(from)){n.data=n.data.replaceAll(from,to);count++}
+       return count
+     },fixture.authorizedTextCorrection)
+     if(changed){
+       comparisonScreenshot=name+'-approved-text'
+       await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))))
+       await page.screenshot({path:out+'/'+comparisonScreenshot+'.png',animations:'disabled',caret:'hide',fullPage:true})
+     }
+   }
+   const regions=await conversionRegions(page)
    report.network.push({name,network,errors,imageSamples})
    assert.deepEqual(errors,[],'Image HTTP/request errors: '+name)
    assert(imageSamples.every(sample=>sample.images.every(img=>img.loaded)),'Visible image missing natural dimensions: '+name)
    if(t.name!=='main'&&route.startsWith('projects/'))assert(!network.some(u=>/\/rest\/v1\/(projects|more_projects|project_institutions)|\/storage\/v1\//.test(u)),'Public case accessed legacy project backend')
-   return {...state,screenshot:name}
+   return {...state,screenshot:name,comparisonScreenshot,regions}
  }finally{await page.unrouteAll({behavior:'wait'});await ctx.close()}
 }
 let browser
@@ -228,7 +299,13 @@ try{
      const visualPage=await browser.newPage()
      try{
        for(const [left,right,comparison] of [[a,b,'main-candidate'],[b,c,'candidate-offline']]){
-         const visual=await comparePixels(visualPage,left.screenshot,right.screenshot,[route.replaceAll('/','-')||'home',viewport.width,locale,theme,comparison].join('-'))
+         const label=[route.replaceAll('/','-')||'home',viewport.width,locale,theme,comparison].join('-')
+         const regions=comparison==='main-candidate'?pairedRegions(left.regions,right.regions):[]
+         if(left.screenshot!==left.comparisonScreenshot){
+           const raw=await comparePixels(visualPage,left.screenshot,right.screenshot,label+'-raw',regions)
+           report.rawVisual??=[];report.rawVisual.push({route,locale,theme,comparison,...raw})
+         }
+         const visual=await comparePixels(visualPage,left.comparisonScreenshot,right.screenshot,label,regions)
          report.visual??=[]
          report.visual.push({route,viewport,locale,theme,comparison,...visual})
          if(!visual.match)diffs.push({field:'pixels',comparison,...visual})
