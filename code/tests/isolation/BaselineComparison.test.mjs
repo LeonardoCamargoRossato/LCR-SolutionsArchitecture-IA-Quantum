@@ -96,7 +96,19 @@ try{
         await page.close()
       }
       assert.equal(rows[0].heading,rows[1].heading)
-      assert.equal(rows[0].cover,rows[1].cover)
+      if(slug==='ce235-real-time-systems'){
+        // The root migration changed only the URL representation. Require the
+        // exact historical asset path AND byte identity in both local builds.
+        const old='./projects/ce235/cover/WebP/ce235-course-site-preview.webp'
+        const approved=base+'projects/ce235/cover/WebP/ce235-course-site-preview.webp'
+        assert.equal(rows[0].cover,old)
+        assert.equal(rows[1].cover,approved)
+        const responses=await Promise.all(targets.map(t=>fetch('http://127.0.0.1:'+t.port+approved)))
+        assert(responses.every(r=>r.ok&&r.headers.get('content-type')?.includes('image/webp')))
+        const bytes=await Promise.all(responses.map(async r=>Buffer.from(await r.arrayBuffer())))
+        assert(bytes[0].length>0)
+        assert.deepEqual(bytes[0],bytes[1],'Historical CE235 cover bytes changed')
+      }else assert.equal(rows[0].cover,rows[1].cover)
       const contentEqual=rows[0].text===rows[1].text
       if(slug==='animefinder'){
         reconcileHistoricalAnimeFinder(rows[0].text,rows[1].text)
